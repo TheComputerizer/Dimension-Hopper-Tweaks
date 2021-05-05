@@ -1,0 +1,15 @@
+Hey all the code is completed such that you can get one with coding
+I have done all the code except that of the entity, and I think you should find it super easy.
+
+https://www.youtube.com/watch?v=p6FFl3yN18M&list=PLiDUvCGH5WEUEV9nc0Ll2pzUFmSFc21uR&index=12
+https://www.youtube.com/watch?v=vXEUhs-K6Rw&list=PLiDUvCGH5WEUEV9nc0Ll2pzUFmSFc21uR&index=13
+https://www.youtube.com/watch?v=rM6qmSuXx-w&list=PLiDUvCGH5WEUEV9nc0Ll2pzUFmSFc21uR&index=14
+
+I would recommend watching these 3 videos so you get an idea of what to do.
+I realize that I have already done about the first half of the first one so you dont have to worry about that.
+I have also set up the registies, and registered an entity called Final_Boss, this has a seperate class and
+I wrote a bunch of stuff there to help you out.  I have also setup everything for textures all you have to do is assign them.
+If you get stuck or need any help please let me know.
+
+Also you will notice that there is an error in EntityInit,  that will fall away when you instantiate the entity.
+Good Luck
