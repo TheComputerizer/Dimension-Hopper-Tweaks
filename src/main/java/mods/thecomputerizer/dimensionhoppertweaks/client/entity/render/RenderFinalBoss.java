@@ -1,7 +1,7 @@
-package mods.thecomputerizer.dimensionhoppertweaks.entity.render;
+package mods.thecomputerizer.dimensionhoppertweaks.client.entity.render;
 
-import mods.thecomputerizer.dimensionhoppertweaks.entity.EntityFinalBoss;
-import mods.thecomputerizer.dimensionhoppertweaks.Reference;
+import mods.thecomputerizer.dimensionhoppertweaks.DimensionHopperTweaks;
+import mods.thecomputerizer.dimensionhoppertweaks.common.objects.entity.EntityFinalBoss;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.entity.RenderBiped;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 
 public class RenderFinalBoss extends RenderBiped<EntityFinalBoss>
 {
-    public static final ResourceLocation TEXTURES = new ResourceLocation(Reference.MOD_ID, "textures/entity/finalboss.png");
+    public static final ResourceLocation TEXTURES = new ResourceLocation(DimensionHopperTweaks.MODID, "textures/entity/finalboss.png");
 
     public RenderFinalBoss(RenderManager manager)
     {
@@ -23,6 +23,7 @@ public class RenderFinalBoss extends RenderBiped<EntityFinalBoss>
     {
         return TEXTURES;
     }
+
     @Override
     protected void applyRotations(EntityFinalBoss entityLiving, float p_77043_2_, float rotationYaw, float partialTicks)
     {

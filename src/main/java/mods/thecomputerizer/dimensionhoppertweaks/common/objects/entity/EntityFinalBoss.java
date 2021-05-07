@@ -1,4 +1,4 @@
-package mods.thecomputerizer.dimensionhoppertweaks.entity;
+package mods.thecomputerizer.dimensionhoppertweaks.common.objects.entity;
 
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -59,6 +59,7 @@ public class EntityFinalBoss extends EntityLiving {
         return 1.875F;
     }
 
+    /*
     @Override
     public void onKillCommand()
     {
@@ -67,6 +68,7 @@ public class EntityFinalBoss extends EntityLiving {
            this.setHealth(this.getHealth() - 10.0F);
        }
     }
+     */
 
     @Override
     public boolean canDespawn()
@@ -176,7 +178,7 @@ public class EntityFinalBoss extends EntityLiving {
                     for (EntityPlayer p : players)
                     {
                         curTime = world.getTotalWorldTime();
-                        bossdialogue.summonDialogue(p,curTime,initTime);
+                        BossDialogue.summonDialogue(p,curTime,initTime);
                     }
                 }
                 return true;
