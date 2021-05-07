@@ -1,8 +1,8 @@
-package com.TheComputerizer.DimensionalHopperFinalBoss;
+package mods.thecomputerizer.dimensionhoppertweaks;
 
-import com.TheComputerizer.DimensionalHopperFinalBoss.proxy.CommonProxy;
-import com.TheComputerizer.DimensionalHopperFinalBoss.util.handlers.RegistryHandler;
-import com.TheComputerizer.DimensionalHopperFinalBoss.util.handlers.RenderHandler;
+import mods.thecomputerizer.dimensionhoppertweaks.proxy.CommonProxy;
+import mods.thecomputerizer.dimensionhoppertweaks.util.handlers.RegistryHandler;
+import mods.thecomputerizer.dimensionhoppertweaks.util.handlers.RenderHandler;
 import net.minecraft.init.Blocks;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -13,11 +13,11 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = DimensionalHopperFinalBoss.MODID, name = DimensionalHopperFinalBoss.NAME, version = DimensionalHopperFinalBoss.VERSION)
-public class DimensionalHopperFinalBoss
+@Mod(modid = DimensionHopperTweaks.MODID, name = DimensionHopperTweaks.NAME, version = DimensionHopperTweaks.VERSION)
+public class DimensionHopperTweaks
 {
-    public static final String MODID = "dimensionalhopperfinalboss";
-    public static final String NAME = "Dimension Hopper Final Boss";
+    public static final String MODID = "dimensionhoppertweaks";
+    public static final String NAME = "Dimension Hopper Tweaks";
     public static final String VERSION = "1.0";
 
     private static Logger logger;
@@ -43,7 +43,7 @@ public class DimensionalHopperFinalBoss
     }
 
     @Instance
-    public static DimensionalHopperFinalBoss instance;
+    public static DimensionHopperTweaks instance;
 
     @SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS, serverSide = Reference.COMMON_PROXY_CLASS)
     public static CommonProxy proxy;

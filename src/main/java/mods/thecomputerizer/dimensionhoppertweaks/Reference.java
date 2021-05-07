@@ -1,4 +1,4 @@
-package com.TheComputerizer.DimensionalHopperFinalBoss;
+package mods.thecomputerizer.dimensionhoppertweaks;
 
 public class Reference {
     public static final String MOD_ID = "dimensionalhopperfinalboss";

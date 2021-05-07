@@ -1,4 +1,4 @@
-package com.TheComputerizer.DimensionalHopperFinalBoss.entity;
+package mods.thecomputerizer.dimensionhoppertweaks.entity;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.ITextComponent;

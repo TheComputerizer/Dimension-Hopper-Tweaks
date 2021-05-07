@@ -1,8 +1,8 @@
-package com.TheComputerizer.DimensionalHopperFinalBoss.init;
+package mods.thecomputerizer.dimensionhoppertweaks.init;
 
-import com.TheComputerizer.DimensionalHopperFinalBoss.DimensionalHopperFinalBoss;
-import com.TheComputerizer.DimensionalHopperFinalBoss.Reference;
-import com.TheComputerizer.DimensionalHopperFinalBoss.entity.EntityFinalBoss;
+import mods.thecomputerizer.dimensionhoppertweaks.DimensionHopperTweaks;
+import mods.thecomputerizer.dimensionhoppertweaks.Reference;
+import mods.thecomputerizer.dimensionhoppertweaks.entity.EntityFinalBoss;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
@@ -13,6 +13,6 @@ public class EntityInit {
     }
 
     private static void registerEntity(String name, Class <? extends Entity> entity, int id, int range, int color1, int color2) {
-        EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID + ":" + name), entity, name, id, DimensionalHopperFinalBoss.instance, range, 1,true, color1, color2 );
+        EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID + ":" + name), entity, name, id, DimensionHopperTweaks.instance, range, 1,true, color1, color2 );
     }
 }

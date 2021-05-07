@@ -1,4 +1,4 @@
-package com.TheComputerizer.DimensionalHopperFinalBoss.proxy;
+package mods.thecomputerizer.dimensionhoppertweaks.proxy;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;

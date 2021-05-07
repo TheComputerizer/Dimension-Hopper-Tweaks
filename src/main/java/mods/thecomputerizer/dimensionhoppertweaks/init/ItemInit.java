@@ -1,7 +1,8 @@
-package com.TheComputerizer.DimensionalHopperFinalBoss.init;
+package mods.thecomputerizer.dimensionhoppertweaks.init;
 
+import mods.thecomputerizer.dimensionhoppertweaks.objects.items.ItemSpawn;
 import net.minecraft.item.Item;
-import com.TheComputerizer.DimensionalHopperFinalBoss.objects.items.ItemSpawn;
+
 import java.util.ArrayList;
 import java.util.List;
 

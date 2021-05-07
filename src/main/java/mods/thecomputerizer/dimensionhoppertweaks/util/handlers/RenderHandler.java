@@ -1,7 +1,7 @@
-package com.TheComputerizer.DimensionalHopperFinalBoss.util.handlers;
+package mods.thecomputerizer.dimensionhoppertweaks.util.handlers;
 
-import com.TheComputerizer.DimensionalHopperFinalBoss.entity.EntityFinalBoss;
-import com.TheComputerizer.DimensionalHopperFinalBoss.entity.render.RenderFinalBoss;
+import mods.thecomputerizer.dimensionhoppertweaks.entity.EntityFinalBoss;
+import mods.thecomputerizer.dimensionhoppertweaks.entity.render.RenderFinalBoss;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 
 public class RenderHandler

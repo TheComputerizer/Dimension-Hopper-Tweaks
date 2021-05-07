@@ -1,7 +1,6 @@
 {
-    "pack": {
-        "description": "Dimension Hopper Final Boss",
-        "pack_format": 3,
-        "_comment": "pAcK"
-    }
+  "pack": {
+    "description": "Dimension Hopper Tweaks",
+    "pack_format": 3
+  }
 }

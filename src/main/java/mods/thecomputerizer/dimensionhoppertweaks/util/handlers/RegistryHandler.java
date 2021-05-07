@@ -1,15 +1,12 @@
-package com.TheComputerizer.DimensionalHopperFinalBoss.util.handlers;
+package mods.thecomputerizer.dimensionhoppertweaks.util.handlers;
 
 
-import com.TheComputerizer.DimensionalHopperFinalBoss.init.EntityInit;
-import com.TheComputerizer.DimensionalHopperFinalBoss.init.ItemInit;
-import com.TheComputerizer.DimensionalHopperFinalBoss.util.interfaces.IHasModel;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.Entity;
+import mods.thecomputerizer.dimensionhoppertweaks.init.EntityInit;
+import mods.thecomputerizer.dimensionhoppertweaks.init.ItemInit;
+import mods.thecomputerizer.dimensionhoppertweaks.util.interfaces.IHasModel;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;

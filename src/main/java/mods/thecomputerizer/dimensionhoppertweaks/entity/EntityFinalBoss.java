@@ -1,4 +1,4 @@
-package com.TheComputerizer.DimensionalHopperFinalBoss.entity;
+package mods.thecomputerizer.dimensionhoppertweaks.entity;
 
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;

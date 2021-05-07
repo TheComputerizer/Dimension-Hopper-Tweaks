@@ -1,8 +1,7 @@
-package com.TheComputerizer.DimensionalHopperFinalBoss.entity.render;
+package mods.thecomputerizer.dimensionhoppertweaks.entity.render;
 
-import com.TheComputerizer.DimensionalHopperFinalBoss.entity.EntityFinalBoss;
-import com.TheComputerizer.DimensionalHopperFinalBoss.entity.model.ModelFinalBoss;
-import com.TheComputerizer.DimensionalHopperFinalBoss.Reference;
+import mods.thecomputerizer.dimensionhoppertweaks.entity.EntityFinalBoss;
+import mods.thecomputerizer.dimensionhoppertweaks.Reference;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.entity.RenderBiped;
 import net.minecraft.client.renderer.entity.RenderManager;
