@@ -18,7 +18,7 @@ public final class DimensionHopperEntities {
 
     @SubscribeEvent
     public static void registerEntities(RegistryEvent.Register<EntityEntry> entities) {
-        registerEntity("dimension_hopper_boss", EntityFinalBoss.class, 100, 0x0, 0x0);
+        registerEntity("dimension_hopper_final_boss", EntityFinalBoss.class, 100, 0x0, 0x0);
     }
 
     private static void registerEntity(String name, Class <? extends Entity> entity, int trackingRange, int spawnEggFirstColor, int spawnEggSecondColor) {
