@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 
 public class RenderFinalBoss extends RenderBiped<EntityFinalBoss>
 {
-    public static final ResourceLocation TEXTURES = new ResourceLocation(DimensionHopperTweaks.MODID, "textures/entity/finalboss.png");
+    public static final ResourceLocation TEXTURES = new ResourceLocation(DimensionHopperTweaks.MODID, "textures/entity/final_boss.png");
 
     public RenderFinalBoss(RenderManager manager)
     {
