@@ -4,14 +4,20 @@ import mods.thecomputerizer.dimensionhoppertweaks.DimensionHopperTweaks;
 import mods.thecomputerizer.dimensionhoppertweaks.common.objects.entity.EntityFinalBoss;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 
+@Mod.EventBusSubscriber(modid = DimensionHopperTweaks.MODID)
 public final class DimensionHopperEntities {
     private static int globalUniqueEntityId = 0;
 
     private DimensionHopperEntities() {}
 
-    public static void registerEntities() {
+    @SubscribeEvent
+    public static void registerEntities(RegistryEvent.Register<EntityEntry> entities) {
         registerEntity("dimension_hopper_boss", EntityFinalBoss.class, 100, 0x0, 0x0);
     }
 

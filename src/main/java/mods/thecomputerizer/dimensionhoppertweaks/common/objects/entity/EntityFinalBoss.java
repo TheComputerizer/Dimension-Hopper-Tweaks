@@ -7,7 +7,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.DamageSource;
 import net.minecraft.world.BossInfo;
 import net.minecraft.world.BossInfoServer;
 import net.minecraft.world.World;
@@ -32,11 +31,7 @@ public class EntityFinalBoss extends EntityLiving {
         this.experienceValue = 999999;
     }
 
-    protected void entityInit()
-    {
-       super.entityInit();
-    }
-
+    @Override
     protected void initEntityAI()
     {
         this.tasks.addTask(0, new EntityFinalBoss.AIDoNothing());
@@ -59,23 +54,13 @@ public class EntityFinalBoss extends EntityLiving {
         return 1.875F;
     }
 
-    /*
-    @Override
-    public void onKillCommand()
-    {
-       if(EntityFinalBoss.this.introTime() >= 5) {
-           playSound((SoundEvents.ENTITY_WITHER_HURT), 1.0F, 1.0F);
-           this.setHealth(this.getHealth() - 10.0F);
-       }
-    }
-     */
-
     @Override
     public boolean canDespawn()
     {
         return false;
     }
 
+    @Override
     protected void updateAITasks()
     {
         super.updateAITasks();
@@ -99,6 +84,7 @@ public class EntityFinalBoss extends EntityLiving {
         return generalTimer;
     }
 
+    @Override
     public void addTrackingPlayer(EntityPlayerMP player)
     {
         super.addTrackingPlayer(player);
@@ -106,6 +92,7 @@ public class EntityFinalBoss extends EntityLiving {
         players.add(player);
     }
 
+    @Override
     public void removeTrackingPlayer(EntityPlayerMP player)
     {
         super.removeTrackingPlayer(player);
@@ -113,11 +100,6 @@ public class EntityFinalBoss extends EntityLiving {
     }
 
     @Override
-    public boolean isEntityInvulnerable(DamageSource source)
-    {
-       return true;
-    }
-
     public boolean isNonBoss()
     {
         return false;
@@ -130,7 +112,6 @@ public class EntityFinalBoss extends EntityLiving {
         double d2 = this.posZ + (this.rand.nextDouble() - 0.5D) * 8.0D;
         this.setPosition(d0, d1, d2);
         this.world.playSound(null, d0, d1, d2, SoundEvents.ENTITY_ENDERMEN_TELEPORT, this.getSoundCategory(), 1.0F, 1.0F);
-        this.playSound(SoundEvents.ENTITY_ENDERMEN_TELEPORT, 1.0F, 1.0F);
     }
 
     @Override
@@ -168,6 +149,7 @@ public class EntityFinalBoss extends EntityLiving {
             this.setMutexBits(7);
         }
 
+        @Override
         public boolean shouldExecute()
 
         {
@@ -194,6 +176,7 @@ public class EntityFinalBoss extends EntityLiving {
             this.setMutexBits(7);
         }
 
+        @Override
         public boolean shouldExecute()
         {
             if (EntityFinalBoss.this.introTime() % 2 == 0)
