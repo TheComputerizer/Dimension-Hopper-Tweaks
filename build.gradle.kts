@@ -1,3 +1,6 @@
+import mods.thecomputerizer.dimensionhoppertweaks.gradle.ExtractMappingsZip
+import mods.thecomputerizer.dimensionhoppertweaks.gradle.FindMappingsZip
+import mods.thecomputerizer.dimensionhoppertweaks.gradle.GenerateObfToSrg
 import net.minecraftforge.gradle.common.util.RunConfig
 import net.minecraftforge.gradle.userdev.DependencyManagementExtension
 import org.gradle.kotlin.dsl.NamedDomainObjectContainerScope
@@ -63,6 +66,34 @@ sourceSets.main {
 }
 
 tasks {
+    val findMappingsZip = create("findMappingsZip", FindMappingsZip::class)
+
+    val createObfToSrg = create("createObfToSrg", GenerateObfToSrg::class) {
+        version = "1.12.2"
+        output = file("build/$name/obfToSrg.srg")
+
+        dependsOn(findMappingsZip)
+    }
+
+    val extractMappingsZip = create("extractMappingsZip", ExtractMappingsZip::class) {
+        inputFile = { findMappingsZip.file }
+        outputDirectory = file("build/$name")
+
+        dependsOn(findMappingsZip)
+    }
+
+    minecraft.runs.forEach {
+        it.property("net.minecraftforge.gradle.GradleStart.srg.notch-srg", createObfToSrg.output)
+        it.property("net.minecraftforge.gradle.GradleStart.csvDir", extractMappingsZip.outputDirectory)
+    }
+
+    whenTaskAdded {
+        if (name.startsWith("prepareRun") && name != "prepareRun") { // Target prepareRunXxx
+            dependsOn(createObfToSrg)
+            dependsOn(extractMappingsZip)
+        }
+    }
+
     withType<Jar> {
         archiveBaseName.set("dimension-hopper-tweaks")
         finalizedBy("reobfJar")
