@@ -67,7 +67,15 @@ public final class ItemSwordInfinityTransformer extends SingleTargetMethodTransf
             //    IFEQ L801
             //   L802
             //    LINENUMBER 801 L802
-            //    ICONST_1
+            //    ALOAD 0
+            //    CHECKCAST morph/avaritia/item/tools/ItemSwordInfinity
+            //    ALOAD 1
+            //    ALOAD 2
+            //    CHECKCAST mods/thecomputerizer/dimensionhoppertweaks/common/objects/entity/EntityFinalBoss
+            //    ALOAD 3
+            //    INVOKESTATIC mods/thecomputerizer/dimensionhoppertweaks/common/hook/AvaritiaInfinitySwordHook.handleFinalBossEntityAttack
+            //        (Lmorph/avaritia/item/tools/ItemSwordInfinity;Lnet/minecraft/item/ItemStack;
+            //            Lmods/thecomputerizer/dimensionhoppertweaks/common/objects/entity/EntityFinalBoss;Lnet/minecraft/entity/EntityLivingBase;)Z
             //    IRETURN
             //   L801
             //    LINENUMBER 49 L801
@@ -231,7 +239,20 @@ public final class ItemSwordInfinityTransformer extends SingleTargetMethodTransf
 
                 super.visitLabel(l802);
                 super.visitLineNumber(801, l802);
-                super.visitInsn(Opcodes.ICONST_1);
+                super.visitVarInsn(Opcodes.ALOAD, 0);
+                super.visitTypeInsn(Opcodes.CHECKCAST, "morph/avaritia/item/tools/ItemSwordInfinity");
+                super.visitVarInsn(Opcodes.ALOAD, 1);
+                super.visitVarInsn(Opcodes.ALOAD, 2);
+                super.visitTypeInsn(Opcodes.CHECKCAST, "mods/thecomputerizer/dimensionhoppertweaks/common/objects/entity/EntityFinalBoss");
+                super.visitVarInsn(Opcodes.ALOAD, 3);
+                super.visitMethodInsn(
+                        Opcodes.INVOKESTATIC,
+                        "mods/thecomputerizer/dimensionhoppertweaks/common/hook/AvaritiaInfinitySwordHook",
+                        "handleFinalBossEntityAttack",
+                        "(Lmorph/avaritia/item/tools/ItemSwordInfinity;Lnet/minecraft/item/ItemStack;" +
+                                "Lmods/thecomputerizer/dimensionhoppertweaks/common/objects/entity/EntityFinalBoss;Lnet/minecraft/entity/EntityLivingBase;)Z",
+                        false
+                );
                 super.visitInsn(Opcodes.IRETURN);
 
                 super.visitLabel(l801);
