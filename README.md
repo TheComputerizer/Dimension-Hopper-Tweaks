@@ -1,2 +1,2 @@
-# Dimension-Hopper-Final-Boss
-Final boss for Dimension Hopper
+# Dimension-Hopper-Tweaks
+A collection of tweaks and addons for Dimension Hopps
