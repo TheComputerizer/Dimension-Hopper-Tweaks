@@ -1,26 +1,29 @@
 package mods.thecomputerizer.dimensionhoppertweaks.generator;
 
-
-import static gcewing.sg.SGCraft.sgBaseBlock;
-import static gcewing.sg.SGCraft.sgRingBlock;
-
+import gcewing.sg.SGCraft;
+import gcewing.sg.block.SGRingBlock;
+import mods.thecomputerizer.dimensionhoppertweaks.util.Lazy;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.Random;
 
-public class stargate extends DimHopperStruct {
-    public static final IBlockState base = sgBaseBlock.getDefaultState();
-    public static final IBlockState ring1 = sgRingBlock.getStateFromMeta(0);
-    public static final IBlockState ring2 = sgRingBlock.getStateFromMeta(1);
+public final class Stargate extends DimHopperStruct {
+    // Lazy to ensure initialization order doesn't fuck us up
+    public static final Lazy<IBlockState> BASE = Lazy.of(() -> SGCraft.sgBaseBlock.getDefaultState());
+    public static final Lazy<IBlockState> RING_1 = Lazy.of(() -> SGCraft.sgRingBlock.getDefaultState().withProperty(SGRingBlock.VARIANT, 0));
+    public static final Lazy<IBlockState> RING_2 = Lazy.of(() -> SGCraft.sgRingBlock.getDefaultState().withProperty(SGRingBlock.VARIANT, 1));
 
-    public stargate() {
+    public Stargate() {
         super("stargate");
     }
 
     @Override
     protected void build(World world, Random rand, BlockPos basePos) {
+        final IBlockState base = BASE.get();
+        final IBlockState ring1 = RING_1.get();
+        final IBlockState ring2 = RING_2.get();
         addBlock(world, basePos, 0, 0, 0, base);
         addBlock(world, basePos, 1, 0, 0, ring1);
         addBlock(world, basePos, -1, 0, 0, ring1);

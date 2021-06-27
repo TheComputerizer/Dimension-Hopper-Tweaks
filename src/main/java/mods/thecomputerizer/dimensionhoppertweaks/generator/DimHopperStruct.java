@@ -13,7 +13,7 @@ public abstract class DimHopperStruct extends WorldGenerator {
 
     public DimHopperStruct(String name) {
         this.name = name;
-        handler.registerStructure(this);
+        Handler.registerStructure(this);
     }
 
     private DimHopperStruct() {
