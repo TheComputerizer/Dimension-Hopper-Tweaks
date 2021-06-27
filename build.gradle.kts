@@ -34,6 +34,8 @@ fancyGradle {
     }
 }
 
+idea.module.inheritOutputDirs = true
+
 repositories {
     mavenCentral()
     curseForge()
