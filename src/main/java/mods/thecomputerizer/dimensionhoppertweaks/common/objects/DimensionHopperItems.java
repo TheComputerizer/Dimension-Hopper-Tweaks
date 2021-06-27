@@ -1,7 +1,8 @@
 package mods.thecomputerizer.dimensionhoppertweaks.common.objects;
 
 import mods.thecomputerizer.dimensionhoppertweaks.DimensionHopperTweaks;
-import mods.thecomputerizer.dimensionhoppertweaks.common.objects.items.stargate_addresser;
+import mods.thecomputerizer.dimensionhoppertweaks.common.objects.items.StargateAddresser;
+import mods.thecomputerizer.dimensionhoppertweaks.util.Util;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
@@ -15,12 +16,13 @@ import java.util.function.Supplier;
 @GameRegistry.ObjectHolder(DimensionHopperTweaks.MODID)
 @Mod.EventBusSubscriber(modid = DimensionHopperTweaks.MODID)
 public final class DimensionHopperItems {
+    public static final Item STARGATE_ADDRESSER = Util.sneakyNull();
 
     private DimensionHopperItems() {}
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
-        event.getRegistry().register(stargate_addresser.register());
+        event.getRegistry().register(makeItem("stargate_addresser", StargateAddresser::new, item -> item.setCreativeTab(CreativeTabs.MISC)));
     }
 
     public static Item makeBasicItem(final String name, final CreativeTabs tab) {
@@ -32,7 +34,6 @@ public final class DimensionHopperItems {
         config.accept(item);
         item.setTranslationKey(DimensionHopperTweaks.MODID + "." + name);
         item.setRegistryName(DimensionHopperTweaks.MODID, name);
-        item.setMaxStackSize(1);
         return item;
     }
 }

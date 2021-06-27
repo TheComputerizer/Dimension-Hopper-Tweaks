@@ -2,6 +2,7 @@ package mods.thecomputerizer.dimensionhoppertweaks.client;
 
 import mods.thecomputerizer.dimensionhoppertweaks.DimensionHopperTweaks;
 import mods.thecomputerizer.dimensionhoppertweaks.client.entity.render.RenderFinalBoss;
+import mods.thecomputerizer.dimensionhoppertweaks.common.objects.DimensionHopperItems;
 import mods.thecomputerizer.dimensionhoppertweaks.common.objects.entity.EntityFinalBoss;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
@@ -25,7 +26,7 @@ public final class ClientHandler {
     // <editor-fold region="Items">
     @SubscribeEvent
     public static void onModelRegister(ModelRegistryEvent event) {
-        //registerBasicItemModel(DimensionHopperItems.BOSS_SPAWN_EGG);
+        registerBasicItemModel(DimensionHopperItems.STARGATE_ADDRESSER);
     }
 
     private static void registerBasicItemModel(final Item item) {
