@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.TreeMap;
 
-public class handler {
+public class Handler {
     private static final TreeMap<String, DimHopperStruct> structures = new TreeMap<String, DimHopperStruct>();
     public static final DimHopperStruct EMPTY_STRUCTURE = new DimHopperStruct.EmptyStructure();
 
@@ -71,6 +71,6 @@ public class handler {
     }
 
     public static void registerStructures() {
-        new stargate();
+        new Stargate();
     }
 }
