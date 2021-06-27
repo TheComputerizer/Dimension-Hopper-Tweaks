@@ -27,3 +27,10 @@ forge*changelog.txt
 
 # Java stuff
 *.jar
+
+build.gradle
+run
+out
+build
+bin
+DimensionHopperFinalBoss

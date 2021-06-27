@@ -56,6 +56,7 @@ dependencies {
     implementation(fg.deobf(curseMaven(mod = "fermion-lib", pid = 345538L, fid = 3186519L)))
     implementation(fg.deobf(curseMaven(mod = "codechicken-lib", pid = 242818L, fid = 2779848L)))
     implementation(fg.deobf(curseMaven(mod = "avaritia", pid = 261348L, fid = 3143349L)))
+    implementation(fg.deobf(curseMaven(mod = "sgcraft", pid = 289115, fid = 3044648L)))
 
     //compileOnly(fg.deobf(group = "mezz.jei", name = "jei_1.12.2", version = "4.16.1.302", classifier = "api"))
     runtimeOnly(fg.deobf(group = "mezz.jei", name = "jei_1.12.2", version = "4.16.1.302"))

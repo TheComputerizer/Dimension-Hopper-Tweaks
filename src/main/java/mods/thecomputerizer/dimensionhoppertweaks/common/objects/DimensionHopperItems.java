@@ -1,6 +1,7 @@
 package mods.thecomputerizer.dimensionhoppertweaks.common.objects;
 
 import mods.thecomputerizer.dimensionhoppertweaks.DimensionHopperTweaks;
+import mods.thecomputerizer.dimensionhoppertweaks.common.objects.items.stargate_addresser;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
@@ -14,18 +15,15 @@ import java.util.function.Supplier;
 @GameRegistry.ObjectHolder(DimensionHopperTweaks.MODID)
 @Mod.EventBusSubscriber(modid = DimensionHopperTweaks.MODID)
 public final class DimensionHopperItems {
-    //public static final Item BOSS_SPAWN_EGG = Util.sneakyNull();
 
     private DimensionHopperItems() {}
 
     @SubscribeEvent
-    public static void onItemRegistration(RegistryEvent.Register<Item> event) {
-        event.getRegistry().registerAll(
-                //makeBasicItem("boss_spawn_egg", CreativeTabs.MATERIALS)
-        );
+    public static void registerItems(RegistryEvent.Register<Item> event) {
+        event.getRegistry().register(stargate_addresser.register());
     }
 
-    private static Item makeBasicItem(final String name, final CreativeTabs tab) {
+    public static Item makeBasicItem(final String name, final CreativeTabs tab) {
         return makeItem(name, Item::new, item -> item.setCreativeTab(tab));
     }
 
@@ -34,6 +32,7 @@ public final class DimensionHopperItems {
         config.accept(item);
         item.setTranslationKey(DimensionHopperTweaks.MODID + "." + name);
         item.setRegistryName(DimensionHopperTweaks.MODID, name);
+        item.setMaxStackSize(1);
         return item;
     }
 }
