@@ -26,11 +26,11 @@ public abstract class DimHopperStruct extends WorldGenerator {
 
     @Override
     public final boolean generate(@Nonnull World world, @Nonnull Random rand, @Nonnull BlockPos position) {
-        build(world, rand, new BlockPos.MutableBlockPos(position));
+        build(world, new BlockPos.MutableBlockPos(position));
         return true;
     }
 
-    protected abstract void build(World world, Random rand, BlockPos basePos);
+    protected abstract void build(World world, BlockPos basePos);
 
     public final void addBlock(World world, BlockPos pos, int xCoordOffset, int yCoordOffset, int zCoordOffset, IBlockState block) {
         world.setBlockState(pos.add(xCoordOffset, yCoordOffset, zCoordOffset), block, 2);
@@ -42,6 +42,6 @@ public abstract class DimHopperStruct extends WorldGenerator {
         }
 
         @Override
-        protected void build(World world, Random rand, BlockPos basePos) {}
+        protected void build(World world, BlockPos basePos) {}
     }
 }

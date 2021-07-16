@@ -34,6 +34,7 @@ public final class DimensionHopperItems {
         config.accept(item);
         item.setTranslationKey(DimensionHopperTweaks.MODID + "." + name);
         item.setRegistryName(DimensionHopperTweaks.MODID, name);
+        item.setMaxStackSize(1);
         return item;
     }
 }
