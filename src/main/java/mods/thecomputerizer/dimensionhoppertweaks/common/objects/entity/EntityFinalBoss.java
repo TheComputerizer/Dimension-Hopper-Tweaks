@@ -16,10 +16,8 @@ import java.util.List;
 
 public class EntityFinalBoss extends EntityLiving {
     private final BossInfoServer bossInfo = (BossInfoServer)(new BossInfoServer(this.getDisplayName(), BossInfo.Color.RED, BossInfo.Overlay.NOTCHED_20)).setDarkenSky(true);
-    private int generalTimer = 0;
-    private long curTime = 0;
-    private long initTime = 0;
     private boolean allowTeleport = false;
+    public static boolean allowForcefield = false;
     List<EntityPlayer> players = new ArrayList<>();
 
     public EntityFinalBoss(World worldIn)
@@ -34,8 +32,9 @@ public class EntityFinalBoss extends EntityLiving {
     @Override
     protected void initEntityAI()
     {
-        this.tasks.addTask(0, new EntityFinalBoss.AIDoNothing());
-        this.tasks.addTask(1, new EntityFinalBoss.AITeleport());
+        this.tasks.addTask(0, new EntityFinalBoss.AIBossIntro());
+        this.tasks.addTask(1, new EntityFinalBoss.ApplyForcefield());
+        this.tasks.addTask(2, new EntityFinalBoss.AITeleport());
     }
 
     @Override
@@ -64,24 +63,15 @@ public class EntityFinalBoss extends EntityLiving {
     protected void updateAITasks()
     {
         super.updateAITasks();
-        if (this.ticksExisted < 2)
-        {
-            initTime = world.getTotalWorldTime();
-        }
-        if (this.ticksExisted % 20 == 0)
-        {
-            generalTimer++;
-        }
         if (allowTeleport)
         {
             teleportRandomly();
         }
+        if (allowForcefield)
+        {
+            teleportForcefield();
+        }
         this.bossInfo.setPercent(this.getHealth() / this.getMaxHealth());
-    }
-
-    public long introTime()
-    {
-        return generalTimer;
     }
 
     @Override
@@ -107,11 +97,26 @@ public class EntityFinalBoss extends EntityLiving {
 
     protected void teleportRandomly()
     {
-        double d0 = this.posX + (this.rand.nextDouble() - 0.5D) * 8.0D;
-        double d1 = this.posY + (this.rand.nextDouble() - 0.5D) * 8.0D;
-        double d2 = this.posZ + (this.rand.nextDouble() - 0.5D) * 8.0D;
+        double d0 = this.posX + (this.rand.nextDouble()) * 8.0D;
+        double d1 = this.posY + (this.rand.nextDouble()) * 8.0D;
+        double d2 = this.posZ + (this.rand.nextDouble()) * 8.0D;
         this.setPosition(d0, d1, d2);
         this.world.playSound(null, d0, d1, d2, SoundEvents.ENTITY_ENDERMEN_TELEPORT, this.getSoundCategory(), 1.0F, 1.0F);
+    }
+
+    protected void teleportForcefield()
+    {
+        for (EntityPlayer p : players)
+        {
+            if(p.getPosition().getDistance(((int) this.posX),((int)this.posY),((int)this.posZ))<=8)
+            {
+                double x = this.posX+ (this.rand.nextDouble()) * 32.0D;
+                double y = this.posY+ (this.rand.nextDouble()) * 4.0D;
+                double z = this.posZ+ (this.rand.nextDouble()) * 32.0D;
+                p.setPositionAndUpdate(x,y,z);
+                this.world.playSound(null, x, y, z, SoundEvents.ENTITY_ENDERMEN_TELEPORT, this.getSoundCategory(), 1.0F, 1.0F);
+            }
+        }
     }
 
     @Override
@@ -142,29 +147,56 @@ public class EntityFinalBoss extends EntityLiving {
        super.writeEntityToNBT(compound);
     }
 
-    class AIDoNothing extends EntityAIBase
+    class AIBossIntro extends EntityAIBase
     {
-        public AIDoNothing()
-        {
-            this.setMutexBits(7);
-        }
+        public AIBossIntro() { this.setMutexBits(7); }
 
         @Override
         public boolean shouldExecute()
-
         {
-            if(EntityFinalBoss.this.introTime() < 5)
+            if (EntityFinalBoss.this.ticksExisted < 400) { EntityFinalBoss.this.setVelocity(0, 0.1, 0); }
+            if(EntityFinalBoss.this.ticksExisted == 10)
             {
-                if(EntityFinalBoss.this.introTime() == 1)
+                for (EntityPlayer p : players)
                 {
-                    for (EntityPlayer p : players)
-                    {
-                        curTime = world.getTotalWorldTime();
-                        BossDialogue.summonDialogue(p,curTime,initTime);
+                    if (p.world.provider.getDimension()==EntityFinalBoss.this.world.provider.getDimension()) {
+                        BossDialogue.dialogueOne(p);
                     }
                 }
                 return true;
             }
+            else if(EntityFinalBoss.this.ticksExisted == 110)
+            {
+                for (EntityPlayer p : players)
+                {
+                    if (p.world.provider.getDimension()==EntityFinalBoss.this.world.provider.getDimension()) {
+                        BossDialogue.dialogueTwo(p);
+                    }
+                }
+                return true;
+            }
+            else if(EntityFinalBoss.this.ticksExisted == 210)
+            {
+                for (EntityPlayer p : players)
+                {
+                    if (p.world.provider.getDimension()==EntityFinalBoss.this.world.provider.getDimension()) {
+                        BossDialogue.dialogueThree(p);
+                    }
+                }
+                return true;
+            }
+            else if(EntityFinalBoss.this.ticksExisted == 310) {
+                for (EntityPlayer p : players) {
+                    if (p.world.provider.getDimension() == EntityFinalBoss.this.world.provider.getDimension()) {
+                        BossDialogue.dialogueFour(p);
+                    }
+                }
+                return true;
+            }
+            else if (EntityFinalBoss.this.ticksExisted < 400) {
+                return true;
+            }
+            else {EntityFinalBoss.this.setVelocity(0, 0, 0);}
             return false;
         }
     }
@@ -179,13 +211,28 @@ public class EntityFinalBoss extends EntityLiving {
         @Override
         public boolean shouldExecute()
         {
-            if (EntityFinalBoss.this.introTime() % 2 == 0)
+            if (EntityFinalBoss.this.ticksExisted % 3 == 0)
             {
                 allowTeleport = true;
                 return true;
             }
             allowTeleport = false;
             return false;
+        }
+    }
+
+    class ApplyForcefield extends EntityAIBase
+    {
+        public ApplyForcefield()
+        {
+            this.setMutexBits(7);
+        }
+
+        @Override
+        public boolean shouldExecute()
+        {
+            allowForcefield = true;
+            return true;
         }
     }
 }

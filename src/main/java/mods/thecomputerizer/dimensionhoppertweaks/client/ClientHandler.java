@@ -5,7 +5,6 @@ import mods.thecomputerizer.dimensionhoppertweaks.client.entity.render.RenderFin
 import mods.thecomputerizer.dimensionhoppertweaks.common.objects.DimensionHopperItems;
 import mods.thecomputerizer.dimensionhoppertweaks.common.objects.entity.EntityFinalBoss;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.item.Item;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -26,15 +25,15 @@ public final class ClientHandler {
     // <editor-fold region="Items">
     @SubscribeEvent
     public static void onModelRegister(ModelRegistryEvent event) {
-        registerBasicItemModel(DimensionHopperItems.STARGATE_ADDRESSER);
+        registerBasicItemModel();
     }
 
-    private static void registerBasicItemModel(final Item item) {
-        registerItemModel(item, 0, "inventory");
+    private static void registerBasicItemModel() {
+        registerItemModel();
     }
 
-    private static void registerItemModel(final Item item, final int meta, final String id) {
-        ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(Objects.requireNonNull(item.getRegistryName()), id));
+    private static void registerItemModel() {
+        ModelLoader.setCustomModelResourceLocation(DimensionHopperItems.STARGATE_ADDRESSER, 0, new ModelResourceLocation(Objects.requireNonNull(DimensionHopperItems.STARGATE_ADDRESSER.getRegistryName()), "inventory"));
     }
     // </editor-fold>
 

@@ -1,9 +1,11 @@
 package mods.thecomputerizer.dimensionhoppertweaks;
 
 import mods.thecomputerizer.dimensionhoppertweaks.client.ClientHandler;
+import mods.thecomputerizer.dimensionhoppertweaks.common.commands.RandomTP;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
 @Mod(modid = DimensionHopperTweaks.MODID, name = DimensionHopperTweaks.NAME, version = DimensionHopperTweaks.VERSION, dependencies = DimensionHopperTweaks.DEPENDENCIES)
 public class DimensionHopperTweaks
@@ -21,5 +23,10 @@ public class DimensionHopperTweaks
         if (FMLCommonHandler.instance().getSide().isClient()) {
             ClientHandler.registerRenderers();
         }
+    }
+
+    @Mod.EventHandler
+    public void start(FMLServerStartingEvent event){
+        event.registerServerCommand(new RandomTP());
     }
 }

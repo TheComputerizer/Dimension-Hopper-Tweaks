@@ -8,21 +8,29 @@ import net.minecraft.util.text.TextFormatting;
 
 public class BossDialogue
 {
-    public static void summonDialogue(EntityPlayer player, long curTime, long time)
+    public static ITextComponent text;
+
+    public static void dialogueOne(EntityPlayer player)
     {
-        long t = (curTime-time);
-        ITextComponent dialogue;
-        if (t < 0.4)
-        {
-            dialogue = new TextComponentString("Intro goes here").setStyle(new Style().setColor(TextFormatting.DARK_RED));
-            dialogue.setStyle(new Style().setItalic(true));
-            player.sendMessage(dialogue);
-        }
-        else if (t > 1.2 && t < 1.5)
-        {
-            dialogue = new TextComponentString("Intro part 2").setStyle(new Style().setColor(TextFormatting.DARK_RED));
-            dialogue.setStyle(new Style().setItalic(true));
-            player.sendMessage(dialogue);
-        }
+        text = new TextComponentString("First dialogue message");
+        player.sendMessage(text);
+    }
+
+    public static void dialogueTwo(EntityPlayer player)
+    {
+        text = new TextComponentString("Second dialogue message");
+        player.sendMessage(text);
+    }
+
+    public static void dialogueThree(EntityPlayer player)
+    {
+        text = new TextComponentString("Third dialogue message");
+        player.sendMessage(text);
+    }
+
+    public static void dialogueFour(EntityPlayer player)
+    {
+        text = new TextComponentString("Final dialogue message");
+        player.sendMessage(text);
     }
 }
