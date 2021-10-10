@@ -74,6 +74,48 @@ public class ClientEvents {
                 GlStateManager.depthMask(true);
                 GlStateManager.popMatrix();
             }
+            if (EntityFinalBoss.renderSmallAttackArea) {
+                if (forcefieldModel == null) {
+                    try {
+                        forcefieldModel = OBJLoader.INSTANCE.loadModel(new ModelResourceLocation("dimensionhoppertweaks:models/forcefield.obj")).bake(TransformUtils.DEFAULT_BLOCK, DefaultVertexFormats.BLOCK, TextureUtils.bakedTextureGetter);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        return;
+                    }
+                }
+
+                GlStateManager.pushMatrix();
+                GlStateManager.depthMask(false);
+                GlStateManager.disableCull();
+                GlStateManager.disableAlpha();
+                GlStateManager.enableBlend();
+                GlStateManager.disableLighting();
+
+                EntityPlayer viewingPlayer = Minecraft.getMinecraft().player;
+
+                double translationXLT = EntityFinalBoss.delayedAreaAttackSmallRenderx - viewingPlayer.prevPosX;
+                double translationYLT = EntityFinalBoss.delayedAreaAttackSmallRendery - viewingPlayer.prevPosY;
+                double translationZLT = EntityFinalBoss.delayedAreaAttackSmallRenderz - viewingPlayer.prevPosZ;
+
+                double translationX = translationXLT + (((EntityFinalBoss.delayedAreaAttackSmallRenderx - viewingPlayer.posX) - translationXLT) * event.getPartialRenderTick());
+                double translationY = translationYLT + (((EntityFinalBoss.delayedAreaAttackSmallRendery - viewingPlayer.posY) - translationYLT) * event.getPartialRenderTick());
+                double translationZ = translationZLT + (((EntityFinalBoss.delayedAreaAttackSmallRenderz  - viewingPlayer.posZ) - translationZLT) * event.getPartialRenderTick());
+
+                GlStateManager.translate(translationX, translationY + 1.1, translationZ);
+
+                GlStateManager.bindTexture(Minecraft.getMinecraft().getTextureMapBlocks().getGlTextureId());
+
+                GlStateManager.scale(8.0, 8.0, 8.0);
+
+                renderOBJ(forcefieldModel.getQuads(null, null, 0), new ColourRGBA(0F, 0.5F, 0.9F, 0.1F).argb());
+
+                GlStateManager.enableCull();
+                GlStateManager.enableAlpha();
+                GlStateManager.disableBlend();
+                GlStateManager.enableLighting();
+                GlStateManager.depthMask(true);
+                GlStateManager.popMatrix();
+            }
         }
     }
 

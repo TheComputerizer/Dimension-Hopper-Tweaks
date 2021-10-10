@@ -16,7 +16,7 @@ plugins {
     id("wtf.gofancy.fancygradle") version "1.0.0"
 }
 
-version = "1.0"
+version = "1.1.2"
 group = "mods.thecomputerizer.dimensionhoppertweaks"
 
 minecraft {
@@ -56,7 +56,6 @@ dependencies {
     implementation(fg.deobf(curse(mod = "codechicken-lib", projectId = 242818L, fileId = 2779848L)))
     implementation(fg.deobf(curse(mod = "avaritia", projectId = 261348L, fileId = 3143349L)))
     implementation(fg.deobf(curse(mod = "sgcraft", projectId = 289115L, fileId = 3044648L)))
-
     //compileOnly(fg.deobf(group = "mezz.jei", name = "jei_1.12.2", version = "4.16.1.302", classifier = "api"))
     runtimeOnly(fg.deobf(group = "mezz.jei", name = "jei_1.12.2", version = "4.16.1.302"))
 }

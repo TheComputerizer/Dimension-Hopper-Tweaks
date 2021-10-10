@@ -1,8 +1,9 @@
 package mods.thecomputerizer.dimensionhoppertweaks.common.commands;
 
+import mods.thecomputerizer.dimensionhoppertweaks.util.TeleporterGeneric;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
@@ -12,6 +13,7 @@ import net.minecraftforge.common.DimensionManager;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 public class RandomTP extends CommandBase {
@@ -37,7 +39,7 @@ public class RandomTP extends CommandBase {
         {
             long arg1=0;
             long arg2=0;
-            EntityPlayer entityplayer=null;
+            EntityPlayerMP entityplayer=null;
             try {
                 arg1 = parseLong(args[1]);
                 arg2 = parseLong(args[2]);
@@ -49,20 +51,23 @@ public class RandomTP extends CommandBase {
             System.out.print(arg1+"\n");
             DimensionManager.initDimension((int)arg1);
             WorldServer world = DimensionManager.getWorld((int)arg1);
-            boolean success = true;
-            while(success) {
-                float x = rand.nextFloat()*arg2;
-                float y = 255;
-                float z = rand.nextFloat()*arg2;
-                BlockPos pos = new BlockPos(x,y,z);
-                Biome biome = world.getBiome(pos);
-                for(int i=0;i<(args.length-3);i++){
-                    if (biome.getBiomeName().contains(args[3+i])) {
-                        entityplayer.changeDimension((int)arg1);
-                        entityplayer.setPositionAndUpdate(x,1000,z);
-                        notifyCommandListener(sender, this, "\u00A74\u00A7oYour consciousness fades for a second as you hear a nearly indistinguishable voice in your mind\n\uu00A7l\u00A74D\u00A7ko\u00A7r \u00A74\u00A7ln\u00A7ko\u00A7r\u00A74\u00A7lt tr\u00A7kus\u00A7r\u00A74\u00A7lt \u00A7ktha\u00A7r\u00A74\u00A7lt b\u00A7kook");
-                        success=false;
-                        break;
+            if (!world.isRemote) {
+                boolean success = true;
+                while (success) {
+                    float x = rand.nextFloat() * arg2;
+                    float y = 255;
+                    float z = rand.nextFloat() * arg2;
+                    BlockPos pos = new BlockPos(x, y, z);
+                    Biome biome = world.getBiome(pos);
+                    for (int i = 0; i < (args.length - 3); i++) {
+                        if (Objects.requireNonNull(biome.getRegistryName()).toString().toLowerCase().contains(args[3 + i])) {
+                            assert entityplayer != null;
+                            server.getPlayerList().transferPlayerToDimension(entityplayer, (int) arg1, new TeleporterGeneric(world));
+                            entityplayer.connection.setPlayerLocation(x,1000,z,0,0);
+                            notifyCommandListener(sender, this, "\u00A74\u00A7oYour consciousness fades for a second as you hear a nearly indistinguishable voice in your mind\n\uu00A7l\u00A74D\u00A7ko\u00A7r \u00A74\u00A7ln\u00A7ko\u00A7r\u00A74\u00A7lt tr\u00A7kus\u00A7r\u00A74\u00A7lt \u00A7ktha\u00A7r\u00A74\u00A7lt b\u00A7kook");
+                            success = false;
+                            break;
+                        }
                     }
                 }
             }
