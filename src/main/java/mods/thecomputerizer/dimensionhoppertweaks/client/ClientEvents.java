@@ -65,7 +65,7 @@ public class ClientEvents {
 
                 GlStateManager.scale(8.0, 8.0, 8.0);
 
-                renderOBJ(forcefieldModel.getQuads(null, null, 0), new ColourRGBA(0F, 0.5F, 0.9F, 0.1F).argb());
+                renderOBJ(forcefieldModel.getQuads(null, null, 0), new ColourRGBA(0F, 0.5F, 0.9F, 0.9F).argb());
 
                 GlStateManager.enableCull();
                 GlStateManager.enableAlpha();
@@ -93,9 +93,9 @@ public class ClientEvents {
 
                 EntityPlayer viewingPlayer = Minecraft.getMinecraft().player;
 
-                double translationXLT = EntityFinalBoss.delayedAreaAttackSmallRenderx - viewingPlayer.prevPosX;
-                double translationYLT = EntityFinalBoss.delayedAreaAttackSmallRendery - viewingPlayer.prevPosY;
-                double translationZLT = EntityFinalBoss.delayedAreaAttackSmallRenderz - viewingPlayer.prevPosZ;
+                double translationXLT = EntityFinalBoss.delayedAreaAttackSmallRenderx;
+                double translationYLT = EntityFinalBoss.delayedAreaAttackSmallRendery;
+                double translationZLT = EntityFinalBoss.delayedAreaAttackSmallRenderz;
 
                 double translationX = translationXLT + (((EntityFinalBoss.delayedAreaAttackSmallRenderx - viewingPlayer.posX) - translationXLT) * event.getPartialRenderTick());
                 double translationY = translationYLT + (((EntityFinalBoss.delayedAreaAttackSmallRendery - viewingPlayer.posY) - translationYLT) * event.getPartialRenderTick());

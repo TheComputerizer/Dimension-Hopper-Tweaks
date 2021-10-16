@@ -2,8 +2,10 @@ package mods.thecomputerizer.dimensionhoppertweaks.client;
 
 import mods.thecomputerizer.dimensionhoppertweaks.DimensionHopperTweaks;
 import mods.thecomputerizer.dimensionhoppertweaks.client.entity.render.RenderFinalBoss;
+import mods.thecomputerizer.dimensionhoppertweaks.client.entity.render.RenderWhiteNova;
 import mods.thecomputerizer.dimensionhoppertweaks.common.objects.DimensionHopperItems;
 import mods.thecomputerizer.dimensionhoppertweaks.common.objects.entity.EntityFinalBoss;
+import mods.thecomputerizer.dimensionhoppertweaks.common.objects.entity.EntityWhiteNova;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
@@ -40,6 +42,7 @@ public final class ClientHandler {
     // <editor-fold region="Entities">
     private static void registerEntityRenderers() {
         RenderingRegistry.registerEntityRenderingHandler(EntityFinalBoss.class, RenderFinalBoss::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityWhiteNova.class, RenderWhiteNova::new);
     }
     // </editor-fold>
 }
