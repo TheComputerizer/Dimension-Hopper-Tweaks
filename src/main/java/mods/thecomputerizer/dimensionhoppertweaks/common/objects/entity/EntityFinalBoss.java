@@ -1,5 +1,6 @@
 package mods.thecomputerizer.dimensionhoppertweaks.common.objects.entity;
 
+import morph.avaritia.item.tools.ItemSwordInfinity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -10,18 +11,19 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BossInfo;
 import net.minecraft.world.BossInfoServer;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class EntityFinalBoss extends EntityLiving {
     private final BossInfoServer bossInfo = (BossInfoServer) (new BossInfoServer(this.getDisplayName(), BossInfo.Color.RED, BossInfo.Overlay.NOTCHED_20)).setDarkenSky(true);
     private boolean allowTeleport = false;
     private boolean allowAreaAttackSmall = false;
+    private boolean invulnerable = true;
     private int tickCounter = 0;
     private int attackSmallTicks = 0;
     private int teleportTicks = 0;
@@ -66,7 +68,7 @@ public class EntityFinalBoss extends EntityLiving {
         super.applyEntityAttributes();
         this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(200.0D);
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.6000000238418579D);
-        this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(200.0D);
+        this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(150.0D);
         this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(1.0D);
     }
 
@@ -215,6 +217,23 @@ public class EntityFinalBoss extends EntityLiving {
         super.writeEntityToNBT(compound);
     }
 
+    @Override
+    public boolean attackEntityFrom(DamageSource source, float amount) {
+        if(!invulnerable) {
+            if (source.getTrueSource() instanceof EntityPlayer) {
+                EntityPlayer p = (EntityPlayer) source.getTrueSource();
+                if (p.getHeldItemMainhand().getItem() instanceof ItemSwordInfinity) {
+                    source = new DamageSource("infinity");
+                }
+            }
+            if (Objects.equals(source.damageType, "infinity")) {
+                this.damageEntity(source, 10);
+                return true;
+            }
+        }
+        return false;
+    }
+
     class AIBossIntro extends EntityAIBase {
         public AIBossIntro() {
             this.setMutexBits(7);
@@ -257,7 +276,8 @@ public class EntityFinalBoss extends EntityLiving {
                 return true;
             } else {
                 EntityFinalBoss.this.setVelocity(0, 0, 0);
-                allowForcefield = true;
+                invulnerable = false;
+                //allowForcefield = true;
                 return false;
             }
         }
