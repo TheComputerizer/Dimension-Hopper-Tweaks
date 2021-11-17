@@ -23,8 +23,8 @@ public class StargateAddresser extends Item {
     public ITextComponent text;
     public Stargate gate = new Stargate();
     public int id = 0;
-    public int[] from = {-28,-29,0,-31,-1502,-30,816,-15,-1500,-1501,-1506,-16,-1508,-1509,-1510};
-    public int[] to = {-29,-30,-31,-13,-1503,-1502,-15,-1500,-1501,-1506,-16,-1508,-1509,-1510,-17};
+    public int[] from = {-28,-29,0,-31,-1502,-30,816,-15,-1500,-1501,-1506,-16,-1508,-1509,-1510,66,-19};
+    public int[] to = {-29,-30,-31,-13,-1503,-1502,-15,-1500,-1501,-1506,-16,-1508,-1509,-1510,-17,-19,-21};
     public boolean found = false;
 
     public StargateAddresser() {}
