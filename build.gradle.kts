@@ -16,7 +16,7 @@ plugins {
     id("wtf.gofancy.fancygradle") version "1.0.0"
 }
 
-version = "1.1.2"
+version = "1.3.0"
 group = "mods.thecomputerizer.dimensionhoppertweaks"
 
 minecraft {
@@ -47,17 +47,20 @@ repositories {
         name = "ModMaven"
         url = uri("https://modmaven.k-4u.nl")
     }
+    maven {
+        name = "CurseMaven"
+        url = uri("https://cfa2.cursemaven.com")
+    }
 }
 
 dependencies {
-    minecraft(group = "net.minecraftforge", name = "forge", version = "1.12.2-14.23.5.2855")
+    minecraft(group = "net.minecraftforge", name = "forge", version = "1.12.2-14.23.5.2860")
 
     implementation(fg.deobf(curse(mod = "fermion-lib", projectId = 345538L, fileId = 3186519L)))
     implementation(fg.deobf(curse(mod = "codechicken-lib", projectId = 242818L, fileId = 2779848L)))
     implementation(fg.deobf(curse(mod = "avaritia", projectId = 261348L, fileId = 3143349L)))
     implementation(fg.deobf(curse(mod = "sgcraft", projectId = 289115L, fileId = 3044648L)))
     implementation(fg.deobf(curse(mod = "reskillable", projectId = 286382L, fileId = 2815686L)))
-    //compileOnly(fg.deobf(group = "mezz.jei", name = "jei_1.12.2", version = "4.16.1.302", classifier = "api"))
     runtimeOnly(fg.deobf(group = "mezz.jei", name = "jei_1.12.2", version = "4.16.1.302"))
 }
 
