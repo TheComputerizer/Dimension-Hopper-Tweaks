@@ -18,7 +18,7 @@ import java.util.function.BiFunction;
 public final class ItemSwordInfinityTransformer extends SingleTargetMethodTransformer {
     private final Logger logger;
 
-    protected ItemSwordInfinityTransformer(final LaunchPlugin owner, final Logger logger) {
+    ItemSwordInfinityTransformer(final LaunchPlugin owner, final Logger logger) {
         super(
                 TransformerData.Builder.create()
                         .setOwningPlugin(owner)

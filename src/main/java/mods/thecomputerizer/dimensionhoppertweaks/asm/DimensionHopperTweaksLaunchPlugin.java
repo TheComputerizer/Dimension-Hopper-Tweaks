@@ -8,10 +8,12 @@ import javax.annotation.Nonnull;
 import java.util.Set;
 
 public final class DimensionHopperTweaksLaunchPlugin extends AbstractLaunchPlugin {
-    public static final String PLUGIN_ID = "dimensionhoppertweaks.asm";
+    public static final String PLUGIN_ID = "dimensionhoppertwinkies.asm";
 
     public DimensionHopperTweaksLaunchPlugin() {
         super(PLUGIN_ID);
+        this.registerTransformer(new DimensionTypeLoggingTransformer(this, this.logger));
+        this.registerTransformer(new DimensionTypeTransformer(this, this.logger));
         this.registerTransformer(new ItemSwordInfinityTransformer(this, this.logger));
     }
 
