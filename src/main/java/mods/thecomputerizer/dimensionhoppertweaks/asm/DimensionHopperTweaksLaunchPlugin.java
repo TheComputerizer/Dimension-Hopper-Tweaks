@@ -3,8 +3,13 @@ package mods.thecomputerizer.dimensionhoppertweaks.asm;
 import com.google.common.collect.ImmutableSet;
 import net.thesilkminer.mc.fermion.asm.api.PluginMetadata;
 import net.thesilkminer.mc.fermion.asm.prefab.AbstractLaunchPlugin;
+import org.spongepowered.asm.launch.MixinBootstrap;
+import org.spongepowered.asm.mixin.Mixins;
+import zone.rong.mixinbooter.ILateMixinLoader;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public final class DimensionHopperTweaksLaunchPlugin extends AbstractLaunchPlugin {
@@ -15,6 +20,8 @@ public final class DimensionHopperTweaksLaunchPlugin extends AbstractLaunchPlugi
         this.registerTransformer(new DimensionTypeLoggingTransformer(this, this.logger));
         this.registerTransformer(new DimensionTypeTransformer(this, this.logger));
         this.registerTransformer(new ItemSwordInfinityTransformer(this, this.logger));
+        //MixinBootstrap.init();
+        //Mixins.addConfiguration("dimensionhoppertweaks.mixin.json");
     }
 
     @Override
