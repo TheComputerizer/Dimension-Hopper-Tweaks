@@ -9,6 +9,8 @@ import mods.thecomputerizer.dimensionhoppertweaks.common.objects.entity.EntityWh
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.obj.OBJLoader;
+import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -20,11 +22,9 @@ import java.util.Objects;
 public final class ClientHandler {
 
     public static void registerRenderers() {
-        // Items are handled automatically due to the above annotation
         registerEntityRenderers();
     }
 
-    // <editor-fold region="Items">
     @SubscribeEvent
     public static void onModelRegister(ModelRegistryEvent event) {
         registerBasicItemModel();
@@ -37,12 +37,9 @@ public final class ClientHandler {
     private static void registerItemModel() {
         ModelLoader.setCustomModelResourceLocation(DimensionHopperItems.STARGATE_ADDRESSER, 0, new ModelResourceLocation(Objects.requireNonNull(DimensionHopperItems.STARGATE_ADDRESSER.getRegistryName()), "inventory"));
     }
-    // </editor-fold>
 
-    // <editor-fold region="Entities">
     private static void registerEntityRenderers() {
         RenderingRegistry.registerEntityRenderingHandler(EntityFinalBoss.class, RenderFinalBoss::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityWhiteNova.class, RenderWhiteNova::new);
     }
-    // </editor-fold>
 }

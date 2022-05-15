@@ -2,7 +2,6 @@ package mods.thecomputerizer.dimensionhoppertweaks.common.objects;
 
 import mods.thecomputerizer.dimensionhoppertweaks.DimensionHopperTweaks;
 import mods.thecomputerizer.dimensionhoppertweaks.common.objects.entity.EntityFinalBoss;
-import mods.thecomputerizer.dimensionhoppertweaks.common.objects.entity.EntityWhiteNova;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;

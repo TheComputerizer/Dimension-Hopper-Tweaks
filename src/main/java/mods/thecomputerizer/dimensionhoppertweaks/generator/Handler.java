@@ -10,7 +10,7 @@ import java.util.Random;
 import java.util.TreeMap;
 
 public class Handler {
-    private static final TreeMap<String, DimHopperStruct> structures = new TreeMap<String, DimHopperStruct>();
+    private static final TreeMap<String, DimHopperStruct> structures = new TreeMap<>();
     public static final DimHopperStruct EMPTY_STRUCTURE = new DimHopperStruct.EmptyStructure();
 
     protected static void registerStructure(DimHopperStruct structure) {
@@ -25,7 +25,7 @@ public class Handler {
     }
 
     public static boolean generateStructure(final DimHopperStruct structure, final World world, @Nullable Random rand, final BlockPos basePos) {
-        if (structure == EMPTY_STRUCTURE)
+        if (structure == EMPTY_STRUCTURE || rand == null)
             return false;
 
         structure.generate(world, rand, basePos);
@@ -33,8 +33,7 @@ public class Handler {
     }
 
     public static DimHopperStruct getStructure(String name) {
-        DimHopperStruct structure = structures.get(name);
-        return structure;
+        return structures.get(name);
     }
 
     public static int getStructureListPageCount() {
@@ -48,7 +47,7 @@ public class Handler {
         for (String name : structures.keySet()) {
             if (i >= (pageIndex - 1) * 50) {
                 if (i >= pageIndex * 50)
-                    return builder.toString().substring(2);
+                    return builder.substring(2);
 
                 builder.append(name);
                 builder.append(", ");
@@ -57,11 +56,11 @@ public class Handler {
             i++;
         }
 
-        return builder.toString().substring(2);
+        return builder.substring(2);
     }
 
     public static List<String> autoCompleteStructureName(String st) {
-        List<String> names = new ArrayList<String>();
+        List<String> names = new ArrayList<>();
 
         for (String name : structures.keySet()) {
             if (name.startsWith(st))

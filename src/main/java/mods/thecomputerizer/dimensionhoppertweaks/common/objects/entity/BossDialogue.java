@@ -2,9 +2,7 @@ package mods.thecomputerizer.dimensionhoppertweaks.common.objects.entity;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
 
 public class BossDialogue
 {

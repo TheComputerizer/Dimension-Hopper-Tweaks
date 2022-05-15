@@ -54,17 +54,18 @@ public class StargateAddresser extends Item {
             Block block = genhere.getBlockState(pos).getBlock();
             if (block instanceof ISGBlock) {
                 SGBaseTE te = ((ISGBlock) block).getBaseTE(genhere, pos);
-                if (te != null)
+                if (te != null) {
                     te.applyChevronUpgrade(chev, player);
                     String address;
                     try {
-                        assert te != null;
                         address = te.getHomeAddress();
                     } catch (SGAddressing.AddressingError e) {
+                        player.sendStatusMessage(text, true);
                         return null;
                     }
-                    text = new TextComponentString("Gate successfully located with address: "+address+"!");
-                    stack.setStackDisplayName("§5"+address);
+                    text = new TextComponentString("Gate successfully located with address: " + address + "!");
+                    stack.setStackDisplayName("§5" + address);
+                }
             }
             player.sendStatusMessage(text, true);
             found=false;

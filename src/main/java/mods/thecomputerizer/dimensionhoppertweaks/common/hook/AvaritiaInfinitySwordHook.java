@@ -5,7 +5,7 @@ import morph.avaritia.item.tools.ItemSwordInfinity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 
-@SuppressWarnings({"SpellCheckingInspection", "unused"})
+@SuppressWarnings({"unused"})
 public final class AvaritiaInfinitySwordHook {
     private AvaritiaInfinitySwordHook() {}
 

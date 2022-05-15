@@ -25,10 +25,6 @@ public final class DimensionHopperItems {
         event.getRegistry().register(makeItem("stargate_addresser", StargateAddresser::new, item -> item.setCreativeTab(CreativeTabs.MISC)));
     }
 
-    public static Item makeBasicItem(final String name, final CreativeTabs tab) {
-        return makeItem(name, Item::new, item -> item.setCreativeTab(tab));
-    }
-
     private static Item makeItem(final String name, final Supplier<Item> constructor, final Consumer<Item> config) {
         final Item item = constructor.get();
         config.accept(item);

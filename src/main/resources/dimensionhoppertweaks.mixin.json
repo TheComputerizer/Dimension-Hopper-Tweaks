@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "mods.thecomputerizer.dimensionhoppertweaks.mixin",
+  "refmap": "mixins.dimensionhoppertweaks.refmap.json",
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinGalacticraftRegistry",
+    "MixinGCTileEntityFluidPipe"
+  ],
+  "client": []
+}

@@ -36,21 +36,23 @@ public class EntityWhiteNova extends Entity {
         this.setSize(1.0F, 1.0F);
     }
 
+    @Override
     public boolean isBurning() {
         return false;
     }
 
+    @Override
     public float getExplosionResistance(Explosion explosionIn, World worldIn, BlockPos pos, IBlockState blockStateIn) {
         return 3600000.8F;
     }
 
-
+    @Override
     public void onUpdate() {
         if (this.world.isRemote || (this.EntityFrom == null || !this.EntityFrom.isDead)) {
             super.onUpdate();
             if (this.getDistance(this.EntityTo) < 1) {
                 if (this.EntityTo instanceof EntityFinalBoss) {
-                    EntityFinalBoss.allowForcefield = false;
+                    ((EntityFinalBoss)this.EntityTo).allowForcefield = false;
                     this.world.playSound(this.EntityTo.posX, this.EntityTo.posY, this.EntityTo.posZ, SoundEvents.ENTITY_WITHER_SPAWN, SoundCategory.MASTER, 1.0F, 1.0F, false);
                 }
                 this.onImpact();
@@ -82,6 +84,7 @@ public class EntityWhiteNova extends Entity {
         }
     }
 
+    @Override
     public boolean canBeCollidedWith() {
         return false;
     }
@@ -95,6 +98,7 @@ public class EntityWhiteNova extends Entity {
     public void readEntityFromNBT(NBTTagCompound compound) {
     }
 
+    @Override
     public boolean attackEntityFrom(DamageSource source, float amount) {
         if (source.getTrueSource() instanceof EntityPlayer) {
             EntityLivingBase temp = this.EntityFrom;
@@ -105,11 +109,13 @@ public class EntityWhiteNova extends Entity {
         return false;
     }
 
+    @Override
     public float getBrightness() {
         return 1.0F;
     }
 
     @SideOnly(Side.CLIENT)
+    @Override
     public int getBrightnessForRender() {
         return 15728880;
     }

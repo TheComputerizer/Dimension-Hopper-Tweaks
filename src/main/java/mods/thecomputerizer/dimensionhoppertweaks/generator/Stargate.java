@@ -10,11 +10,10 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import static gcewing.sg.SGCraft.sgBaseBlock;
-
+@SuppressWarnings("unchecked")
 public final class Stargate extends DimHopperStruct {
-    // Lazy to ensure initialization order doesn't fuck us up
-    public static final Lazy<IBlockState> BASE = Lazy.of(() -> sgBaseBlock.getDefaultState().withProperty(BaseOrientation.Orient4WaysByState.FACING, EnumFacing.NORTH));
+
+    public static final Lazy<IBlockState> BASE = Lazy.of(() -> SGCraft.sgBaseBlock.getDefaultState().withProperty(BaseOrientation.Orient4WaysByState.FACING, EnumFacing.NORTH));
     public static final Lazy<IBlockState> RING_1 = Lazy.of(() -> SGCraft.sgRingBlock.getDefaultState().withProperty(SGRingBlock.VARIANT, 0));
     public static final Lazy<IBlockState> RING_2 = Lazy.of(() -> SGCraft.sgRingBlock.getDefaultState().withProperty(SGRingBlock.VARIANT, 1));
     public static final Lazy<IBlockState> A = Lazy.of(Blocks.AIR::getDefaultState);
