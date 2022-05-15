@@ -25,8 +25,8 @@ public class DimensionHopperTweaks
     @Mod.EventHandler
     public static void preInit(FMLPreInitializationEvent event) {
         LOGGER = LogManager.getLogger();
-        OBJLoader.INSTANCE.addDomain(DimensionHopperTweaks.MODID);
         if (FMLCommonHandler.instance().getSide().isClient()) {
+            OBJLoader.INSTANCE.addDomain(DimensionHopperTweaks.MODID);
             ClientHandler.registerRenderers();
         }
     }
