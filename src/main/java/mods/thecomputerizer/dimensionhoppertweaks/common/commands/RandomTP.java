@@ -56,7 +56,7 @@ public class RandomTP extends CommandBase {
                     boolean success = true;
                     while (success) {
                         float x = rand.nextFloat() * arg2;
-                        float y = 255;
+                        float y = 1000;
                         float z = rand.nextFloat() * arg2;
                         BlockPos pos = new BlockPos(x, y, z);
                         Biome biome = world.getBiome(pos);
