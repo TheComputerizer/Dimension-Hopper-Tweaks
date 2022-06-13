@@ -4,31 +4,22 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 
-public class BossDialogue
-{
-    public static ITextComponent text;
+public class BossDialogue {
+    public BossDialogue() {}
 
-    public static void dialogueOne(EntityPlayer player)
-    {
-        text = new TextComponentString("First dialogue message");
-        player.sendMessage(text);
+    public void introOne(EntityPlayer player) {
+        player.sendMessage(new TextComponentString("First dialogue message"));
     }
 
-    public static void dialogueTwo(EntityPlayer player)
-    {
-        text = new TextComponentString("Second dialogue message");
-        player.sendMessage(text);
+    public void introTwo(EntityPlayer player) {
+        player.sendMessage(new TextComponentString("Second dialogue message"));
     }
 
-    public static void dialogueThree(EntityPlayer player)
-    {
-        text = new TextComponentString("Third dialogue message");
-        player.sendMessage(text);
+    public void introThree(EntityPlayer player) {
+        player.sendMessage(new TextComponentString("Third dialogue message"));
     }
 
-    public static void dialogueFour(EntityPlayer player)
-    {
-        text = new TextComponentString("Final dialogue message");
-        player.sendMessage(text);
+    public void introFour(EntityPlayer player) {
+        player.sendMessage(new TextComponentString("Final dialogue message"));
     }
 }

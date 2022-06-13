@@ -2,6 +2,7 @@ package mods.thecomputerizer.dimensionhoppertweaks;
 
 import mods.thecomputerizer.dimensionhoppertweaks.client.ClientHandler;
 import mods.thecomputerizer.dimensionhoppertweaks.common.commands.RandomTP;
+import mods.thecomputerizer.dimensionhoppertweaks.util.PacketHandler;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -15,7 +16,7 @@ public class DimensionHopperTweaks
 {
     public static final String MODID = "dimensionhoppertweaks";
     public static final String NAME = "Dimension Hopper Tweaks";
-    public static final String VERSION = "1.4.1";
+    public static final String VERSION = "1.5.0";
     public static final String DEPENDENCIES = "required-after:forge@[14.23.5.2860,);required-after:fermion;required-after:avaritia;required-after:sgcraft;";
     public static Logger LOGGER;
 
@@ -25,6 +26,7 @@ public class DimensionHopperTweaks
     @Mod.EventHandler
     public static void preInit(FMLPreInitializationEvent event) {
         LOGGER = LogManager.getLogger();
+        PacketHandler.registerPackets();
         if (FMLCommonHandler.instance().getSide().isClient()) {
             OBJLoader.INSTANCE.addDomain(DimensionHopperTweaks.MODID);
             ClientHandler.registerRenderers();
