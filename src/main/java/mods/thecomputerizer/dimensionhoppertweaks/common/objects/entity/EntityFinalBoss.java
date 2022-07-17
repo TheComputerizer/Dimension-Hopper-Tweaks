@@ -1,8 +1,8 @@
 package mods.thecomputerizer.dimensionhoppertweaks.common.objects.entity;
 
 import mods.thecomputerizer.dimensionhoppertweaks.DimensionHopperTweaks;
-import mods.thecomputerizer.dimensionhoppertweaks.client.entity.render.RenderEvents;
 import mods.thecomputerizer.dimensionhoppertweaks.util.PacketHandler;
+import mods.thecomputerizer.dimensionhoppertweaks.util.packets.PacketRenderBossAttack;
 import mods.thecomputerizer.dimensionhoppertweaks.util.packets.PacketUpdateBossShield;
 import morph.avaritia.item.tools.ItemSwordInfinity;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -19,6 +19,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.BossInfo;
 import net.minecraft.world.BossInfoServer;
 import net.minecraft.world.World;
@@ -31,12 +32,12 @@ import java.util.Random;
 public class EntityFinalBoss extends EntityLiving {
     private final BossInfoServer bossInfo = (BossInfoServer) (new BossInfoServer(this.getDisplayName(), BossInfo.Color.RED, BossInfo.Overlay.NOTCHED_20)).setDarkenSky(true);
     private final BossDialogue dialogueController;
-    private final Random random;
-    private int phase;
+    public int phase;
     private boolean doneWithIntro;
     private boolean invulnerable;
     private boolean isShieldUp;
     private final List<EntityPlayer> players;
+    public final List<HomingProjectile> projectiles;
     private final HashMap<String,Double> savedPlayerHealth;
 
     public EntityFinalBoss(World worldIn) {
@@ -46,18 +47,18 @@ public class EntityFinalBoss extends EntityLiving {
         this.isImmuneToFire = true;
         this.experienceValue = 999;
         this.dialogueController = new BossDialogue();
-        this.random = new Random();
         this.phase = 0;
         this.doneWithIntro = false;
         this.invulnerable = true;
         this.isShieldUp = false;
         this.players = new ArrayList<>();
+        this.projectiles = new ArrayList<>();
         this.savedPlayerHealth = new HashMap<>();
     }
 
     @Override
     protected void initEntityAI() {
-        this.tasks.addTask(0, new EntityFinalBoss.BossIntro(this));
+        this.tasks.addTask(0, new BossIntro(this));
         this.tasks.addTask(1, new EntityFinalBoss.PhaseOne(this));
         this.tasks.addTask(9, new EntityAIWatchClosest(this, EntityPlayer.class, 64.0F));
     }
@@ -132,6 +133,10 @@ public class EntityFinalBoss extends EntityLiving {
         return this.isShieldUp;
     }
 
+    public void setPhaseOnceComplete() {
+        if(this.phase==1) this.phase++;
+    }
+
     protected boolean isEntityCloseEnough(Entity p, BlockPos pos, int max) {
         return isEntityCloseEnough(p,pos.getX(),pos.getY(),pos.getZ(),max);
     }
@@ -146,6 +151,15 @@ public class EntityFinalBoss extends EntityLiving {
         double d2 = this.posZ + (-32 + (this.rand.nextDouble()) * 64.0D);
         this.setPosition(d0, d1, d2);
         this.world.playSound(null, d0, d1, d2, SoundEvents.ENTITY_ENDERMEN_TELEPORT, this.getSoundCategory(), 1.0F, 1.0F);
+    }
+
+    public void teleportOtherEntityForcefield(Entity entity) {
+        if (isEntityCloseEnough(entity, (int) this.posX, (int) this.posY, (int) this.posZ, 8)) {
+            double x = this.posX + (-32 + (this.rand.nextDouble()) * 64.0D);
+            double y = this.posY + (-4 + (this.rand.nextDouble()) * 8.0D);
+            double z = this.posZ + (-32 + (this.rand.nextDouble()) * 64.0D);
+            entity.setPositionAndUpdate(x, y, z);
+        }
     }
 
     protected void teleportForcefield() {
@@ -168,12 +182,11 @@ public class EntityFinalBoss extends EntityLiving {
             this.world.playSound(player, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.ENTITY_ENDEREYE_DEATH, this.getSoundCategory(), 1.0F, 1.0F);
     }
 
-    private void subtractPlayerHealth(EntityPlayer player, double amount) {
-        if(player.getMaxHealth()-(amount+1)<=0d) player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(player.getMaxHealth()-amount);
+    public void subtractPlayerHealth(EntityPlayer player, double amount) {
+        if((player.getMaxHealth()-(amount+1))>0d) player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(player.getMaxHealth()-amount);
         else {
             this.setDropItemsWhenDead(false);
-            this.isShieldUp = false;
-            RenderEvents.bossShields.put(this.getUniqueID().toString(),this.isShieldUp);
+            this.updateShield(false);
             this.setDead();
         }
     }
@@ -197,8 +210,7 @@ public class EntityFinalBoss extends EntityLiving {
         super.readEntityFromNBT(compound);
         this.phase = compound.getInteger("DimensionHopperBoss_Phase");
         this.invulnerable = compound.getBoolean("DimensionHopperBoss_Invulnerable");
-        this.isShieldUp = compound.getBoolean("DimensionHopperBoss_Shield");
-        updateShield(this.getShieldUp());
+        updateShield(compound.getBoolean("DimensionHopperBoss_Shield"));
         this.doneWithIntro = compound.getBoolean("DimensionHopperBoss_Intro");
         int size = compound.getInteger("PlayerHealth_Size");
         NBTTagCompound compound1 = compound.getCompoundTag("DimensionHopperBoss_PlayerHealth");
@@ -253,13 +265,13 @@ public class EntityFinalBoss extends EntityLiving {
         if (player instanceof EntityPlayerMP) CriteriaTriggers.PLAYER_HURT_ENTITY.trigger((EntityPlayerMP)player, this, source, amount, amount, false);
     }
 
-    class BossIntro extends EntityAIBase {
+    static class BossIntro extends EntityAIBase {
         private final EntityFinalBoss boss;
         private boolean active;
         public BossIntro(EntityFinalBoss boss) {
             this.setMutexBits(7);
             this.boss = boss;
-            this.active = true;
+            this.active = boss.phase==0;
         }
 
         @Override
@@ -299,6 +311,7 @@ public class EntityFinalBoss extends EntityLiving {
                     for(EntityPlayer player : this.boss.players) this.boss.savedPlayerHealth.put(player.getUniqueID().toString(),player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).getAttributeValue());
                     this.boss.doneWithIntro = true;
                     this.active = false;
+                    this.boss.phase++;
                 }
             }
         }
@@ -307,8 +320,6 @@ public class EntityFinalBoss extends EntityLiving {
     class PhaseOne extends EntityAIBase {
         private final EntityFinalBoss boss;
         private final HashMap<Integer, HashMap<EntityPlayer, BlockPos>> savedPositions;
-        private final HashMap<EntityPlayer, BlockPos.MutableBlockPos> homingPositions;
-        private final HashMap<BlockPos, String> particlePositions;
         private final HashMap<BlockPos, Integer> explosionPositions;
         private boolean active;
         private int attackTimer;
@@ -321,10 +332,8 @@ public class EntityFinalBoss extends EntityLiving {
             this.setMutexBits(7);
             this.boss = boss;
             this.savedPositions = new HashMap<>();
-            this.homingPositions = new HashMap<>();
-            this.particlePositions = new HashMap<>();
             this.explosionPositions = new HashMap<>();
-            this.active = true;
+            this.active = boss.phase<=1;
             this.attackTimer = -1;
             this.attackStartCounter = 1;
             this.attackFinishCounter = 1;
@@ -339,8 +348,7 @@ public class EntityFinalBoss extends EntityLiving {
 
         @Override
         public void startExecuting() {
-            this.boss.isShieldUp = true;
-            this.boss.updateShield(this.boss.getShieldUp());
+            this.boss.updateShield(true);
         }
 
         @Override
@@ -357,7 +365,8 @@ public class EntityFinalBoss extends EntityLiving {
                     this.savedPositions.put(this.attackStartCounter, new HashMap<>());
                     for (EntityPlayer player : this.boss.players) {
                         this.savedPositions.get(this.attackStartCounter).put(player, player.getPosition());
-                        this.particlePositions.put(player.getPosition(), "red");
+                        if(player instanceof EntityPlayerMP)
+                            PacketHandler.NETWORK.sendTo(new PacketRenderBossAttack.PacketRenderBossAttackMessage(player.getPosition(),0,4),(EntityPlayerMP) player);
                     }
                     this.attackStartCounter++;
                 }
@@ -365,7 +374,6 @@ public class EntityFinalBoss extends EntityLiving {
                     for (EntityPlayer player : this.savedPositions.get(this.attackFinishCounter).keySet()) {
                         this.boss.areaAttackSmall(player, this.savedPositions.get(this.attackFinishCounter).get(player));
                         this.explosionPositions.put(this.savedPositions.get(this.attackFinishCounter).get(player), 5);
-                        this.particlePositions.remove(this.savedPositions.get(this.attackFinishCounter).get(player));
                     }
                     this.attackFinishCounter++;
                 }
@@ -377,44 +385,29 @@ public class EntityFinalBoss extends EntityLiving {
                     this.attackTimer = -1;
                     attackLoop++;
                 }
-            } else if (this.homingPositions.isEmpty() || this.homingPositions.keySet().size()!=this.boss.players.size()) {
+            }
+            else {
                 for (EntityPlayer player : this.boss.players) {
-                    if(!this.homingPositions.containsKey(player)) {
-                        BlockPos.MutableBlockPos spawn = new BlockPos.MutableBlockPos((int) this.boss.posX, (int) this.boss.posY + 8, (int) this.boss.posZ);
-                        this.homingPositions.put(player, spawn);
-                    }
+                    player.sendMessage(new TextComponentString("spawning new homing thing"));
+                    HomingProjectile projectile = new HomingProjectile(this.boss.world);
+                    this.boss.world.spawnEntity(projectile);
+                    projectile.setPositionAndUpdate(this.boss.posX, this.boss.posY + 8, this.boss.posZ);
+                    this.boss.teleportOtherEntityForcefield(projectile);
+                    projectile.setUpdate(player,this.boss,1);
+                    this.boss.projectiles.add(projectile);
                 }
                 this.attackLoop = 1;
             }
-            List<EntityPlayer> toRemove = new ArrayList<>();
-            for (EntityPlayer player : this.homingPositions.keySet()) {
-                this.homingPositions.get(player).setPos(((player.posX - this.homingPositions.get(player).getX()) / 10), ((player.posY - this.homingPositions.get(player).getY()) / 10), ((player.posZ - this.homingPositions.get(player).getZ()) / 10));
-                if (this.boss.isEntityCloseEnough(player, this.homingPositions.get(player), 2)) {
-                    this.explosionPositions.put(this.homingPositions.get(player),5);
-                    this.particlePositions.remove(this.homingPositions.get(player));
-                    this.boss.subtractPlayerHealth(player,10d);
-                    toRemove.add(player);
-                }
-                else if (this.boss.isEntityCloseEnough(this.boss, this.homingPositions.get(player), 4)) {
-                    this.explosionPositions.put(this.homingPositions.get(player),5);
-                    this.particlePositions.remove(this.homingPositions.get(player));
-                    toRemove.add(player);
-                    this.active = false;
-                    this.boss.isShieldUp = false;
-                    this.boss.updateShield(this.boss.getShieldUp());
-                    this.boss.invulnerable = false;
-                    this.boss.world.playSound(this.boss.posX, this.boss.posY, this.boss.posZ, SoundEvents.ENTITY_WITHER_SPAWN, SoundCategory.MASTER, 1.0F, 1.0F, false);
-                }
-                else this.particlePositions.put(this.homingPositions.get(player),"white");
-            }
-            for(EntityPlayer player : toRemove) this.homingPositions.remove(player);
-            for (BlockPos.MutableBlockPos pos : this.homingPositions.values()) particlePositions.put(pos, "white");
-            for (BlockPos pos : this.particlePositions.keySet())
-                world.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, pos.getX(), pos.getY(), pos.getZ(), 0.0d, 0.0d, 0.0d);
-                //world.createExplosion(null, pos.getX(), pos.getY(), pos.getZ(), 1, false);
+            for(HomingProjectile projectile : this.boss.projectiles) if(!projectile.updateBlocked) projectile.updateCustom();
             for (BlockPos pos : this.explosionPositions.keySet())
                 world.createExplosion(null, pos.getX(), pos.getY(), pos.getZ(), explosionPositions.get(pos), true);
             this.explosionPositions.clear();
+            if(this.boss.phase>1) {
+                this.boss.updateShield(false);
+                this.boss.invulnerable = false;
+                this.active = false;
+                this.boss.world.playSound(this.boss.posX,this.boss.posY,this.boss.posZ,SoundEvents.ENTITY_WITHER_SPAWN,SoundCategory.MASTER,1f,1f,false);
+            }
         }
     }
 }

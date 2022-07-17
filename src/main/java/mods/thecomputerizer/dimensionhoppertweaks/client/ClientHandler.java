@@ -2,8 +2,10 @@ package mods.thecomputerizer.dimensionhoppertweaks.client;
 
 import mods.thecomputerizer.dimensionhoppertweaks.DimensionHopperTweaks;
 import mods.thecomputerizer.dimensionhoppertweaks.client.entity.render.RenderFinalBoss;
+import mods.thecomputerizer.dimensionhoppertweaks.client.entity.render.RenderHomingProjectile;
 import mods.thecomputerizer.dimensionhoppertweaks.common.objects.DimensionHopperItems;
 import mods.thecomputerizer.dimensionhoppertweaks.common.objects.entity.EntityFinalBoss;
+import mods.thecomputerizer.dimensionhoppertweaks.common.objects.entity.HomingProjectile;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
@@ -39,6 +41,7 @@ public final class ClientHandler {
 
     private static void registerEntityRenderers() {
         RenderingRegistry.registerEntityRenderingHandler(EntityFinalBoss.class, RenderFinalBoss::new);
+        RenderingRegistry.registerEntityRenderingHandler(HomingProjectile.class, RenderHomingProjectile::new);
         try {
             forcefieldModel = (OBJModel) OBJLoader.INSTANCE.loadModel(new ModelResourceLocation("dimensionhoppertweaks:models/forcefield.obj"));
         } catch (Exception e) {

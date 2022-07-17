@@ -1,29 +1,13 @@
 package mods.thecomputerizer.dimensionhoppertweaks.client.entity.render;
 
-import codechicken.lib.colour.ColourRGBA;
-import codechicken.lib.texture.TextureUtils;
-import codechicken.lib.util.TransformUtils;
 import mods.thecomputerizer.dimensionhoppertweaks.DimensionHopperTweaks;
 import mods.thecomputerizer.dimensionhoppertweaks.common.objects.entity.EntityFinalBoss;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.entity.RenderBiped;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3i;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.client.model.obj.OBJLoader;
-import net.minecraftforge.client.model.obj.OBJModel;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 
 public class RenderFinalBoss extends RenderBiped<EntityFinalBoss>
 {
