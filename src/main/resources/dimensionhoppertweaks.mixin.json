@@ -5,12 +5,7 @@
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MixinGCTileEntityFluidPipe",
-    "MixinGCTileEntityMethaneSynthesizer",
-    "MixinMusicPicker",
-    "MixinTileEntityElectrolyzer",
-    "MixinTileEntityGasLiquefier",
-    "MixinTileEntityOxygen"
+    "MixinMusicPicker"
   ],
   "client": []
 }

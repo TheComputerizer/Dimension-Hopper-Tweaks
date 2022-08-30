@@ -1,0 +1,6 @@
+{
+  "boss.static": { "sounds": [ "dimensionhoppertweaks:boss/static" ] },
+  "boss.test_music": { "sounds": [{
+    "name": "dimensionhoppertweaks:boss/test_music",
+    "stream": true}] }
+}

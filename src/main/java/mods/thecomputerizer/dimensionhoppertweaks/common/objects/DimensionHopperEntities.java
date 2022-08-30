@@ -2,6 +2,7 @@ package mods.thecomputerizer.dimensionhoppertweaks.common.objects;
 
 import mods.thecomputerizer.dimensionhoppertweaks.DimensionHopperTweaks;
 import mods.thecomputerizer.dimensionhoppertweaks.common.objects.entity.EntityFinalBoss;
+import mods.thecomputerizer.dimensionhoppertweaks.common.objects.entity.HomingProjectile;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
@@ -19,6 +20,7 @@ public final class DimensionHopperEntities {
     @SubscribeEvent
     public static void registerEntities(RegistryEvent.Register<EntityEntry> entities) {
         registerEntity("dimension_hopper_final_boss", EntityFinalBoss.class, 100, 0x0, 0x0);
+        registerEntity("homing_projectile", HomingProjectile.class, 100, 0x0, 0x0);
     }
 
     private static void registerEntity(String name, Class <? extends Entity> entity, int trackingRange, int spawnEggFirstColor, int spawnEggSecondColor) {

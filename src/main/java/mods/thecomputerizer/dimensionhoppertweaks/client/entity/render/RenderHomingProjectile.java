@@ -13,7 +13,6 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -34,7 +33,6 @@ public class RenderHomingProjectile extends Render<HomingProjectile> {
 
     @Override
     public void doRender(HomingProjectile entity, double x, double y, double z, float entityYaw, float partialTicks) {
-        DimensionHopperTweaks.LOGGER.info("Rendering projectile");
         OBJModel.OBJBakedModel bakedForceField = (OBJModel.OBJBakedModel) ClientHandler.forcefieldModel.bake(TransformUtils.DEFAULT_BLOCK, DefaultVertexFormats.BLOCK, TextureUtils.bakedTextureGetter);
         GlStateManager.disableCull();
         GlStateManager.disableAlpha();
@@ -55,8 +53,8 @@ public class RenderHomingProjectile extends Render<HomingProjectile> {
 
         GlStateManager.translate(translationX, translationY + 1.1, translationZ);
         this.bindEntityTexture(entity);
-        GlStateManager.scale(2f, 2f, 2f);
-        GlStateManager.color(0.9F, 0.5F, 0.1F, 0.1F);
+        GlStateManager.scale(0.5f, 0.5f, 0.5f);
+        GlStateManager.color(1F, 1F, 1F, 0.25F);
         renderOBJ(bakedForceField.getQuads(null, null, 0), new ColourRGBA(0.9F, 0.5F, 0.1F, 0.1F).argb());
 
         GlStateManager.enableCull();
