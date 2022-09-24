@@ -87,6 +87,10 @@ public class EntityFinalBoss extends EntityLiving {
         this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(1.0D);
     }
 
+    public void startMusic() {
+        Minecraft.getMinecraft().getSoundHandler().playSound(new BossMusic(this));
+    }
+
     @Override
     public float getEyeHeight() {
         return 1.875F;
@@ -194,8 +198,7 @@ public class EntityFinalBoss extends EntityLiving {
 
     public void setPhaseFourComplete() {
         if(this.phase==4) this.phase++;
-        if(getHeldItemMainhand().getItem() instanceof RealitySlasher)
-            entityDropItem(getHeldItemMainhand(),0f);
+        entityDropItem(getHeldItemMainhand(),0f);
         this.updateShield(true);
         this.setInvulnerable(true);
         this.world.playBroadcastSound(SoundEvent.REGISTRY.getIDForObject(SoundEvents.ENTITY_WITHER_SPAWN), this.getPosition(),0);
@@ -255,7 +258,7 @@ public class EntityFinalBoss extends EntityLiving {
 
     public void teleportForcefield() {
         for (EntityPlayer p : this.players) {
-            if(this.phase==5 && !(p.getHeldItemMainhand().getItem() instanceof RealitySlasher)) {
+            if(!(this.phase==5 && p.getHeldItemMainhand().getItem() instanceof RealitySlasher)) {
                 if (isEntityCloseEnough(p, (int) this.posX, (int) this.posY, (int) this.posZ, 8)) {
                     double x = this.posX + (-32 + (this.rand.nextDouble()) * 64.0D);
                     double y = this.posY + (-4 + (this.rand.nextDouble()) * 8.0D);
@@ -315,7 +318,6 @@ public class EntityFinalBoss extends EntityLiving {
         NBTTagCompound compound1 = compound.getCompoundTag("DimensionHopperBoss_PlayerHealth");
         for(int i=1;i<size;i++) this.savedPlayerHealth.put(compound1.getString("PlayerHealth_UUID_"+i),compound1.getDouble("PlayerHealth_Health_"+i));
         this.setCustomNameTag(this.getObfuscatedNameProgress());
-        Minecraft.getMinecraft().getSoundHandler().playSound(new BossMusic(this));
     }
 
     @Override

@@ -1,6 +1,5 @@
 package mods.thecomputerizer.dimensionhoppertweaks.common.commands;
 
-import mods.thecomputerizer.dimensionhoppertweaks.util.TeleporterGeneric;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -24,13 +23,11 @@ public class RandomTP extends CommandBase {
         return "dimrandomtp";
     }
 
-    public int getRequiredPermissionLevel()
-    {
+    public int getRequiredPermissionLevel() {
         return 2;
     }
 
-    public String getUsage(ICommandSender sender)
-    {
+    public String getUsage(ICommandSender sender) {
         return "Random TP initiated";
     }
 
@@ -75,8 +72,7 @@ public class RandomTP extends CommandBase {
         else notifyCommandListener(sender, this, "Please whitelist some biomes");
     }
 
-    public boolean isUsernameIndex(String[] args, int index)
-    {
+    public boolean isUsernameIndex(String[] args, int index) {
         return index == 0;
     }
 

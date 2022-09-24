@@ -18,6 +18,7 @@ public class PhaseOne extends EntityAIBase {
     private final HashMap<Integer, HashMap<EntityPlayer, BlockPos>> savedPositions;
     private boolean active;
     private int attackTimer;
+    private int executeAttackTimer;
     private int attackStartCounter;
     private int attackFinishCounter;
     private boolean teleported;
@@ -29,7 +30,8 @@ public class PhaseOne extends EntityAIBase {
         this.world = boss.getEntityWorld();
         this.savedPositions = new HashMap<>();
         this.active = boss.phase<=1;
-        this.attackTimer = -1;
+        this.attackTimer = 0;
+        this.executeAttackTimer = -35;
         this.attackStartCounter = 1;
         this.attackFinishCounter = 1;
         this.teleported = false;
@@ -57,6 +59,7 @@ public class PhaseOne extends EntityAIBase {
         if(this.active) {
             if (this.attackLoop <= 3) {
                 this.attackTimer++;
+                this.executeAttackTimer++;
                 if (this.attackTimer % 20 == 0 && this.attackStartCounter <= 3) {
                     this.teleported = false;
                     this.savedPositions.put(this.attackStartCounter, new HashMap<>());
@@ -67,7 +70,7 @@ public class PhaseOne extends EntityAIBase {
                     }
                     this.attackStartCounter++;
                 }
-                if (this.attackTimer - 20 >= 0 && (this.attackTimer - 20) % 30 == 0 && this.attackFinishCounter <= 3) {
+                if (this.executeAttackTimer>0 && executeAttackTimer % 20 == 0 && this.attackFinishCounter <= 3) {
                     for (EntityPlayer player : this.savedPositions.get(this.attackFinishCounter).keySet())
                         this.boss.areaAttackSmall(player, this.savedPositions.get(this.attackFinishCounter).get(player), 1);
                     this.attackFinishCounter++;
@@ -77,7 +80,8 @@ public class PhaseOne extends EntityAIBase {
                     this.teleported = true;
                     this.attackStartCounter = 1;
                     this.attackFinishCounter = 1;
-                    this.attackTimer = -1;
+                    this.attackTimer = 0;
+                    this.executeAttackTimer = -35;
                     attackLoop++;
                 }
             } else {

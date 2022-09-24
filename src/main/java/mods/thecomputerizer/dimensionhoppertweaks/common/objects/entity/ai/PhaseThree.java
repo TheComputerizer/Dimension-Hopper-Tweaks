@@ -67,7 +67,7 @@ public class PhaseThree extends EntityAIBase {
                     }
                     this.attackStartCounter++;
                 }
-                if (this.attackTimer - 15 >= 0 && (this.attackTimer - 15) % 25 == 0 && this.attackFinishCounter <= 5) {
+                if (this.attackTimer - 20 >= 0 && (this.attackTimer - 20) % 25 == 0 && this.attackFinishCounter <= 5) {
                     for (EntityPlayer player : this.savedPositions.get(this.attackFinishCounter).keySet())
                         this.boss.areaAttackSmall(player, this.savedPositions.get(this.attackFinishCounter).get(player), 3);
                     this.attackFinishCounter++;

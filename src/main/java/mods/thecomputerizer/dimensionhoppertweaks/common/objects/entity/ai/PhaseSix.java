@@ -34,7 +34,10 @@ public class PhaseSix extends EntityAIBase {
         this.active = boss.phase<=6;
         if(this.active) {
             //TODO modified beam attack
-            if (this.boss.phase > 6) this.active = false;
+            if(boss.getHealthPercentage()<=0.25f) {
+                this.boss.setPhaseSixComplete();
+                this.active = false;
+            }
         }
     }
 }

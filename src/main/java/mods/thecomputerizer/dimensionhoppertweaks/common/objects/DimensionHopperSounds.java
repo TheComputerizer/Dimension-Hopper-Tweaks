@@ -13,6 +13,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 public class DimensionHopperSounds {
     public static final SoundEvent SHORT_STATIC = makeSoundEvent("boss.static");
     public static final SoundEvent TEST_MUSIC = makeSoundEvent("boss.test_music");
+    public static final SoundEvent SPAWN = makeSoundEvent("boss.spawn");
 
     @SubscribeEvent
     public static void registerSoundEvents(RegistryEvent.Register<SoundEvent> event) {

@@ -2,6 +2,7 @@ package mods.thecomputerizer.dimensionhoppertweaks;
 
 import mods.thecomputerizer.dimensionhoppertweaks.client.ClientHandler;
 import mods.thecomputerizer.dimensionhoppertweaks.common.commands.RandomTP;
+import mods.thecomputerizer.dimensionhoppertweaks.common.commands.SummonBoss;
 import mods.thecomputerizer.dimensionhoppertweaks.util.PacketHandler;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -36,5 +37,6 @@ public class DimensionHopperTweaks
     @Mod.EventHandler
     public void start(FMLServerStartingEvent event) {
         event.registerServerCommand(new RandomTP());
+        event.registerServerCommand(new SummonBoss());
     }
 }

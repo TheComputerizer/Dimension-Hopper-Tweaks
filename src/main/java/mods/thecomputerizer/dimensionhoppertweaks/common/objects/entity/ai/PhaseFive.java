@@ -53,19 +53,17 @@ public class PhaseFive extends EntityAIBase {
         if(this.active) {
             this.boss.setVelocity(0,0,0);
             this.attackTimer++;
-            if (this.attackTimer % 15 == 0) {
-                double x = this.boss.posX + (-32 + (this.rand.nextDouble()) * 64.0D);
+            if (this.attackTimer % 10 == 0) {
+                double x = this.boss.posX + (-32 + (this.rand.nextDouble()) * 16.0D);
                 double y = this.boss.posY + (-4 + (this.rand.nextDouble()) * 8.0D);
-                double z = this.boss.posZ + (-32 + (this.rand.nextDouble()) * 64.0D);
-                this.savedPositions.put(this.attackTimer, new BlockPos(x,y,z));
+                double z = this.boss.posZ + (-32 + (this.rand.nextDouble()) * 16.0D);
+                this.savedPositions.put(this.attackStartCounter, new BlockPos(x,y,z));
+                this.attackStartCounter++;
             }
-            if (this.attackTimer - 15 >= 0 && (this.attackTimer - 15) % 20 == 0) {
+            if (this.attackTimer - 10 >= 0 && (this.attackTimer - 10) % 20 == 0) {
                 for (EntityPlayer player : this.boss.getTrackingPlayers())
-                    this.boss.areaAttackSmall(player, this.savedPositions.get(this.attackTimer - 15), 5);
-            }
-            if(boss.getHealthPercentage()<=0.25f) {
-                this.boss.setPhaseFourComplete();
-                this.active = false;
+                    this.boss.areaAttackSmall(player, this.savedPositions.get(this.attackFinishCounter), 5);
+                this.attackFinishCounter++;
             }
         }
     }
