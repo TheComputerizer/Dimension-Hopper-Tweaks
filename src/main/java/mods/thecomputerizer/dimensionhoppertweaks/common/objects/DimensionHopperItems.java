@@ -2,6 +2,7 @@ package mods.thecomputerizer.dimensionhoppertweaks.common.objects;
 
 import mods.thecomputerizer.dimensionhoppertweaks.DimensionHopperTweaks;
 import mods.thecomputerizer.dimensionhoppertweaks.common.objects.items.RealitySlasher;
+import mods.thecomputerizer.dimensionhoppertweaks.common.objects.items.SkillToken;
 import mods.thecomputerizer.dimensionhoppertweaks.common.objects.items.StargateAddresser;
 import mods.thecomputerizer.dimensionhoppertweaks.util.Util;
 import net.minecraft.creativetab.CreativeTabs;
@@ -19,6 +20,7 @@ import java.util.function.Supplier;
 public final class DimensionHopperItems {
     public static final Item STARGATE_ADDRESSER = Util.sneakyNull();
     public static final Item REALITY_SLASHER = Util.sneakyNull();
+    public static final Item SKILL_TOKEN = Util.sneakyNull();
 
     private DimensionHopperItems() {}
 
@@ -26,6 +28,7 @@ public final class DimensionHopperItems {
     public static void registerItems(RegistryEvent.Register<Item> event) {
         event.getRegistry().register(makeItem("stargate_addresser", StargateAddresser::new, item -> item.setCreativeTab(CreativeTabs.MISC)));
         event.getRegistry().register(makeItem("reality_slasher", RealitySlasher::new, item -> item.setCreativeTab(CreativeTabs.MISC)));
+        event.getRegistry().register(makeItem("skill_token", SkillToken::new, item -> item.setCreativeTab(CreativeTabs.MISC)));
     }
 
     private static Item makeItem(final String name, final Supplier<Item> constructor, final Consumer<Item> config) {

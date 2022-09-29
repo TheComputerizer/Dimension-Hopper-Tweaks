@@ -79,6 +79,7 @@ dependencies {
     implementation fg.deobf("curse.maven:industrial-craft-242638:3078604")
     implementation fg.deobf("curse.maven:music-triggers-518410:3796636")
     implementation fg.deobf("curse.maven:extra-utilities-225561:2678374")
+    implementation fg.deobf("curse.maven:reskillable-286382:2815686")
 
     implementation fg.deobf("zone.rong:mixinbooter:4.2")
 

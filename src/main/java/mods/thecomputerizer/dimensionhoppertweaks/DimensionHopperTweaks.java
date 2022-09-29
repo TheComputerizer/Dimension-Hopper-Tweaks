@@ -3,8 +3,12 @@ package mods.thecomputerizer.dimensionhoppertweaks;
 import mods.thecomputerizer.dimensionhoppertweaks.client.ClientHandler;
 import mods.thecomputerizer.dimensionhoppertweaks.common.commands.RandomTP;
 import mods.thecomputerizer.dimensionhoppertweaks.common.commands.SummonBoss;
+import mods.thecomputerizer.dimensionhoppertweaks.common.skills.ISkillCapability;
+import mods.thecomputerizer.dimensionhoppertweaks.common.skills.SkillCapability;
+import mods.thecomputerizer.dimensionhoppertweaks.common.skills.SkillCapabilityStorage;
 import mods.thecomputerizer.dimensionhoppertweaks.util.PacketHandler;
 import net.minecraftforge.client.model.obj.OBJLoader;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -28,6 +32,7 @@ public class DimensionHopperTweaks
     public static void preInit(FMLPreInitializationEvent event) {
         LOGGER = LogManager.getLogger();
         PacketHandler.registerPackets();
+        CapabilityManager.INSTANCE.register(ISkillCapability.class, new SkillCapabilityStorage(), SkillCapability::new);
         if (FMLCommonHandler.instance().getSide().isClient()) {
             OBJLoader.INSTANCE.addDomain(DimensionHopperTweaks.MODID);
             ClientHandler.registerRenderers();

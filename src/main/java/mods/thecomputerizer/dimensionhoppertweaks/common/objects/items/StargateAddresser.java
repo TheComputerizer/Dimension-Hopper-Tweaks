@@ -19,7 +19,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraft.init.Items;
 
-public class StargateAddresser extends Item {
+public class StargateAddresser extends EpicItem {
     public ITextComponent text;
     public Stargate gate = new Stargate();
     public int id = 0;
