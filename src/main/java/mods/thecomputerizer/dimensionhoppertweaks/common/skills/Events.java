@@ -9,12 +9,14 @@ import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.AdvancementEvent;
 import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
 import net.minecraftforge.event.entity.player.UseHoeEvent;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -37,35 +39,58 @@ public class Events {
     }
 
     @SuppressWarnings("ConstantConditions")
-    private static SkillCapability getCapability(EntityPlayer player) {
-        return (SkillCapability) player.getCapability(SkillCapabilityProvider.SKILL_CAPABILITY,null);
+    public static ISkillCapability getSkillCapability(EntityPlayer player) {
+        return player.getCapability(SkillCapabilityProvider.SKILL_CAPABILITY,null);
     }
 
-    private static void updateTokens(EntityPlayer player) {
+    public static void updateTokenDrainValues(String skill, int levels, EntityPlayerMP player) {
+        getSkillCapability(player).setDrainSelection(skill,levels);
+        updateTokens(player);
+    }
+
+    public static void updateTokens(EntityPlayer player) {
         for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
             ItemStack stack = player.inventory.getStackInSlot(i);
             if(stack.getItem() instanceof SkillToken) {
-                ((SkillToken)stack.getItem()).updateSkills(stack,getCapability(player).getCurrentValues());
+                SkillToken token = (SkillToken) stack.getItem();
+                ISkillCapability cap = getSkillCapability(player);
+                token.updateSkills(stack, cap.getCurrentValues(),cap.getDrainSelection(),cap.getDrainLevels());
             }
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onCommand(CommandEvent event) {
+        if(!event.getSender().getEntityWorld().isRemote) {
+            if (event.getException() != null && (event.getCommand().getName().contains("skill") || event.getCommand().getName().contains("resetall"))) {
+                for(EntityPlayerMP player : FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers())
+                    getSkillCapability(player).syncSkills(player);
+            }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void playerJoin(PlayerEvent.PlayerLoggedInEvent event) {
+        if(event.player instanceof EntityPlayerMP)
+            getSkillCapability(event.player).syncSkills((EntityPlayerMP)event.player);
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void playerTick(TickEvent.PlayerTickEvent event) {
         if(event.side==Side.SERVER && event.phase==TickEvent.Phase.END) {
             EntityPlayerMP player = (EntityPlayerMP)event.player;
-            if(player.isSprinting() && getCapability(player).checkTick()) {
-                getCapability(player).addAgilityXP(getCapability(player).getSkillXpMultiplier(1f),player);
+            if(player.isSprinting() && getSkillCapability(player).checkTick()) {
+                getSkillCapability(player).addSkillXP("agility",getSkillCapability(player).getSkillXpMultiplier(1f),player);
                 updateTokens(player);
             }
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void pickUpItem(PlayerEvent.ItemPickupEvent event) {
         if(event.player instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP)event.player;
-            getCapability(player).addGatheringXP(getCapability(player).getSkillXpMultiplier(1f), player);
+            getSkillCapability(player).addSkillXP("gathering",getSkillCapability(player).getSkillXpMultiplier(1f), player);
             updateTokens(player);
         }
     }
@@ -74,26 +99,26 @@ public class Events {
     public static void breakSpeed(net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed event) {
         if(event.getEntityPlayer() instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP)event.getEntityPlayer();
-            event.setNewSpeed(event.getOriginalSpeed()*(1f+getCapability(player).getBreakSpeedMultiplier()));
+            event.setNewSpeed(event.getOriginalSpeed()*(1f+getSkillCapability(player).getBreakSpeedMultiplier()));
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void blockBreak(BlockEvent.BreakEvent event) {
         if(!event.getWorld().isRemote && event.getPlayer() instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP)event.getPlayer();
             if(player.getHeldItemMainhand().getItem() instanceof ItemPickaxe) {
-                getCapability(player).addMiningXP(getCapability(player).getSkillXpMultiplier(1f), player);
+                getSkillCapability(player).addSkillXP("mining",getSkillCapability(player).getSkillXpMultiplier(1f), player);
                 updateTokens(player);
             }
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void blockPlace(BlockEvent.PlaceEvent event) {
         if(!event.getWorld().isRemote && event.getPlayer() instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP)event.getPlayer();
-            getCapability(player).addBuildingXP(getCapability(player).getSkillXpMultiplier(1f),player);
+            getSkillCapability(player).addSkillXP("building",getSkillCapability(player).getSkillXpMultiplier(1f),player);
             updateTokens(player);
         }
     }
@@ -103,23 +128,23 @@ public class Events {
         if(!event.getEntityLiving().world.isRemote) {
             if (event.getEntityLiving() instanceof EntityPlayerMP) {
                 EntityPlayerMP player = (EntityPlayerMP) event.getEntityLiving();
-                event.setAmount(Math.max(0f,event.getAmount()-getCapability(player).getDamageReduction()));
-                getCapability(player).addDefenseXP(getCapability(player).getSkillXpMultiplier(Math.max(0f,(event.getAmount() / 2f))), player);
+                event.setAmount(Math.max(0f,event.getAmount()-getSkillCapability(player).getDamageReduction()));
+                getSkillCapability(player).addSkillXP("defense",getSkillCapability(player).getSkillXpMultiplier(Math.max(0f,(event.getAmount() / 2f))), player);
                 updateTokens(player);
             } else if (!(event.getEntityLiving() instanceof EntityPlayer) && event.getSource().getTrueSource() instanceof EntityPlayerMP) {
                 EntityPlayerMP player = (EntityPlayerMP) event.getSource().getTrueSource();
-                event.setAmount(event.getAmount()+getCapability(player).getDamageMultiplier());
-                getCapability(player).addAttackXP(getCapability(player).getSkillXpMultiplier(Math.max(0f,(event.getAmount() / 2f))), player);
+                event.setAmount(event.getAmount()+getSkillCapability(player).getDamageMultiplier());
+                getSkillCapability(player).addSkillXP("attack",getSkillCapability(player).getSkillXpMultiplier(Math.max(0f,(event.getAmount() / 2f))), player);
                 updateTokens(player);
             }
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onJump(LivingEvent.LivingJumpEvent event) {
         if(event.getEntityLiving() instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP)event.getEntityLiving();
-            getCapability(player).addAgilityXP(getCapability(player).getSkillXpMultiplier(2f),player);
+            getSkillCapability(player).addSkillXP("agility",getSkillCapability(player).getSkillXpMultiplier(2f),player);
             updateTokens(player);
         }
     }
@@ -129,35 +154,35 @@ public class Events {
         if(!event.getWorld().isRemote && event.getEntityPlayer() instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP)event.getEntityPlayer();
             if(event.getResult()==Event.Result.ALLOW)  {
-                getCapability(player).addFarmingXP(getCapability(player).getSkillXpMultiplier(3f),player);
+                getSkillCapability(player).addSkillXP("farming",getSkillCapability(player).getSkillXpMultiplier(3f),player);
                 updateTokens(player);
             }
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void pickupXP(PlayerPickupXpEvent event) {
         if(event.getEntityPlayer() instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP)event.getEntityPlayer();
-            getCapability(player).addMagicXP(getCapability(player).getSkillXpMultiplier(1f),player);
+            getSkillCapability(player).addSkillXP("magic",getSkillCapability(player).getSkillXpMultiplier(1f),player);
             updateTokens(player);
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onChangedDimensions(PlayerEvent.PlayerChangedDimensionEvent event) {
         if(event.player instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP)event.player;
-            getCapability(player).addVoidXP(getCapability(player).getSkillXpMultiplier(5f),player);
+            getSkillCapability(player).addSkillXP("void",getSkillCapability(player).getSkillXpMultiplier(5f),player);
             updateTokens(player);
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onAdvancement(AdvancementEvent event) {
         if(event.getEntityPlayer() instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP)event.getEntityPlayer();
-            getCapability(player).addResearchXP(getCapability(player).getSkillXpMultiplier(5f),player);
+            getSkillCapability(player).addSkillXP("research",getSkillCapability(player).getSkillXpMultiplier(5f),player);
             updateTokens(player);
         }
     }

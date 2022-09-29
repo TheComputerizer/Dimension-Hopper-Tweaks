@@ -1,8 +1,8 @@
 package mods.thecomputerizer.dimensionhoppertweaks.common.commands;
 
 import mods.thecomputerizer.dimensionhoppertweaks.common.CommonEvents;
-import mods.thecomputerizer.dimensionhoppertweaks.util.PacketHandler;
-import mods.thecomputerizer.dimensionhoppertweaks.util.packets.PacketRenderBossAttack;
+import mods.thecomputerizer.dimensionhoppertweaks.network.PacketHandler;
+import mods.thecomputerizer.dimensionhoppertweaks.network.packets.PacketRenderBossAttack;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;

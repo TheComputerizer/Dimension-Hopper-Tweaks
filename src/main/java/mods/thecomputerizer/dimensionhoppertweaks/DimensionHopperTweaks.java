@@ -6,7 +6,7 @@ import mods.thecomputerizer.dimensionhoppertweaks.common.commands.SummonBoss;
 import mods.thecomputerizer.dimensionhoppertweaks.common.skills.ISkillCapability;
 import mods.thecomputerizer.dimensionhoppertweaks.common.skills.SkillCapability;
 import mods.thecomputerizer.dimensionhoppertweaks.common.skills.SkillCapabilityStorage;
-import mods.thecomputerizer.dimensionhoppertweaks.util.PacketHandler;
+import mods.thecomputerizer.dimensionhoppertweaks.network.PacketHandler;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;

@@ -1,4 +1,4 @@
-package mods.thecomputerizer.dimensionhoppertweaks.util.packets;
+package mods.thecomputerizer.dimensionhoppertweaks.network.packets;
 
 import io.netty.buffer.ByteBuf;
 import mods.thecomputerizer.dimensionhoppertweaks.client.entity.render.RenderEvents;

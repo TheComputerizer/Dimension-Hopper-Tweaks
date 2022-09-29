@@ -2,8 +2,8 @@ package mods.thecomputerizer.dimensionhoppertweaks.common.objects.entity.ai;
 
 import mods.thecomputerizer.dimensionhoppertweaks.common.objects.entity.EntityFinalBoss;
 import mods.thecomputerizer.dimensionhoppertweaks.common.objects.entity.HomingProjectile;
-import mods.thecomputerizer.dimensionhoppertweaks.util.PacketHandler;
-import mods.thecomputerizer.dimensionhoppertweaks.util.packets.PacketRenderBossAttack;
+import mods.thecomputerizer.dimensionhoppertweaks.network.PacketHandler;
+import mods.thecomputerizer.dimensionhoppertweaks.network.packets.PacketRenderBossAttack;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;

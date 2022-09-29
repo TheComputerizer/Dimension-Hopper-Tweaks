@@ -1,11 +1,23 @@
 package mods.thecomputerizer.dimensionhoppertweaks.common.objects.items;
 
 import mods.thecomputerizer.dimensionhoppertweaks.DimensionHopperTweaks;
+import mods.thecomputerizer.dimensionhoppertweaks.common.skills.Events;
+import mods.thecomputerizer.dimensionhoppertweaks.common.skills.SkillCapabilityStorage;
+import mods.thecomputerizer.dimensionhoppertweaks.common.skills.SkillWrapper;
+import mods.thecomputerizer.dimensionhoppertweaks.network.PacketHandler;
+import mods.thecomputerizer.dimensionhoppertweaks.network.gui.GuiType;
+import mods.thecomputerizer.dimensionhoppertweaks.network.gui.TokenExchangeConstructor;
+import mods.thecomputerizer.dimensionhoppertweaks.network.packets.PacketOpenGui;
 import mods.thecomputerizer.dimensionhoppertweaks.util.ItemUtil;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -13,7 +25,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class SkillToken extends EpicItem {
 
@@ -25,32 +40,58 @@ public class SkillToken extends EpicItem {
     private static final String BOLD = ""+TextFormatting.ITALIC;
     private static final String RESET = ""+TextFormatting.RESET;
 
-    public void updateSkills(ItemStack stack, int[] values) {
+    public void updateDrainStatus(ItemStack stack, String selectedSkill, int levels) {
         NBTTagCompound tag = getTag(stack);
-        tag.setInteger("mining_xp",values[0]);
-        tag.setInteger("gathering_xp",values[1]);
-        tag.setInteger("attack_xp",values[2]);
-        tag.setInteger("defense_xp",values[3]);
-        tag.setInteger("building_xp",values[4]);
-        tag.setInteger("agility_xp",values[5]);
-        tag.setInteger("farming_xp",values[6]);
-        tag.setInteger("magic_xp",values[7]);
-        tag.setInteger("void_xp",values[8]);
-        tag.setInteger("research_xp",values[9]);
-        tag.setInteger("mining_max",values[10]);
-        tag.setInteger("gathering_max",values[11]);
-        tag.setInteger("attack_max",values[12]);
-        tag.setInteger("defense_max",values[13]);
-        tag.setInteger("building_max",values[14]);
-        tag.setInteger("agility_max",values[15]);
-        tag.setInteger("farming_max",values[16]);
-        tag.setInteger("magic_max",values[17]);
-        tag.setInteger("void_max",values[18]);
-        tag.setInteger("research_max",values[19]);
-        if(tag.hasKey("drain_selection")) {
-            tag.setString("drain_selection","mining");
-            tag.setInteger("drain_amount",1);
+        tag.setString("drain_selection",selectedSkill);
+        tag.setInteger("drain_amount",levels);
+    }
+
+    public void updateSkills(ItemStack stack, Set<Map.Entry<String, SkillWrapper>> skillSet, String selectedSkill, int drainLevels) {
+        NBTTagCompound tag = getTag(stack);
+        for(Map.Entry<String, SkillWrapper> entry : skillSet) {
+            tag.setInteger(entry.getKey()+"_xp",entry.getValue().getXP());
+            tag.setInteger(entry.getKey()+"_level",entry.getValue().getLevel());
         }
+        tag.setString("drain_selection",selectedSkill);
+        tag.setInteger("drain_amount",drainLevels);
+    }
+
+    @Override
+    @Nonnull
+    public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, @Nonnull EntityPlayer playerIn, @Nonnull EnumHand hand) {
+        if(playerIn instanceof EntityPlayerMP) {
+            EntityPlayerMP player = (EntityPlayerMP)playerIn;
+            ItemStack stack = player.getHeldItem(hand);
+            checkAndUpdate(player, stack, "drain_selection");
+            NBTTagCompound tag = getTag(stack);
+            if(player.isSneaking()) {
+                PacketHandler.NETWORK.sendTo(new PacketOpenGui.PacketOpenGuiMessage(GuiType.TOKEN_EXCHANGE,
+                        new TokenExchangeConstructor(SkillCapabilityStorage.SKILLS, tag.getString("drain_selection"),
+                                tag.getInteger("drain_amount"))), player);
+                return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+            } else if(player.experienceLevel>=tag.getInteger("drain_amount")) {
+                for(int i=0;i<tag.getInteger("drain_amount");i++) {
+                    Events.getSkillCapability(player).addSkillXP(tag.getString("drain_selection"),
+                            (int)(convertXPToSP(player.experienceLevel)*Events.getSkillCapability(player).getXPDumpMultiplier()),
+                            player);
+                }
+                Events.updateTokens(player);
+                return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+            } else return super.onItemRightClick(world, player, hand);
+        } else return super.onItemRightClick(world, playerIn, hand);
+    }
+
+    //XP calculations are fun...
+    private int convertXPToSP(int level) {
+        if (level <= 16)
+            return (int)((((Math.pow(level,2)+(6*level)))/1.5d)-(((Math.pow((level-1),2)+(6*(level-1))))/1.5d));
+        else if (level <= 31)
+            return (int)((((Math.pow(level,2)*2.5-(40.5*level+360)))/1.5d)-(((Math.pow((level-1),2)*2.5-(40.5*(level-1)+360)))/1.5d));
+        return (int)((((Math.pow(level,2)*4.5-(162.5*level+2220)))/1.5d)-(((Math.pow((level-1),2)*4.5-(162.5*(level-1)+2220)))/1.5d));
+    }
+
+    private void checkAndUpdate(EntityPlayer player, ItemStack stack, String data) {
+        if(!getTag(stack).hasKey(data)) Events.updateTokens(player);
     }
 
     @Override
@@ -66,7 +107,7 @@ public class SkillToken extends EpicItem {
         tooltip.add(getFormattedSkillLine(stack,"magic"));
         tooltip.add(getFormattedSkillLine(stack,"void"));
         tooltip.add(getFormattedSkillLine(stack,"research"));
-        if(flag.isAdvanced() && ItemUtil.getOrCreateTag(stack).hasKey("drain_selection"))
+        if(flag.isAdvanced() && getTag(stack).hasKey("drain_selection"))
             tooltip.add(""+TextFormatting.ITALIC+TextFormatting.GRAY+
                     getDrainingTranslation(getTag(stack).getInteger("drain_amount"),
                             getTag(stack).getString("drain_selection")));
@@ -82,8 +123,8 @@ public class SkillToken extends EpicItem {
                 point_color = RED;
             }
             int currentPoints = nbt.getInteger(skill+"_xp");
-            int neededPoints = nbt.getInteger(skill+"_max");
-            int currentLevel = neededPoints/100;
+            int currentLevel = nbt.getInteger(skill+"_level");
+            int neededPoints = currentLevel*100;
             return skill_color+BOLD+getSkillTranslation(skill)+"["+currentLevel+"->"+currentLevel+1+"]: "+RESET+point_color+currentPoints+"/"+neededPoints;
         } return ITALICS+BOLD+getNotSyncedTranslation(skill);
     }
