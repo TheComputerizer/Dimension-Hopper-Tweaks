@@ -56,8 +56,8 @@ public class DropDownMenu extends GuiButtonExt {
             for(int i=0;i<this.menuElements.size();i++) {
                 String element = this.menuElements.get(i);
                 this.drawCenteredString(mc.fontRenderer,element,this.x,yPos,checkAndSetHoverColor(color,i));
+                yPos+=this.height;
             }
-
         }
     }
 }
