@@ -27,14 +27,23 @@ public class DropDownMenu extends GuiButtonExt {
         this.setMenu(!this.menuShowing);
     }
 
+    public boolean checkForMenuUnderMouse(int mouseX, int mouseY) {
+        return mouseX>=this.x && mouseX<=this.x+this.width && mouseY>=this.y+height && mouseY<=this.y+(height*this.menuElements.size());
+    }
+
     private void setHoverIndex(int mouseX, int mouseY) {
         if(this.menuShowing) {
-            if(mouseX>=this.x && mouseX<=this.x+this.width && mouseY>=this.y+height && mouseY<=this.y+(height*this.menuElements.size())) {
+            if(checkForMenuUnderMouse(mouseX, mouseY)) {
                 int menuHeight = this.y+(height*this.menuElements.size())-this.y+height;
                 int adjustedMouseHeight = mouseY-this.y+height;
                 this.hoverIndex = (int)(((double)menuHeight/(double)adjustedMouseHeight)*(double)this.menuElements.size());
             } else this.hoverIndex = -1;
         } else this.hoverIndex = -1;
+    }
+
+    private int checkAndSetHoverColor(int initialColor, int hoverIndex) {
+        if(this.hoverIndex==hoverIndex) return 16777120;
+        return initialColor;
     }
 
     @Override
@@ -44,9 +53,9 @@ public class DropDownMenu extends GuiButtonExt {
             int yPos = this.y+this.height;
             int color = 14737632;
             if (packedFGColour != 0) color = packedFGColour;
-            else if (this.hovered) color = 16777120;
-            for(String element : this.menuElements) {
-                this.drawCenteredString(mc.fontRenderer,element,this.x,yPos,color);
+            for(int i=0;i<this.menuElements.size();i++) {
+                String element = this.menuElements.get(i);
+                this.drawCenteredString(mc.fontRenderer,element,this.x,yPos,checkAndSetHoverColor(color,i));
             }
 
         }
