@@ -8,7 +8,8 @@ import net.minecraft.nbt.NBTTagCompound;
 public class ItemUtil {
 
     public static NBTTagCompound getOrCreateTag(ItemStack stack) {
-        return stack.hasTagCompound() ? stack.getTagCompound() : new NBTTagCompound();
+        if(!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
+        return stack.getTagCompound();
     }
 
     public static String getTranslationForType(String type, String name) {

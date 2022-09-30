@@ -17,7 +17,7 @@ public class ScrollableInteger extends GuiButtonExt {
 
     private int translateScroll(int original) {
         int mouseScroll = Mouse.getEventDWheel();
-        if (mouseScroll == 0) return original;
+        if (mouseScroll == 0 || !this.hovered) return original;
         if (mouseScroll > 0) return Math.min(100, original + 1);
         return Math.max(1, original - 1);
     }

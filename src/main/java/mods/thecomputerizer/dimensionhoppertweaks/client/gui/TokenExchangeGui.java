@@ -4,6 +4,7 @@ import mods.thecomputerizer.dimensionhoppertweaks.DimensionHopperTweaks;
 import mods.thecomputerizer.dimensionhoppertweaks.network.PacketHandler;
 import mods.thecomputerizer.dimensionhoppertweaks.network.packets.PacketSyncGuiData;
 import mods.thecomputerizer.dimensionhoppertweaks.util.ItemUtil;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -20,7 +21,7 @@ public class TokenExchangeGui extends GuiScreen {
     private static final ResourceLocation BACKGROUND = new ResourceLocation(DimensionHopperTweaks.MODID,"textures/gui/background.png");
 
     private final List<String> skills;
-    private DropDownMenu skillMenu;
+    private ScrollableList skillMenu;
     private ScrollableInteger levelScroll;
     private String currentSkill;
     private int conversionRate;
@@ -43,6 +44,7 @@ public class TokenExchangeGui extends GuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         this.drawDefaultBackground();
         this.drawBackgroundOverlay();
+        for(GuiButton button : this.buttonList) button.drawButton(this.mc,mouseX,mouseY,partialTicks);
     }
 
     @Override
@@ -54,24 +56,18 @@ public class TokenExchangeGui extends GuiScreen {
     @Override
     public void handleMouseInput() throws IOException {
         super.handleMouseInput();
+        this.currentSkill = this.skillMenu.handleScroll();
         this.conversionRate = this.levelScroll.handleScroll(this.conversionRate);
     }
 
-    @Override
-    protected void mouseReleased(int mouseX, int mouseY, int state) {
-        if(this.skillMenu.checkForMenuUnderMouse(mouseX, mouseY))
-            this.currentSkill = this.skillMenu.updateCurrentElement(this.currentSkill);
-        else super.mouseReleased(mouseX, mouseY, state);
-    }
-
     private void addDropDownSkillMenu() {
-        this.skillMenu = new DropDownMenu(0,(this.width/2)-10,(this.height/2)-5,20,10,
+        this.skillMenu = new ScrollableList(0,(this.width/2)-50,(this.height/2)+25,500,50,
                 getSkillTranslation(this.currentSkill),this.skills,getListTranslation());
         this.buttonList.add(this.skillMenu);
     }
 
     private void addScrollableInteger() {
-        this.levelScroll = new ScrollableInteger(1,(this.width/2)+10,(this.height/2)-5,10,10,
+        this.levelScroll = new ScrollableInteger(1,(this.width/2)+50,(this.height/2)-25,50,50,
                 ""+this.conversionRate,this.conversionRate);
         this.buttonList.add(this.levelScroll);
     }

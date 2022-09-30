@@ -25,7 +25,10 @@ public class SkillWrapper {
         this.xp = xp;
         this.level = level;
         this.levelXP = level*100;
-        this.maxLevel = getSkill().getCap();
+        Skill skill = getSkill();
+        int cap = Integer.MAX_VALUE;
+        if(skill!=null) cap = getSkill().getCap();
+        this.maxLevel = cap;
     }
 
     public int getXP() {
@@ -41,7 +44,7 @@ public class SkillWrapper {
     }
 
     private boolean canLevelUp() {
-        return this.xp>=this.levelXP;
+        return this.xp>=this.levelXP && this.level!=0;
     }
 
     private boolean isMaxLevel() {
@@ -49,7 +52,7 @@ public class SkillWrapper {
     }
 
     public void addXP(int amount, EntityPlayerMP player) {
-        if(this.level<this.maxLevel) {
+        if(this.level<this.maxLevel && this.level!=0) {
             this.xp+=amount;
             if(canLevelUp()) levelUpWithOverflow(player);
         }

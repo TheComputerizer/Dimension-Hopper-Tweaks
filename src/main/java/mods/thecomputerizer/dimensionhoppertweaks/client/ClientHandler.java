@@ -37,6 +37,7 @@ public final class ClientHandler {
 
     private static void registerItemModel() {
         ModelLoader.setCustomModelResourceLocation(DimensionHopperItems.STARGATE_ADDRESSER, 0, new ModelResourceLocation(Objects.requireNonNull(DimensionHopperItems.STARGATE_ADDRESSER.getRegistryName()), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(DimensionHopperItems.SKILL_TOKEN, 0, new ModelResourceLocation(Objects.requireNonNull(DimensionHopperItems.SKILL_TOKEN.getRegistryName()), "inventory"));
     }
 
     private static void registerEntityRenderers() {

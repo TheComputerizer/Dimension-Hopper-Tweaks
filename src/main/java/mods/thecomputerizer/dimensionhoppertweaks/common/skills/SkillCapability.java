@@ -13,8 +13,17 @@ public class SkillCapability implements ISkillCapability {
     private int TICK_COUNTER = 0;
 
     private final Map<String, SkillWrapper> skillMap = new HashMap<>();
-    private String SKILL_TO_DRAIN;
-    private int DRAIN_LEVELS;
+    private String SKILL_TO_DRAIN = "mining";
+    private int DRAIN_LEVELS = 1;
+
+    public SkillCapability() {
+        for(String skill : SkillCapabilityStorage.SKILLS) this.addDefaultSkillValues(skill);
+        setDrainSelection("mining",1);
+    }
+
+    private void addDefaultSkillValues(String name) {
+        this.setSkillXP(name,0,0);
+    }
 
     private void checkForExistingSkill(String name) {
         if(!this.skillMap.containsKey(name)) {
@@ -44,7 +53,8 @@ public class SkillCapability implements ISkillCapability {
 
     @Override
     public void setSkillXP(String skill, int xp, int level) {
-        if(this.skillMap.containsKey(skill))
+        if(level!=0) DimensionHopperTweaks.LOGGER.info("Reading in skill {} at {}/{}",skill,xp,level*100);
+        if(this.skillMap.containsKey(skill) && skillMap.get(skill).getLevel()!=0)
             DimensionHopperTweaks.LOGGER.error("Tried to register duplicate "+skill+" skill!");
         else {
             String modid;
@@ -93,11 +103,12 @@ public class SkillCapability implements ISkillCapability {
     @Override
     public float getXPDumpMultiplier() {
         checkForExistingSkill("magic");
-        return 2f*(((float)this.skillMap.get("magic").getLevel())/32f);
+        return Math.max(1f,2f*(((float)this.skillMap.get("magic").getLevel())/32f));
     }
 
     @Override
     public int getSkillXpMultiplier(float initialAmount) {
+        checkForExistingSkill("research");
         return (int)(initialAmount*Math.max(1f,2f*(((float)this.skillMap.get("research").getLevel())/32f)));
     }
 
@@ -129,6 +140,7 @@ public class SkillCapability implements ISkillCapability {
 
     @Override
     public NBTTagCompound writeNBT() {
+        DimensionHopperTweaks.LOGGER.info("Writing capability nbt");
         NBTTagCompound compound = new NBTTagCompound();
         compound.setInteger("skills_num",this.skillMap.keySet().size());
         int i = 0;

@@ -3,6 +3,7 @@ package mods.thecomputerizer.dimensionhoppertweaks.network;
 import mods.thecomputerizer.dimensionhoppertweaks.DimensionHopperTweaks;
 import mods.thecomputerizer.dimensionhoppertweaks.network.packets.PacketOpenGui;
 import mods.thecomputerizer.dimensionhoppertweaks.network.packets.PacketRenderBossAttack;
+import mods.thecomputerizer.dimensionhoppertweaks.network.packets.PacketSyncGuiData;
 import mods.thecomputerizer.dimensionhoppertweaks.network.packets.PacketUpdateBossShield;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
@@ -17,5 +18,6 @@ public class PacketHandler {
         NETWORK.registerMessage(PacketUpdateBossShield.class, PacketUpdateBossShield.PacketUpdateBossShieldMessage.class, id++, Side.CLIENT);
         NETWORK.registerMessage(PacketRenderBossAttack.class, PacketRenderBossAttack.PacketRenderBossAttackMessage.class, id++, Side.CLIENT);
         NETWORK.registerMessage(PacketOpenGui.class, PacketOpenGui.PacketOpenGuiMessage.class, id++, Side.CLIENT);
+        NETWORK.registerMessage(PacketSyncGuiData.class, PacketSyncGuiData.PacketSyncGuiDataMessage.class, id++, Side.SERVER);
     }
 }
