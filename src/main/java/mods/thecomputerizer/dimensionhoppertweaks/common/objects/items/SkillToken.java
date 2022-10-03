@@ -41,7 +41,6 @@ public class SkillToken extends EpicItem {
     private static final String RESET = ""+TextFormatting.RESET;
 
     public void updateSkills(ItemStack stack, Set<Map.Entry<String, SkillWrapper>> skillSet, String selectedSkill, int drainLevels) {
-        DimensionHopperTweaks.LOGGER.info("updating skill info for a token");
         NBTTagCompound tag = getTag(stack);
         for(Map.Entry<String, SkillWrapper> entry : skillSet) {
             tag.setInteger(entry.getKey()+"_xp",entry.getValue().getXP());

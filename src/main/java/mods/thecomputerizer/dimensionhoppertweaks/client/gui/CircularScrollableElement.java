@@ -1,5 +1,6 @@
 package mods.thecomputerizer.dimensionhoppertweaks.client.gui;
 
+import mods.thecomputerizer.dimensionhoppertweaks.util.ItemUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -17,8 +18,10 @@ public abstract class CircularScrollableElement extends Gui {
     protected final int resolution;
     protected String displayString;
     protected boolean hover;
+    protected String hoverText;
 
-    public CircularScrollableElement(TokenExchangeGui parent, int centerX, int centerY, int radius, int resolution, String displayString) {
+    public CircularScrollableElement(TokenExchangeGui parent, int centerX, int centerY, int radius, int resolution,
+                                     String displayString, String hoverKey) {
         this.parentScreen = parent;
         this.centerX = centerX;
         this.centerY = centerY;
@@ -26,6 +29,7 @@ public abstract class CircularScrollableElement extends Gui {
         this.resolution = resolution;
         this.displayString = displayString;
         this.hover = false;
+        this.hoverText = hoverKey;
     }
 
     protected TokenExchangeGui getParentScreen() {
@@ -78,9 +82,13 @@ public abstract class CircularScrollableElement extends Gui {
             buffer.pos(xOut2, yOut2, this.zLevel).color(r, g, b, a).endVertex();
         }
         tessellator.draw();
+        GlStateManager.enableAlpha();
+        GlStateManager.disableBlend();
         GlStateManager.enableTexture2D();
         GlStateManager.popMatrix();
         int color = this.hover ? 16777120 : 14737632;
         this.drawCenteredString(mc.fontRenderer,this.displayString,this.centerX,this.centerY,color);
+        if(this.hover && this.hoverText!=null)
+            parentScreen.drawHoveringText(ItemUtil.getTranslationForType("gui",this.hoverText),mouseX,mouseY);
     }
 }

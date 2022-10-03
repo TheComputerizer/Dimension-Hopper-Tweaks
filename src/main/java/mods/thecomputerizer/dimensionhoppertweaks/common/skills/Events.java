@@ -8,7 +8,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
@@ -30,7 +29,6 @@ import net.minecraftforge.fml.relauncher.Side;
 public class Events {
 
     public static final ResourceLocation SKILL_CAPABILITY = new ResourceLocation(DimensionHopperTweaks.MODID, "skills");
-    private static int globalCounter = 1;
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void attachEntityCapabilities(AttachCapabilitiesEvent<Entity> event) {
@@ -50,17 +48,14 @@ public class Events {
     }
 
     public static void updateTokens(EntityPlayer player) {
-        player.sendMessage(new TextComponentString("knock knock "+globalCounter));
         for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
             ItemStack stack = player.inventory.getStackInSlot(i);
             if(stack.getItem() instanceof SkillToken) {
-                player.sendMessage(new TextComponentString("nice token you got there "+globalCounter));
                 SkillToken token = (SkillToken) stack.getItem();
                 ISkillCapability cap = getSkillCapability(player);
                 token.updateSkills(stack, cap.getCurrentValues(),cap.getDrainSelection(),cap.getDrainLevels());
             }
         }
-        globalCounter++;
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
