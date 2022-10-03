@@ -1,40 +1,50 @@
 package mods.thecomputerizer.dimensionhoppertweaks.client.gui;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
-public class ScrollableInteger extends CircularScrollableElement {
+public abstract class CircularScrollableElement extends Gui {
 
-    private int currentLevel;
+    private final TokenExchangeGui parentScreen;
+    protected final int centerX;
+    protected final int centerY;
+    protected final int radius;
+    protected final int resolution;
+    protected String displayString;
+    protected boolean hover;
 
-    public ScrollableInteger(TokenExchangeGui parent, int centerX, int centerY, int radius, int resolution,
-                             int conversionRate, String displayString) {
-       super(parent, centerX, centerY, radius, resolution, displayString);
-       this.currentLevel = conversionRate;
+    public CircularScrollableElement(TokenExchangeGui parent, int centerX, int centerY, int radius, int resolution, String displayString) {
+        this.parentScreen = parent;
+        this.centerX = centerX;
+        this.centerY = centerY;
+        this.radius = radius;
+        this.resolution = resolution;
+        this.displayString = displayString;
+        this.hover = false;
     }
 
-    @Override
-    public void handleScroll() {
-        this.currentLevel = translateScroll(this.currentLevel);
-        this.setCenterString(""+this.currentLevel);
-        this.getParentScreen().setConversionRate(this.currentLevel);
+    protected TokenExchangeGui getParentScreen() {
+        return this.parentScreen;
     }
 
-    private int translateScroll(int original) {
-        int mouseScroll = Mouse.getEventDWheel();
-        if (mouseScroll == 0 || !this.hover) return original;
-        if (mouseScroll > 0) return Math.min(100, original + 1);
-        return Math.max(1, original - 1);
+    public abstract void handleScroll();
+
+    public void setCenterString(String displayString) {
+        this.displayString = displayString;
     }
 
     private boolean isWithinRadius(int mouseX, int mouseY) {
         if(!(Math.abs(this.centerX-mouseX)<=this.radius)) return false;
         return Math.abs(this.centerY - mouseY) <= this.radius;
+    }
+
+    protected boolean getHover() {
+        return this.hover;
     }
 
     public void render(Minecraft mc, int mouseX, int mouseY, int r, int g, int b, int a) {
@@ -63,6 +73,7 @@ public class ScrollableInteger extends CircularScrollableElement {
             float xOut2 = this.centerX+this.radius*(float)Math.cos(angle2);
             float yOut2 = this.centerY+this.radius*(float)Math.sin(angle2);
             buffer.pos(xOut, yOut, this.zLevel).color(r, g, b, a).endVertex();
+            buffer.pos(this.centerX, this.centerY, this.zLevel).color(r, g, b, a).endVertex();
             buffer.pos(this.centerX, this.centerY, this.zLevel).color(r, g, b, a).endVertex();
             buffer.pos(xOut2, yOut2, this.zLevel).color(r, g, b, a).endVertex();
         }

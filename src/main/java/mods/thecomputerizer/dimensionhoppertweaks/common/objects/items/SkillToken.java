@@ -135,7 +135,7 @@ public class SkillToken extends EpicItem {
     }
 
     private String getDrainingTranslation(int levels, String skill) {
-        return I18n.format("skill."+ DimensionHopperTweaks.MODID+".draining")+" "+levels+
+        return I18n.format("skill."+ DimensionHopperTweaks.MODID+".draining")+" "+levels+" "+
                 I18n.format("skill."+ DimensionHopperTweaks.MODID+".levels")+" "+getSkillTranslation(skill);
     }
 

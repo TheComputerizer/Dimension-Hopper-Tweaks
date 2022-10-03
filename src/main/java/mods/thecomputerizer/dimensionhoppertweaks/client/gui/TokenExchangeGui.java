@@ -1,28 +1,20 @@
 package mods.thecomputerizer.dimensionhoppertweaks.client.gui;
 
-import mods.thecomputerizer.dimensionhoppertweaks.DimensionHopperTweaks;
 import mods.thecomputerizer.dimensionhoppertweaks.network.PacketHandler;
 import mods.thecomputerizer.dimensionhoppertweaks.network.packets.PacketSyncGuiData;
 import mods.thecomputerizer.dimensionhoppertweaks.util.ItemUtil;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.ResourceLocation;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("NullableProblems")
 public class TokenExchangeGui extends GuiScreen {
-
-    private static final ResourceLocation BACKGROUND = new ResourceLocation(DimensionHopperTweaks.MODID,"textures/gui/background.png");
-
     private final List<String> skills;
-    private ScrollableList skillMenu;
-    private ScrollableInteger levelScroll;
+    private final List<CircularScrollableElement> scrollables;
     private String currentSkill;
     private int conversionRate;
 
@@ -30,6 +22,24 @@ public class TokenExchangeGui extends GuiScreen {
         this.skills = skills;
         this.currentSkill = currentSkill;
         this.conversionRate = conversionRate;
+        this.scrollables = new ArrayList<>();
+    }
+
+    @Override
+    public void setWorldAndResolution(Minecraft mc, int width, int height) {
+        super.setWorldAndResolution(mc, width, height);
+        this.scrollables.add(new ScrollableInteger(this,3*(this.width/4),this.height/4,50,72,
+                this.conversionRate, ""+this.conversionRate));
+        this.scrollables.add(new ScrollableList(this, this.width/4,this.height/4,50,72,
+                getSkillTranslation(this.currentSkill), this.currentSkill, this.skills,getListTranslation()));
+    }
+
+    public void setConversionRate(int level) {
+        this.conversionRate = level;
+    }
+
+    public void setCurrentSkill(String skill) {
+        this.currentSkill = skill;
     }
 
     private String getSkillTranslation(String skill) {
@@ -43,56 +53,19 @@ public class TokenExchangeGui extends GuiScreen {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         this.drawDefaultBackground();
-        this.drawBackgroundOverlay();
-        for(GuiButton button : this.buttonList) button.drawButton(this.mc,mouseX,mouseY,partialTicks);
-    }
-
-    @Override
-    public void initGui() {
-        this.addDropDownSkillMenu();
-        this.addScrollableInteger();
+        for(CircularScrollableElement circle : this.scrollables)
+            circle.render(Minecraft.getMinecraft(),mouseX,mouseY,0,0,0,64);
     }
 
     @Override
     public void handleMouseInput() throws IOException {
         super.handleMouseInput();
-        this.currentSkill = this.skillMenu.handleScroll();
-        this.conversionRate = this.levelScroll.handleScroll(this.conversionRate);
-    }
-
-    private void addDropDownSkillMenu() {
-        this.skillMenu = new ScrollableList(0,(this.width/2)-50,(this.height/2)+25,500,50,
-                getSkillTranslation(this.currentSkill),this.skills,getListTranslation());
-        this.buttonList.add(this.skillMenu);
-    }
-
-    private void addScrollableInteger() {
-        this.levelScroll = new ScrollableInteger(1,(this.width/2)+50,(this.height/2)-25,50,50,
-                ""+this.conversionRate,this.conversionRate);
-        this.buttonList.add(this.levelScroll);
+        for(CircularScrollableElement circle : this.scrollables) circle.handleScroll();
     }
 
     @Override
     public void onGuiClosed() {
         PacketHandler.NETWORK.sendToServer(new PacketSyncGuiData.PacketSyncGuiDataMessage(this.currentSkill,
                 this.conversionRate,mc.player.getUniqueID()));
-    }
-
-    protected void drawBackgroundOverlay() {
-        int alpha = 255;
-        int startX = this.width/4;
-        int endX = startX*3;
-        int startY = this.height/4;
-        int endY = startY*3;
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuffer();
-        this.mc.getTextureManager().bindTexture(OPTIONS_BACKGROUND);
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
-        bufferbuilder.pos(startX, endY, 0d).tex(0d, 0d).color(64, 64, 64, alpha).endVertex();
-        bufferbuilder.pos(endX, endY, 0d).tex(0d, 0d).color(64, 64, 64, alpha).endVertex();
-        bufferbuilder.pos(endX, startY, 0d).tex(0d, 0d).color(64, 64, 64, alpha).endVertex();
-        bufferbuilder.pos(startX, startY, 0d).tex(0d, 0d).color(64, 64, 64, alpha).endVertex();
-        tessellator.draw();
     }
 }
