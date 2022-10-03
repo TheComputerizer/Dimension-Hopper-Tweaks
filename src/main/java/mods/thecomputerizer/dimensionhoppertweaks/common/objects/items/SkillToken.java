@@ -45,8 +45,6 @@ public class SkillToken extends EpicItem {
         for(Map.Entry<String, SkillWrapper> entry : skillSet) {
             tag.setInteger(entry.getKey()+"_xp",entry.getValue().getXP());
             tag.setInteger(entry.getKey()+"_level",entry.getValue().getLevel());
-            DimensionHopperTweaks.LOGGER.info("set {} xp to {} and {} level to {}",entry.getKey(),
-                    entry.getValue().getXP(),entry.getKey(),entry.getValue().getLevel());
         }
         tag.setString("drain_selection",selectedSkill);
         tag.setInteger("drain_amount",drainLevels);

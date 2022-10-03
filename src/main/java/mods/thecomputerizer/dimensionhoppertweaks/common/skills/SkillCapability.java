@@ -140,7 +140,6 @@ public class SkillCapability implements ISkillCapability {
 
     @Override
     public NBTTagCompound writeNBT() {
-        DimensionHopperTweaks.LOGGER.info("Writing capability nbt");
         NBTTagCompound compound = new NBTTagCompound();
         compound.setInteger("skills_num",this.skillMap.keySet().size());
         int i = 0;

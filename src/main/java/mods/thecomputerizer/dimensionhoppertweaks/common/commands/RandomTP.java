@@ -1,5 +1,6 @@
 package mods.thecomputerizer.dimensionhoppertweaks.common.commands;
 
+import mods.thecomputerizer.dimensionhoppertweaks.common.skills.Events;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;

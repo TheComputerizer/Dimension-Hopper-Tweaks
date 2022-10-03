@@ -8,7 +8,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -23,6 +25,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
+
+import java.util.*;
 
 @Mod.EventBusSubscriber(modid = DimensionHopperTweaks.MODID)
 public class Events {
@@ -122,7 +126,7 @@ public class Events {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onDamage(LivingDamageEvent event) {
-        if(!event.getEntityLiving().world.isRemote) {
+        if(!event.getEntityLiving().world.isRemote && event.getSource() != DamageSource.OUT_OF_WORLD) {
             if (event.getEntityLiving() instanceof EntityPlayerMP) {
                 EntityPlayerMP player = (EntityPlayerMP) event.getEntityLiving();
                 event.setAmount(Math.max(0f,event.getAmount()-getSkillCapability(player).getDamageReduction()));
@@ -172,6 +176,7 @@ public class Events {
             EntityPlayerMP player = (EntityPlayerMP)event.player;
             getSkillCapability(player).addSkillXP("void",getSkillCapability(player).getSkillXpMultiplier(5f),player);
             updateTokens(player);
+            if(event.toDim==7) player.setSpawnChunk(new BlockPos(player.posX,100,player.posZ),false,7);
         }
     }
 
