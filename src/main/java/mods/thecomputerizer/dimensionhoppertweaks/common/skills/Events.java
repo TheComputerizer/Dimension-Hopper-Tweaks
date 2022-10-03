@@ -1,5 +1,6 @@
 package mods.thecomputerizer.dimensionhoppertweaks.common.skills;
 
+import codersafterdark.reskillable.api.event.LevelUpEvent;
 import mods.thecomputerizer.dimensionhoppertweaks.DimensionHopperTweaks;
 import mods.thecomputerizer.dimensionhoppertweaks.common.objects.items.SkillToken;
 import net.minecraft.entity.Entity;
@@ -9,14 +10,12 @@ import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.AdvancementEvent;
 import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
 import net.minecraftforge.event.entity.player.UseHoeEvent;
 import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -48,6 +47,7 @@ public class Events {
     }
 
     public static void updateTokens(EntityPlayer player) {
+        if(player instanceof EntityPlayerMP) getSkillCapability(player).syncSkills((EntityPlayerMP) player);
         for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
             ItemStack stack = player.inventory.getStackInSlot(i);
             if(stack.getItem() instanceof SkillToken) {
@@ -59,12 +59,10 @@ public class Events {
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void onCommand(CommandEvent event) {
-        if(!event.getSender().getEntityWorld().isRemote) {
-            if (event.getException() != null && (event.getCommand().getName().contains("skill") || event.getCommand().getName().contains("resetall"))) {
-                for(EntityPlayerMP player : FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers())
-                    getSkillCapability(player).syncSkills(player);
-            }
+    public static void onLevelUp(LevelUpEvent.Post event) {
+        if(event.getEntityPlayer() instanceof EntityPlayerMP) {
+            getSkillCapability(event.getEntityPlayer()).syncSkills((EntityPlayerMP) event.getEntityPlayer());
+            updateTokens(event.getEntityPlayer());
         }
     }
 
