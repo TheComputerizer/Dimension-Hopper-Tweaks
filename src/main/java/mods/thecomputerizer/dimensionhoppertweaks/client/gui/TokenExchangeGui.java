@@ -79,7 +79,7 @@ public class TokenExchangeGui extends GuiScreen {
                 this.conversionRate,mc.player.getUniqueID()));
     }
 
-    private void renderSmallCircleOnCursor(Minecraft mc, int mouseX, int mouseY) {
+    private void renderSmallCircleOnCursor(Minecraft ignored, int mouseX, int mouseY) {
         int r = 255;
         int g = 255;
         int b = 255;

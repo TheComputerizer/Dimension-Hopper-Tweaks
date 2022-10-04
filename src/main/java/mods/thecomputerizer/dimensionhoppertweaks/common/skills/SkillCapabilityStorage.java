@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 
 import javax.annotation.Nullable;
@@ -29,5 +30,8 @@ public class SkillCapabilityStorage implements Capability.IStorage<ISkillCapabil
                 instance.setSkillXP(skill, compound.getInteger(skill + "_xp"), compound.getInteger(skill + "_level"));
             }
         }
+        if(compound.hasKey("skill_to_drain") && compound.hasKey("drain_levels"))
+            instance.setDrainSelection(compound.getString("skill_to_drain"), compound.getInteger("drain_levels"), null);
+        if(compound.hasKey("twilight_respawn")) instance.setTwilightRespawn(BlockPos.fromLong(compound.getLong("twilight_respawn")));
     }
 }

@@ -7,8 +7,12 @@ import codersafterdark.reskillable.api.data.PlayerSkillInfo;
 import codersafterdark.reskillable.api.skill.Skill;
 import codersafterdark.reskillable.api.toast.ToastHelper;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.world.World;
 
 public class SkillWrapper {
 
@@ -26,7 +30,7 @@ public class SkillWrapper {
         this.level = level;
         this.levelXP = level*100;
         Skill skill = getSkill();
-        int cap = Integer.MAX_VALUE;
+        int cap = 1024;
         if(skill!=null) cap = getSkill().getCap();
         this.maxLevel = cap;
     }
@@ -44,21 +48,22 @@ public class SkillWrapper {
     }
 
     private boolean canLevelUp() {
-        return this.xp>=this.levelXP && this.level!=0;
+        return this.xp>=this.levelXP && this.level!=0 && !isMaxLevel();
     }
 
     private boolean isMaxLevel() {
         return this.level>=this.maxLevel;
     }
 
-    public void addXP(int amount, EntityPlayerMP player) {
-        if(this.level<this.maxLevel && this.level!=0) {
+    public void addXP(int amount, EntityPlayerMP player, boolean fromXP) {
+        if(!isMaxLevel() && this.level!=0) {
             this.xp+=amount;
-            if(canLevelUp()) levelUpWithOverflow(player);
+            if(canLevelUp()) levelUpWithOverflow(player, true, fromXP);
         }
     }
 
-    private void levelUpWithOverflow(EntityPlayerMP player) {
+    private void levelUpWithOverflow(EntityPlayerMP player, boolean showToast, boolean fromXP) {
+        boolean leveledUp = false;
         while(canLevelUp()) {
             this.xp-=this.levelXP;
             this.level++;
@@ -67,14 +72,20 @@ public class SkillWrapper {
                 this.levelXP = 0;
                 this.xp = 0;
                 break;
-            }
-            this.levelXP = this.level*100;
+            } else this.levelXP = this.level*100;
+            leveledUp = true;
         }
         PlayerData data = PlayerDataHandler.get(player);
         PlayerSkillInfo skillInfo = data.getSkillInfo(getSkill());
         skillInfo.setLevel(this.level);
         data.saveAndSync();
-        ToastHelper.sendSkillToast(player, getSkill(), skillInfo.getLevel());
+        if(showToast) ToastHelper.sendSkillToast(player, getSkill(), skillInfo.getLevel());
+        if(leveledUp) {
+            World world = player.world;
+            SoundEvent levelSound = SoundEvents.BLOCK_END_PORTAL_SPAWN;
+            if(fromXP) levelSound = SoundEvents.ENTITY_PLAYER_LEVELUP;
+            world.playSound(null, player.posX, player.posY, player.posZ, levelSound, SoundCategory.MASTER, 1.0F, 1.0F);
+        }
     }
 
     public void syncLevel(EntityPlayerMP player) {
@@ -84,7 +95,7 @@ public class SkillWrapper {
             this.levelXP = 0;
             this.xp = 0;
         } else this.levelXP = level * 100;
-        if(this.xp>=this.levelXP) this.levelUpWithOverflow(player);
+        if(this.xp>=this.levelXP) this.levelUpWithOverflow(player, false, true);
     }
 
     private Skill getSkill() {

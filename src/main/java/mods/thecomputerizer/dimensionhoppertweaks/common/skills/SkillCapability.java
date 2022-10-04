@@ -3,6 +3,7 @@ package mods.thecomputerizer.dimensionhoppertweaks.common.skills;
 import mods.thecomputerizer.dimensionhoppertweaks.DimensionHopperTweaks;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.BlockPos;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,14 +12,15 @@ import java.util.Set;
 public class SkillCapability implements ISkillCapability {
 
     private int TICK_COUNTER = 0;
-
-    private final Map<String, SkillWrapper> skillMap = new HashMap<>();
+    private Map<String, SkillWrapper> skillMap = new HashMap<>();
     private String SKILL_TO_DRAIN = "mining";
     private int DRAIN_LEVELS = 1;
+    private BlockPos TWILIGHT_RESPAWN;
 
     public SkillCapability() {
         for(String skill : SkillCapabilityStorage.SKILLS) this.addDefaultSkillValues(skill);
-        setDrainSelection("mining",1);
+        setDrainSelection("mining",1, null);
+        this.TWILIGHT_RESPAWN = null;
     }
 
     private void addDefaultSkillValues(String name) {
@@ -36,6 +38,16 @@ public class SkillCapability implements ISkillCapability {
     }
 
     @Override
+    public void of(SkillCapability copy, EntityPlayerMP newPlayer) {
+        this.TICK_COUNTER = copy.TICK_COUNTER;
+        this.skillMap = copy.skillMap;
+        this.SKILL_TO_DRAIN = copy.SKILL_TO_DRAIN;
+        this.DRAIN_LEVELS = copy.DRAIN_LEVELS;
+        this.TWILIGHT_RESPAWN = copy.TWILIGHT_RESPAWN;
+        Events.updateTokens(newPlayer);
+    }
+
+    @Override
     public boolean checkTick() {
         if(this.TICK_COUNTER<20) {
             this.TICK_COUNTER++;
@@ -46,9 +58,10 @@ public class SkillCapability implements ISkillCapability {
     }
 
     @Override
-    public void addSkillXP(String skill, int amount, EntityPlayerMP player) {
+    public void addSkillXP(String skill, int amount, EntityPlayerMP player, boolean fromXP) {
         checkForExistingSkill(skill);
-        this.skillMap.get(skill).addXP(amount, player);
+        this.skillMap.get(skill).addXP(amount, player, fromXP);
+        Events.updateTokens(player);
     }
 
     @Override
@@ -123,9 +136,10 @@ public class SkillCapability implements ISkillCapability {
     }
 
     @Override
-    public void setDrainSelection(String skill, int levels) {
+    public void setDrainSelection(String skill, int levels, EntityPlayerMP player) {
         this.SKILL_TO_DRAIN = skill;
         this.DRAIN_LEVELS = levels;
+        if(player!=null) Events.updateTokens(player);
     }
 
     @Override
@@ -136,6 +150,15 @@ public class SkillCapability implements ISkillCapability {
     @Override
     public int getDrainLevels() {
         return this.DRAIN_LEVELS;
+    }
+
+    @Override
+    public void setTwilightRespawn(BlockPos pos) {
+        this.TWILIGHT_RESPAWN = pos;
+    }
+    @Override
+    public BlockPos getTwilightRespawn() {
+        return this.TWILIGHT_RESPAWN;
     }
 
     @Override
@@ -150,6 +173,7 @@ public class SkillCapability implements ISkillCapability {
         }
         compound.setString("skill_to_drain",this.SKILL_TO_DRAIN);
         compound.setInteger("drain_levels",this.DRAIN_LEVELS);
+        if(this.TWILIGHT_RESPAWN!=null) compound.setLong("twilight_respawn",this.TWILIGHT_RESPAWN.toLong());
         return compound;
     }
 }

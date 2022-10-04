@@ -67,7 +67,7 @@ public class SkillToken extends EpicItem {
                 for(int i=0;i<tag.getInteger("drain_amount");i++) {
                     Events.getSkillCapability(player).addSkillXP(tag.getString("drain_selection"),
                             (int)(convertXPToSP(player.experienceLevel)*Events.getSkillCapability(player).getXPDumpMultiplier()),
-                            player);
+                            player,true);
                     player.addExperienceLevel(-1);
                 }
                 Events.updateTokens(player);
@@ -86,7 +86,7 @@ public class SkillToken extends EpicItem {
     }
 
     @SuppressWarnings("SameParameterValue")
-    private void checkAndUpdate(EntityPlayer player, ItemStack stack, String data) {
+    private void checkAndUpdate(EntityPlayerMP player, ItemStack stack, String data) {
         if(!getTag(stack).hasKey(data)) Events.updateTokens(player);
     }
 
