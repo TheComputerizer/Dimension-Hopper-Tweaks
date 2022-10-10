@@ -8,8 +8,6 @@ import mods.thecomputerizer.dimensionhoppertweaks.network.PacketHandler;
 import mods.thecomputerizer.dimensionhoppertweaks.network.packets.PacketUpdateBossShield;
 import morph.avaritia.item.tools.ItemSwordInfinity;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.MovingSound;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -33,9 +31,8 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.BossInfo;
 import net.minecraft.world.BossInfoServer;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
@@ -88,10 +85,6 @@ public class EntityFinalBoss extends EntityLiving {
         this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(1.0D);
     }
 
-    public void startMusic() {
-        Minecraft.getMinecraft().getSoundHandler().playSound(new BossMusic(this));
-    }
-
     @Override
     public float getEyeHeight() {
         return 1.875F;
@@ -129,7 +122,7 @@ public class EntityFinalBoss extends EntityLiving {
     }
 
     @Override
-    public void addTrackingPlayer(EntityPlayerMP player) {
+    public void addTrackingPlayer(@Nonnull EntityPlayerMP player) {
         super.addTrackingPlayer(player);
         this.bossInfo.addPlayer(player);
         this.players.add(player);
@@ -141,7 +134,7 @@ public class EntityFinalBoss extends EntityLiving {
     }
 
     @Override
-    public void removeTrackingPlayer(EntityPlayerMP player) {
+    public void removeTrackingPlayer(@Nonnull EntityPlayerMP player) {
         super.removeTrackingPlayer(player);
         this.bossInfo.removePlayer(player);
         this.players.remove(player);
@@ -299,7 +292,7 @@ public class EntityFinalBoss extends EntityLiving {
         return true;
     }
 
-    public void setCustomNameTag(String name) {
+    public void setCustomNameTag(@Nonnull String name) {
         super.setCustomNameTag(name);
         this.bossInfo.setName(this.getDisplayName());
     }
@@ -309,7 +302,7 @@ public class EntityFinalBoss extends EntityLiving {
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound compound) {
+    public void readEntityFromNBT(@Nonnull NBTTagCompound compound) {
         super.readEntityFromNBT(compound);
         this.phase = compound.getInteger("DimensionHopperBoss_Phase");
         this.invulnerable = compound.getBoolean("DimensionHopperBoss_Invulnerable");
@@ -322,7 +315,7 @@ public class EntityFinalBoss extends EntityLiving {
     }
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound compound) {
+    public void writeEntityToNBT(@Nonnull NBTTagCompound compound) {
         super.writeEntityToNBT(compound);
         compound.setInteger("DimensionHopperBoss_Phase",this.phase);
         compound.setBoolean("DimensionHopperBoss_Invulnerable",this.invulnerable);
@@ -340,7 +333,7 @@ public class EntityFinalBoss extends EntityLiving {
     }
 
     @Override
-    public boolean attackEntityFrom(DamageSource source, float amount) {
+    public boolean attackEntityFrom(@Nonnull DamageSource source, float amount) {
         if(!this.invulnerable && !this.isShieldUp) {
             if (!(source instanceof EntityDamageSourceIndirect) && !source.isProjectile() && source.getTrueSource() instanceof EntityPlayer) {
                 EntityPlayer p = (EntityPlayer) source.getTrueSource();
@@ -371,37 +364,15 @@ public class EntityFinalBoss extends EntityLiving {
     }
 
     @Override
+    @Nonnull
     public SoundCategory getSoundCategory() {
         return SoundCategory.HOSTILE;
     }
 
     @Override
     @Nullable
-    protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
+    protected SoundEvent getHurtSound(@Nonnull DamageSource damageSourceIn) {
         return DimensionHopperSounds.SHORT_STATIC;
-    }
-
-    @SideOnly(Side.CLIENT)
-    private static class BossMusic extends MovingSound {
-        private final EntityFinalBoss boss;
-
-        public BossMusic(EntityFinalBoss boss) {
-            super(DimensionHopperSounds.TEST_MUSIC, SoundCategory.MUSIC);
-            this.boss = boss;
-            this.xPosF = (float) boss.posX;
-            this.yPosF = (float) boss.posY;
-            this.zPosF = (float) boss.posZ;
-            this.attenuationType = AttenuationType.NONE;
-            this.pitch = 0.75f;
-            this.repeat = true;
-        }
-
-        @Override
-        public void update() {
-            if (!boss.isEntityAlive()) {
-                donePlaying = true;
-            }
-        }
     }
 
     static class BossIntro extends EntityAIBase {

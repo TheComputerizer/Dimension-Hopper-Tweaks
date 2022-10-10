@@ -2,6 +2,7 @@ package mods.thecomputerizer.dimensionhoppertweaks.common.objects.items;
 
 import mods.thecomputerizer.dimensionhoppertweaks.DimensionHopperTweaks;
 import mods.thecomputerizer.dimensionhoppertweaks.common.skills.Events;
+import mods.thecomputerizer.dimensionhoppertweaks.common.skills.ISkillCapability;
 import mods.thecomputerizer.dimensionhoppertweaks.common.skills.SkillCapabilityStorage;
 import mods.thecomputerizer.dimensionhoppertweaks.common.skills.SkillWrapper;
 import mods.thecomputerizer.dimensionhoppertweaks.network.PacketHandler;
@@ -36,6 +37,7 @@ public class SkillToken extends EpicItem {
     private static final String GRAY = ""+TextFormatting.GRAY;
     private static final String RED = ""+TextFormatting.RED;
     private static final String DARK_RED = ""+TextFormatting.DARK_RED;
+    private static final String GOLD = ""+TextFormatting.GOLD;
     private static final String ITALICS = ""+TextFormatting.ITALIC;
     private static final String BOLD = ""+TextFormatting.ITALIC;
     private static final String RESET = ""+TextFormatting.RESET;
@@ -45,6 +47,8 @@ public class SkillToken extends EpicItem {
         for(Map.Entry<String, SkillWrapper> entry : skillSet) {
             tag.setInteger(entry.getKey()+"_xp",entry.getValue().getXP());
             tag.setInteger(entry.getKey()+"_level",entry.getValue().getLevel());
+            tag.setInteger(entry.getKey()+"_level_xp",entry.getValue().getLevelXP());
+            tag.setInteger(entry.getKey()+"_prestige_level",entry.getValue().getPrestigeLevel());
         }
         tag.setString("drain_selection",selectedSkill);
         tag.setInteger("drain_amount",drainLevels);
@@ -58,17 +62,25 @@ public class SkillToken extends EpicItem {
             ItemStack stack = player.getHeldItem(hand);
             checkAndUpdate(player, stack, "drain_selection");
             NBTTagCompound tag = getTag(stack);
+            String skill = tag.getString("drain_selection");
+            int amount = tag.getInteger("drain_amount");
             if(player.isSneaking()) {
                 PacketHandler.NETWORK.sendTo(new PacketOpenGui.PacketOpenGuiMessage(GuiType.TOKEN_EXCHANGE,
-                        new TokenExchangeConstructor(SkillCapabilityStorage.SKILLS, tag.getString("drain_selection"),
-                                tag.getInteger("drain_amount"))), player);
+                        new TokenExchangeConstructor(SkillCapabilityStorage.SKILLS, skill,amount)), player);
                 return new ActionResult<>(EnumActionResult.SUCCESS, stack);
-            } else if(player.experienceLevel>=tag.getInteger("drain_amount")) {
-                for(int i=0;i<tag.getInteger("drain_amount");i++) {
-                    Events.getSkillCapability(player).addSkillXP(tag.getString("drain_selection"),
-                            (int)(convertXPToSP(player.experienceLevel)*Events.getSkillCapability(player).getXPDumpMultiplier()),
-                            player,true);
-                    player.addExperienceLevel(-1);
+            } else if(player.experienceLevel>=amount) {
+                ISkillCapability cap = Events.getSkillCapability(player);
+                int prestige = cap.getPrestigeLevel(skill);
+                for(int i=0;i<amount;i++) {
+                    int SP = (int)(convertXPToSP(player.experienceLevel)*Events.getSkillCapability(player).getXPDumpMultiplier());
+                    int currSP = cap.getSkillXP(skill);
+                    int levelSP = cap.getSkillLevelXP(skill);
+                    int currLevel = cap.getSkillLevel(skill);
+                    boolean isPrestigeBlocked = ((double)currLevel/32d)<=prestige;
+                    if(currSP+SP>=levelSP && !isPrestigeBlocked) {
+                        cap.addSkillXP(skill, SP, player, true);
+                        player.addExperienceLevel(-1);
+                    }
                 }
                 Events.updateTokens(player);
                 return new ActionResult<>(EnumActionResult.SUCCESS, stack);
@@ -110,7 +122,7 @@ public class SkillToken extends EpicItem {
 
     private String getFormattedSkillLine(ItemStack stack, String skill) {
         NBTTagCompound nbt = getTag(stack);
-        if(nbt.hasKey(skill+"_xp") && nbt.hasKey(skill+"_level")) {
+        if(nbt.hasKey(skill+"_xp") && nbt.hasKey(skill+"_level") && nbt.hasKey(skill+"_level_xp")) {
             String skill_color = DARK_GRAY;
             String point_color = WHITE;
             if(nbt.hasKey("drain_selection") && nbt.getString("drain_selection").matches(skill)) {
@@ -119,10 +131,12 @@ public class SkillToken extends EpicItem {
             }
             int currentPoints = nbt.getInteger(skill+"_xp");
             int currentLevel = nbt.getInteger(skill+"_level");
+            int prestigeLevel = nbt.getInteger(skill+"_prestige_level");
             if(currentLevel<1024) {
                 int nextLevel = currentLevel + 1;
-                int neededPoints = currentLevel * 100;
-                return skill_color + BOLD + getSkillTranslation(skill) + "[" + currentLevel + "->" + nextLevel + "]: " + RESET + point_color + currentPoints + "/" + neededPoints;
+                int neededPoints = nbt.getInteger(skill+"_level_xp");
+                return skill_color + BOLD + getSkillTranslation(skill) + "[" + currentLevel + "->" + nextLevel + "]: " +
+                        RESET + point_color + currentPoints + "/" + neededPoints+GOLD+" {"+prestigeLevel+"}";
             } else return RESET + skill_color + BOLD + getSkillTranslation(skill) + "[" + currentLevel +"]";
         } return ITALICS+BOLD+getNotSyncedTranslation(skill);
     }

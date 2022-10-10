@@ -66,7 +66,6 @@ public class SkillCapability implements ISkillCapability {
 
     @Override
     public void setSkillXP(String skill, int xp, int level) {
-        if(level!=0) DimensionHopperTweaks.LOGGER.info("Reading in skill {} at {}/{}",skill,xp,level*100);
         if(this.skillMap.containsKey(skill) && skillMap.get(skill).getLevel()!=0)
             DimensionHopperTweaks.LOGGER.error("Tried to register duplicate "+skill+" skill!");
         else {
@@ -93,6 +92,18 @@ public class SkillCapability implements ISkillCapability {
     public int getSkillLevelXP(String skill) {
         checkForExistingSkill(skill);
         return this.skillMap.get(skill).getLevelXP();
+    }
+
+    @Override
+    public void setPrestigeLevel(String skill, int level) {
+        checkForExistingSkill(skill);
+        this.skillMap.get(skill).setPrestigeLevel(level);
+    }
+
+    @Override
+    public int getPrestigeLevel(String skill) {
+        checkForExistingSkill(skill);
+        return this.skillMap.get(skill).getPrestigeLevel();
     }
 
     @Override

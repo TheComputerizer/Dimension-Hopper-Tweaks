@@ -28,6 +28,7 @@ public class SkillCapabilityStorage implements Capability.IStorage<ISkillCapabil
             for (int i = 0; i < compound.getInteger("skills_num"); i++) {
                 String skill = compound.getString("skill_" + i);
                 instance.setSkillXP(skill, compound.getInteger(skill + "_xp"), compound.getInteger(skill + "_level"));
+                instance.setPrestigeLevel(skill,compound.getInteger(skill+"_prestige"));
             }
         }
         if(compound.hasKey("skill_to_drain") && compound.hasKey("drain_levels"))

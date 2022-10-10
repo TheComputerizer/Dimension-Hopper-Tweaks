@@ -38,6 +38,37 @@ public final class ClientHandler {
     private static void registerItemModel() {
         ModelLoader.setCustomModelResourceLocation(DimensionHopperItems.STARGATE_ADDRESSER, 0, new ModelResourceLocation(Objects.requireNonNull(DimensionHopperItems.STARGATE_ADDRESSER.getRegistryName()), "inventory"));
         ModelLoader.setCustomModelResourceLocation(DimensionHopperItems.SKILL_TOKEN, 0, new ModelResourceLocation(Objects.requireNonNull(DimensionHopperItems.SKILL_TOKEN.getRegistryName()), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(DimensionHopperItems.PRESTIGE_TOKEN_1, 0, new ModelResourceLocation(Objects.requireNonNull(DimensionHopperItems.STARGATE_ADDRESSER.getRegistryName()), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(DimensionHopperItems.PRESTIGE_TOKEN_2, 0, new ModelResourceLocation(Objects.requireNonNull(DimensionHopperItems.STARGATE_ADDRESSER.getRegistryName()), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(DimensionHopperItems.PRESTIGE_TOKEN_3, 0, new ModelResourceLocation(Objects.requireNonNull(DimensionHopperItems.STARGATE_ADDRESSER.getRegistryName()), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(DimensionHopperItems.PRESTIGE_TOKEN_4, 0, new ModelResourceLocation(Objects.requireNonNull(DimensionHopperItems.STARGATE_ADDRESSER.getRegistryName()), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(DimensionHopperItems.PRESTIGE_TOKEN_5, 0, new ModelResourceLocation(Objects.requireNonNull(DimensionHopperItems.STARGATE_ADDRESSER.getRegistryName()), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(DimensionHopperItems.PRESTIGE_TOKEN_6, 0, new ModelResourceLocation(Objects.requireNonNull(DimensionHopperItems.STARGATE_ADDRESSER.getRegistryName()), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(DimensionHopperItems.PRESTIGE_TOKEN_7, 0, new ModelResourceLocation(Objects.requireNonNull(DimensionHopperItems.STARGATE_ADDRESSER.getRegistryName()), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(DimensionHopperItems.PRESTIGE_TOKEN_8, 0, new ModelResourceLocation(Objects.requireNonNull(DimensionHopperItems.STARGATE_ADDRESSER.getRegistryName()), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(DimensionHopperItems.PRESTIGE_TOKEN_9, 0, new ModelResourceLocation(Objects.requireNonNull(DimensionHopperItems.STARGATE_ADDRESSER.getRegistryName()), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(DimensionHopperItems.PRESTIGE_TOKEN_10, 0, new ModelResourceLocation(Objects.requireNonNull(DimensionHopperItems.STARGATE_ADDRESSER.getRegistryName()), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(DimensionHopperItems.PRESTIGE_TOKEN_11, 0, new ModelResourceLocation(Objects.requireNonNull(DimensionHopperItems.STARGATE_ADDRESSER.getRegistryName()), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(DimensionHopperItems.PRESTIGE_TOKEN_12, 0, new ModelResourceLocation(Objects.requireNonNull(DimensionHopperItems.STARGATE_ADDRESSER.getRegistryName()), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(DimensionHopperItems.PRESTIGE_TOKEN_13, 0, new ModelResourceLocation(Objects.requireNonNull(DimensionHopperItems.STARGATE_ADDRESSER.getRegistryName()), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(DimensionHopperItems.PRESTIGE_TOKEN_14, 0, new ModelResourceLocation(Objects.requireNonNull(DimensionHopperItems.STARGATE_ADDRESSER.getRegistryName()), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(DimensionHopperItems.PRESTIGE_TOKEN_15, 0, new ModelResourceLocation(Objects.requireNonNull(DimensionHopperItems.STARGATE_ADDRESSER.getRegistryName()), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(DimensionHopperItems.PRESTIGE_TOKEN_16, 0, new ModelResourceLocation(Objects.requireNonNull(DimensionHopperItems.STARGATE_ADDRESSER.getRegistryName()), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(DimensionHopperItems.PRESTIGE_TOKEN_17, 0, new ModelResourceLocation(Objects.requireNonNull(DimensionHopperItems.STARGATE_ADDRESSER.getRegistryName()), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(DimensionHopperItems.PRESTIGE_TOKEN_18, 0, new ModelResourceLocation(Objects.requireNonNull(DimensionHopperItems.STARGATE_ADDRESSER.getRegistryName()), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(DimensionHopperItems.PRESTIGE_TOKEN_19, 0, new ModelResourceLocation(Objects.requireNonNull(DimensionHopperItems.STARGATE_ADDRESSER.getRegistryName()), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(DimensionHopperItems.PRESTIGE_TOKEN_20, 0, new ModelResourceLocation(Objects.requireNonNull(DimensionHopperItems.STARGATE_ADDRESSER.getRegistryName()), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(DimensionHopperItems.PRESTIGE_TOKEN_21, 0, new ModelResourceLocation(Objects.requireNonNull(DimensionHopperItems.STARGATE_ADDRESSER.getRegistryName()), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(DimensionHopperItems.PRESTIGE_TOKEN_22, 0, new ModelResourceLocation(Objects.requireNonNull(DimensionHopperItems.STARGATE_ADDRESSER.getRegistryName()), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(DimensionHopperItems.PRESTIGE_TOKEN_23, 0, new ModelResourceLocation(Objects.requireNonNull(DimensionHopperItems.STARGATE_ADDRESSER.getRegistryName()), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(DimensionHopperItems.PRESTIGE_TOKEN_24, 0, new ModelResourceLocation(Objects.requireNonNull(DimensionHopperItems.STARGATE_ADDRESSER.getRegistryName()), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(DimensionHopperItems.PRESTIGE_TOKEN_25, 0, new ModelResourceLocation(Objects.requireNonNull(DimensionHopperItems.STARGATE_ADDRESSER.getRegistryName()), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(DimensionHopperItems.PRESTIGE_TOKEN_26, 0, new ModelResourceLocation(Objects.requireNonNull(DimensionHopperItems.STARGATE_ADDRESSER.getRegistryName()), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(DimensionHopperItems.PRESTIGE_TOKEN_27, 0, new ModelResourceLocation(Objects.requireNonNull(DimensionHopperItems.STARGATE_ADDRESSER.getRegistryName()), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(DimensionHopperItems.PRESTIGE_TOKEN_28, 0, new ModelResourceLocation(Objects.requireNonNull(DimensionHopperItems.STARGATE_ADDRESSER.getRegistryName()), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(DimensionHopperItems.PRESTIGE_TOKEN_29, 0, new ModelResourceLocation(Objects.requireNonNull(DimensionHopperItems.STARGATE_ADDRESSER.getRegistryName()), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(DimensionHopperItems.PRESTIGE_TOKEN_30, 0, new ModelResourceLocation(Objects.requireNonNull(DimensionHopperItems.STARGATE_ADDRESSER.getRegistryName()), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(DimensionHopperItems.PRESTIGE_TOKEN_31, 0, new ModelResourceLocation(Objects.requireNonNull(DimensionHopperItems.STARGATE_ADDRESSER.getRegistryName()), "inventory"));
     }
 
     private static void registerEntityRenderers() {

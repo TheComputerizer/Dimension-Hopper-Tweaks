@@ -6,6 +6,7 @@ import mods.thecomputerizer.dimensionhoppertweaks.common.objects.items.SkillToke
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
@@ -19,12 +20,12 @@ import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
 import net.minecraftforge.event.entity.player.UseHoeEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
+import slimeknights.tconstruct.tools.tools.Pickaxe;
 
 @Mod.EventBusSubscriber(modid = DimensionHopperTweaks.MODID)
 public class Events {
@@ -120,7 +121,8 @@ public class Events {
     public static void blockBreak(BlockEvent.BreakEvent event) {
         if(!event.getWorld().isRemote && event.getPlayer() instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP)event.getPlayer();
-            if(player.getHeldItemMainhand().getItem() instanceof ItemPickaxe)
+            Item heldItem = player.getHeldItemMainhand().getItem();
+            if(heldItem instanceof ItemPickaxe || heldItem instanceof Pickaxe)
                 getSkillCapability(player).addSkillXP("mining",getSkillCapability(player).getSkillXpMultiplier(1f), player,false);
         }
     }
@@ -160,8 +162,7 @@ public class Events {
     public static void onHoe(UseHoeEvent event) {
         if(!event.getWorld().isRemote && event.getEntityPlayer() instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP)event.getEntityPlayer();
-            if(event.getResult()==Event.Result.ALLOW)
-                getSkillCapability(player).addSkillXP("farming",getSkillCapability(player).getSkillXpMultiplier(3f),player,false);
+            getSkillCapability(player).addSkillXP("farming",getSkillCapability(player).getSkillXpMultiplier(3f),player,false);
         }
     }
 

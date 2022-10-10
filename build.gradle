@@ -17,7 +17,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'maven-publish'
 
-version = '1.7.1'
+version = '1.7.2'
 group = 'mods.thecomputerizer.dimensionhoppertweaks'
 archivesBaseName = 'dimensionhoppertweaks'
 
@@ -81,6 +81,7 @@ dependencies {
     implementation fg.deobf("curse.maven:music-triggers-518410:3796636")
     implementation fg.deobf("curse.maven:extra-utilities-225561:2678374")
     implementation fg.deobf("curse.maven:reskillable-286382:2815686")
+    implementation fg.deobf("curse.maven:tinkers-construct-74072:2902483")
 
     implementation fg.deobf("zone.rong:mixinbooter:4.2")
 
@@ -106,9 +107,9 @@ jar {
                 "FMLAT": "accesstransformer.cfg",
                 "Specification-Title": "The_Computerizer",
                 "Specification-Vendor": "The_Computerizer",
-                "Specification-Version": "1.7.1",
+                "Specification-Version": "1.7.2",
                 "Implementation-Title": "dimensionhoppertweaks",
-                "Implementation-Version": "1.7.1",
+                "Implementation-Version": "1.7.2",
                 "Implementation-Vendor" :"The_Computerizer",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])

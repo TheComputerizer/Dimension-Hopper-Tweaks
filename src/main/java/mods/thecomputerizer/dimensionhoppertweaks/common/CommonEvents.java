@@ -35,7 +35,6 @@ public class CommonEvents {
                 EntityFinalBoss boss = new EntityFinalBoss(worldS);
                 boss.setPositionAndUpdate(posS.getX(), posS.getY(), posS.getZ());
                 worldS.spawnEntity(boss);
-                boss.startMusic();
                 bossSpawnCounter--;
             }
         }
