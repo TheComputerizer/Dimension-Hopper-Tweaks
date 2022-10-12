@@ -9,21 +9,19 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = MusicPicker.class, remap = false)
-public class MixinMusicPicker {
+public abstract class MixinMusicPicker {
 
     @Inject(at = @At(value = "HEAD"), method = "checkDimensionList", cancellable = true)
     private static void checkDimensionList(int playerDim, String resourceList, CallbackInfoReturnable<Boolean> cir) {
-        for(String resource : MusicTriggers.stringBreaker(resourceList,";")) {
-            if ((playerDim + "").matches(resource)) {
-                cir.setReturnValue(true);
-                cir.cancel();
-            }
-        }
+        cir.setReturnValue(mixinCheckDimensionList(playerDim, resourceList));
+    }
+
+    private static boolean mixinCheckDimensionList(int playerDim, String resourceList) {
+        for(String resource : MusicTriggers.stringBreaker(resourceList,";")) if ((playerDim)==Integer.parseInt(resource)) return true;
         try {
-            cir.setReturnValue(MusicPicker.checkResourceList(DimensionType.getById(playerDim).getName(),resourceList,false));
+            return MusicPicker.checkResourceList(DimensionType.getById(playerDim).getName(),resourceList,false);
         } catch (Exception e) {
-            cir.setReturnValue(false);
-            cir.cancel();
+            return false;
         }
     }
 }

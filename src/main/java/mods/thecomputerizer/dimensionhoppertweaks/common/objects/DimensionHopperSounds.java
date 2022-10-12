@@ -12,7 +12,6 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 @Mod.EventBusSubscriber(modid = DimensionHopperTweaks.MODID)
 public class DimensionHopperSounds {
     public static final SoundEvent SHORT_STATIC = makeSoundEvent("boss.static");
-    public static final SoundEvent TEST_MUSIC = makeSoundEvent("boss.test_music");
     public static final SoundEvent SPAWN = makeSoundEvent("boss.spawn");
 
     @SubscribeEvent
