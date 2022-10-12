@@ -70,13 +70,13 @@ public class SkillToken extends EpicItem {
                 return new ActionResult<>(EnumActionResult.SUCCESS, stack);
             } else if(player.experienceLevel>=amount) {
                 ISkillCapability cap = Events.getSkillCapability(player);
-                int prestige = cap.getPrestigeLevel(skill);
+                int prestige = cap.getPrestigeLevel(skill)+1;
                 for(int i=0;i<amount;i++) {
                     int SP = (int)(convertXPToSP(player.experienceLevel)*Events.getSkillCapability(player).getXPDumpMultiplier());
                     int currSP = cap.getSkillXP(skill);
                     int levelSP = cap.getSkillLevelXP(skill);
                     int currLevel = cap.getSkillLevel(skill);
-                    boolean isPrestigeBlocked = ((double)currLevel/32d)<=prestige;
+                    boolean isPrestigeBlocked = ((double)currLevel/32d)<prestige;
                     if(currSP+SP>=levelSP && !isPrestigeBlocked) {
                         cap.addSkillXP(skill, SP, player, true);
                         player.addExperienceLevel(-1);
