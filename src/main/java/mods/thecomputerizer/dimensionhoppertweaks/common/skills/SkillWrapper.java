@@ -29,7 +29,7 @@ public class SkillWrapper {
         this.name = name;
         this.xp = xp;
         this.level = level;
-        this.levelXP = level*100;
+        this.levelXP = calculateLevelXP(level);
         Skill skill = getSkill();
         int cap = 1024;
         if(skill!=null) cap = getSkill().getCap();
@@ -59,7 +59,7 @@ public class SkillWrapper {
 
     private boolean canLevelUp(int amount) {
         if(this.xp>=this.levelXP && this.level!=0 && !isMaxLevel()) {
-            if (((double) this.level) / 32d <= this.prestigeLevel) return true;
+            if (((double) this.level) / 32d <= this.prestigeLevel+1) return true;
             else this.xp-=amount;
         }
         return false;
@@ -121,12 +121,13 @@ public class SkillWrapper {
     //level xp calculations are fun...
     private int calculateLevelXP(double level) {
         double levelXP;
-        double multiple = (level+1d)/32d;
-        if(multiple<=1) levelXP = 50d*(Math.max(1d,Math.pow(1.1385d,level)));
+        double multiple = level/32d;
+        if(multiple<=1) levelXP = 50d*Math.pow(1.1385d,level);
         else {
-            multiple = level/32d;
-            double xpMultiplier = 50d*multipleFactor((int) (multiple)%7)*Math.pow(10,(int)(multiple/7d));
-            levelXP = xpMultiplier*Math.pow(1.1385d,Math.max(1d,32d*(multiple-((int)multiple))));
+            double xpMultiplier = 50d*multipleFactor(((int) multiple)%7)*Math.pow(10,(int)(multiple/7d));
+            int levelProgress = (int)(32d*(multiple-((int)multiple)));
+            if(levelProgress==0) levelProgress = 32;
+            levelXP = xpMultiplier*Math.pow(1.1385d,Math.max(1d,levelProgress));
         }
         return (int) (levelXP*levelFactor());
     }

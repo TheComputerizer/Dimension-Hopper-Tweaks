@@ -76,8 +76,8 @@ public class SkillToken extends EpicItem {
                     int currSP = cap.getSkillXP(skill);
                     int levelSP = cap.getSkillLevelXP(skill);
                     int currLevel = cap.getSkillLevel(skill);
-                    boolean isPrestigeBlocked = ((double)currLevel/32d)<prestige;
-                    if(currSP+SP>=levelSP && !isPrestigeBlocked) {
+                    boolean isWithinPrestigeRange = ((double)currLevel/32d)<prestige;
+                    if(currSP+SP<levelSP || (currSP+SP>=levelSP && isWithinPrestigeRange)) {
                         cap.addSkillXP(skill, SP, player, true);
                         player.addExperienceLevel(-1);
                     }
