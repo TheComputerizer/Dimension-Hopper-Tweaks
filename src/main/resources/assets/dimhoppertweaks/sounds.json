@@ -1,0 +1,4 @@
+{
+  "boss.static": { "sounds": [ "dimhoppertweaks:boss/static" ] },
+  "boss.spawn": { "sounds": [ "dimhoppertweaks:boss/spawn" ] }
+}

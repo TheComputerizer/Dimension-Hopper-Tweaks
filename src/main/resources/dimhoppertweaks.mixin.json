@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "mods.thecomputerizer.dimhoppertweaks.mixin",
+  "refmap": "mixins.dimhoppertweaks.refmap.json",
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinCalculateFeatures"
+  ],
+  "client": [
+    "MixinMusicPicker"
+  ]
+}

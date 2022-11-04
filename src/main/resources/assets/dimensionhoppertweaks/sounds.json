@@ -1,4 +1,0 @@
-{
-  "boss.static": { "sounds": [ "dimensionhoppertweaks:boss/static" ] },
-  "boss.spawn": { "sounds": [ "dimensionhoppertweaks:boss/spawn" ] }
-}
