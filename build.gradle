@@ -2,14 +2,14 @@
 
 buildscript {
     repositories {
-        maven { url = "http://maven.minecraftforge.net/" }
+        maven { url = 'https://maven.minecraftforge.net/' }
         maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
         mavenCentral()
         gradlePluginPortal()
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:4.1.10'
-        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
     }
 }
 
@@ -17,12 +17,11 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'maven-publish'
 
-version = '1.7.4'
+version = '1.8.0'
 group = 'mods.thecomputerizer.dimhoppertweaks'
 archivesBaseName = 'dimhoppertweaks'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
 minecraft {
     mappings channel: 'stable', version: '39-1.12'
@@ -51,16 +50,7 @@ repositories {
         }
     }
     maven {
-        url = uri("https://modmaven.k-4u.nl")
-    }
-    maven {
-        url = uri("https://cfa2.cursemaven.com")
-    }
-    maven {
         url "https://maven.cleanroommc.com"
-    }
-    maven {
-        url "https://mod-buildcraft.com/maven/"
     }
 }
 

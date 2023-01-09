@@ -37,8 +37,8 @@ public class StargateAddresser extends EpicItem {
         dimIDPairs.put(-1500,-1501);//io->europa
         dimIDPairs.put(-1501,-1506);//europa->ganymede
         dimIDPairs.put(-1506,-16);  //ganymede->saturn
-        dimIDPairs.put(-16,-1508);  //saturn->rhea
-        dimIDPairs.put(-1508,-1509);//rhea->oberon
+        dimIDPairs.put(-16,-1508);  //saturn->titan
+        dimIDPairs.put(-1508,-1509);//titan->oberon
         dimIDPairs.put(-1509,-1510);//oberon->titania
         dimIDPairs.put(-1510,-17);  //titania->uranus
         dimIDPairs.put(66,-19);     //erebus->pluto

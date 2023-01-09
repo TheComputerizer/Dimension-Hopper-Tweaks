@@ -13,6 +13,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,17 +28,19 @@ public class TokenExchangeGui extends GuiScreen {
         this.skills = skills;
         this.currentSkill = currentSkill;
         this.conversionRate = conversionRate;
-        this.scrollables = new ArrayList<>();
+        this.scrollables = Collections.synchronizedList(new ArrayList<>());
     }
 
     @Override
     public void setWorldAndResolution(Minecraft mc, int width, int height) {
         super.setWorldAndResolution(mc, width, height);
-        this.scrollables.clear();
-        this.scrollables.add(new ScrollableInteger(this,3*(this.width/4),this.height/4,50,72,
-                this.conversionRate, ""+this.conversionRate, "level"));
-        this.scrollables.add(new ScrollableList(this, this.width/4,this.height/4,50,72,
-                getSkillTranslation(this.currentSkill), this.currentSkill, this.skills,getListTranslation(), "current_skill"));
+        synchronized (this.scrollables) {
+            this.scrollables.clear();
+            this.scrollables.add(new ScrollableInteger(this, 3 * (this.width / 4), this.height / 4, 50, 72,
+                    this.conversionRate, "" + this.conversionRate, "level"));
+            this.scrollables.add(new ScrollableList(this, this.width / 4, this.height / 4, 50, 72,
+                    getSkillTranslation(this.currentSkill), this.currentSkill, this.skills, getListTranslation(), "current_skill"));
+        }
     }
 
     public void setConversionRate(int level) {
@@ -60,8 +63,10 @@ public class TokenExchangeGui extends GuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         if(this.mc==null) this.mc = Minecraft.getMinecraft();
         this.drawDefaultBackground();
-        for(CircularScrollableElement circle : this.scrollables)
-            circle.render(Minecraft.getMinecraft(),mouseX,mouseY,0,0,0,64);
+        synchronized (this.scrollables) {
+            for (CircularScrollableElement circle : this.scrollables)
+                circle.render(Minecraft.getMinecraft(), mouseX, mouseY, 0, 0, 0, 64);
+        }
         this.drawCenteredString(this.fontRenderer, ItemUtil.getTranslationForType("gui","skill_drain"), this.width/2, 8, 10526880);
         this.renderSmallCircleOnCursor(Minecraft.getMinecraft(),mouseX,mouseY);
         super.drawScreen(mouseX, mouseY, partialTicks);
@@ -70,7 +75,9 @@ public class TokenExchangeGui extends GuiScreen {
     @Override
     public void handleMouseInput() throws IOException {
         super.handleMouseInput();
-        for(CircularScrollableElement circle : this.scrollables) circle.handleScroll();
+        synchronized (this.scrollables) {
+            for (CircularScrollableElement circle : this.scrollables) circle.handleScroll();
+        }
     }
 
     @Override

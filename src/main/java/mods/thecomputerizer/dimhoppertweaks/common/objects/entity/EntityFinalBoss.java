@@ -224,7 +224,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
     }
 
     public void setPhaseSevenComplete() {
-        if(this.phase==2) this.phase++;
+        if(this.phase==7) this.onKillCommand();
     }
 
     protected boolean isEntityCloseEnough(Entity p, BlockPos pos, int max) {
