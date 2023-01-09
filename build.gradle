@@ -66,6 +66,12 @@ repositories {
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
+sourceSets {
+    main {
+        ext.refMap = "mixins.dimhoppertweaks.refmap.json"
+    }
+}
+
 dependencies {
     minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2860'
 
@@ -84,7 +90,7 @@ dependencies {
     implementation fg.deobf("curse.maven:tinkers-construct-74072:2902483")
     implementation fg.deobf("curse.maven:geckolib-388172:4020277")
 
-    implementation fg.deobf("zone.rong:mixinbooter:4.2")
+    implementation fg.deobf("zone.rong:mixinbooter:7.0")
 
     implementation('org.spongepowered:mixin:0.8.4')
 }
