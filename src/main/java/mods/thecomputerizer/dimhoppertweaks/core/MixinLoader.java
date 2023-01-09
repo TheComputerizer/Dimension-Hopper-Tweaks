@@ -11,7 +11,7 @@ public class MixinLoader implements ILateMixinLoader {
     @Override
     public List<String> getMixinConfigs() {
         ArrayList<String> ret = new ArrayList<>();
-        ret.add("dimhoppertweaks.mixin.json");
+        ret.add("mixins.dimhoppertweaks.json");
         return ret;
     }
 }
