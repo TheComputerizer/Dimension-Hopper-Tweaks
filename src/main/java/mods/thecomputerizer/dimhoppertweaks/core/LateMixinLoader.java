@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unused")
-public class MixinLoader implements ILateMixinLoader {
+public class LateMixinLoader implements ILateMixinLoader {
 
     @Override
     public List<String> getMixinConfigs() {
         ArrayList<String> ret = new ArrayList<>();
-        ret.add("mixins.dimhoppertweaks.json");
+        ret.add("dimhoppertweaks_late.mixin.json");
         return ret;
     }
 }
