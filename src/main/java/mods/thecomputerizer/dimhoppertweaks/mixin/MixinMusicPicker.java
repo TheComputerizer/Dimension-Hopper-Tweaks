@@ -12,11 +12,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MixinMusicPicker {
 
     @Inject(at = @At(value = "HEAD"), method = "checkDimensionList", cancellable = true)
-    private static void checkDimensionList(int playerDim, String resourceList, CallbackInfoReturnable<Boolean> cir) {
-        cir.setReturnValue(mixinCheckDimensionList(playerDim, resourceList));
+    private static void dimhoppertweaks_checkDimensionList(int playerDim, String resourceList, CallbackInfoReturnable<Boolean> cir) {
+        cir.setReturnValue(dimhoppertweaks_mixinCheckDimensionList(playerDim, resourceList));
     }
 
-    private static boolean mixinCheckDimensionList(int playerDim, String resourceList) {
+    private static boolean dimhoppertweaks_mixinCheckDimensionList(int playerDim, String resourceList) {
         for(String resource : MusicTriggers.stringBreaker(resourceList,";")) if ((playerDim)==Integer.parseInt(resource)) return true;
         try {
             return MusicPicker.checkResourceList(DimensionType.getById(playerDim).getName(),resourceList,false);

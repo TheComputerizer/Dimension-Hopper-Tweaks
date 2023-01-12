@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MixinCalculateFeatures {
 
     @Inject(at = @At(value = "HEAD"), method = "nbtChecker", cancellable = true)
-    private static void nbtChecker(EntityLiving e, String nbt, CallbackInfoReturnable<Boolean> cir) {
+    private static void dimhoppertweaks_nbtChecker(EntityLiving e, String nbt, CallbackInfoReturnable<Boolean> cir) {
         cir.setReturnValue(true);
         cir.cancel();
     }
