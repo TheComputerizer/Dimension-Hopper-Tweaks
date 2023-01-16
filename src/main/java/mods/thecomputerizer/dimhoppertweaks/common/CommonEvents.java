@@ -21,9 +21,8 @@ public class CommonEvents {
     @SubscribeEvent
     public static void onLivingHurt(LivingHurtEvent ev) {
         if(ev.getEntityLiving() instanceof EntityFinalBoss) {
-            if(!ev.getSource().damageType.matches("infinity")) {
+            if(!ev.getSource().damageType.matches("infinity"))
                 ev.setCanceled(true);
-            }
         }
     }
 

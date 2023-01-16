@@ -7,14 +7,16 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemTool;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.ISpecialArmor;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AdvancementEvent;
 import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
 import net.minecraftforge.event.entity.player.UseHoeEvent;
@@ -25,7 +27,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
-import slimeknights.tconstruct.tools.tools.Pickaxe;
+import slimeknights.tconstruct.library.tools.TinkerToolCore;
 
 @Mod.EventBusSubscriber(modid = DimHopperTweaks.MODID)
 public class Events {
@@ -34,9 +36,8 @@ public class Events {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void attachEntityCapabilities(AttachCapabilitiesEvent<Entity> event) {
-        if(event.getObject() instanceof EntityPlayerMP) {
+        if(event.getObject() instanceof EntityPlayerMP)
             event.addCapability(SKILL_CAPABILITY, new SkillCapabilityProvider());
-        }
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -84,10 +85,9 @@ public class Events {
         if(event.player instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP) event.player;
             BlockPos pos = getSkillCapability(player).getTwilightRespawn();
-            DimHopperTweaks.LOGGER.info("{} {} {}",pos!=null,player.rotationYaw,player.rotationPitch);
             if(player.dimension==7 && pos!=null) {
-                DimHopperTweaks.LOGGER.info("{} {} {} {} {}",pos.getX(),pos.getY(),pos.getZ(),player.rotationYaw,player.rotationPitch);
-                player.connection.setPlayerLocation(pos.getX(), pos.getY(), pos.getZ(), player.rotationYaw, player.rotationPitch);
+                player.connection.setPlayerLocation(pos.getX(),pos.getY(),pos.getZ(),player.rotationYaw,
+                        player.rotationPitch);
             }
         }
     }
@@ -97,7 +97,8 @@ public class Events {
         if(event.side==Side.SERVER && event.phase==TickEvent.Phase.END) {
             EntityPlayerMP player = (EntityPlayerMP)event.player;
             if(player.isSprinting() && getSkillCapability(player).checkTick())
-                getSkillCapability(player).addSkillXP("agility",getSkillCapability(player).getSkillXpMultiplier(1f),player,false);
+                getSkillCapability(player).addSkillXP("agility",getSkillCapability(player)
+                        .getSkillXpMultiplier(1f),player,false);
         }
     }
 
@@ -105,7 +106,8 @@ public class Events {
     public static void pickUpItem(PlayerEvent.ItemPickupEvent event) {
         if(event.player instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP)event.player;
-            getSkillCapability(player).addSkillXP("gathering",getSkillCapability(player).getSkillXpMultiplier(1f), player,false);
+            getSkillCapability(player).addSkillXP("gathering",getSkillCapability(player)
+                    .getSkillXpMultiplier(1f), player,false);
         }
     }
 
@@ -122,8 +124,9 @@ public class Events {
         if(!event.getWorld().isRemote && event.getPlayer() instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP)event.getPlayer();
             Item heldItem = player.getHeldItemMainhand().getItem();
-            if(heldItem instanceof ItemPickaxe || heldItem instanceof Pickaxe)
-                getSkillCapability(player).addSkillXP("mining",getSkillCapability(player).getSkillXpMultiplier(1f), player,false);
+            if(heldItem instanceof ItemTool || heldItem instanceof TinkerToolCore)
+                getSkillCapability(player).addSkillXP("mining",getSkillCapability(player)
+                        .getSkillXpMultiplier(1f), player,false);
         }
     }
 
@@ -131,7 +134,22 @@ public class Events {
     public static void blockPlace(BlockEvent.PlaceEvent event) {
         if(!event.getWorld().isRemote && event.getPlayer() instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP)event.getPlayer();
-            getSkillCapability(player).addSkillXP("building",getSkillCapability(player).getSkillXpMultiplier(1f),player,false);
+            getSkillCapability(player).addSkillXP("building",getSkillCapability(player)
+                    .getSkillXpMultiplier(1f),player,false);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onHurt(LivingHurtEvent event) {
+        if(!event.getEntityLiving().world.isRemote && event.getSource() != DamageSource.OUT_OF_WORLD &&
+                event.getEntityLiving() instanceof EntityPlayerMP) {
+            EntityPlayerMP player = (EntityPlayerMP) event.getEntityLiving();
+            float armor = ISpecialArmor.ArmorProperties.
+                    applyArmor(player,player.inventory.armorInventory, event.getSource(), event.getAmount());
+            if(armor>0) {
+                getSkillCapability(player).addSkillXP("defense", getSkillCapability(player)
+                        .getSkillXpMultiplier(Math.max(0f, ((event.getAmount()-armor) / 2f))), player, false);
+            }
         }
     }
 
@@ -141,11 +159,12 @@ public class Events {
             if (event.getEntityLiving() instanceof EntityPlayerMP) {
                 EntityPlayerMP player = (EntityPlayerMP) event.getEntityLiving();
                 event.setAmount(Math.max(0f,event.getAmount()-getSkillCapability(player).getDamageReduction()));
-                getSkillCapability(player).addSkillXP("defense",getSkillCapability(player).getSkillXpMultiplier(Math.max(0f,(event.getAmount() / 2f))), player,false);
-            } else if (!(event.getEntityLiving() instanceof EntityPlayer) && event.getSource().getTrueSource() instanceof EntityPlayerMP) {
+            } else if (!(event.getEntityLiving() instanceof EntityPlayer) &&
+                    event.getSource().getTrueSource() instanceof EntityPlayerMP) {
                 EntityPlayerMP player = (EntityPlayerMP) event.getSource().getTrueSource();
                 event.setAmount(event.getAmount()+getSkillCapability(player).getDamageMultiplier());
-                getSkillCapability(player).addSkillXP("attack",getSkillCapability(player).getSkillXpMultiplier(Math.max(0f,(event.getAmount() / 2f))), player,false);
+                getSkillCapability(player).addSkillXP("attack",getSkillCapability(player)
+                        .getSkillXpMultiplier(Math.max(0f,(event.getAmount() / 2f))), player,false);
             }
         }
     }
@@ -154,7 +173,8 @@ public class Events {
     public static void onJump(LivingEvent.LivingJumpEvent event) {
         if(event.getEntityLiving() instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP)event.getEntityLiving();
-            getSkillCapability(player).addSkillXP("agility",getSkillCapability(player).getSkillXpMultiplier(2f),player,false);
+            getSkillCapability(player).addSkillXP("agility",getSkillCapability(player)
+                    .getSkillXpMultiplier(2f),player,false);
         }
     }
 
@@ -162,7 +182,8 @@ public class Events {
     public static void onHoe(UseHoeEvent event) {
         if(!event.getWorld().isRemote && event.getEntityPlayer() instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP)event.getEntityPlayer();
-            getSkillCapability(player).addSkillXP("farming",getSkillCapability(player).getSkillXpMultiplier(3f),player,false);
+            getSkillCapability(player).addSkillXP("farming",getSkillCapability(player)
+                    .getSkillXpMultiplier(3f),player,false);
         }
     }
 
@@ -170,7 +191,8 @@ public class Events {
     public static void pickupXP(PlayerPickupXpEvent event) {
         if(event.getEntityPlayer() instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP)event.getEntityPlayer();
-            getSkillCapability(player).addSkillXP("magic",getSkillCapability(player).getSkillXpMultiplier(1f),player,false);
+            getSkillCapability(player).addSkillXP("magic",getSkillCapability(player)
+                    .getSkillXpMultiplier(1f),player,false);
         }
     }
 
@@ -178,7 +200,8 @@ public class Events {
     public static void onChangedDimensions(PlayerEvent.PlayerChangedDimensionEvent event) {
         if(event.player instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP)event.player;
-            getSkillCapability(player).addSkillXP("void",getSkillCapability(player).getSkillXpMultiplier(5f),player,false);
+            getSkillCapability(player).addSkillXP("void",getSkillCapability(player)
+                    .getSkillXpMultiplier(5f),player,false);
         }
     }
 
@@ -186,7 +209,8 @@ public class Events {
     public static void onAdvancement(AdvancementEvent event) {
         if(event.getEntityPlayer() instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP)event.getEntityPlayer();
-            getSkillCapability(player).addSkillXP("research",getSkillCapability(player).getSkillXpMultiplier(5f),player,false);
+            getSkillCapability(player).addSkillXP("research",getSkillCapability(player)
+                    .getSkillXpMultiplier(5f),player,false);
         }
     }
 }
