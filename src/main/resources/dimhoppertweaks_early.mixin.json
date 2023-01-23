@@ -1,11 +1,12 @@
 {
   "required": true,
   "package": "mods.thecomputerizer.dimhoppertweaks.mixin",
-  "refmap": "mixins.dimhoppertweaks.refmap.json",
+  "refmap": "dimhoppertweaks.refmap.json",
   "target": "@env(DEFAULT)",
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MixinStatisticManager"
+    "MixinStatisticManager",
+    "MixinStructureComponent"
   ]
 }

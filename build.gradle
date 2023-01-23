@@ -1,23 +1,23 @@
 //file:noinspection GroovyUnusedAssignment
 
-buildscript {
-    repositories {
-        maven { url = 'https://maven.minecraftforge.net/' }
-        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
-        mavenCentral()
-        gradlePluginPortal()
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-        classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
+plugins {
+    id 'net.minecraftforge.gradle' version '5.1+'
+    id 'wtf.gofancy.fancygradle' version '1.1.+'
+    id 'org.spongepowered.mixin' version '0.7.+'
+}
+
+fancyGradle {
+    patches {
+        resources
+        coremods
+        codeChickenLib
+        asm
+        mergetool
     }
 }
 
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'org.spongepowered.mixin'
-apply plugin: 'maven-publish'
 
-version = '1.8.1'
+version = '1.9.0'
 group = 'mods.thecomputerizer.dimhoppertweaks'
 archivesBaseName = 'dimhoppertweaks'
 
@@ -27,18 +27,27 @@ minecraft {
     mappings channel: 'stable', version: '39-1.12'
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
     runs {
+        def args = [
+                "-Dmixin.debug.export=true",
+                '-Dmixin.hotSwap=true',
+                '-Dmixin.checks.interfaces=true'
+        ]
         client {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
+            jvmArgs args
         }
 
         server {
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
+            jvmArgs args
         }
     }
 }
+
+sourceSets.main.resources { srcDir 'src/main/resources' }
 
 repositories {
     google()
@@ -49,42 +58,31 @@ repositories {
             includeGroup "curse.maven"
         }
     }
-    maven {
-        url "https://maven.cleanroommc.com"
-    }
-}
-
-sourceSets.main.resources { srcDir 'src/generated/resources' }
-
-sourceSets {
-    main {
-        ext.refMap = "mixins.dimhoppertweaks.refmap.json"
-    }
 }
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2860'
 
-    implementation fg.deobf("curse.maven:codechicken-lib-242818:2779848")
-    implementation fg.deobf("curse.maven:fermion-lib-345538:3186519")
-    implementation fg.deobf("curse.maven:avaritia-261348:3143349")
-    implementation fg.deobf("curse.maven:sgcraft-289115:3044648")
-    implementation fg.deobf("curse.maven:reskillable-286382:2815686")
-    implementation fg.deobf("curse.maven:had-enough-items-557549:3779488")
-    implementation fg.deobf("curse.maven:galacticraft-legacy-564236:3648807")
-    implementation fg.deobf("curse.maven:dimensionaldoors-284876:3785565")
-    implementation fg.deobf("curse.maven:industrial-craft-242638:3078604")
-    implementation fg.deobf("curse.maven:music-triggers-518410:3796636")
-    implementation fg.deobf("curse.maven:extra-utilities-225561:2678374")
-    implementation fg.deobf("curse.maven:reskillable-286382:2815686")
-    implementation fg.deobf("curse.maven:tinkers-construct-74072:2902483")
-    implementation fg.deobf("curse.maven:geckolib-388172:4020277")
-    implementation fg.deobf("curse.maven:geckolib-388172:4020277")
-    implementation fg.deobf("curse.maven:zollern-galaxy-241940:4046635")
+    compileOnly(fg.deobf('curse.maven:zollern-galaxy-241940:4046635'))
 
-    implementation fg.deobf("zone.rong:mixinbooter:7.0")
+    implementation fg.deobf('curse.maven:codechicken-lib-242818:2779848')
+    implementation fg.deobf('curse.maven:fermion-lib-345538:3186519')
+    implementation fg.deobf('curse.maven:avaritia-261348:3143349')
+    implementation fg.deobf('curse.maven:sgcraft-289115:3044648')
+    implementation fg.deobf('curse.maven:reskillable-286382:2815686')
+    implementation fg.deobf('curse.maven:had-enough-items-557549:4109510')
+    implementation fg.deobf('curse.maven:dimensionaldoors-284876:3785565')
+    implementation fg.deobf('curse.maven:industrial-craft-242638:3078604')
+    implementation fg.deobf('curse.maven:music-triggers-518410:3796636')
+    implementation fg.deobf('curse.maven:extra-utilities-225561:2678374')
+    implementation fg.deobf('curse.maven:reskillable-286382:2815686')
+    implementation fg.deobf('curse.maven:tinkers-construct-74072:2902483')
+    implementation fg.deobf('curse.maven:geckolib-388172:4020277')
+    implementation fg.deobf('curse.maven:the-twilight-forest-227639:3051450')
 
-    implementation('org.spongepowered:mixin:0.8.4')
+    implementation fg.deobf('curse.maven:mixin-booter-419286:4090558')
+
+    runtimeOnly(fg.deobf('curse.maven:mantle-74924:2713386'))
 }
 
 processResources {
@@ -101,35 +99,16 @@ processResources {
 }
 
 mixin {
-    disableAnnotationProcessorCheck()
+    add sourceSets.main, "dimhoppertweaks.refmap.json"
 }
 
 jar {
     manifest {
         attributes([
-                "FMLAT": "accesstransformer.cfg",
-                "Specification-Title": "The_Computerizer",
-                "Specification-Vendor": "The_Computerizer",
-                "Specification-Version": project.version,
-                "Implementation-Title": "dimhoppertweaks",
-                "Implementation-Version": project.version,
-                "Implementation-Vendor" :"The_Computerizer",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+                'FMLAT': 'accesstransformer.cfg',
+                'FMLCorePlugin': 'mods.thecomputerizer.dimhoppertweaks.core.EarlyMixinPlugin',
+                'FMLCorePluginContainsFMLMod': 'true',
+                'ForceLoadAsMod': 'true'
         ])
-    }
-}
-
-jar.finalizedBy('reobfJar')
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifact jar
-        }
-    }
-    repositories {
-        maven {
-            url "file:///${project.projectDir}/mcmodsrepo"
-        }
     }
 }

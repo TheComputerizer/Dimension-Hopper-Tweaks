@@ -23,8 +23,7 @@ public class DimHopperTweaks
     public static final String NAME = "Dimension Hopper Tweaks";
     public static final String VERSION = "1.7.1";
     public static final String DEPENDENCIES = "required-after:forge@[14.23.5.2860,);required-after:fermion;" +
-            "required-after:avaritia;required-after:sgcraft;required-after:musictriggers;" +
-            "required-after:zollerngalaxy;";
+            "required-after:avaritia;required-after:sgcraft;";
     public static Logger LOGGER;
 
     @Mod.Instance(MODID)

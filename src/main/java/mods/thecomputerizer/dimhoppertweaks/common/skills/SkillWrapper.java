@@ -14,6 +14,8 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 
+import java.util.Objects;
+
 public class SkillWrapper {
 
     private final String modid;
@@ -105,13 +107,15 @@ public class SkillWrapper {
     }
 
     public void syncLevel(EntityPlayerMP player) {
-        this.level = PlayerDataHandler.get(player).getSkillInfo(getSkill()).getLevel();
-        if(isMaxLevel()) {
-            this.level = this.maxLevel;
-            this.levelXP = 0;
-            this.xp = 0;
-        } else this.levelXP = calculateLevelXP(this.level);
-        if(this.xp>=this.levelXP) this.levelUpWithOverflow(player, false, true);
+        if(Objects.nonNull(PlayerDataHandler.get(player)) && Objects.nonNull(PlayerDataHandler.get(player).getSkillInfo(getSkill()))) {
+            this.level = PlayerDataHandler.get(player).getSkillInfo(getSkill()).getLevel();
+            if (isMaxLevel()) {
+                this.level = this.maxLevel;
+                this.levelXP = 0;
+                this.xp = 0;
+            } else this.levelXP = calculateLevelXP(this.level);
+            if (this.xp >= this.levelXP) this.levelUpWithOverflow(player, false, true);
+        }
     }
 
     private Skill getSkill() {
