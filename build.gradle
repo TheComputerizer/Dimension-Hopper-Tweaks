@@ -1,4 +1,5 @@
 //file:noinspection GroovyUnusedAssignment
+//file:noinspection GroovyAssignabilityCheck
 
 plugins {
     id 'net.minecraftforge.gradle' version '5.1+'
@@ -25,7 +26,6 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
 minecraft {
     mappings channel: 'stable', version: '39-1.12'
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
     runs {
         def args = [
                 "-Dmixin.debug.export=true",
@@ -47,22 +47,24 @@ minecraft {
     }
 }
 
-sourceSets.main.resources { srcDir 'src/main/resources' }
-
 repositories {
-    google()
-    mavenCentral()
     maven {
         url = 'https://www.cursemaven.com'
         content {
             includeGroup "curse.maven"
         }
     }
+
+    maven {
+        name = "Sponge"
+        url = uri("https://repo.spongepowered.org/maven")
+    }
 }
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2860'
 
+    //galacticraft doesn't seem to work in dev?
     compileOnly(fg.deobf('curse.maven:zollern-galaxy-241940:4046635'))
 
     implementation fg.deobf('curse.maven:codechicken-lib-242818:2779848')
@@ -80,9 +82,12 @@ dependencies {
     implementation fg.deobf('curse.maven:geckolib-388172:4020277')
     implementation fg.deobf('curse.maven:the-twilight-forest-227639:3051450')
 
-    implementation fg.deobf('curse.maven:mixin-booter-419286:4090558')
-
+    //don't need mantle to compile
     runtimeOnly(fg.deobf('curse.maven:mantle-74924:2713386'))
+
+    //mixin stuff
+    implementation fg.deobf('curse.maven:mixin-booter-419286:4090558')
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
 processResources {
@@ -105,7 +110,6 @@ mixin {
 jar {
     manifest {
         attributes([
-                'FMLAT': 'accesstransformer.cfg',
                 'FMLCorePlugin': 'mods.thecomputerizer.dimhoppertweaks.core.EarlyMixinPlugin',
                 'FMLCorePluginContainsFMLMod': 'true',
                 'ForceLoadAsMod': 'true'

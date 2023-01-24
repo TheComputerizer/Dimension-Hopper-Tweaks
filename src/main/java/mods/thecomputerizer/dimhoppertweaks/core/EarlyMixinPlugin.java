@@ -6,9 +6,10 @@ import org.apache.logging.log4j.LogManager;
 import zone.rong.mixinbooter.IEarlyMixinLoader;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @IFMLLoadingPlugin.Name("DimHopperTweaksCore")
 @IFMLLoadingPlugin.MCVersion(ForgeVersion.mcVersion)
@@ -47,8 +48,6 @@ public class EarlyMixinPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
     @Override
     public List<String> getMixinConfigs() {
-        List<String> ret = new ArrayList<>();
-        ret.add("dimhoppertweaks_early.mixin.json");
-        return ret;
+        return Stream.of("dimhoppertweaks_vanilla.mixin.json").collect(Collectors.toList());
     }
 }

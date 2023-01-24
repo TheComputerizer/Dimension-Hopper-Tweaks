@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(CalculateFeatures.class)
+@Mixin(value = CalculateFeatures.class, remap = false)
 public class MixinCalculateFeatures {
 
     @Inject(at = @At(value = "HEAD"), method = "nbtChecker", cancellable = true)
