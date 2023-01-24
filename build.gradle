@@ -67,26 +67,23 @@ dependencies {
     //galacticraft doesn't seem to work in dev?
     compileOnly(fg.deobf('curse.maven:zollern-galaxy-241940:4046635'))
 
-    implementation fg.deobf('curse.maven:codechicken-lib-242818:2779848')
-    implementation fg.deobf('curse.maven:fermion-lib-345538:3186519')
-    implementation fg.deobf('curse.maven:avaritia-261348:3143349')
-    implementation fg.deobf('curse.maven:sgcraft-289115:3044648')
-    implementation fg.deobf('curse.maven:reskillable-286382:2815686')
-    implementation fg.deobf('curse.maven:had-enough-items-557549:4109510')
-    implementation fg.deobf('curse.maven:dimensionaldoors-284876:3785565')
-    implementation fg.deobf('curse.maven:industrial-craft-242638:3078604')
-    implementation fg.deobf('curse.maven:music-triggers-518410:3796636')
-    implementation fg.deobf('curse.maven:extra-utilities-225561:2678374')
-    implementation fg.deobf('curse.maven:reskillable-286382:2815686')
-    implementation fg.deobf('curse.maven:tinkers-construct-74072:2902483')
-    implementation fg.deobf('curse.maven:geckolib-388172:4020277')
-    implementation fg.deobf('curse.maven:the-twilight-forest-227639:3051450')
+    implementation(fg.deobf('curse.maven:codechicken-lib-242818:2779848'))
+    implementation(fg.deobf('curse.maven:avaritia-261348:3143349'))
+    implementation(fg.deobf('curse.maven:dimensionaldoors-284876:3926161'))
+    implementation(fg.deobf('curse.maven:sgcraft-289115:3044648'))
+    implementation(fg.deobf('curse.maven:reskillable-286382:2815686'))
+    implementation(fg.deobf('curse.maven:music-triggers-518410:3796636'))
+    implementation(fg.deobf('curse.maven:reskillable-286382:2815686'))
+    implementation(fg.deobf('curse.maven:tinkers-construct-74072:2902483'))
+    implementation(fg.deobf('curse.maven:geckolib-388172:4020277'))
+    implementation(fg.deobf('curse.maven:the-twilight-forest-227639:3051450'))
 
-    //don't need mantle to compile
+    //don't need these to compile
     runtimeOnly(fg.deobf('curse.maven:mantle-74924:2713386'))
+    runtimeOnly(fg.deobf('curse.maven:had-enough-items-557549:4109510'))
 
     //mixin stuff
-    implementation fg.deobf('curse.maven:mixin-booter-419286:4090558')
+    implementation(fg.deobf('curse.maven:mixin-booter-419286:4090558'))
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 

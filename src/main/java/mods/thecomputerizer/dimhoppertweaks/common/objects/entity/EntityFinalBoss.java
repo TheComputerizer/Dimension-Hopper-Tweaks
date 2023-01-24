@@ -7,6 +7,7 @@ import mods.thecomputerizer.dimhoppertweaks.common.objects.items.RealitySlasher;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketHandler;
 import mods.thecomputerizer.dimhoppertweaks.network.packets.PacketUpdateBossShield;
 import morph.avaritia.item.tools.ItemSwordInfinity;
+import morph.avaritia.util.DamageSourceInfinitySword;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
@@ -348,11 +349,9 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
     @Override
     public boolean attackEntityFrom(@Nonnull DamageSource source, float amount) {
         if(!this.invulnerable && !this.isShieldUp) {
-            if (!(source instanceof EntityDamageSourceIndirect) && !source.isProjectile() && source.getTrueSource() instanceof EntityPlayer) {
+            if (source instanceof DamageSourceInfinitySword && source.getTrueSource() instanceof EntityPlayer) {
                 EntityPlayer p = (EntityPlayer) source.getTrueSource();
                 if (p.getHeldItemMainhand().getItem() instanceof ItemSwordInfinity) {
-                    amount = 5f;
-                    source = new DamageSource("infinity");
                     this.damageBoss(source, amount, p);
                     return true;
                 }
