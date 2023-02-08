@@ -1,5 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin;
 
+import de.ellpeck.actuallyadditions.mod.blocks.InitBlocks;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
@@ -40,6 +41,8 @@ public abstract class MixinStructureComponent {
                 world.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
                 ci.cancel();
             }
+            if(state.getBlock()==Blocks.CHEST)
+                world.setBlockState(pos, InitBlocks.blockGiantChest.getDefaultState(), 2);
         }
     }
 }
