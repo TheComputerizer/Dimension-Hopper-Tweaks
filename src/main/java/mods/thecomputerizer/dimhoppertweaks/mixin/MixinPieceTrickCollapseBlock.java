@@ -22,7 +22,7 @@ import vazkii.psi.api.spell.SpellRuntimeException;
 import vazkii.psi.common.spell.trick.block.PieceTrickBreakBlock;
 import vazkii.psi.common.spell.trick.block.PieceTrickCollapseBlock;
 
-@Mixin(PieceTrickCollapseBlock.class)
+@Mixin(value = PieceTrickCollapseBlock.class, remap = false)
 public abstract class MixinPieceTrickCollapseBlock {
 
     @Shadow

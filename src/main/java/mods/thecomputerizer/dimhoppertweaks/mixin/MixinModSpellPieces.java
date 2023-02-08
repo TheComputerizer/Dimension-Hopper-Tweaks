@@ -9,7 +9,7 @@ import vazkii.psi.common.spell.base.ModSpellPieces;
 import vazkii.psi.common.spell.trick.block.PieceTrickSmeltBlock;
 import vazkii.psi.common.spell.trick.entity.PieceTrickSmeltItem;
 
-@Mixin(ModSpellPieces.class)
+@Mixin(value = ModSpellPieces.class, remap = false)
 public class MixinModSpellPieces {
 
     @Inject(at = @At(value = "HEAD"), method = "register", cancellable = true)
