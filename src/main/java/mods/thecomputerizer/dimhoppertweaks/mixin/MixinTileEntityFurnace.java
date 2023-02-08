@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin;
 
-import mariot7.xlfoodmod.init.ItemListxlfoodmod;
+import mods.thecomputerizer.dimhoppertweaks.util.XLFoodUtil;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -10,6 +10,7 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.fml.common.Loader;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
@@ -32,8 +33,8 @@ public abstract class MixinTileEntityFurnace {
         if (this.canSmelt()) {
             Block block = ((TileEntity)(Object)this).getWorld().getBlockState(((TileEntity)(Object)this).getPos()).getBlock();
             ItemStack itemstack = this.furnaceItemStacks.get(0);
-            ItemStack itemstack1 = block==Blocks.FURNACE || block==Blocks.LIT_FURNACE ?
-                    new ItemStack(ItemListxlfoodmod.cheese) : FurnaceRecipes.instance().getSmeltingResult(itemstack);
+            ItemStack itemstack1 = Loader.isModLoaded("xlfoodmod") && (block==Blocks.FURNACE || block==Blocks.LIT_FURNACE) ?
+                    XLFoodUtil.cheese() : FurnaceRecipes.instance().getSmeltingResult(itemstack);
             ItemStack itemstack2 = this.furnaceItemStacks.get(2);
             if (itemstack2.isEmpty()) this.furnaceItemStacks.set(2, itemstack1.copy());
             else if (itemstack2.getItem() == itemstack1.getItem()) itemstack2.grow(itemstack1.getCount());
