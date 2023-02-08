@@ -3,6 +3,7 @@ package mods.thecomputerizer.dimhoppertweaks.mixin;
 import de.ellpeck.actuallyadditions.mod.blocks.InitBlocks;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
@@ -13,6 +14,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import twilightforest.structures.StructureTFComponent;
+
+import java.util.Random;
 
 @Mixin(StructureComponent.class)
 public abstract class MixinStructureComponent {
@@ -41,8 +44,10 @@ public abstract class MixinStructureComponent {
                 world.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
                 ci.cancel();
             }
-            if(state.getBlock()==Blocks.CHEST)
-                world.setBlockState(pos, InitBlocks.blockGiantChest.getDefaultState(), 2);
+            if(state.getBlock()==Blocks.CHEST) {
+                if(new Random().nextFloat()<=0.02f)
+                    world.setBlockState(pos, InitBlocks.blockGiantChest.getDefaultState(), 2);
+            }
         }
     }
 }

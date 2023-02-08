@@ -7,9 +7,11 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinCalculateFeatures",
+    "MixinDefaultProbeInfoProvider",
     "MixinInfinitySword",
     "MixinModSpellPieces",
-    "MixinPieceTrickCollapseBlock"
+    "MixinPieceTrickCollapseBlock",
+    "MixinZGBlockBase"
   ],
   "client": [
     "MixinMusicPicker"

@@ -85,6 +85,7 @@ dependencies {
     implementation(fg.deobf('curse.maven:psi-241665:3085917'))
     implementation(fg.deobf('curse.maven:actually-additions-228404:3117927'))
     implementation(fg.deobf('curse.maven:the-one-probe-245211:2667280'))
+    implementation(fg.deobf('curse.maven:xl-food-mod-247217:2740774'))
 
     //don't need these to compile
     runtimeOnly(fg.deobf('curse.maven:mantle-74924:2713386'))

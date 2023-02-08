@@ -17,10 +17,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(DefaultProbeInfoProvider.class)
+@Mixin(value = DefaultProbeInfoProvider.class, remap = false)
 public class MixinDefaultProbeInfoProvider {
 
-    @Inject(at = @At(value = "HEAD"), method = "hitEntity")
+    @Inject(at = @At(value = "HEAD"), method = "showStandardBlockInfo")
     private static void dimhoppertweaks_showStandardBlockInfo(IProbeConfig config, ProbeMode mode, IProbeInfo probeInfo,
                                                               IBlockState blockState, Block block, World world, BlockPos pos,
                                                               EntityPlayer player, IProbeHitData data,
