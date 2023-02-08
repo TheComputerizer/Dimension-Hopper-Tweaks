@@ -69,7 +69,9 @@ dependencies {
 
     //galacticraft doesn't seem to work in dev?
     compileOnly(fg.deobf('curse.maven:zollern-galaxy-241940:4046635'))
+    compileOnly(fg.deobf('curse.maven:game-stages-268655:2951840'))
     compileOnly(fg.deobf('curse.maven:ore-stages-290201:2632997'))
+    //compileOnly(fg.deobf('curse.maven:item-stages-2810185:2810185'))
 
     implementation(fg.deobf('curse.maven:codechicken-lib-242818:2779848'))
     implementation(fg.deobf('curse.maven:avaritia-261348:3143349'))
@@ -80,13 +82,12 @@ dependencies {
     implementation(fg.deobf('curse.maven:tinkers-construct-74072:2902483'))
     implementation(fg.deobf('curse.maven:geckolib-388172:4020277'))
     implementation(fg.deobf('curse.maven:the-twilight-forest-227639:3051450'))
-    implementation(fg.deobf('curse.maven:game-stages-268655:2951840'))
     implementation(fg.deobf('curse.maven:psi-241665:3085917'))
     implementation(fg.deobf('curse.maven:actually-additions-228404:3117927'))
+    implementation(fg.deobf('curse.maven:the-one-probe-245211:2667280'))
 
     //don't need these to compile
     runtimeOnly(fg.deobf('curse.maven:mantle-74924:2713386'))
-    runtimeOnly(fg.deobf('curse.maven:bookshelf-228525:2836960'))
     runtimeOnly(fg.deobf('curse.maven:autoreglib-250363:2746011'))
     runtimeOnly(fg.deobf('curse.maven:had-enough-items-557549:4109510'))
 

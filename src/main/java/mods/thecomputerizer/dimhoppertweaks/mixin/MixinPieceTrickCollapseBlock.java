@@ -61,10 +61,9 @@ public abstract class MixinPieceTrickCollapseBlock {
                         state = Blocks.REDSTONE_ORE.getDefaultState();
                         world.setBlockState(pos, state);
                     }
-                    if(Loader.isModLoaded("orestages"))
-                        state = PsiUtil.accountForOreStages(event.getPlayer(),state);
                     EntityFallingBlock falling = new EntityFallingBlock(world, (double)pos.getX() + 0.5,
-                            (double)pos.getY() + 0.5, (double)pos.getZ() + 0.5, state);
+                            (double)pos.getY() + 0.5, (double)pos.getZ() + 0.5, Loader.isModLoaded("orestages") ?
+                            PsiUtil.accountForOreStages(event.getPlayer(),state) : state);
                     world.spawnEntity(falling);
                 }
                 return null;
