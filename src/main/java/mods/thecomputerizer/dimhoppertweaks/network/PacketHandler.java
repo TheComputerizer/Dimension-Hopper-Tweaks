@@ -15,6 +15,7 @@ public class PacketHandler {
     private static int id = 0;
 
     public static void registerPackets() {
+        DimHopperTweaks.LOGGER.info("Registering packets");
         NETWORK.registerMessage(PacketUpdateBossShield.class, PacketUpdateBossShield.PacketUpdateBossShieldMessage.class, id++, Side.CLIENT);
         NETWORK.registerMessage(PacketRenderBossAttack.class, PacketRenderBossAttack.PacketRenderBossAttackMessage.class, id++, Side.CLIENT);
         NETWORK.registerMessage(PacketOpenGui.class, PacketOpenGui.PacketOpenGuiMessage.class, id++, Side.CLIENT);

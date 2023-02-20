@@ -6,8 +6,10 @@
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "MixinItemHoe",
     "MixinStatisticManager",
     "MixinStructureComponent",
-    "MixinTileEntityFurnace"
+    "MixinTileEntityFurnace",
+    "MixinWorldServer"
   ]
 }

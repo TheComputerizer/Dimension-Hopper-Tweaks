@@ -4,20 +4,57 @@ import codersafterdark.reskillable.api.ReskillableRegistries;
 import codersafterdark.reskillable.api.data.PlayerData;
 import codersafterdark.reskillable.api.data.PlayerDataHandler;
 import codersafterdark.reskillable.api.data.PlayerSkillInfo;
+import codersafterdark.reskillable.api.event.LevelUpEvent;
 import codersafterdark.reskillable.api.skill.Skill;
 import codersafterdark.reskillable.api.toast.ToastHelper;
+import mods.thecomputerizer.dimhoppertweaks.DimHopperTweaks;
+import mods.thecomputerizer.dimhoppertweaks.common.objects.items.SkillToken;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 
 import java.util.Objects;
 
 public class SkillWrapper {
 
+    public static final ResourceLocation SKILL_CAPABILITY = new ResourceLocation(DimHopperTweaks.MODID, "skills");
+
+    @SuppressWarnings("ConstantConditions")
+    public static ISkillCapability getSkillCapability(EntityPlayer player) {
+        return player.getCapability(SkillCapabilityProvider.SKILL_CAPABILITY,null);
+    }
+
+    public static void addSP(EntityPlayerMP player, String skill, float amount, boolean fromXP) {
+        getSkillCapability(player).addSkillXP(skill, (int)withMultiplier(player, amount), player,fromXP);
+    }
+
+    public static float withMultiplier(EntityPlayerMP player, float amount) {
+        return getSkillCapability(player).getSkillXpMultiplier(amount);
+    }
+
+    public static void shieldHook(EntityPlayerMP player, byte state) {
+        float amount = getSkillCapability(player).getShieldedDamage();
+        if(state==29 && amount>0) addSP(player,"defense",Math.max(1f,amount/2f),false);
+    }
+
+    public static void updateTokens(EntityPlayerMP player) {
+        getSkillCapability(player).syncSkills(player);
+        for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
+            ItemStack stack = player.inventory.getStackInSlot(i);
+            if (stack.getItem() instanceof SkillToken) {
+                SkillToken token = (SkillToken) stack.getItem();
+                ISkillCapability cap = getSkillCapability(player);
+                token.updateSkills(stack, cap.getCurrentValues(), cap.getDrainSelection(), cap.getDrainLevels());
+            }
+        }
+    }
     private final String modid;
     private final String name;
     private final int maxLevel;
@@ -37,6 +74,7 @@ public class SkillWrapper {
         if(skill!=null) cap = getSkill().getCap();
         this.maxLevel = cap;
         this.prestigeLevel = 0;
+        DimHopperTweaks.LOGGER.info("Registered skill {}:{} at level {} with xp {}/{}",modid,name,level,xp,levelXP);
     }
 
     public int getXP() {
@@ -95,6 +133,7 @@ public class SkillWrapper {
         }
         PlayerData data = PlayerDataHandler.get(player);
         PlayerSkillInfo skillInfo = data.getSkillInfo(getSkill());
+        int oldLevel = skillInfo.getLevel();
         skillInfo.setLevel(this.level);
         data.saveAndSync();
         if(showToast) ToastHelper.sendSkillToast(player, getSkill(), skillInfo.getLevel());
@@ -103,6 +142,7 @@ public class SkillWrapper {
             SoundEvent levelSound = SoundEvents.BLOCK_END_PORTAL_SPAWN;
             if(fromXP) levelSound = SoundEvents.ENTITY_PLAYER_LEVELUP;
             world.playSound(null, player.posX, player.posY, player.posZ, levelSound, SoundCategory.MASTER, 1.0F, 1.0F);
+            MinecraftForge.EVENT_BUS.post(new LevelUpEvent.Post(player, getSkill(), this.level, oldLevel));
         }
     }
 
@@ -148,7 +188,7 @@ public class SkillWrapper {
             case "defense":
             case "farming":
                 return 1.5d;
-            case "agility": return 5d;
+            case "agility": return 10d;
             case "void": return 0.75d;
             case "research": return 1.1d;
             default: return 1d;

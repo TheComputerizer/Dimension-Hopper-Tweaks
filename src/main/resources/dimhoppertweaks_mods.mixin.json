@@ -9,6 +9,7 @@
     "MixinCalculateFeatures",
     "MixinDefaultProbeInfoProvider",
     "MixinInfinitySword",
+    "MixinItemTreasureChest",
     "MixinModSpellPieces",
     "MixinPieceTrickCollapseBlock",
     "MixinZGBlockBase"

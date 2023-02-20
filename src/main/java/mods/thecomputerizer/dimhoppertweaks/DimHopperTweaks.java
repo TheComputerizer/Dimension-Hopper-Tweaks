@@ -21,7 +21,7 @@ public class DimHopperTweaks
 {
     public static final String MODID = "dimhoppertweaks";
     public static final String NAME = "Dimension Hopper Tweaks";
-    public static final String VERSION = "1.7.1";
+    public static final String VERSION = "2.0.0";
     public static final String DEPENDENCIES = "required-after:forge@[14.23.5.2860,);required-after:dimdoors;" +
             "required-after:avaritia;required-after:sgcraft;";
     public static Logger LOGGER;
@@ -32,16 +32,19 @@ public class DimHopperTweaks
     @Mod.EventHandler
     public static void preInit(FMLPreInitializationEvent event) {
         LOGGER = LogManager.getLogger();
+        LOGGER.info("Starting pre-init");
         PacketHandler.registerPackets();
         CapabilityManager.INSTANCE.register(ISkillCapability.class, new SkillCapabilityStorage(), SkillCapability::new);
         if (FMLCommonHandler.instance().getSide().isClient()) {
             OBJLoader.INSTANCE.addDomain(DimHopperTweaks.MODID);
             ClientHandler.registerRenderers();
         }
+        LOGGER.info("Completed pre-init");
     }
 
     @Mod.EventHandler
     public void start(FMLServerStartingEvent event) {
+        LOGGER.info("Dimension Hooper Tweaks - Registering commands");
         event.registerServerCommand(new RandomTP());
         event.registerServerCommand(new SummonBoss());
     }

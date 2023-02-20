@@ -1,7 +1,9 @@
 package mods.thecomputerizer.dimhoppertweaks.network.packets;
 
 import io.netty.buffer.ByteBuf;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.Events;
+import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.management.PlayerList;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -14,8 +16,9 @@ public class PacketSyncGuiData implements IMessageHandler<PacketSyncGuiData.Pack
 
     @Override
     public IMessage onMessage(PacketSyncGuiData.PacketSyncGuiDataMessage message, MessageContext ctx) {
-        Events.updateTokenDrainValues(message.skill, message.level,
-                FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(message.playerUUID));
+        PlayerList players = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList();
+        EntityPlayerMP player = players.getPlayerByUUID(message.playerUUID);
+        SkillWrapper.getSkillCapability(player).setDrainSelection(message.skill,message.level,player);
         return null;
     }
 

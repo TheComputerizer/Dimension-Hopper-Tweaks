@@ -2,22 +2,28 @@ package mods.thecomputerizer.dimhoppertweaks.common.skills;
 
 import mods.thecomputerizer.dimhoppertweaks.DimHopperTweaks;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import org.apache.commons.lang3.mutable.MutableInt;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 public class SkillCapability implements ISkillCapability {
 
-    private int TICK_COUNTER = 0;
     private Map<String, SkillWrapper> skillMap = new HashMap<>();
     private String SKILL_TO_DRAIN = "mining";
     private int DRAIN_LEVELS = 1;
+    private float SHIELD_DAMAGE = 1f;
     private BlockPos TWILIGHT_RESPAWN;
+    private Map<Item, MutableInt> GATHERING_LIST = new HashMap<>();
 
     public SkillCapability() {
+        DimHopperTweaks.LOGGER.info("Initializing skill capability with {} skills",SkillCapabilityStorage.SKILLS.size());
         for(String skill : SkillCapabilityStorage.SKILLS) this.addDefaultSkillValues(skill);
         setDrainSelection("mining",1, null);
         this.TWILIGHT_RESPAWN = null;
@@ -39,29 +45,21 @@ public class SkillCapability implements ISkillCapability {
 
     @Override
     public void of(SkillCapability copy, EntityPlayerMP newPlayer) {
-        this.TICK_COUNTER = copy.TICK_COUNTER;
         this.skillMap = copy.skillMap;
         this.SKILL_TO_DRAIN = copy.SKILL_TO_DRAIN;
         this.DRAIN_LEVELS = copy.DRAIN_LEVELS;
         this.TWILIGHT_RESPAWN = copy.TWILIGHT_RESPAWN;
-        Events.updateTokens(newPlayer);
-    }
-
-    @Override
-    public boolean checkTick() {
-        if(this.TICK_COUNTER<20) {
-            this.TICK_COUNTER++;
-            return false;
-        }
-        this.TICK_COUNTER = 0;
-        return true;
+        this.GATHERING_LIST = copy.GATHERING_LIST;
+        SkillWrapper.updateTokens(newPlayer);
     }
 
     @Override
     public void addSkillXP(String skill, int amount, EntityPlayerMP player, boolean fromXP) {
-        checkForExistingSkill(skill);
-        this.skillMap.get(skill).addXP(amount, player, fromXP);
-        Events.updateTokens(player);
+        if(amount>0) {
+            checkForExistingSkill(skill);
+            this.skillMap.get(skill).addXP(amount, player, fromXP);
+            SkillWrapper.updateTokens(player);
+        }
     }
 
     @Override
@@ -119,6 +117,18 @@ public class SkillCapability implements ISkillCapability {
     }
 
     @Override
+    public void setShieldedDamage(float amount) {
+        this.SHIELD_DAMAGE = amount;
+    }
+
+    @Override
+    public float getShieldedDamage() {
+        float damage = Math.max(0f,this.SHIELD_DAMAGE);
+        this.SHIELD_DAMAGE = 1f;
+        return damage;
+    }
+
+    @Override
     public float getDamageReduction() {
         checkForExistingSkill("defense");
         return 2f*(((float)this.skillMap.get("defense").getLevel())/32f);
@@ -137,6 +147,24 @@ public class SkillCapability implements ISkillCapability {
     }
 
     @Override
+    public void decrementGatheringItems(int amount) {
+        this.GATHERING_LIST.entrySet().removeIf(entry -> entry.getValue().addAndGet(-1*amount)<=0);
+    }
+
+    @Override
+    public boolean checkGatheringItem(Item item) {
+        DimHopperTweaks.LOGGER.info("checking thing");
+        if(this.GATHERING_LIST.containsKey(item)) return false;
+        this.GATHERING_LIST.put(item,new MutableInt(100));
+        return true;
+    }
+
+    @Override
+    public void syncGatheringItems(Map<Item, MutableInt> items) {
+        this.GATHERING_LIST = items;
+    }
+
+    @Override
     public Set<Map.Entry<String, SkillWrapper>> getCurrentValues() {
         return this.skillMap.entrySet();
     }
@@ -150,7 +178,7 @@ public class SkillCapability implements ISkillCapability {
     public void setDrainSelection(String skill, int levels, EntityPlayerMP player) {
         this.SKILL_TO_DRAIN = skill;
         this.DRAIN_LEVELS = levels;
-        if(player!=null) Events.updateTokens(player);
+        if(player!=null) SkillWrapper.updateTokens(player);
     }
 
     @Override
@@ -175,7 +203,7 @@ public class SkillCapability implements ISkillCapability {
     @Override
     public NBTTagCompound writeNBT() {
         NBTTagCompound compound = new NBTTagCompound();
-        compound.setInteger("skills_num",this.skillMap.keySet().size());
+        compound.setInteger("skills_num",this.skillMap.size());
         int i = 0;
         for(Map.Entry<String, SkillWrapper> entry : this.skillMap.entrySet()) {
             compound.setString("skill_"+i,entry.getKey());
@@ -184,6 +212,15 @@ public class SkillCapability implements ISkillCapability {
         }
         compound.setString("skill_to_drain",this.SKILL_TO_DRAIN);
         compound.setInteger("drain_levels",this.DRAIN_LEVELS);
+        compound.setInteger("recent_gathering_num",this.GATHERING_LIST.size());
+        i = 0;
+        for(Map.Entry<Item, MutableInt> entry : this.GATHERING_LIST.entrySet()) {
+            ResourceLocation resource = Objects.nonNull(entry.getKey().getRegistryName()) ?
+                    entry.getKey().getRegistryName() : new ResourceLocation("bedrock");
+            compound.setString("recent_gathering_resource_"+i,resource.toString());
+            compound.setInteger("recent_gathering_counter_"+i,entry.getValue().getValue());
+            i++;
+        }
         if(this.TWILIGHT_RESPAWN!=null) compound.setLong("twilight_respawn",this.TWILIGHT_RESPAWN.toLong());
         return compound;
     }

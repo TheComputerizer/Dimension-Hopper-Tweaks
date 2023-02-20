@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.common.commands;
 
-import mods.thecomputerizer.dimhoppertweaks.common.skills.Events;
+import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
+@SuppressWarnings("UnnecessaryUnicodeEscape")
 public class RandomTP extends CommandBase {
     Random rand = new Random();
 
@@ -62,7 +63,7 @@ public class RandomTP extends CommandBase {
                         for (int i = 0; i < (args.length - 3); i++) {
                             if (Objects.requireNonNull(biome.getRegistryName()).toString().toLowerCase().contains(args[3 + i])) {
                                 TeleportUtils.teleport(entityplayer, (int)arg1,x,y,z,entityplayer.rotationYaw,entityplayer.rotationPitch);
-                                if((int) arg1==7) Events.getSkillCapability(entityplayer).setTwilightRespawn(new BlockPos(x,100,z));
+                                if((int) arg1==7) SkillWrapper.getSkillCapability(entityplayer).setTwilightRespawn(new BlockPos(x,100,z));
                                 notifyCommandListener(sender, this, "\u00A74\u00A7oYour consciousness fades for a second as you hear a nearly indistinguishable voice in your mind\n\uu00A7l\u00A74D\u00A7ko\u00A7r \u00A74\u00A7ln\u00A7ko\u00A7r\u00A74\u00A7lt tr\u00A7kus\u00A7r\u00A74\u00A7lt \u00A7ktha\u00A7r\u00A74\u00A7lt b\u00A7kook");
                                 success = false;
                                 break;

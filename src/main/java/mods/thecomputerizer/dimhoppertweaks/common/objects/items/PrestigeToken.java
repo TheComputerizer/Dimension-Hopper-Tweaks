@@ -1,7 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.common.objects.items;
 
-import mods.thecomputerizer.dimhoppertweaks.common.skills.Events;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.ISkillCapability;
+import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
@@ -24,11 +24,11 @@ public class PrestigeToken extends EpicItem {
         ItemStack stack = playerIn.getHeldItemMainhand();
         if (playerIn instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP) playerIn;
-            ISkillCapability cap = Events.getSkillCapability(player);
+            ISkillCapability cap = SkillWrapper.getSkillCapability(player);
             String skill = cap.getDrainSelection();
             if(cap.getPrestigeLevel(skill)<level && hand==EnumHand.MAIN_HAND) {
                 cap.setPrestigeLevel(skill,level);
-                Events.updateTokens(player);
+                SkillWrapper.updateTokens(player);
                 world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1.0F, 1.0F);
                 world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundCategory.MASTER, 1.0F, 1.0F);
                 stack.shrink(1);

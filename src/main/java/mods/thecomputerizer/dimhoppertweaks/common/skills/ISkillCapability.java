@@ -1,8 +1,10 @@
 package mods.thecomputerizer.dimhoppertweaks.common.skills;
 
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
+import org.apache.commons.lang3.mutable.MutableInt;
 
 import java.util.Map;
 import java.util.Set;
@@ -11,7 +13,6 @@ import java.util.Set;
 public interface ISkillCapability {
 
     void of(SkillCapability copy, EntityPlayerMP newPlayer);
-    boolean checkTick();
     void addSkillXP(String skill, int amount, EntityPlayerMP player, boolean fromXP);
     void setSkillXP(String skill, int xp, int levelXP);
     int getSkillXP(String skill);
@@ -22,8 +23,13 @@ public interface ISkillCapability {
     float getBreakSpeedMultiplier();
     float getDamageMultiplier();
     float getDamageReduction();
+    void setShieldedDamage(float amount);
+    float getShieldedDamage();
     float getXPDumpMultiplier();
     int getSkillXpMultiplier(float initialAmount);
+    void decrementGatheringItems(int amount);
+    boolean checkGatheringItem(Item item);
+    void syncGatheringItems(Map<Item, MutableInt> items);
     Set<Map.Entry<String, SkillWrapper>> getCurrentValues();
     void syncSkills(EntityPlayerMP player);
     void setDrainSelection(String skill, int levels, EntityPlayerMP player);

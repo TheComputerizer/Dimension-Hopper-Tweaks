@@ -1,7 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.common.objects.items;
 
 import mods.thecomputerizer.dimhoppertweaks.DimHopperTweaks;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.Events;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillCapabilityStorage;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;
@@ -66,10 +65,10 @@ public class SkillToken extends EpicItem {
                 PacketHandler.NETWORK.sendTo(new PacketOpenGui.PacketOpenGuiMessage(SkillCapabilityStorage.SKILLS, skill,amount), player);
                 return new ActionResult<>(EnumActionResult.SUCCESS, stack);
             } else if(player.experienceLevel>=amount) {
-                ISkillCapability cap = Events.getSkillCapability(player);
+                ISkillCapability cap = SkillWrapper.getSkillCapability(player);
                 int prestige = cap.getPrestigeLevel(skill)+1;
                 for(int i=0;i<amount;i++) {
-                    int SP = (int)(convertXPToSP(player.experienceLevel)*Events.getSkillCapability(player).getXPDumpMultiplier());
+                    int SP = (int)(convertXPToSP(player.experienceLevel)*SkillWrapper.getSkillCapability(player).getXPDumpMultiplier());
                     int currSP = cap.getSkillXP(skill);
                     int levelSP = cap.getSkillLevelXP(skill);
                     int currLevel = cap.getSkillLevel(skill);
@@ -79,7 +78,7 @@ public class SkillToken extends EpicItem {
                         player.addExperienceLevel(-1);
                     }
                 }
-                Events.updateTokens(player);
+                SkillWrapper.updateTokens(player);
                 return new ActionResult<>(EnumActionResult.SUCCESS, stack);
             } else return super.onItemRightClick(world, player, hand);
         } else return super.onItemRightClick(world, playerIn, hand);
@@ -87,16 +86,14 @@ public class SkillToken extends EpicItem {
 
     //XP calculations are fun...
     private float convertXPToSP(int level) {
-        if (level <= 16)
-            return ((float)(2*(level-1)+7))/2f;
-        else if (level <= 31)
-            return ((float)(5*(level-1)-38))/2f;
+        if (level <= 16) return ((float)(2*(level-1)+7))/2f;
+        else if (level <= 31) return ((float)(5*(level-1)-38))/2f;
         return ((float)(9*(level-1)-158))/2f;
     }
 
     @SuppressWarnings("SameParameterValue")
     private void checkAndUpdate(EntityPlayerMP player, ItemStack stack, String data) {
-        if(!getTag(stack).hasKey(data)) Events.updateTokens(player);
+        if(!getTag(stack).hasKey(data)) SkillWrapper.updateTokens(player);
     }
 
     @Override
