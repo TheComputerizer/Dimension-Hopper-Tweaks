@@ -2,15 +2,15 @@
   {
     "modid": "dimhoppertweaks",
     "name": "Dimension Hopper Tweaks",
-    "description": "Various tweaks and additions for my modpack Dimension Hopper",
+    "description": "Various tweaks and additions for Dimension Hopper: The Fall",
     "version": "${version}",
-    "mcversion": "1.12.2",
-    "url": "",
+    "mcversion": "${minecraft_version}",
+    "url": "https://www.curseforge.com/minecraft/mc-mods/dimension-hopper-tweaks",
     "updateUrl": "",
-    "authorList": ["The_Computerizer", "TheSilkMiner"],
-    "credits": "",
-    "logoFile": "",
+    "authorList": ["The_Computerizer"],
+    "credits": "TheSilkMiner",
+    "logoFile": "tweaksLogo.png",
     "screenshots": [],
-    "dependencies": ["jei","avaritia","fermion-lib","codechicken-lib","sgcraft","musictriggers"]
+    "dependencies": ["jei","avaritia","fermion-lib","codechicken-lib","sgcraft"]
   }
 ]
