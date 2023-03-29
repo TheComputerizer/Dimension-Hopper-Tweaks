@@ -111,7 +111,7 @@ public class EntityEvents {
                 EntityPlayerMP player = (EntityPlayerMP)event.player;
                 if(event.toDim!=7 && GameStageHelper.hasStage(player,"twilight"))
                     GameStageHelper.removeStage(player,"twilight");
-                if(event.toDim!=-1 && GameStageHelper.hasStage(player,"nether"))
+                if(event.toDim==-1 && !GameStageHelper.hasStage(player,"nether"))
                     GameStageHelper.addStage(player,"nether");
                 if(event.toDim!=-19 && GameStageHelper.hasStage(player,"finalfrontier"))
                     GameStageHelper.addStage(player,"finalfrontier");

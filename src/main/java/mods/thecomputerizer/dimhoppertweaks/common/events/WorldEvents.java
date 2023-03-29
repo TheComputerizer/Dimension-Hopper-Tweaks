@@ -23,6 +23,8 @@ public class WorldEvents {
             if(heldItem instanceof ItemTool || heldItem instanceof TinkerToolCore) {
                 IBlockState state = event.getState();
                 int harvestLevel = state.getBlock().getHarvestLevel(state);
+                harvestLevel = harvestLevel<=0 && player.world.rand.nextFloat()<=((float)(((int)(Math.log(SkillWrapper
+                        .getSkillCapability(player).getSkillLevel("mining")) / Math.log(2)))+1))/10f ? 1 : harvestLevel;
                 if (harvestLevel > 0) {
                     int hardness = (int) state.getBlockHardness(event.getWorld(), event.getPos());
                     int hardnessPower = Math.min(hardness > 1 ? (int) (Math.log(hardness) / Math.log(2)) : 0, 10);

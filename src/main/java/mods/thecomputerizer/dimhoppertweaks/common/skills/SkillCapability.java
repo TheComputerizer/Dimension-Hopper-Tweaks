@@ -153,7 +153,6 @@ public class SkillCapability implements ISkillCapability {
 
     @Override
     public boolean checkGatheringItem(Item item) {
-        DimHopperTweaks.LOGGER.info("checking thing");
         if(this.GATHERING_LIST.containsKey(item)) return false;
         this.GATHERING_LIST.put(item,new MutableInt(100));
         return true;
