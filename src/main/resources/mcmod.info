@@ -4,7 +4,7 @@
     "name": "Dimension Hopper Tweaks",
     "description": "Various tweaks and additions for Dimension Hopper: The Fall",
     "version": "${version}",
-    "mcversion": "${minecraft_version}",
+    "mcversion": "${mcversion}",
     "url": "https://www.curseforge.com/minecraft/mc-mods/dimension-hopper-tweaks",
     "updateUrl": "",
     "authorList": ["The_Computerizer"],

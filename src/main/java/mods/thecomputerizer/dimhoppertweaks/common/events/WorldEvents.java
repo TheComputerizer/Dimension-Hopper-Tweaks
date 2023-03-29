@@ -22,7 +22,7 @@ public class WorldEvents {
             Item heldItem = player.getHeldItemMainhand().getItem();
             if(heldItem instanceof ItemTool || heldItem instanceof TinkerToolCore) {
                 IBlockState state = event.getState();
-                int harvestLevel = state.getBlock().getHarvestLevel(state);
+                int harvestLevel = state.getBlock()==Blocks.COAL_ORE ? 1 : state.getBlock().getHarvestLevel(state);
                 harvestLevel = harvestLevel<=0 && player.world.rand.nextFloat()<=((float)(((int)(Math.log(SkillWrapper
                         .getSkillCapability(player).getSkillLevel("mining")) / Math.log(2)))+1))/10f ? 1 : harvestLevel;
                 if (harvestLevel > 0) {
