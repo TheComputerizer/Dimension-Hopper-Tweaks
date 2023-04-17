@@ -7,9 +7,13 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinItemHoe",
+    "MixinNetherPortal",
     "MixinStatisticManager",
     "MixinStructureComponent",
     "MixinTileEntityFurnace",
     "MixinWorldServer"
+  ],
+  "client": [
+    "MixinParticle"
   ]
 }

@@ -27,7 +27,7 @@ minecraft {
     accessTransformer = file('src/main/resources/META-INF/dimhoppertweaks_at.cfg')
     runs {
         def args = [
-                "-Dmixin.debug.export=true",
+                '-Dmixin.debug.export=true',
                 '-Dmixin.hotSwap=true',
                 '-Dmixin.checks.interfaces=true'
         ]
@@ -85,6 +85,9 @@ dependencies {
     implementation(fg.deobf("curse.maven:xl-food-mod-247217:${project.xlfood_version}"))
     implementation(fg.deobf("curse.maven:game-stages-268655:${project.gamestages_version}"))
     implementation(fg.deobf("curse.maven:aquaculture-60028:${project.aquaculture_version}"))
+    implementation(fg.deobf("curse.maven:lockyz-extra-dimensions-mod-283789:${project.lockyz_version}"))
+    implementation(fg.deobf("curse.maven:tiny-progressions-250850:${project.tp_version}"))
+    implementation(fg.deobf("curse.maven:overloaded-264601:${project.overloaded_version}"))
 
     //don't need these to compile
     runtimeOnly(fg.deobf("curse.maven:mantle-74924:${project.mantle_version}"))

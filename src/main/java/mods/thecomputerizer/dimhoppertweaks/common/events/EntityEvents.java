@@ -143,10 +143,8 @@ public class EntityEvents {
             if(event.player instanceof EntityPlayerMP) {
                 EntityPlayerMP player = (EntityPlayerMP) event.player;
                 BlockPos pos = SkillWrapper.getSkillCapability(player).getTwilightRespawn();
-                if(player.dimension==7 && player.getBedLocation(7)!=null && pos!=null) {
-                    player.connection.setPlayerLocation(pos.getX(),pos.getY(),pos.getZ(),player.rotationYaw,
-                            player.rotationPitch);
-                }
+                if(player.dimension==7 && Objects.isNull(player.getBedLocation(7)) && Objects.nonNull(pos))
+                    player.setSpawnPoint(pos,true);
             }
         }
 
