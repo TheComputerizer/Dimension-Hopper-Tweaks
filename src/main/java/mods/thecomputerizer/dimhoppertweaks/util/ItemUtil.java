@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.util;
 
-import mods.thecomputerizer.dimhoppertweaks.DimHopperTweaks;
+import mods.thecomputerizer.dimhoppertweaks.Constants;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,6 +13,6 @@ public class ItemUtil {
     }
 
     public static String getTranslationForType(String type, String name) {
-        return I18n.format(type + "." + DimHopperTweaks.MODID + "." + name + ".name");
+        return I18n.format(type + "." + Constants.MODID + "." + name + ".name");
     }
 }

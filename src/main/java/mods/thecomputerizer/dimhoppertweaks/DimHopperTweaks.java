@@ -14,37 +14,29 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-@Mod(modid = DimHopperTweaks.MODID, name = DimHopperTweaks.NAME, version = DimHopperTweaks.VERSION, dependencies = DimHopperTweaks.DEPENDENCIES)
+@Mod(modid = Constants.MODID, name = Constants.NAME, version = Constants.VERSION, dependencies = Constants.DEPENDENCIES)
 public class DimHopperTweaks
 {
-    public static final String MODID = "dimhoppertweaks";
-    public static final String NAME = "Dimension Hopper Tweaks";
-    public static final String VERSION = "2.2.0";
-    public static final String DEPENDENCIES = "required-after:forge@[14.23.5.2860,);required-after:dimdoors;" +
-            "required-after:avaritia;required-after:sgcraft;";
-    public static Logger LOGGER;
-
-    @Mod.Instance(MODID)
+    @Mod.Instance(Constants.MODID)
     public static DimHopperTweaks INSTANCE;
 
     @Mod.EventHandler
     public static void preInit(FMLPreInitializationEvent event) {
-        LOGGER = LogManager.getLogger();
-        LOGGER.info("Starting pre-init");
+        Constants.LOGGER = LogManager.getLogger();
+        Constants.LOGGER.info("Starting pre-init");
         PacketHandler.registerPackets();
         CapabilityManager.INSTANCE.register(ISkillCapability.class, new SkillCapabilityStorage(), SkillCapability::new);
         if (FMLCommonHandler.instance().getSide().isClient()) {
-            OBJLoader.INSTANCE.addDomain(DimHopperTweaks.MODID);
+            OBJLoader.INSTANCE.addDomain(Constants.MODID);
             ClientHandler.registerRenderers();
         }
-        LOGGER.info("Completed pre-init");
+        Constants.LOGGER.info("Completed pre-init");
     }
 
     @Mod.EventHandler
     public void start(FMLServerStartingEvent event) {
-        LOGGER.info("Registering commands");
+        Constants.LOGGER.info("Registering commands");
         event.registerServerCommand(new RandomTP());
         event.registerServerCommand(new SummonBoss());
     }

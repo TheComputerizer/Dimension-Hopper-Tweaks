@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.network;
 
-import mods.thecomputerizer.dimhoppertweaks.DimHopperTweaks;
+import mods.thecomputerizer.dimhoppertweaks.Constants;
 import mods.thecomputerizer.dimhoppertweaks.network.packets.PacketOpenGui;
 import mods.thecomputerizer.dimhoppertweaks.network.packets.PacketRenderBossAttack;
 import mods.thecomputerizer.dimhoppertweaks.network.packets.PacketSyncGuiData;
@@ -11,11 +11,11 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public class PacketHandler {
 
-    public static final SimpleNetworkWrapper NETWORK = NetworkRegistry.INSTANCE.newSimpleChannel(DimHopperTweaks.MODID);
+    public static final SimpleNetworkWrapper NETWORK = NetworkRegistry.INSTANCE.newSimpleChannel(Constants.MODID);
     private static int id = 0;
 
     public static void registerPackets() {
-        DimHopperTweaks.LOGGER.info("Registering packets");
+        Constants.LOGGER.info("Registering packets");
         NETWORK.registerMessage(PacketUpdateBossShield.class, PacketUpdateBossShield.PacketUpdateBossShieldMessage.class, id++, Side.CLIENT);
         NETWORK.registerMessage(PacketRenderBossAttack.class, PacketRenderBossAttack.PacketRenderBossAttackMessage.class, id++, Side.CLIENT);
         NETWORK.registerMessage(PacketOpenGui.class, PacketOpenGui.PacketOpenGuiMessage.class, id++, Side.CLIENT);

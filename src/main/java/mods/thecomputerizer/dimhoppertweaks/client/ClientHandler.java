@@ -1,11 +1,10 @@
 package mods.thecomputerizer.dimhoppertweaks.client;
 
-import mods.thecomputerizer.dimhoppertweaks.DimHopperTweaks;
+import mods.thecomputerizer.dimhoppertweaks.Constants;
 import mods.thecomputerizer.dimhoppertweaks.client.entity.render.RenderHomingProjectile;
 import mods.thecomputerizer.dimhoppertweaks.common.objects.DimensionHopperItems;
 import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.HomingProjectile;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.network.play.server.SPacketCustomPayload;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.obj.OBJLoader;
@@ -17,7 +16,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.Objects;
 
-@Mod.EventBusSubscriber(modid = DimHopperTweaks.MODID, value = { Side.CLIENT })
+@Mod.EventBusSubscriber(modid = Constants.MODID, value = { Side.CLIENT })
 public final class ClientHandler {
     public static OBJModel forcefieldModel;
 

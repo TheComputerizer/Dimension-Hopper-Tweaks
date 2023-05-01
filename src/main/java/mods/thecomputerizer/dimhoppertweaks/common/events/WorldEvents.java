@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.common.events;
 
-import mods.thecomputerizer.dimhoppertweaks.DimHopperTweaks;
+import mods.thecomputerizer.dimhoppertweaks.Constants;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import slimeknights.tconstruct.library.tools.TinkerToolCore;
 
-@Mod.EventBusSubscriber(modid = DimHopperTweaks.MODID)
+@Mod.EventBusSubscriber(modid = Constants.MODID)
 public class WorldEvents {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void blockBreak(BlockEvent.BreakEvent event) {

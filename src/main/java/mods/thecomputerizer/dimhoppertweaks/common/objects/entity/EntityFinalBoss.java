@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.common.objects.entity;
 
-import mods.thecomputerizer.dimhoppertweaks.DimHopperTweaks;
+import mods.thecomputerizer.dimhoppertweaks.Constants;
 import mods.thecomputerizer.dimhoppertweaks.common.objects.DimensionHopperSounds;
 import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.ai.*;
 import mods.thecomputerizer.dimhoppertweaks.common.objects.items.RealitySlasher;
@@ -22,7 +22,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EntityDamageSourceIndirect;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -390,7 +389,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
 
     @Override
     public void registerControllers(AnimationData animationData) {
-        animationData.addAnimationController(new AnimationController(this, "boss_controller",
+        animationData.addAnimationController(new AnimationController<>(this, "boss_controller",
                 0, this::predicate));
     }
 
@@ -463,7 +462,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
                         }
                     }
                 } else {
-                    DimHopperTweaks.LOGGER.info("Finished invulnerable phase");
+                    Constants.LOGGER.info("Finished invulnerable phase");
                     this.boss.setVelocity(0, 0, 0);
                     for (EntityPlayer player : this.boss.players)
                         this.boss.savedPlayerHealth.put(player.getUniqueID().toString(), player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).getAttributeValue());

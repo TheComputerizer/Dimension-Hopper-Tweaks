@@ -1,5 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.common.objects;
 
+import mods.thecomputerizer.dimhoppertweaks.Constants;
 import mods.thecomputerizer.dimhoppertweaks.DimHopperTweaks;
 import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.EntityFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.HomingProjectile;
@@ -11,7 +12,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 
-@Mod.EventBusSubscriber(modid = DimHopperTweaks.MODID)
+@Mod.EventBusSubscriber(modid = Constants.MODID)
 public final class DimensionHopperEntities {
     private static int globalUniqueEntityId = 0;
 
@@ -25,7 +26,7 @@ public final class DimensionHopperEntities {
 
     private static void registerEntity(String name, Class <? extends Entity> entity, int trackingRange, int spawnEggFirstColor, int spawnEggSecondColor) {
         EntityRegistry.registerModEntity(
-                new ResourceLocation(DimHopperTweaks.MODID, name),
+                new ResourceLocation(Constants.MODID, name),
                 entity,
                 name,
                 globalUniqueEntityId++,

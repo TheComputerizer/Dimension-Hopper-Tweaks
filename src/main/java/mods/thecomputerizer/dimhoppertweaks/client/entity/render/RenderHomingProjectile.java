@@ -3,7 +3,7 @@ package mods.thecomputerizer.dimhoppertweaks.client.entity.render;
 import codechicken.lib.colour.ColourRGBA;
 import codechicken.lib.texture.TextureUtils;
 import codechicken.lib.util.TransformUtils;
-import mods.thecomputerizer.dimhoppertweaks.DimHopperTweaks;
+import mods.thecomputerizer.dimhoppertweaks.Constants;
 import mods.thecomputerizer.dimhoppertweaks.client.ClientHandler;
 import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.HomingProjectile;
 import net.minecraft.client.Minecraft;
@@ -19,13 +19,14 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3i;
 import net.minecraftforge.client.model.obj.OBJModel;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
 public class RenderHomingProjectile extends Render<HomingProjectile> {
 
-    private final static ResourceLocation ATTACK = new ResourceLocation(DimHopperTweaks.MODID,"textures/models/attack.png");
+    private final static ResourceLocation ATTACK = new ResourceLocation(Constants.MODID,"textures/models/attack.png");
 
     public RenderHomingProjectile(RenderManager renderManager) {
         super(renderManager);
@@ -82,7 +83,7 @@ public class RenderHomingProjectile extends Render<HomingProjectile> {
 
     @Nullable
     @Override
-    protected ResourceLocation getEntityTexture(HomingProjectile entity) {
+    protected ResourceLocation getEntityTexture(@Nonnull HomingProjectile entity) {
         return ATTACK;
     }
 }

@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.common.events;
 
-import mods.thecomputerizer.dimhoppertweaks.DimHopperTweaks;
+import mods.thecomputerizer.dimhoppertweaks.Constants;
 import mods.thecomputerizer.dimhoppertweaks.common.objects.DimensionHopperSounds;
 import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.EntityFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillCapabilityProvider;
@@ -16,7 +16,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-@Mod.EventBusSubscriber(modid = DimHopperTweaks.MODID)
+@Mod.EventBusSubscriber(modid = Constants.MODID)
 public class ServerEvents {
     public static int BOSS_SPAWN_COUNT = -1;
     private static WorldServer WORLD_SERVER;

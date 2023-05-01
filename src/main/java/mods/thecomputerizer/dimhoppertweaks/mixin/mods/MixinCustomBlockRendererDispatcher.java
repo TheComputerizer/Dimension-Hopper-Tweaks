@@ -4,34 +4,34 @@ import gcewing.sg.BaseAORenderingManager;
 import gcewing.sg.BaseBakedRenderTarget;
 import gcewing.sg.BaseModClient;
 import gcewing.sg.Trans3;
+import mods.thecomputerizer.dimhoppertweaks.Constants;
 import mods.thecomputerizer.dimhoppertweaks.mixin.access.BaseRenderingManagerAccess;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.BlockModelShapes;
+import net.minecraft.client.renderer.BlockModelRenderer;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
 
 @Mixin(targets = "gcewing.sg.BaseAORenderingManager$CustomBlockRendererDispatcher")
-public abstract class MixinCustomBlockRendererDispatcher extends BlockRendererDispatcher {
+public abstract class MixinCustomBlockRendererDispatcher {
     @Shadow protected BlockRendererDispatcher base;
 
     @Shadow @Final private BaseAORenderingManager this$0;
 
-    public MixinCustomBlockRendererDispatcher(BlockModelShapes shapes, BlockColors colors) {
-        super(shapes, colors);
-    }
+    @Shadow public abstract BlockModelRenderer getBlockModelRenderer();
 
-    @Override
+    @Overwrite
     public void renderBlockDamage(@Nonnull IBlockState state, @Nonnull BlockPos pos, @Nonnull TextureAtlasSprite icon, @Nonnull IBlockAccess world) {
         try {
             BaseModClient.ICustomRenderer rend = ((BaseRenderingManagerAccess)this$0).accessGetCustomRenderer(world, pos, state);
@@ -44,6 +44,11 @@ public abstract class MixinCustomBlockRendererDispatcher extends BlockRendererDi
                 return;
             }
         } catch (Exception ignored) {}
-        this.base.renderBlockDamage(state, pos, icon, world);
+        try {
+            this.base.renderBlockDamage(Blocks.AIR.getDefaultState(), pos, icon, world);
+        } catch (Exception e) {
+            Constants.LOGGER.error("Stargate Damage Render Catch");
+            e.printStackTrace();
+        }
     }
 }

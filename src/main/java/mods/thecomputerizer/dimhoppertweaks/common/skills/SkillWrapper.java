@@ -7,7 +7,7 @@ import codersafterdark.reskillable.api.data.PlayerSkillInfo;
 import codersafterdark.reskillable.api.event.LevelUpEvent;
 import codersafterdark.reskillable.api.skill.Skill;
 import codersafterdark.reskillable.api.toast.ToastHelper;
-import mods.thecomputerizer.dimhoppertweaks.DimHopperTweaks;
+import mods.thecomputerizer.dimhoppertweaks.Constants;
 import mods.thecomputerizer.dimhoppertweaks.common.objects.items.SkillToken;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -24,7 +24,7 @@ import java.util.Objects;
 
 public class SkillWrapper {
 
-    public static final ResourceLocation SKILL_CAPABILITY = new ResourceLocation(DimHopperTweaks.MODID, "skills");
+    public static final ResourceLocation SKILL_CAPABILITY = new ResourceLocation(Constants.MODID, "skills");
 
     @SuppressWarnings("ConstantConditions")
     public static ISkillCapability getSkillCapability(EntityPlayer player) {
@@ -74,7 +74,7 @@ public class SkillWrapper {
         if(skill!=null) cap = getSkill().getCap();
         this.maxLevel = cap;
         this.prestigeLevel = 0;
-        DimHopperTweaks.LOGGER.info("Registered skill {}:{} at level {} with xp {}/{}",modid,name,level,xp,levelXP);
+        Constants.LOGGER.info("Registered skill {}:{} at level {} with xp {}/{}",modid,name,level,xp,levelXP);
     }
 
     public int getXP() {

@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.common.objects.items;
 
-import mods.thecomputerizer.dimhoppertweaks.DimHopperTweaks;
+import mods.thecomputerizer.dimhoppertweaks.Constants;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillCapabilityStorage;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;
@@ -29,15 +29,15 @@ import java.util.Set;
 
 public class SkillToken extends EpicItem {
 
-    private static final String WHITE = ""+TextFormatting.WHITE;
-    private static final String DARK_GRAY = ""+TextFormatting.DARK_GRAY;
-    private static final String GRAY = ""+TextFormatting.GRAY;
-    private static final String RED = ""+TextFormatting.RED;
-    private static final String DARK_RED = ""+TextFormatting.DARK_RED;
-    private static final String GOLD = ""+TextFormatting.GOLD;
-    private static final String ITALICS = ""+TextFormatting.ITALIC;
-    private static final String BOLD = ""+TextFormatting.ITALIC;
-    private static final String RESET = ""+TextFormatting.RESET;
+    private static final String WHITE = String.valueOf(TextFormatting.WHITE);
+    private static final String DARK_GRAY = String.valueOf(TextFormatting.DARK_GRAY);
+    private static final String GRAY = String.valueOf(TextFormatting.GRAY);
+    private static final String RED = String.valueOf(TextFormatting.RED);
+    private static final String DARK_RED = String.valueOf(TextFormatting.DARK_RED);
+    private static final String GOLD = String.valueOf(TextFormatting.GOLD);
+    private static final String ITALICS = String.valueOf(TextFormatting.ITALIC);
+    private static final String BOLD = String.valueOf(TextFormatting.ITALIC);
+    private static final String RESET = String.valueOf(TextFormatting.RESET);
 
     public void updateSkills(ItemStack stack, Set<Map.Entry<String, SkillWrapper>> skillSet, String selectedSkill, int drainLevels) {
         NBTTagCompound tag = getTag(stack);
@@ -140,12 +140,12 @@ public class SkillToken extends EpicItem {
     }
 
     private String getDrainingTranslation(int levels, String skill) {
-        return I18n.format("skill."+ DimHopperTweaks.MODID+".draining")+" "+levels+" "+
-                I18n.format("skill."+ DimHopperTweaks.MODID+".levels")+" "+getSkillTranslation(skill);
+        return I18n.format("skill."+ Constants.MODID+".draining")+" "+levels+" "+
+                I18n.format("skill."+ Constants.MODID+".levels")+" "+getSkillTranslation(skill);
     }
 
     private String getNotSyncedTranslation(String skill) {
-        return I18n.format("skill."+ DimHopperTweaks.MODID+".info")+" "+getSkillTranslation(skill)+" "+
-                I18n.format("skill."+ DimHopperTweaks.MODID+".synced");
+        return I18n.format("skill."+ Constants.MODID+".info")+" "+getSkillTranslation(skill)+" "+
+                I18n.format("skill."+ Constants.MODID+".synced");
     }
 }

@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.common.skills;
 
-import mods.thecomputerizer.dimhoppertweaks.DimHopperTweaks;
+import mods.thecomputerizer.dimhoppertweaks.Constants;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
@@ -23,7 +23,7 @@ public class SkillCapability implements ISkillCapability {
     private Map<Item, MutableInt> GATHERING_LIST = new HashMap<>();
 
     public SkillCapability() {
-        DimHopperTweaks.LOGGER.info("Initializing skill capability with {} skills",SkillCapabilityStorage.SKILLS.size());
+        Constants.LOGGER.info("Initializing skill capability with {} skills",SkillCapabilityStorage.SKILLS.size());
         for(String skill : SkillCapabilityStorage.SKILLS) this.addDefaultSkillValues(skill);
         setDrainSelection("mining",1, null);
         this.TWILIGHT_RESPAWN = null;
@@ -35,7 +35,7 @@ public class SkillCapability implements ISkillCapability {
 
     private void checkForExistingSkill(String name) {
         if(!this.skillMap.containsKey(name)) {
-            DimHopperTweaks.LOGGER.error("Could not find "+name+" skill! Substituting with a new level 1 "+name+" skill :)");
+            Constants.LOGGER.error("Could not find "+name+" skill! Substituting with a new level 1 "+name+" skill :)");
             String modid;
             if(name.matches("void") || name.matches("research")) modid = "compatskills";
             else modid = "reskillable";
@@ -65,7 +65,7 @@ public class SkillCapability implements ISkillCapability {
     @Override
     public void setSkillXP(String skill, int xp, int level) {
         if(this.skillMap.containsKey(skill) && skillMap.get(skill).getLevel()!=0)
-            DimHopperTweaks.LOGGER.error("Tried to register duplicate "+skill+" skill!");
+            Constants.LOGGER.error("Tried to register duplicate "+skill+" skill!");
         else {
             String modid;
             if(skill.matches("void") || skill.matches("research")) modid = "compatskills";

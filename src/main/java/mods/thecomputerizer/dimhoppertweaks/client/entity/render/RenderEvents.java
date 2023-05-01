@@ -3,7 +3,7 @@ package mods.thecomputerizer.dimhoppertweaks.client.entity.render;
 import codechicken.lib.colour.ColourRGBA;
 import codechicken.lib.texture.TextureUtils;
 import codechicken.lib.util.TransformUtils;
-import mods.thecomputerizer.dimhoppertweaks.DimHopperTweaks;
+import mods.thecomputerizer.dimhoppertweaks.Constants;
 import mods.thecomputerizer.dimhoppertweaks.client.ClientHandler;
 import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.EntityFinalBoss;
 import net.minecraft.client.Minecraft;
@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
@@ -32,11 +33,11 @@ import java.util.List;
 import java.util.Random;
 
 @SuppressWarnings("ConstantConditions")
-@Mod.EventBusSubscriber(modid = DimHopperTweaks.MODID, value = Side.CLIENT)
+@Mod.EventBusSubscriber(modid = Constants.MODID, value = Side.CLIENT)
 public class RenderEvents {
 
-    private final static ResourceLocation FORCEFIELD = new ResourceLocation(DimHopperTweaks.MODID,"textures/models/forcefield.png");
-    private final static ResourceLocation ATTACK = new ResourceLocation(DimHopperTweaks.MODID,"textures/models/attack.png");
+    private final static ResourceLocation FORCEFIELD = new ResourceLocation(Constants.MODID,"textures/models/forcefield.png");
+    private final static ResourceLocation ATTACK = new ResourceLocation(Constants.MODID,"textures/models/attack.png");
 
     private static final Random rand = new Random();
     public static HashMap<String, Boolean> bossShields = new HashMap<>();
@@ -44,7 +45,7 @@ public class RenderEvents {
     public static HashMap<BlockPos, Integer> attackSize = new HashMap<>();
 
     @SubscribeEvent
-    public static void renderEntity(RenderLivingEvent.Post event) {
+    public static void renderEntity(RenderLivingEvent.Post<? extends EntityLiving> event) {
         if(event.getEntity() instanceof EntityFinalBoss) {
             EntityFinalBoss boss = (EntityFinalBoss) event.getEntity();
             bossShields.putIfAbsent(boss.getUniqueID().toString(), false);

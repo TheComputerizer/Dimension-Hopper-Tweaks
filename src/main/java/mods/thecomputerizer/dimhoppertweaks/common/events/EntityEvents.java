@@ -2,7 +2,7 @@ package mods.thecomputerizer.dimhoppertweaks.common.events;
 
 import codersafterdark.reskillable.api.event.LevelUpEvent;
 import com.google.common.collect.Iterables;
-import mods.thecomputerizer.dimhoppertweaks.DimHopperTweaks;
+import mods.thecomputerizer.dimhoppertweaks.Constants;
 import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.EntityFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;
@@ -31,7 +31,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import java.util.Objects;
 
 @SuppressWarnings("SpellCheckingInspection")
-@Mod.EventBusSubscriber(modid = DimHopperTweaks.MODID)
+@Mod.EventBusSubscriber(modid = Constants.MODID)
 public class EntityEvents {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -100,7 +100,7 @@ public class EntityEvents {
         }
     }
 
-    @Mod.EventBusSubscriber(modid = DimHopperTweaks.MODID)
+    @Mod.EventBusSubscriber(modid = Constants.MODID)
     public static class PlayerEvents {
 
         private static int TICK_DELAY = 0;

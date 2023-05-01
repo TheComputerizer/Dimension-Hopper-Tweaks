@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.common.objects;
 
-import mods.thecomputerizer.dimhoppertweaks.DimHopperTweaks;
+import mods.thecomputerizer.dimhoppertweaks.Constants;
 import mods.thecomputerizer.dimhoppertweaks.common.objects.items.PrestigeToken;
 import mods.thecomputerizer.dimhoppertweaks.common.objects.items.RealitySlasher;
 import mods.thecomputerizer.dimhoppertweaks.common.objects.items.SkillToken;
@@ -16,8 +16,8 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-@GameRegistry.ObjectHolder(DimHopperTweaks.MODID)
-@Mod.EventBusSubscriber(modid = DimHopperTweaks.MODID)
+@GameRegistry.ObjectHolder(Constants.MODID)
+@Mod.EventBusSubscriber(modid = Constants.MODID)
 public final class DimensionHopperItems {
     public static final Item STARGATE_ADDRESSER = Util.sneakyNull();
     public static final Item REALITY_SLASHER = Util.sneakyNull();
@@ -97,8 +97,8 @@ public final class DimensionHopperItems {
     private static Item makeItem(final String name, final Supplier<Item> constructor, final Consumer<Item> config) {
         final Item item = constructor.get();
         config.accept(item);
-        item.setTranslationKey(DimHopperTweaks.MODID + "." + name);
-        item.setRegistryName(DimHopperTweaks.MODID, name);
+        item.setTranslationKey(Constants.MODID + "." + name);
+        item.setRegistryName(Constants.MODID, name);
         item.setMaxStackSize(1);
         return item;
     }

@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.common.objects;
 
-import mods.thecomputerizer.dimhoppertweaks.DimHopperTweaks;
+import mods.thecomputerizer.dimhoppertweaks.Constants;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.RegistryEvent;
@@ -8,8 +8,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-@GameRegistry.ObjectHolder(DimHopperTweaks.MODID)
-@Mod.EventBusSubscriber(modid = DimHopperTweaks.MODID)
+@GameRegistry.ObjectHolder(Constants.MODID)
+@Mod.EventBusSubscriber(modid = Constants.MODID)
 public class DimensionHopperSounds {
     public static final SoundEvent SHORT_STATIC = makeSoundEvent("boss.static");
     public static final SoundEvent SPAWN = makeSoundEvent("boss.spawn");
@@ -20,7 +20,7 @@ public class DimensionHopperSounds {
     }
 
     private static SoundEvent makeSoundEvent(final String name) {
-        ResourceLocation id = new ResourceLocation(DimHopperTweaks.MODID, name);
+        ResourceLocation id = new ResourceLocation(Constants.MODID, name);
         return new SoundEvent(id).setRegistryName(name);
     }
 }
