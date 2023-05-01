@@ -88,6 +88,7 @@ dependencies {
     implementation(fg.deobf("curse.maven:lockyz-extra-dimensions-mod-283789:${project.lockyz_version}"))
     implementation(fg.deobf("curse.maven:tiny-progressions-250850:${project.tp_version}"))
     implementation(fg.deobf("curse.maven:overloaded-264601:${project.overloaded_version}"))
+    implementation(fg.deobf("curse.maven:3330934-225643:${project.botania_version}"))
 
     //don't need these to compile
     runtimeOnly(fg.deobf("curse.maven:mantle-74924:${project.mantle_version}"))

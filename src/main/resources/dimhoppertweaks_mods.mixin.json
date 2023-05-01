@@ -9,6 +9,7 @@
     "MixinBaseRenderingManager",
     "MixinCustomBlockRendererDispatcher",
     "MixinDefaultProbeInfoProvider",
+    "MixinEntityPixie",
     "MixinFlintPortal",
     "MixinInfinitySword",
     "MixinItemTreasureChest",

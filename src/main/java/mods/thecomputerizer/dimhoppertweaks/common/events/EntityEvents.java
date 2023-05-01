@@ -6,6 +6,7 @@ import mods.thecomputerizer.dimhoppertweaks.Constants;
 import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.EntityFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;
+import mods.thecomputerizer.dimhoppertweaks.mixin.access.EntityPixieAccess;
 import morph.avaritia.util.DamageSourceInfinitySword;
 import net.darkhax.gamestages.GameStageHelper;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -27,6 +28,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
+import vazkii.botania.common.entity.EntityPixie;
+import vazkii.botania.common.item.equipment.tool.elementium.ItemElementiumSword;
 
 import java.util.Objects;
 
@@ -83,8 +86,16 @@ public class EntityEvents {
                 event.setAmount(Math.max(0f,event.getAmount()-SkillWrapper.getSkillCapability(player).getDamageReduction()));
             } else if (event.getSource().getTrueSource() instanceof EntityPlayerMP) {
                 EntityPlayerMP player = (EntityPlayerMP) event.getSource().getTrueSource();
-                event.setAmount(event.getAmount()+SkillWrapper.getSkillCapability(player).getDamageMultiplier());
+                float amount = event.getAmount()+SkillWrapper.getSkillCapability(player).getDamageMultiplier();
+                event.setAmount(amount);
                 SkillWrapper.addSP(player,"attack",Math.max(0.5f,(event.getAmount() / 2f)),false);
+                if(amount>=50f && player.getHeldItemMainhand().getItem() instanceof ItemElementiumSword) {
+                    EntityPixie pixie = new EntityPixie(player.getServerWorld());
+                    ((EntityPixieAccess)pixie).setBypassesTarget(true);
+                    pixie.setPosition(player.posX, player.posY + 2.0, player.posZ);
+                    pixie.onInitialSpawn(player.getServerWorld().getDifficultyForLocation(new BlockPos(pixie)), null);
+                    player.getServerWorld().spawnEntity(pixie);
+                }
             }
         }
     }
