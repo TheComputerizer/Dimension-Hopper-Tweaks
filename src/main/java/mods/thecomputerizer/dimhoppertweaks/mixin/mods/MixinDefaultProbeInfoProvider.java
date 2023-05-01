@@ -1,4 +1,4 @@
-package mods.thecomputerizer.dimhoppertweaks.mixin;
+package mods.thecomputerizer.dimhoppertweaks.mixin.mods;
 
 import mcjty.theoneprobe.api.IProbeConfig;
 import mcjty.theoneprobe.api.IProbeHitData;

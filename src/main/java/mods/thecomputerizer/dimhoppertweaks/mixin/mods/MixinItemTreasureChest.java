@@ -1,4 +1,4 @@
-package mods.thecomputerizer.dimhoppertweaks.mixin;
+package mods.thecomputerizer.dimhoppertweaks.mixin.mods;
 
 import com.teammetallurgy.aquaculture.items.ItemTreasureChest;
 import com.teammetallurgy.aquaculture.loot.WeightedLootSet;

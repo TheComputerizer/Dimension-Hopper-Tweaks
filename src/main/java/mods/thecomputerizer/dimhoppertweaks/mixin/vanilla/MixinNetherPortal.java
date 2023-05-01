@@ -1,4 +1,4 @@
-package mods.thecomputerizer.dimhoppertweaks.mixin;
+package mods.thecomputerizer.dimhoppertweaks.mixin.vanilla;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockPortal;

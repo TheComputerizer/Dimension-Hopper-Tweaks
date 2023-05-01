@@ -1,4 +1,4 @@
-package mods.thecomputerizer.dimhoppertweaks.mixin;
+package mods.thecomputerizer.dimhoppertweaks.mixin.mods;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;

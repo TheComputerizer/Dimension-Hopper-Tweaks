@@ -1,4 +1,4 @@
-package mods.thecomputerizer.dimhoppertweaks.mixin;
+package mods.thecomputerizer.dimhoppertweaks.mixin.vanilla;
 
 import mods.thecomputerizer.dimhoppertweaks.DimHopperTweaks;
 import net.minecraft.stats.StatBase;

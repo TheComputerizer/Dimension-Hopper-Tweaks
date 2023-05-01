@@ -1,4 +1,4 @@
-package mods.thecomputerizer.dimhoppertweaks.mixin;
+package mods.thecomputerizer.dimhoppertweaks.mixin.mods;
 
 import com.kashdeya.tinyprogressions.inits.TechBlocks;
 import mod.mcreator.mcreator_dimensionflint;

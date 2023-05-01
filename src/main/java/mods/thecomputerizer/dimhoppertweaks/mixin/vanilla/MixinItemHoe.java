@@ -1,4 +1,4 @@
-package mods.thecomputerizer.dimhoppertweaks.mixin;
+package mods.thecomputerizer.dimhoppertweaks.mixin.vanilla;
 
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;
 import net.minecraft.block.state.IBlockState;

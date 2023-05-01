@@ -1,4 +1,4 @@
-package mods.thecomputerizer.dimhoppertweaks.mixin;
+package mods.thecomputerizer.dimhoppertweaks.mixin.vanilla;
 
 import net.minecraft.client.particle.Particle;
 import org.spongepowered.asm.mixin.Mixin;

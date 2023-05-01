@@ -1,4 +1,4 @@
-package mods.thecomputerizer.dimhoppertweaks.mixin;
+package mods.thecomputerizer.dimhoppertweaks.mixin.mods;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;

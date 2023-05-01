@@ -1,4 +1,4 @@
-package mods.thecomputerizer.dimhoppertweaks.mixin;
+package mods.thecomputerizer.dimhoppertweaks.mixin.mods;
 
 import mods.thecomputerizer.dimhoppertweaks.util.PsiUtil;
 import net.minecraft.block.Block;
