@@ -45,6 +45,9 @@ public abstract class MixinCustomBlockRendererDispatcher {
             }
         } catch (Exception ignored) {}
         try {
+            this.base.renderBlockDamage(state, pos, icon, world);
+        } catch (Exception ignored) {}
+        try {
             this.base.renderBlockDamage(Blocks.AIR.getDefaultState(), pos, icon, world);
         } catch (Exception e) {
             Constants.LOGGER.error("Stargate Damage Render Catch");

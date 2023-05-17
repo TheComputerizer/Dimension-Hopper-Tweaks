@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("NullableProblems")
@@ -37,7 +38,7 @@ public class TokenExchangeGui extends GuiScreen {
         synchronized (this.scrollables) {
             this.scrollables.clear();
             this.scrollables.add(new ScrollableInteger(this, 3 * (this.width / 4), this.height / 4, 50, 72,
-                    this.conversionRate, "" + this.conversionRate, "level"));
+                    this.conversionRate, String.valueOf(this.conversionRate), "level"));
             this.scrollables.add(new ScrollableList(this, this.width / 4, this.height / 4, 50, 72,
                     getSkillTranslation(this.currentSkill), this.currentSkill, this.skills, getListTranslation(), "current_skill"));
         }
@@ -61,15 +62,22 @@ public class TokenExchangeGui extends GuiScreen {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        if(this.mc==null) this.mc = Minecraft.getMinecraft();
-        this.drawDefaultBackground();
-        synchronized (this.scrollables) {
-            for (CircularScrollableElement circle : this.scrollables)
-                circle.render(Minecraft.getMinecraft(), mouseX, mouseY, 0, 0, 0, 64);
+        if(Objects.isNull(this.mc)) this.mc = Minecraft.getMinecraft();
+        if(Objects.isNull(this.fontRenderer)) this.fontRenderer = this.mc.fontRenderer;
+        try {
+            this.drawDefaultBackground();
+            synchronized (this.scrollables) {
+                for (CircularScrollableElement circle : this.scrollables)
+                    circle.render(Minecraft.getMinecraft(), mouseX, mouseY, 0, 0, 0, 64);
+            }
+            this.drawCenteredString(this.fontRenderer, ItemUtil.getTranslationForType("gui", "skill_drain"), this.width / 2, 8, 10526880);
+            this.renderSmallCircleOnCursor(Minecraft.getMinecraft(), mouseX, mouseY);
+            super.drawScreen(mouseX, mouseY, partialTicks);
+        } catch (NullPointerException ignored) {
+            this.currentSkill = Objects.nonNull(this.currentSkill) && this.currentSkill.length()>1 ? this.currentSkill : "mining";
+            Minecraft.getMinecraft().displayGuiScreen(null);
+            Minecraft.getMinecraft().setIngameFocus();
         }
-        this.drawCenteredString(this.fontRenderer, ItemUtil.getTranslationForType("gui","skill_drain"), this.width/2, 8, 10526880);
-        this.renderSmallCircleOnCursor(Minecraft.getMinecraft(),mouseX,mouseY);
-        super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
     @Override
