@@ -34,7 +34,7 @@ public class RenderHomingProjectile extends Render<HomingProjectile> {
 
     @Override
     public void doRender(HomingProjectile entity, double x, double y, double z, float entityYaw, float partialTicks) {
-        OBJModel.OBJBakedModel bakedForceField = (OBJModel.OBJBakedModel) ClientHandler.forcefieldModel.bake(TransformUtils.DEFAULT_BLOCK, DefaultVertexFormats.BLOCK, TextureUtils.bakedTextureGetter);
+        OBJModel.OBJBakedModel bakedForceField = (OBJModel.OBJBakedModel) ClientHandler.FORCEFIELD_MODEL.bake(TransformUtils.DEFAULT_BLOCK, DefaultVertexFormats.BLOCK, TextureUtils.bakedTextureGetter);
         GlStateManager.disableCull();
         GlStateManager.disableAlpha();
         GlStateManager.enableBlend();
@@ -52,11 +52,11 @@ public class RenderHomingProjectile extends Render<HomingProjectile> {
         double translationY = translationYLT + (((entity.posY - viewingPlayer.posY) - translationYLT) * partialTicks);
         double translationZ = translationZLT + (((entity.posZ - viewingPlayer.posZ) - translationZLT) * partialTicks);
 
-        GlStateManager.translate(translationX, translationY + 1.1, translationZ);
+        GlStateManager.translate(translationX, translationY, translationZ);
         this.bindEntityTexture(entity);
         GlStateManager.scale(0.5f, 0.5f, 0.5f);
-        GlStateManager.color(1F, 1F, 1F, 0.25F);
-        renderOBJ(bakedForceField.getQuads(null, null, 0), new ColourRGBA(0.9F, 0.5F, 0.1F, 0.1F).argb());
+        GlStateManager.color(1F, 1F, 1F, 0.75F);
+        renderOBJ(bakedForceField.getQuads(null, null, 0), new ColourRGBA(1f,1f,1f,0.75f).argb());
 
         GlStateManager.enableCull();
         GlStateManager.enableAlpha();
@@ -66,18 +66,18 @@ public class RenderHomingProjectile extends Render<HomingProjectile> {
         GlStateManager.popMatrix();
     }
 
-    private static void renderOBJ(List<BakedQuad> listQuads, int ARGB) {
-        Tessellator t = Tessellator.getInstance();
-        BufferBuilder v = t.getBuffer();
+    private void renderOBJ(List<BakedQuad> listQuads, int ARGB) {
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = tessellator.getBuffer();
         int i = 0;
         for (int j = listQuads.size(); i < j; ++i) {
-            BakedQuad b = listQuads.get(i);
-            v.begin(7, DefaultVertexFormats.ITEM);
-            v.addVertexData(b.getVertexData());
-            v.putColor4(ARGB);
-            Vec3i vec3i = b.getFace().getDirectionVec();
-            v.putNormal((float) vec3i.getX(), (float) vec3i.getY(), (float) vec3i.getZ());
-            t.draw();
+            BakedQuad quad = listQuads.get(i);
+            buffer.begin(7, DefaultVertexFormats.ITEM);
+            buffer.addVertexData(quad.getVertexData());
+            buffer.putColor4(ARGB);
+            Vec3i vec3i = quad.getFace().getDirectionVec();
+            buffer.putNormal((float) vec3i.getX(), (float) vec3i.getY(), (float) vec3i.getZ());
+            tessellator.draw();
         }
     }
 

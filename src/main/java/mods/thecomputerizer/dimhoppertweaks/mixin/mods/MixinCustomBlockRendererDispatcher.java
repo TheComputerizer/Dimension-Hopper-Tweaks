@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import javax.annotation.Nonnull;
 import java.util.Objects;
 
-@Mixin(targets = "gcewing.sg.BaseAORenderingManager$CustomBlockRendererDispatcher")
+@Mixin(targets = "gcewing.sg.BaseAORenderingManager$CustomBlockRendererDispatcher", remap = false)
 public abstract class MixinCustomBlockRendererDispatcher {
     @Shadow protected BlockRendererDispatcher base;
 
@@ -31,6 +31,10 @@ public abstract class MixinCustomBlockRendererDispatcher {
 
     @Shadow public abstract BlockModelRenderer getBlockModelRenderer();
 
+    /**
+     * @author The_Computerizer
+     * @reason Crash when trying to mine stargate ring blocks
+     */
     @Overwrite
     public void renderBlockDamage(@Nonnull IBlockState state, @Nonnull BlockPos pos, @Nonnull TextureAtlasSprite icon, @Nonnull IBlockAccess world) {
         try {

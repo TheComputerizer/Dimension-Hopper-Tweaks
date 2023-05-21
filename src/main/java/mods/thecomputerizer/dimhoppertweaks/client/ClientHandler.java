@@ -1,10 +1,13 @@
 package mods.thecomputerizer.dimhoppertweaks.client;
 
 import mods.thecomputerizer.dimhoppertweaks.Constants;
+import mods.thecomputerizer.dimhoppertweaks.client.entity.render.RenderFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.client.entity.render.RenderHomingProjectile;
 import mods.thecomputerizer.dimhoppertweaks.common.objects.DimensionHopperItems;
+import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.boss.EntityFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.HomingProjectile;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.obj.OBJLoader;
@@ -18,7 +21,10 @@ import java.util.Objects;
 
 @Mod.EventBusSubscriber(modid = Constants.MODID, value = { Side.CLIENT })
 public final class ClientHandler {
-    public static OBJModel forcefieldModel;
+    public final static ResourceLocation FORCEFIELD = new ResourceLocation(Constants.MODID,"textures/models/forcefield.png");
+    public final static ResourceLocation ATTACK = new ResourceLocation(Constants.MODID,"textures/models/attack.png");
+    public static OBJModel FORCEFIELD_MODEL;
+    public static float FOG_DENSITY_OVERRIDE = -1f;
 
     public static void registerRenderers() {
         registerEntityRenderers();
@@ -70,9 +76,10 @@ public final class ClientHandler {
     }
 
     private static void registerEntityRenderers() {
+        RenderingRegistry.registerEntityRenderingHandler(EntityFinalBoss.class, RenderFinalBoss::new);
         RenderingRegistry.registerEntityRenderingHandler(HomingProjectile.class, RenderHomingProjectile::new);
         try {
-            forcefieldModel = (OBJModel) OBJLoader.INSTANCE.loadModel(new ModelResourceLocation("dimhoppertweaks:models/boss/forcefield.obj"));
+            FORCEFIELD_MODEL = (OBJModel) OBJLoader.INSTANCE.loadModel(new ModelResourceLocation("dimhoppertweaks:models/boss/forcefield.obj"));
         } catch (Exception e) {
             throw new RuntimeException("Failed to load obj model!",e);
         }

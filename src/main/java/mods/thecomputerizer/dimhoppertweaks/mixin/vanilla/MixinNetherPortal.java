@@ -43,7 +43,11 @@ public abstract class MixinNetherPortal {
 
     @Shadow
     abstract boolean isEmptyBlock(Block block);
-    
+
+    /**
+     * @author The_Computerizer
+     * @reason Custom Nether portal implementation
+     */
     @Overwrite
     protected int getDistanceUntilEdge(BlockPos pos, EnumFacing facing) {
         int i;
@@ -56,6 +60,10 @@ public abstract class MixinNetherPortal {
         return isCompressedObsidian(this.world.getBlockState(pos.offset(facing, i)).getBlock()) ? i : 0;
     }
 
+    /**
+     * @author The_Computerizer
+     * @reason Custom Nether portal implementation
+     */
     @Overwrite
     protected int calculatePortalHeight() {
         label56:

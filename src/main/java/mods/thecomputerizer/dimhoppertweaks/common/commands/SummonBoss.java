@@ -1,7 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.common.commands;
 
 import mods.thecomputerizer.dimhoppertweaks.common.events.ServerEvents;
-import mods.thecomputerizer.dimhoppertweaks.network.PacketHandler;
+import mods.thecomputerizer.dimhoppertweaks.network.NetworkHandler;
 import mods.thecomputerizer.dimhoppertweaks.network.packets.PacketRenderBossAttack;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
@@ -12,6 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 
 public class SummonBoss extends CommandBase {
     @Override
@@ -31,8 +32,8 @@ public class SummonBoss extends CommandBase {
         if(sender instanceof EntityPlayer) {
             WorldServer world = server.getWorld(((EntityPlayer)sender).dimension);
             if (!world.isRemote && sender instanceof EntityPlayerMP) {
-                BlockPos pos = new BlockPos(sender.getPosition().getX(), sender.getPosition().getY() + 5, sender.getPosition().getZ());
-                PacketHandler.NETWORK.sendTo(new PacketRenderBossAttack.PacketRenderBossAttackMessage(pos, -125, 4), (EntityPlayerMP) sender);
+                BlockPos pos = new BlockPos(sender.getPosition().getX()+2, sender.getPosition().getY(), sender.getPosition().getZ());
+                NetworkHandler.sendToPlayer(new PacketRenderBossAttack.Message(new ArrayList<>(),-1,4,0,0), (EntityPlayerMP)sender);
                 ServerEvents.startSummonBoss(world, pos);
             } else notifyCommandListener(sender, this, "It did not work");
         }

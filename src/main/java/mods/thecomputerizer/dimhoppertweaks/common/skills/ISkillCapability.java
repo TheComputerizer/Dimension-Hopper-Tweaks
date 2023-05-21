@@ -1,11 +1,13 @@
 package mods.thecomputerizer.dimhoppertweaks.common.skills;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.mutable.MutableInt;
 
+import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Set;
 

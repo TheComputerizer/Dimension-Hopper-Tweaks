@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.client.gui;
 
-import mods.thecomputerizer.dimhoppertweaks.network.PacketHandler;
+import mods.thecomputerizer.dimhoppertweaks.network.NetworkHandler;
 import mods.thecomputerizer.dimhoppertweaks.network.packets.PacketSyncGuiData;
 import mods.thecomputerizer.dimhoppertweaks.util.ItemUtil;
 import net.minecraft.client.Minecraft;
@@ -90,8 +90,7 @@ public class TokenExchangeGui extends GuiScreen {
 
     @Override
     public void onGuiClosed() {
-        PacketHandler.NETWORK.sendToServer(new PacketSyncGuiData.PacketSyncGuiDataMessage(this.currentSkill,
-                this.conversionRate,mc.player.getUniqueID()));
+        NetworkHandler.sendToServer(new PacketSyncGuiData.Message(this.currentSkill,this.conversionRate,mc.player.getUniqueID()));
     }
 
     private void renderSmallCircleOnCursor(Minecraft ignored, int mouseX, int mouseY) {

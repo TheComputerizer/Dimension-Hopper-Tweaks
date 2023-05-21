@@ -2,7 +2,7 @@ package mods.thecomputerizer.dimhoppertweaks.common.objects;
 
 import mods.thecomputerizer.dimhoppertweaks.Constants;
 import mods.thecomputerizer.dimhoppertweaks.DimHopperTweaks;
-import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.EntityFinalBoss;
+import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.boss.EntityFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.HomingProjectile;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;

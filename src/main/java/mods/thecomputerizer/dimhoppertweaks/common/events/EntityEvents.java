@@ -3,7 +3,7 @@ package mods.thecomputerizer.dimhoppertweaks.common.events;
 import codersafterdark.reskillable.api.event.LevelUpEvent;
 import com.google.common.collect.Iterables;
 import mods.thecomputerizer.dimhoppertweaks.Constants;
-import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.EntityFinalBoss;
+import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.boss.EntityFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.mixin.access.EntityPixieAccess;
@@ -23,6 +23,7 @@ import net.minecraftforge.event.entity.player.AdvancementEvent;
 import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
 import net.minecraftforge.event.entity.player.UseHoeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
@@ -37,12 +38,14 @@ import java.util.Objects;
 @Mod.EventBusSubscriber(modid = Constants.MODID)
 public class EntityEvents {
 
+    @SubscribeEvent
+    public static void onTryDespawn(LivingSpawnEvent.AllowDespawn event) {
+        if(event.getEntityLiving() instanceof EntityFinalBoss)
+            event.setResult(Event.Result.DENY);
+    }
+
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onLivingAttack(LivingAttackEvent event) {
-        if(event.getEntityLiving() instanceof EntityFinalBoss) {
-            if(!(event.getSource() instanceof DamageSourceInfinitySword))
-                event.setCanceled(true);
-        }
         if(event.getEntityLiving() instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP)event.getEntityLiving();
             if(!player.isEntityInvulnerable(event.getSource()) && player.canBlockDamageSource(event.getSource()))
@@ -54,8 +57,11 @@ public class EntityEvents {
     public static void onLivingHurt(LivingHurtEvent event) {
         if(event.getSource()!=DamageSource.OUT_OF_WORLD) {
             if(event.getEntityLiving() instanceof EntityFinalBoss) {
-                if(!(event.getSource() instanceof DamageSourceInfinitySword))
+                Constants.LOGGER.error("Hooking boss hurt");
+                if(!(event.getSource() instanceof DamageSourceInfinitySword)) {
+                    Constants.LOGGER.error("canceling!");
                     event.setCanceled(true);
+                }
             }
             else if(event.getEntityLiving() instanceof EntityPlayerMP) {
                 EntityPlayerMP player = (EntityPlayerMP)event.getEntityLiving();
@@ -148,15 +154,10 @@ public class EntityEvents {
             }
         }
 
-        @SuppressWarnings("ConstantValue")
         @SubscribeEvent(priority = EventPriority.LOWEST)
         public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
-            if(event.player instanceof EntityPlayerMP) {
-                EntityPlayerMP player = (EntityPlayerMP) event.player;
-                BlockPos pos = SkillWrapper.getSkillCapability(player).getTwilightRespawn();
-                if(player.dimension==7 && Objects.isNull(player.getBedLocation(7)) && Objects.nonNull(pos))
-                    player.setSpawnPoint(pos,true);
-            }
+            if(event.player instanceof EntityPlayerMP)
+                SkillWrapper.forceTwilightRespawn(event.player);
         }
 
         @SubscribeEvent(priority = EventPriority.LOWEST)

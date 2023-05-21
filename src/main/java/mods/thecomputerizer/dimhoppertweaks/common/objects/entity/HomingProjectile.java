@@ -1,44 +1,52 @@
 package mods.thecomputerizer.dimhoppertweaks.common.objects.entity;
 
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.ai.EntityFlyHelper;
+import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.boss.EntityFinalBoss;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.commons.lang3.mutable.MutableInt;
 
-public class HomingProjectile extends EntityLiving {
+import javax.annotation.Nonnull;
+import java.util.Objects;
 
-    private EntityPlayer target;
+public class HomingProjectile extends Entity {
+
+    private final MutableInt moveCounter = new MutableInt();
     private EntityFinalBoss boss;
     private int phaseFired;
     private boolean synced;
-    private float homingSpeed;
+    @SideOnly(Side.CLIENT)
+    private float speed = 1f;
 
     public HomingProjectile(World world) {
         super(world);
-        this.setHealth(this.getMaxHealth());
         this.isImmuneToFire = true;
-        this.setSize(1f,1f);
+        this.setSize(0.5f,0.5f);
         this.setEntityInvulnerable(true);
-        this.moveHelper = new EntityFlyHelper(this);
         this.synced = false;
     }
 
-    public void setUpdate(EntityPlayer target, EntityFinalBoss boss, int phaseFired, float homingSpeed) {
-        this.target = target;
+    public void setUpdate(EntityFinalBoss boss, int phaseFired, float speed) {
         this.boss = boss;
         this.phaseFired = phaseFired;
-        this.world.updateEntity(this);
+        Vec3d posVec = this.boss.getPositionVector().add(this.getPositionVector()).normalize();
+        this.motionX = posVec.x*speed;
+        this.motionY = posVec.y*speed;
+        this.motionZ = posVec.z*speed;
+        this.speed = speed;
+        this.glowing = true;
         this.synced = true;
-        this.homingSpeed = homingSpeed;
     }
 
     @Override
     protected void entityInit() {
-        super.entityInit();
+
     }
 
     @Override
@@ -53,53 +61,86 @@ public class HomingProjectile extends EntityLiving {
 
     @Override
     public void onUpdate() {
-        if(this.target!=null) {
-            Vec3d vec = this.target.getPositionVector().subtract(this.getPositionVector()).normalize();
-            this.setVelocity(vec.x*this.homingSpeed,vec.y*this.homingSpeed,vec.z*this.homingSpeed);
-        }
-        if (this.world.isRemote) {
-            for (int i = 0; i < 10; ++i) {
-                this.world.spawnParticle(EnumParticleTypes.PORTAL, this.posX,
-                        this.posY,
-                        this.posZ,
-                        (rand.nextDouble() - 0.5D) * 2.0D, -rand.nextDouble(),
-                        (rand.nextDouble() - 0.5D) * 2.0D);
-            }
-        }
-        else if(this.synced) {
-            if(this.boss==null || this.boss.isDead || this.phaseFired!=this.boss.phase) this.setDead();
+        if(this.world.isRemote) {
+            this.world.spawnParticle(EnumParticleTypes.PORTAL,this.posX,this.posY,this.posZ,
+                    (rand.nextDouble()-0.5d)*2d,-1d*rand.nextDouble(),(rand.nextDouble()-0.5d)*2d);
+        } else {
+            if(this.moveCounter.getValue()>=50) calculateMove();
+            if(this.moveCounter.getValue()<20) this.moveSimple();
             else {
-                if(this.getDistance(this.target)<=2) {
-                    this.boss.subtractPlayerHealth(this.target,10d);
-                    this.world.createExplosion(null, this.posX, this.posY, this.posZ, 5f, true);
-                    this.setDead();
-                }
-                else if(this.getDistance(this.boss)<=4) {
-                    if(this.phaseFired==1) this.boss.setPhaseOneComplete();
-                    else if(this.phaseFired==3) this.boss.setPhaseThreeComplete();
-                    this.world.createExplosion(null, this.posX, this.posY, this.posZ, 5f, true);
-                    this.setDead();
+                this.motionX = 0d;
+                this.motionY = 0d;
+                this.motionZ = 0d;
+            }
+            this.moveCounter.increment();
+            if(this.synced && (Objects.isNull(this.boss) || this.boss.isDead || this.phaseFired!=this.boss.phase))
+                this.setDead();
+            boolean boom = false;
+            for (EntityPlayer player : this.boss.getTrackingPlayers()) {
+                if (this.getDistance(player)<=(boom?4:3)) {
+                    this.boss.subtractPlayerHealth(player, 10d);
+                    boom = true;
                 }
             }
+            if (this.getDistance(this.boss)<=(boom?6:5)) {
+                this.boss.boom = true;
+                boom = true;
+            }
+            if (boom) {
+                this.world.createExplosion(this,this.posX,this.posY,this.posZ,5f, true);
+                this.setDead();
+            } else if(this.ticksExisted>=400) expire();
         }
-        if (this.ticksExisted > 400) expire();
         super.onUpdate();
     }
 
+    private void calculateMove() {
+        EntityPlayer player = world.getClosestPlayer(this.posX,this.posY,this.posZ,100d,false);
+        if(Objects.nonNull(player)) {
+            Vec3d posVec = player.getPositionVector().subtract(this.getPositionVector()).normalize();
+            this.motionX = posVec.x*this.speed;
+            this.motionY = posVec.y*this.speed;
+            this.motionZ = posVec.z*this.speed;
+        }
+        this.moveCounter.setValue(0);
+    }
+
+    private void moveSimple() {
+        this.posX+=this.motionX;
+        this.posY+=this.motionY;
+        this.posZ+=this.motionZ;
+        this.motionX*=0.95d;
+        this.motionY*=0.95d;
+        this.motionZ*=0.95d;
+    }
+
     public void expire() {
-        if(this.target!=null && this.getDistance(this.target)<=4) this.boss.subtractPlayerHealth(this.target,10d);
-        else if(this.boss!=null && this.getDistance(this.boss)<=4) this.boss.setPhaseOneComplete();
-        this.world.createExplosion(null, this.posX, this.posY, this.posZ, 5f, true);
+        if(Objects.nonNull(this.boss)) {
+            boolean boom = false;
+            for(EntityPlayer player : this.boss.getTrackingPlayers()) {
+                if (this.getDistance(player)<=4) {
+                    this.boss.subtractPlayerHealth(player, 10d);
+                    boom = true;
+                }
+            }
+            if(this.getDistance(this.boss)<=(boom?6:4)) this.boss.boom = true;
+        }
+        this.world.createExplosion(this, this.posX, this.posY, this.posZ, 5f, true);
         this.setDead();
     }
 
-    @Override
-    public void readEntityFromNBT(NBTTagCompound compound) {
-        super.readEntityFromNBT(compound);
+    @SideOnly(Side.CLIENT)
+    public boolean isInRangeToRender3d(double x, double y, double z) {
+        return true;
     }
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound compound) {
-        super.writeEntityToNBT(compound);
+    public void readEntityFromNBT(@Nonnull NBTTagCompound compound) {
+        this.synced = compound.getBoolean("projectileSynced");
+    }
+
+    @Override
+    public void writeEntityToNBT(@Nonnull NBTTagCompound compound) {
+        compound.setBoolean("projectileSynced",this.synced);
     }
 }

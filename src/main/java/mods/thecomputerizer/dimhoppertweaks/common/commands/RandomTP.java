@@ -40,16 +40,16 @@ public class RandomTP extends CommandBase {
         if (args.length > 3) {
             long arg1=0;
             long arg2=0;
-            EntityPlayerMP entityplayer=null;
+            EntityPlayerMP player=null;
             try {
                 arg1 = parseLong(args[1]);
                 arg2 = parseLong(args[2]);
-                entityplayer = getPlayer(server, sender, args[0]);
+                player = getPlayer(server, sender, args[0]);
             }
             catch(Exception e) {
                 e.printStackTrace();
             }
-            if(entityplayer!=null) {
+            if(Objects.nonNull(player)) {
                 DimensionManager.initDimension((int) arg1);
                 WorldServer world = DimensionManager.getWorld((int) arg1);
                 if (!world.isRemote) {
@@ -62,8 +62,11 @@ public class RandomTP extends CommandBase {
                         Biome biome = world.getBiome(pos);
                         for (int i = 0; i < (args.length - 3); i++) {
                             if (Objects.requireNonNull(biome.getRegistryName()).toString().toLowerCase().contains(args[3 + i])) {
-                                TeleportUtils.teleport(entityplayer, (int)arg1,x,y,z,entityplayer.rotationYaw,entityplayer.rotationPitch);
-                                if((int) arg1==7) SkillWrapper.getSkillCapability(entityplayer).setTwilightRespawn(new BlockPos(x,100,z));
+                                TeleportUtils.teleport(player, (int)arg1,x,y,z,player.rotationYaw,player.rotationPitch);
+                                if((int) arg1==7) {
+                                    SkillWrapper.getSkillCapability(player).setTwilightRespawn(new BlockPos(x,100,z));
+                                    SkillWrapper.forceTwilightRespawn(player);
+                                }
                                 notifyCommandListener(sender, this, "\u00A74\u00A7oYour consciousness fades for a second as you hear a nearly indistinguishable voice in your mind\n\uu00A7l\u00A74D\u00A7ko\u00A7r \u00A74\u00A7ln\u00A7ko\u00A7r\u00A74\u00A7lt tr\u00A7kus\u00A7r\u00A74\u00A7lt \u00A7ktha\u00A7r\u00A74\u00A7lt b\u00A7kook");
                                 success = false;
                                 break;

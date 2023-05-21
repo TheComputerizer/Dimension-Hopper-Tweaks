@@ -1,4 +1,9 @@
 {
   "boss.static": { "sounds": [ "dimhoppertweaks:boss/static" ] },
-  "boss.spawn": { "sounds": [ "dimhoppertweaks:boss/spawn" ] }
+  "boss.spawn": { "sounds": [ "dimhoppertweaks:boss/spawn" ] },
+  "boss.music": {
+    "category": "music",
+    "sounds": [ "dimhoppertweaks:boss/music" ],
+    "stream": true
+  }
 }

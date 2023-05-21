@@ -1,7 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.network.packets;
 
 import io.netty.buffer.ByteBuf;
-import mods.thecomputerizer.dimhoppertweaks.DimHopperTweaks;
 import mods.thecomputerizer.dimhoppertweaks.client.gui.TokenExchangeGui;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -14,10 +13,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PacketOpenGui implements IMessageHandler<PacketOpenGui.PacketOpenGuiMessage, IMessage> {
+public class PacketOpenGui implements IMessageHandler<PacketOpenGui.Message, IMessage> {
 
     @Override
-    public IMessage onMessage(PacketOpenGui.PacketOpenGuiMessage message, MessageContext ctx) {
+    public IMessage onMessage(Message message, MessageContext ctx) {
         openGui(message.skills,message.currentSkill, message.currentLevel);
         return null;
     }
@@ -27,16 +26,16 @@ public class PacketOpenGui implements IMessageHandler<PacketOpenGui.PacketOpenGu
         Minecraft.getMinecraft().displayGuiScreen(new TokenExchangeGui(skills,skill,level));
     }
 
-    public static class PacketOpenGuiMessage implements IMessage {
+    public static class Message implements IMessage {
 
         private List<String> skills;
         private String currentSkill;
         private int currentLevel;
 
-        public PacketOpenGuiMessage() {
+        public Message() {
         }
 
-        public PacketOpenGuiMessage(List<String> skills, String skill, int level) {
+        public Message(List<String> skills, String skill, int level) {
             this.skills = skills;
             this.currentSkill = skill;
             this.currentLevel = level;

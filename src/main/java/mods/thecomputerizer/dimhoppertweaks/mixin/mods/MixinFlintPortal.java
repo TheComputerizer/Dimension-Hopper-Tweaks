@@ -28,7 +28,8 @@ public class MixinFlintPortal extends Block {
     }
 
     /**
-     * Cringe MCreator code
+     * @author The_Computerizer
+     * @reason Cringe MCreator code
      */
     @Overwrite
     public boolean tryToCreatePortal(World world, int x, int y, int z) {

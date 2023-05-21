@@ -4,7 +4,7 @@ import mods.thecomputerizer.dimhoppertweaks.Constants;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillCapabilityStorage;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;
-import mods.thecomputerizer.dimhoppertweaks.network.PacketHandler;
+import mods.thecomputerizer.dimhoppertweaks.network.NetworkHandler;
 import mods.thecomputerizer.dimhoppertweaks.network.packets.PacketOpenGui;
 import mods.thecomputerizer.dimhoppertweaks.util.ItemUtil;
 import net.minecraft.client.resources.I18n;
@@ -62,7 +62,7 @@ public class SkillToken extends EpicItem {
             String skill = tag.getString("drain_selection");
             int amount = tag.getInteger("drain_amount");
             if(player.isSneaking()) {
-                PacketHandler.NETWORK.sendTo(new PacketOpenGui.PacketOpenGuiMessage(SkillCapabilityStorage.SKILLS, skill,amount), player);
+                NetworkHandler.sendToPlayer(new PacketOpenGui.Message(SkillCapabilityStorage.SKILLS, skill,amount), player);
                 return new ActionResult<>(EnumActionResult.SUCCESS, stack);
             } else if(player.experienceLevel>=amount) {
                 ISkillCapability cap = SkillWrapper.getSkillCapability(player);

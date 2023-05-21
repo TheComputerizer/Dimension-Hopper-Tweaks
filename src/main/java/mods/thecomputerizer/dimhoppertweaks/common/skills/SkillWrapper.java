@@ -17,6 +17,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -55,6 +56,14 @@ public class SkillWrapper {
             }
         }
     }
+
+    @SuppressWarnings("ConstantValue")
+    public static void forceTwilightRespawn(EntityPlayer player) {
+        BlockPos pos = getSkillCapability(player).getTwilightRespawn();
+        if(player.dimension==7 && Objects.isNull(player.getBedLocation(7)) && Objects.nonNull(pos))
+            player.setSpawnPoint(pos,true);
+    }
+
     private final String modid;
     private final String name;
     private final int maxLevel;

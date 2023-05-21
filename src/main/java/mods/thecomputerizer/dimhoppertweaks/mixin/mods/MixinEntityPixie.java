@@ -11,7 +11,7 @@ import vazkii.botania.common.entity.EntityPixie;
 
 import java.util.Objects;
 
-@Mixin(EntityPixie.class)
+@Mixin(value = EntityPixie.class, remap = false)
 public abstract class MixinEntityPixie extends EntityFlying implements EntityPixieAccess {
 
     @Shadow public abstract int getType();
@@ -27,6 +27,10 @@ public abstract class MixinEntityPixie extends EntityFlying implements EntityPix
         this.bypassesTarget = bypassesTarget;
     }
 
+    /**
+     * @author The_Computerizer
+     * @reason Custom Pixie interactions
+     */
     @Overwrite
     public void onEntityUpdate() {
         super.onEntityUpdate();

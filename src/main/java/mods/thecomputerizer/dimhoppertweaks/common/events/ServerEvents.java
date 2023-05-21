@@ -1,20 +1,22 @@
 package mods.thecomputerizer.dimhoppertweaks.common.events;
 
 import mods.thecomputerizer.dimhoppertweaks.Constants;
-import mods.thecomputerizer.dimhoppertweaks.common.objects.DimensionHopperSounds;
-import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.EntityFinalBoss;
+import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.boss.EntityFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillCapabilityProvider;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+
+import java.util.Objects;
 
 @Mod.EventBusSubscriber(modid = Constants.MODID)
 public class ServerEvents {
@@ -39,7 +41,6 @@ public class ServerEvents {
         WORLD_SERVER = world;
         POS_SERVER = pos;
         BOSS_SPAWN_COUNT = 162;
-        world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), DimensionHopperSounds.SPAWN, SoundCategory.MASTER, 1.0F, 1.0F);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -48,4 +49,12 @@ public class ServerEvents {
             event.addCapability(SkillWrapper.SKILL_CAPABILITY, new SkillCapabilityProvider());
     }
 
+    @SuppressWarnings("ConstantValue")
+    @SubscribeEvent
+    public static void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
+        EntityPlayer player = event.player;
+        BlockPos pos = SkillWrapper.getSkillCapability(player).getTwilightRespawn();
+        if(player.dimension==7 && Objects.isNull(player.getBedLocation(7)) && Objects.nonNull(pos))
+            player.setSpawnPoint(pos,true);
+    }
 }

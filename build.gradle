@@ -71,6 +71,7 @@ dependencies {
     compileOnly(fg.deobf("curse.maven:ore-stages-290201:${project.orestages_version}"))
     //compileOnly(fg.deobf('curse.maven:item-stages-2810185:2810185'))
 
+    implementation(fg.deobf("curse.maven:the-impossible-library-661115:${project.til_version}"))
     implementation(fg.deobf("curse.maven:codechicken-lib-242818:${project.ccl_version}"))
     implementation(fg.deobf("curse.maven:avaritia-261348:${project.avaritia_version}"))
     implementation(fg.deobf("curse.maven:dimensionaldoors-284876:${project.dimdoors_version}"))
@@ -88,13 +89,14 @@ dependencies {
     implementation(fg.deobf("curse.maven:lockyz-extra-dimensions-mod-283789:${project.lockyz_version}"))
     implementation(fg.deobf("curse.maven:tiny-progressions-250850:${project.tp_version}"))
     implementation(fg.deobf("curse.maven:overloaded-264601:${project.overloaded_version}"))
-    implementation(fg.deobf("curse.maven:3330934-225643:${project.botania_version}"))
+    implementation(fg.deobf("curse.maven:botania-225643:${project.botania_version}"))
 
     //don't need these to compile
     runtimeOnly(fg.deobf("curse.maven:mantle-74924:${project.mantle_version}"))
     runtimeOnly(fg.deobf("curse.maven:autoreglib-250363:${project.autoreglib_version}"))
     runtimeOnly(fg.deobf("curse.maven:had-enough-items-557549:${project.hei_version}"))
     runtimeOnly(fg.deobf("curse.maven:bookshelf-228525:${project.bookshelf_version}"))
+    runtimeOnly(fg.deobf("curse.maven:baubles-227083:${project.baubles_version}"))
 
     //mixin stuff
     implementation(fg.deobf("curse.maven:mixin-booter-419286:${project.mixinbooter_version}"))
@@ -123,7 +125,7 @@ jar {
         attributes([
                 'FMLCorePlugin': 'mods.thecomputerizer.dimhoppertweaks.core.EarlyMixinPlugin',
                 'FMLCorePluginContainsFMLMod': 'true',
-                'ForceLoadAsMod': 'true',
+                //'ForceLoadAsMod': 'true',
                 'FMLAT': 'dimhoppertweaks_at.cfg',
         ])
     }
