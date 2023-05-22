@@ -125,7 +125,7 @@ jar {
         attributes([
                 'FMLCorePlugin': 'mods.thecomputerizer.dimhoppertweaks.core.EarlyMixinPlugin',
                 'FMLCorePluginContainsFMLMod': 'true',
-                //'ForceLoadAsMod': 'true',
+                'ForceLoadAsMod': 'true',
                 'FMLAT': 'dimhoppertweaks_at.cfg',
         ])
     }

@@ -11,14 +11,14 @@ public class ClientEvents {
 
     @SubscribeEvent
     public static void onFogDensity(EntityViewRenderEvent.FogDensity event) {
-        if(ClientHandler.FOG_DENSITY_OVERRIDE>=0)
-            event.setDensity(ClientHandler.FOG_DENSITY_OVERRIDE);
+        //if(ClientHandler.FOG_DENSITY_OVERRIDE>=0)
+            //event.setDensity(ClientHandler.FOG_DENSITY_OVERRIDE);
     }
 
     @SubscribeEvent
     public static void onFogColors(EntityViewRenderEvent.FogColors event) {
-        event.setRed(0.5f);
-        event.setGreen(0.5f);
-        event.setBlue(1f);
+        //event.setRed(0.5f);
+        //event.setGreen(0.5f);
+        //event.setBlue(1f);
     }
 }

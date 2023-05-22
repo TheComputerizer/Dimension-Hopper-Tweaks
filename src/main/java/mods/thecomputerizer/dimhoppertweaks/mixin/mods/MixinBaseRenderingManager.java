@@ -9,7 +9,7 @@ import net.minecraft.world.IBlockAccess;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-@Mixin(value = BaseRenderingManager.class, remap = false)
+@Mixin(value = BaseRenderingManager.class)
 public abstract class MixinBaseRenderingManager implements BaseRenderingManagerAccess {
     @Shadow protected abstract BaseModClient.ICustomRenderer getCustomRenderer(IBlockAccess world, BlockPos pos, IBlockState state);
 
