@@ -13,16 +13,14 @@ public class PhaseFive extends PhaseBase {
     protected Action[] orderedActions() {
         MovePlayers move = new MovePlayers(10,true,this.phase);
         IndiscriminateAOE indiscriminate = new IndiscriminateAOE(220,false,this.phase,26,
-                20d,15,5,2);
+                20d,15,5,4);
         Teleport teleport = new Teleport(20,false,this.phase);
         return new Action[]{move,indiscriminate,teleport};
     }
 
     @Override
     protected boolean checkPhaseComplete() {
-        boolean done = this.boss.boom;
-        this.boss.boom = false;
-        return done;
+        return boss.getHealthPercentage()<=0.45f;
     }
 
     @Override

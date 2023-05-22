@@ -1,7 +1,8 @@
 package mods.thecomputerizer.dimhoppertweaks.common.objects.entity.boss.phase.actions;
 
-import mods.thecomputerizer.dimhoppertweaks.Constants;
 import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.boss.EntityFinalBoss;
+import mods.thecomputerizer.dimhoppertweaks.network.NetworkHandler;
+import mods.thecomputerizer.dimhoppertweaks.network.packets.PacketBossClientEffects;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
@@ -15,6 +16,8 @@ public final class IndiscriminateAOE extends Action {
     private final int aoeTime;
     private final int aoeRange;
     private final int spawnsPerTick;
+    private boolean skySwapped = false;
+    private boolean shieldDropped = false;
 
     public IndiscriminateAOE(int activeTicks, boolean singleton, int activePhase, int windupDelay, double spawnRadius,
                              int aoeTime, int aoeRange, int spawnsPerTick) {
@@ -38,7 +41,22 @@ public final class IndiscriminateAOE extends Action {
             for(int i=0;i<spawnsPerTick;i++)
                 vecList.add(i,getRandomPos(boss.getPositionVector(),boss.world.rand));
             boss.addAOECounter(vecList,this.aoeTime,this.aoeRange,this.activePhase);
+            if(!this.skySwapped) {
+                NetworkHandler.sendToTracking(new PacketBossClientEffects.Message(true,0f),boss);
+                this.skySwapped = true;
+            }
+            if(!this.shieldDropped) {
+                boss.updateShield(false);
+                this.shieldDropped = true;
+            }
         }
+    }
+
+    @Override
+    public void finishAction(EntityFinalBoss boss) {
+        super.finishAction(boss);
+        this.shieldDropped = false;
+        boss.updateShield(true);
     }
 
     private Vec3d getRandomPos(Vec3d initial, Random rand) {

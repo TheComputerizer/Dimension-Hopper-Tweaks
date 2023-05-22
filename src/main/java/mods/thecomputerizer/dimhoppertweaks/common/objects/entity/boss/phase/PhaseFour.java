@@ -13,7 +13,7 @@ public class PhaseFour extends PhaseBase {
     @Override
     protected Action[] orderedActions() {
         AvoidPlayers avoid = new AvoidPlayers(100,true,this.phase);
-        Charge charge = new Charge(100,false,this.phase,15,15d);
+        Charge charge = new Charge(100,false,this.phase,15,25d);
         Teleport teleport = new Teleport(20,false,this.phase);
         return new Action[]{avoid,charge,teleport};
     }

@@ -11,6 +11,7 @@ public final class Charge extends Action {
     private final int windupTicks;
     private final double impulse;
     private EntityPlayer target;
+    boolean wasShieldUp = false;
 
     public Charge(int activeTicks, boolean singleton, int activePhase, int windupTicks, double impulse) {
         super(activeTicks, singleton, activePhase, "RANDOM");
@@ -20,6 +21,8 @@ public final class Charge extends Action {
 
     @Override
     public void startAction(EntityFinalBoss boss) {
+        this.wasShieldUp = boss.getShieldUp();
+        boss.updateShield(false);
         List<EntityPlayer> targets = findPlayerTargets(boss);
         if(!targets.isEmpty()) {
             this.target = targets.get(0);
@@ -41,6 +44,8 @@ public final class Charge extends Action {
 
     @Override
     public void finishAction(EntityFinalBoss boss) {
+        super.finishAction(boss);
         boss.isCharging = false;
+        boss.updateShield(this.wasShieldUp);
     }
 }

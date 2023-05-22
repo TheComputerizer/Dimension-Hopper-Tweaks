@@ -22,9 +22,13 @@ public class DelayedAOE {
 
     public boolean tick(EntityFinalBoss boss) {
         boolean ret = this.timer.decrementAndGet()<=0;
-        if(ret && boss.phase==this.phaseFired)
-            for(Vec3d posVec : this.vecList)
-                boss.aoeAttack(posVec,this.range);
+        if(ret && boss.phase==this.phaseFired) {
+            boolean fired = false;
+            for (Vec3d posVec : this.vecList) {
+                boss.aoeAttack(posVec, this.range, !fired);
+                if(!fired) fired = true;
+            }
+        }
         return ret;
     }
 }

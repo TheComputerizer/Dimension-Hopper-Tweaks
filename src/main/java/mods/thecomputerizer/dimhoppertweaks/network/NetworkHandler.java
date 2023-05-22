@@ -20,6 +20,7 @@ public class NetworkHandler {
         Constants.LOGGER.info("Registering packets");
         int id = 0;
         NETWORK.registerMessage(PacketUpdateBossRender.class, PacketUpdateBossRender.Message.class, id++, Side.CLIENT);
+        NETWORK.registerMessage(PacketBossClientEffects.class, PacketBossClientEffects.Message.class, id++, Side.CLIENT);
         NETWORK.registerMessage(PacketRenderBossAttack.class, PacketRenderBossAttack.Message.class, id++, Side.CLIENT);
         NETWORK.registerMessage(PacketSyncPlayerHealth.class, PacketSyncPlayerHealth.Message.class, id++, Side.CLIENT);
         NETWORK.registerMessage(PacketOpenGui.class, PacketOpenGui.Message.class, id++, Side.CLIENT);

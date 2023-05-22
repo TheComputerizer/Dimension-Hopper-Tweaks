@@ -311,13 +311,13 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
         }
     }
 
-    public void aoeAttack(Vec3d posVec, int range) {
+    public void aoeAttack(Vec3d posVec, int range, boolean sound) {
         boolean hit = false;
         for(EntityPlayer player : this.players) {
             if(isEntityCloseEnough(player, posVec, range))
                 if(subtractPlayerHealth(player, 4d)) hit = true;
         }
-        if(!hit) playSound(posVec, SoundEvents.ENTITY_ENDEREYE_DEATH);
+        if(!hit && sound) playSound(posVec, SoundEvents.ENTITY_ENDEREYE_DEATH);
     }
 
     public void addAOECounter(List<Vec3d> vecList, int time, int range, int phase) {
