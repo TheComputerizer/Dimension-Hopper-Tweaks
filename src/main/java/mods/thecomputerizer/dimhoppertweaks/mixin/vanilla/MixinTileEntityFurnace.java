@@ -18,11 +18,9 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(TileEntityFurnace.class)
 public abstract class MixinTileEntityFurnace {
 
-    @Shadow
-    private NonNullList<ItemStack> furnaceItemStacks;
+    @Shadow protected abstract boolean canSmelt();
 
-    @Shadow
-    abstract boolean canSmelt();
+    @Shadow private NonNullList<ItemStack> furnaceItemStacks;
 
     /**
      * @author The_Computerizer

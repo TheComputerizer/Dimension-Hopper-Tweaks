@@ -6,6 +6,7 @@ import mods.thecomputerizer.dimhoppertweaks.common.commands.SummonBoss;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillCapabilityStorage;
+import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import mods.thecomputerizer.dimhoppertweaks.network.NetworkHandler;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -13,7 +14,6 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import org.apache.logging.log4j.LogManager;
 
 @Mod(modid = Constants.MODID, name = Constants.NAME, version = Constants.VERSION, dependencies = Constants.DEPENDENCIES)
 public class DimHopperTweaks
@@ -23,7 +23,6 @@ public class DimHopperTweaks
 
     @Mod.EventHandler
     public static void preInit(FMLPreInitializationEvent event) {
-        Constants.LOGGER = LogManager.getLogger();
         Constants.LOGGER.info("Starting pre-init");
         NetworkHandler.registerPackets();
         CapabilityManager.INSTANCE.register(ISkillCapability.class, new SkillCapabilityStorage(), SkillCapability::new);

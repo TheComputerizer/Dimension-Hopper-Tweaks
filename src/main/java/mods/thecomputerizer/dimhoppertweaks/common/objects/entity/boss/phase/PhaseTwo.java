@@ -1,10 +1,8 @@
 package mods.thecomputerizer.dimhoppertweaks.common.objects.entity.boss.phase;
 
-import mods.thecomputerizer.dimhoppertweaks.Constants;
 import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.boss.EntityFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.boss.phase.actions.Action;
 import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.boss.phase.actions.DelayedAOE;
-import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.boss.phase.actions.SpawnProjectile;
 import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.boss.phase.actions.Teleport;
 
 public class PhaseTwo extends PhaseBase {

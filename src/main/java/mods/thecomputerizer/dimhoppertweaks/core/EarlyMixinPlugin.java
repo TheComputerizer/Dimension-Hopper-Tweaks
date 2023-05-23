@@ -1,7 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.core;
 
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
-import org.apache.logging.log4j.LogManager;
 import zone.rong.mixinbooter.IEarlyMixinLoader;
 
 import javax.annotation.Nullable;
@@ -13,7 +12,7 @@ import java.util.stream.Stream;
 public class EarlyMixinPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
     static {
-        LogManager.getLogger().info("Initializing early mixin twinkies... I mean tweaks");
+        Constants.LOGGER.info("Initializing early mixin twinkies... I mean tweaks");
     }
 
     @Override

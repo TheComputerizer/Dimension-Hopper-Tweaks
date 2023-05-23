@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.common.objects;
 
-import mods.thecomputerizer.dimhoppertweaks.Constants;
+import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.RegistryEvent;

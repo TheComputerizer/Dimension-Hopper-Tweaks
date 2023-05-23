@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.common.objects.entity.boss;
 
-import mods.thecomputerizer.dimhoppertweaks.Constants;
+import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import mods.thecomputerizer.dimhoppertweaks.client.ClientHandler;
 import mods.thecomputerizer.dimhoppertweaks.common.objects.DimensionHopperSounds;
 import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.HomingProjectile;
@@ -8,7 +8,6 @@ import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.boss.phase.*;
 import mods.thecomputerizer.dimhoppertweaks.common.objects.items.RealitySlasher;
 import mods.thecomputerizer.dimhoppertweaks.network.NetworkHandler;
 import mods.thecomputerizer.dimhoppertweaks.network.packets.PacketRenderBossAttack;
-import mods.thecomputerizer.dimhoppertweaks.network.packets.PacketSyncPlayerHealth;
 import mods.thecomputerizer.dimhoppertweaks.network.packets.PacketUpdateBossRender;
 import morph.avaritia.item.tools.ItemSwordInfinity;
 import morph.avaritia.util.DamageSourceInfinitySword;
@@ -141,9 +140,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
     }
 
     @Override
-    public boolean canDespawn() {
-        return false;
-    }
+    protected void despawnEntity() {}
 
     @Override
     public void setDead() {
@@ -204,6 +201,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
     public void addTrackingPlayer(@Nonnull EntityPlayerMP player) {
         super.addTrackingPlayer(player);
         this.bossInfo.addPlayer(player);
+        if(this.players.size()==0) this.phase = 0;
         this.players.add(player);
         if(this.doneWithIntro) {
             this.savedPlayerHealth.put(player.getUniqueID().toString(),player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).getAttributeValue());
@@ -219,7 +217,10 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
         this.players.remove(player);
         if(this.savedPlayerHealth.containsKey(player.getUniqueID().toString()))
             player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(this.savedPlayerHealth.get(player.getUniqueID().toString()));
-        if(getTrackingPlayers().size()==0); //setDead();
+        if(getTrackingPlayers().size()==0) {
+            this.setHealth(this.getMaxHealth());
+            this.phase = -1;
+        }
     }
 
     @Override
@@ -352,7 +353,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
                     return true;
                 } else {
                     this.setDropItemsWhenDead(false);
-                    this.setDead();
+                    //this.setDead();
                     return false;
                 }
             }
@@ -525,6 +526,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
         return new TextComponentString(builder.toString());
     }
 
+    @SuppressWarnings("SameParameterValue")
     private ITextComponent styleText(String literal, Style style) {
         return new TextComponentString(literal).setStyle(style);
     }

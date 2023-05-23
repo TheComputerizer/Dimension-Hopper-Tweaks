@@ -1,6 +1,5 @@
 package mods.thecomputerizer.dimhoppertweaks.common.objects.entity.boss.phase;
 
-import mods.thecomputerizer.dimhoppertweaks.Constants;
 import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.boss.EntityFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.boss.phase.actions.*;
 

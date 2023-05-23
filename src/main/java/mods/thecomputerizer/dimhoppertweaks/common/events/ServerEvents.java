@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.common.events;
 
-import mods.thecomputerizer.dimhoppertweaks.Constants;
+import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.boss.EntityFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillCapabilityProvider;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;

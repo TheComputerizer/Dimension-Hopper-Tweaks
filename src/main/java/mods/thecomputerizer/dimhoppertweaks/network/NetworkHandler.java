@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.network;
 
-import mods.thecomputerizer.dimhoppertweaks.Constants;
+import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import mods.thecomputerizer.dimhoppertweaks.network.packets.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;

@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.common.objects.items;
 
-import mods.thecomputerizer.dimhoppertweaks.Constants;
+import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillCapabilityStorage;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;

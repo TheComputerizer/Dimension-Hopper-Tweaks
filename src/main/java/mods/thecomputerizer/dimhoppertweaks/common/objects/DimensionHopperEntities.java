@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.common.objects;
 
-import mods.thecomputerizer.dimhoppertweaks.Constants;
+import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import mods.thecomputerizer.dimhoppertweaks.DimHopperTweaks;
 import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.boss.EntityFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.HomingProjectile;
@@ -24,6 +24,7 @@ public final class DimensionHopperEntities {
         registerEntity("homing_projectile", HomingProjectile.class, 100, 0x0, 0x0);
     }
 
+    @SuppressWarnings("SameParameterValue")
     private static void registerEntity(String name, Class <? extends Entity> entity, int trackingRange, int spawnEggFirstColor, int spawnEggSecondColor) {
         EntityRegistry.registerModEntity(
                 new ResourceLocation(Constants.MODID, name),

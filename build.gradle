@@ -90,6 +90,7 @@ dependencies {
     implementation(fg.deobf("curse.maven:tiny-progressions-250850:${project.tp_version}"))
     implementation(fg.deobf("curse.maven:overloaded-264601:${project.overloaded_version}"))
     implementation(fg.deobf("curse.maven:botania-225643:${project.botania_version}"))
+    implementation(fg.deobf("curse.maven:lightningcraft-237422:${project.lightningcraft_version}"))
 
     //don't need these to compile
     runtimeOnly(fg.deobf("curse.maven:mantle-74924:${project.mantle_version}"))

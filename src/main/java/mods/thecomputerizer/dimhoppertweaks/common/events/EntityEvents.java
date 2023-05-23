@@ -2,7 +2,7 @@ package mods.thecomputerizer.dimhoppertweaks.common.events;
 
 import codersafterdark.reskillable.api.event.LevelUpEvent;
 import com.google.common.collect.Iterables;
-import mods.thecomputerizer.dimhoppertweaks.Constants;
+import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.boss.EntityFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;
@@ -23,7 +23,6 @@ import net.minecraftforge.event.entity.player.AdvancementEvent;
 import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
 import net.minecraftforge.event.entity.player.UseHoeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
@@ -37,12 +36,6 @@ import java.util.Objects;
 @SuppressWarnings("SpellCheckingInspection")
 @Mod.EventBusSubscriber(modid = Constants.MODID)
 public class EntityEvents {
-
-    @SubscribeEvent
-    public static void onTryDespawn(LivingSpawnEvent.AllowDespawn event) {
-        if(event.getEntityLiving() instanceof EntityFinalBoss)
-            event.setResult(Event.Result.DENY);
-    }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onLivingAttack(LivingAttackEvent event) {

@@ -4,7 +4,7 @@ import gcewing.sg.BaseAORenderingManager;
 import gcewing.sg.BaseBakedRenderTarget;
 import gcewing.sg.BaseModClient;
 import gcewing.sg.Trans3;
-import mods.thecomputerizer.dimhoppertweaks.Constants;
+import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import mods.thecomputerizer.dimhoppertweaks.mixin.access.BaseRenderingManagerAccess;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.BlockModelRenderer;

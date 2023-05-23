@@ -3,7 +3,7 @@ package mods.thecomputerizer.dimhoppertweaks.client.entity.render;
 import codechicken.lib.colour.ColourRGBA;
 import codechicken.lib.texture.TextureUtils;
 import codechicken.lib.util.TransformUtils;
-import mods.thecomputerizer.dimhoppertweaks.Constants;
+import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import mods.thecomputerizer.dimhoppertweaks.client.ClientHandler;
 import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.HomingProjectile;
 import net.minecraft.client.Minecraft;

@@ -6,11 +6,11 @@
     "version": "${version}",
     "mcversion": "${mcversion}",
     "url": "https://www.curseforge.com/minecraft/mc-mods/dimension-hopper-tweaks",
-    "updateUrl": "",
     "authorList": ["The_Computerizer"],
     "credits": "TheSilkMiner",
     "logoFile": "tweaksLogo.png",
-    "screenshots": [],
-    "dependencies": ["jei","avaritia","fermion-lib","codechicken-lib","sgcraft"]
+    "dependencies": ["theimpossiblelibrary","avaritia","dimdoors","sgcraft","reskillable","tconstruct","geckolib3",
+      "twilightforest","psi","actuallyadditions","theoneprobe","xlfoodmod","gamestages","aquaculture",
+      "lockyzextradimensionsmod","tp","overloaded","botania","lightningcraft"]
   }
 ]

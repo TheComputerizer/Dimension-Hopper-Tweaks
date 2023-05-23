@@ -14,7 +14,8 @@
     "MixinInfinitySword",
     "MixinItemTreasureChest",
     "MixinModSpellPieces",
-    "MixinPieceTrickCollapseBlock"
+    "MixinPieceTrickCollapseBlock",
+    "MixinZGBlockBase"
   ],
   "client": []
 }

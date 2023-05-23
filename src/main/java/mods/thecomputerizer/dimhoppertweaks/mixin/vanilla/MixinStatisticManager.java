@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.vanilla;
 
-import mods.thecomputerizer.dimhoppertweaks.Constants;
+import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import net.minecraft.stats.StatBase;
 import net.minecraft.stats.StatisticsManager;
 import net.minecraft.util.TupleIntJsonSerializable;
