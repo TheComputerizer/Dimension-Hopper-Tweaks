@@ -1,22 +1,16 @@
 package mods.thecomputerizer.dimhoppertweaks.network.packets;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.player.EntityPlayer;
+import mods.thecomputerizer.dimhoppertweaks.network.ClientPacketHandlers;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-
-import java.util.Objects;
 
 public class PacketSyncPlayerHealth implements IMessageHandler<PacketSyncPlayerHealth.Message, IMessage> {
 
     @Override
     public IMessage onMessage(PacketSyncPlayerHealth.Message message, MessageContext ctx) {
-        EntityPlayer player = Minecraft.getMinecraft().player;
-        if(Objects.nonNull(player))
-            player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(message.health);
+        ClientPacketHandlers.handleSyncPlayerHealth(message.health);
         return null;
     }
 

@@ -7,6 +7,7 @@ import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.boss.EntityFin
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
@@ -48,5 +49,12 @@ public class ClientPacketHandlers {
                     RenderEvents.ATTACKS.add(new RenderDelayedAOE(posVec,start,size,boss,phase));
             }
         } else mc.getSoundHandler().playSound(PositionedSoundRecord.getMusicRecord(DimensionHopperSounds.MUSIC));
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static void handleSyncPlayerHealth(double health) {
+        EntityPlayer player = Minecraft.getMinecraft().player;
+        if(Objects.nonNull(player))
+            player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(health);
     }
 }
