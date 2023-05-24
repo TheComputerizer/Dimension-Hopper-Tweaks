@@ -1,33 +1,18 @@
 package mods.thecomputerizer.dimhoppertweaks.network.packets;
 
 import io.netty.buffer.ByteBuf;
-import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.boss.EntityFinalBoss;
+import mods.thecomputerizer.dimhoppertweaks.network.ClientPacketHandlers;
 import mods.thecomputerizer.theimpossiblelibrary.util.NetworkUtil;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-
-import java.util.Objects;
 
 public class PacketUpdateBossRender implements IMessageHandler<PacketUpdateBossRender.Message, IMessage> {
 
     @Override
     public IMessage onMessage(Message message, MessageContext ctx) {
-        EntityPlayer player = Minecraft.getMinecraft().player;
-        if(Objects.nonNull(player)) {
-            Entity entity = player.world.getEntityByID(message.bossID);
-            if (entity instanceof EntityFinalBoss) {
-                EntityFinalBoss boss = (EntityFinalBoss) entity;
-                boss.phase = message.phase;
-                boss.updateShieldClient(message.isShieldUp);
-                boss.setAnimation(message.animationState,false);
-                boss.setProjectileCharge(message.projectileChargeTime);
-            }
-        }
+        ClientPacketHandlers.handleUpdateBossRender(message.bossID, message.phase, message.isShieldUp,
+                message.animationState, message.projectileChargeTime);
         return null;
     }
 

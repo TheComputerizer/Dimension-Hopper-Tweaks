@@ -1,14 +1,8 @@
 package mods.thecomputerizer.dimhoppertweaks.network.packets;
 
 import io.netty.buffer.ByteBuf;
-import mods.thecomputerizer.dimhoppertweaks.client.entity.render.RenderDelayedAOE;
-import mods.thecomputerizer.dimhoppertweaks.client.entity.render.RenderEvents;
-import mods.thecomputerizer.dimhoppertweaks.common.objects.DimensionHopperSounds;
-import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.boss.EntityFinalBoss;
+import mods.thecomputerizer.dimhoppertweaks.network.ClientPacketHandlers;
 import mods.thecomputerizer.theimpossiblelibrary.util.NetworkUtil;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -20,15 +14,7 @@ public class PacketRenderBossAttack implements IMessageHandler<PacketRenderBossA
 
     @Override
     public IMessage onMessage(Message message, MessageContext ctx) {
-        Minecraft mc = Minecraft.getMinecraft();
-        if(message.start>0) {
-            Entity entity = mc.player.world.getEntityByID(message.bossID);
-            if(entity instanceof EntityFinalBoss) {
-                EntityFinalBoss boss = (EntityFinalBoss)entity;
-                for (Vec3d posVec : message.vecList)
-                    RenderEvents.ATTACKS.add(new RenderDelayedAOE(posVec,message.start,message.size,boss, message.phase));
-            }
-        } else mc.getSoundHandler().playSound(PositionedSoundRecord.getMusicRecord(DimensionHopperSounds.MUSIC));
+        ClientPacketHandlers.handleRenderBossAttack(message.start, message.bossID, message.vecList, message.size, message.phase);
         return null;
     }
 
