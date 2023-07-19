@@ -15,8 +15,6 @@
     "MixinItemTreasureChest",
     "MixinModSpellPieces",
     "MixinPieceTrickCollapseBlock",
-    "MixinThermalCultivationEventHandler",
-    "MixinThermalExpansionEventHandler",
     "MixinZGBlockBase"
   ],
   "client": []

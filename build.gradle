@@ -61,6 +61,9 @@ repositories {
         name = 'blamejared'
         url = uri('https://maven.blamejared.com')
     }
+    flatDir {
+        dirs 'build/libs'
+    }
 }
 
 dependencies {
@@ -71,7 +74,9 @@ dependencies {
     compileOnly(fg.deobf("curse.maven:ore-stages-290201:${project.orestages_version}"))
     //compileOnly(fg.deobf('curse.maven:item-stages-2810185:2810185'))
 
-    implementation(fg.deobf("curse.maven:the-impossible-library-661115:${project.til_version}"))
+    //implementation(fg.deobf("curse.maven:the-impossible-library-661115:${project.til_version}"))
+    //noinspection DependencyNotationArgument
+    implementation name: "theimpossiblelibrary-${project.minecraft_version}-0.3.0"
     implementation(fg.deobf("curse.maven:codechicken-lib-242818:${project.ccl_version}"))
     implementation(fg.deobf("curse.maven:avaritia-261348:${project.avaritia_version}"))
     implementation(fg.deobf("curse.maven:dimensionaldoors-284876:${project.dimdoors_version}"))
@@ -100,7 +105,7 @@ dependencies {
     runtimeOnly(fg.deobf("curse.maven:had-enough-items-557549:${project.hei_version}"))
     runtimeOnly(fg.deobf("curse.maven:bookshelf-228525:${project.bookshelf_version}"))
     runtimeOnly(fg.deobf("curse.maven:baubles-227083:${project.baubles_version}"))
-    implementation(fg.deobf("curse.maven:cofh-core-69162:${project.cofhcore_version}"))
+    runtimeOnly(fg.deobf("curse.maven:cofh-core-69162:${project.cofhcore_version}"))
 
     //mixin stuff
     implementation(fg.deobf("curse.maven:mixin-booter-419286:${project.mixinbooter_version}"))
