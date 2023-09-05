@@ -54,15 +54,19 @@ repositories {
         }
     }
     maven {
+        name = 'Modrinth'
+        url = uri('https://api.modrinth.com/maven')
+        content {
+            includeGroup 'maven.modrinth'
+        }
+    }
+    maven {
         name = 'Sponge'
         url = uri('https://repo.spongepowered.org/maven')
     }
     maven {
         name = 'blamejared'
         url = uri('https://maven.blamejared.com')
-    }
-    flatDir {
-        dirs 'build/libs'
     }
 }
 
@@ -72,40 +76,40 @@ dependencies {
     //galacticraft doesn't seem to work in dev?
     compileOnly(fg.deobf("curse.maven:zollern-galaxy-241940:${project.zollern_version}"))
     compileOnly(fg.deobf("curse.maven:ore-stages-290201:${project.orestages_version}"))
-    //compileOnly(fg.deobf('curse.maven:item-stages-2810185:2810185'))
 
-    //implementation(fg.deobf("curse.maven:the-impossible-library-661115:${project.til_version}"))
-    //noinspection DependencyNotationArgument
-    implementation name: "theimpossiblelibrary-${project.minecraft_version}-0.3.0"
-    implementation(fg.deobf("curse.maven:codechicken-lib-242818:${project.ccl_version}"))
-    implementation(fg.deobf("curse.maven:avaritia-261348:${project.avaritia_version}"))
-    implementation(fg.deobf("curse.maven:dimensionaldoors-284876:${project.dimdoors_version}"))
-    implementation(fg.deobf("curse.maven:sgcraft-289115:${project.sgcraft_version}"))
-    implementation(fg.deobf("curse.maven:reskillable-286382:${project.reskillable_version}"))
-    implementation(fg.deobf("curse.maven:tinkers-construct-74072:${project.tconstruct_version}"))
-    implementation(fg.deobf("curse.maven:geckolib-388172:${project.gecko_version}"))
-    implementation(fg.deobf("curse.maven:the-twilight-forest-227639:${project.tf_version}"))
-    implementation(fg.deobf("curse.maven:psi-241665:${project.psi_version}"))
+    //implemented stuff
+    implementation(fg.deobf("curse.maven:the-impossible-library-661115:${project.til_version}"))
     implementation(fg.deobf("curse.maven:actually-additions-228404:${project.aa_version}"))
-    implementation(fg.deobf("curse.maven:the-one-probe-245211:${project.top_version}"))
-    implementation(fg.deobf("curse.maven:xl-food-mod-247217:${project.xlfood_version}"))
-    implementation(fg.deobf("curse.maven:game-stages-268655:${project.gamestages_version}"))
+    implementation(fg.deobf("curse.maven:aether-ii-223796:${project.aether_version}"))
     implementation(fg.deobf("curse.maven:aquaculture-60028:${project.aquaculture_version}"))
-    implementation(fg.deobf("curse.maven:lockyz-extra-dimensions-mod-283789:${project.lockyz_version}"))
-    implementation(fg.deobf("curse.maven:tiny-progressions-250850:${project.tp_version}"))
-    implementation(fg.deobf("curse.maven:overloaded-264601:${project.overloaded_version}"))
     implementation(fg.deobf("curse.maven:botania-225643:${project.botania_version}"))
+    implementation(fg.deobf("curse.maven:avaritia-261348:${project.avaritia_version}"))
+    implementation(fg.deobf("curse.maven:codechicken-lib-242818:${project.ccl_version}"))
+    implementation(fg.deobf("curse.maven:dimensionaldoors-284876:${project.dimdoors_version}"))
     implementation(fg.deobf("curse.maven:lightningcraft-237422:${project.lightningcraft_version}"))
-    implementation(fg.deobf("curse.maven:thermal-expansion-69163:${project.thermalexpansion_version}"))
+    implementation(fg.deobf("curse.maven:lockyz-extra-dimensions-mod-283789:${project.lockyz_version}"))
+    implementation(fg.deobf("curse.maven:game-stages-268655:${project.gamestages_version}"))
+    implementation(fg.deobf("curse.maven:geckolib-388172:${project.gecko_version}"))
+    implementation(fg.deobf("maven.modrinth:the-midnight:${project.midnight_version}"))
+    implementation(fg.deobf("curse.maven:overloaded-264601:${project.overloaded_version}"))
+    implementation(fg.deobf("curse.maven:psi-241665:${project.psi_version}"))
+    implementation(fg.deobf("curse.maven:reskillable-286382:${project.reskillable_version}"))
+    implementation(fg.deobf("curse.maven:sgcraft-289115:${project.sgcraft_version}"))
+    implementation(fg.deobf("curse.maven:the-one-probe-245211:${project.top_version}"))
+    implementation(fg.deobf("curse.maven:the-twilight-forest-227639:${project.tf_version}"))
     implementation(fg.deobf("curse.maven:thermal-cultivation-271835:${project.thermalcultivation_version}"))
+    implementation(fg.deobf("curse.maven:thermal-expansion-69163:${project.thermalexpansion_version}"))
+    implementation(fg.deobf("curse.maven:tinkers-construct-74072:${project.tconstruct_version}"))
+    implementation(fg.deobf("curse.maven:tiny-progressions-250850:${project.tp_version}"))
+    implementation(fg.deobf("curse.maven:xl-food-mod-247217:${project.xlfood_version}"))
 
     //don't need these to compile
-    runtimeOnly(fg.deobf("curse.maven:mantle-74924:${project.mantle_version}"))
     runtimeOnly(fg.deobf("curse.maven:autoreglib-250363:${project.autoreglib_version}"))
-    runtimeOnly(fg.deobf("curse.maven:had-enough-items-557549:${project.hei_version}"))
-    runtimeOnly(fg.deobf("curse.maven:bookshelf-228525:${project.bookshelf_version}"))
     runtimeOnly(fg.deobf("curse.maven:baubles-227083:${project.baubles_version}"))
+    runtimeOnly(fg.deobf("curse.maven:bookshelf-228525:${project.bookshelf_version}"))
     runtimeOnly(fg.deobf("curse.maven:cofh-core-69162:${project.cofhcore_version}"))
+    runtimeOnly(fg.deobf("curse.maven:had-enough-items-557549:${project.hei_version}"))
+    runtimeOnly(fg.deobf("curse.maven:mantle-74924:${project.mantle_version}"))
 
     //mixin stuff
     implementation(fg.deobf("curse.maven:mixin-booter-419286:${project.mixinbooter_version}"))
