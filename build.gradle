@@ -90,7 +90,6 @@ dependencies {
     implementation(fg.deobf("curse.maven:lockyz-extra-dimensions-mod-283789:${project.lockyz_version}"))
     implementation(fg.deobf("curse.maven:game-stages-268655:${project.gamestages_version}"))
     implementation(fg.deobf("curse.maven:geckolib-388172:${project.gecko_version}"))
-    implementation(fg.deobf("maven.modrinth:the-midnight:${project.midnight_version}"))
     implementation(fg.deobf("curse.maven:overloaded-264601:${project.overloaded_version}"))
     implementation(fg.deobf("curse.maven:psi-241665:${project.psi_version}"))
     implementation(fg.deobf("curse.maven:reskillable-286382:${project.reskillable_version}"))
@@ -102,6 +101,7 @@ dependencies {
     implementation(fg.deobf("curse.maven:tinkers-construct-74072:${project.tconstruct_version}"))
     implementation(fg.deobf("curse.maven:tiny-progressions-250850:${project.tp_version}"))
     implementation(fg.deobf("curse.maven:xl-food-mod-247217:${project.xlfood_version}"))
+    implementation(fg.deobf("maven.modrinth:the-midnight:${project.midnight_version}"))
 
     //don't need these to compile
     runtimeOnly(fg.deobf("curse.maven:autoreglib-250363:${project.autoreglib_version}"))
