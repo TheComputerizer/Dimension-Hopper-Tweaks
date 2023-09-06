@@ -1,5 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.core;
 
+import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,5 +14,9 @@ public class Constants {
             "required-after:actuallyadditions;required-after:theoneprobe;required-after:xlfoodmod;required-after:gamestages;" +
             "required-after:aquaculture;required-after:lockyzextradimensionsmod;required-after:tp;required-after:overloaded;" +
             "required-after:botania;required-after:lightningcraft;";
-    public static final Logger LOGGER = LogManager.getLogger("dimhoppertwinkies");
+    public static final Logger LOGGER = LogManager.getLogger("Dimension Hopper Twinkies");
+
+    public static ResourceLocation res(String path) {
+        return new ResourceLocation(MODID,path);
+    }
 }

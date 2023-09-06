@@ -15,6 +15,7 @@
     "MixinWorldServer"
   ],
   "client": [
-    "MixinParticle"
+    "MixinParticle",
+    "MixinShaderGroup"
   ]
 }

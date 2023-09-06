@@ -1,0 +1,35 @@
+
+{
+  "targets": [
+    "mixed",
+    "final"
+  ],
+  "passes": [
+    {
+      "name": "color_convolve",
+      "intarget": "minecraft:main",
+      "outtarget": "mixed",
+      "uniforms": [
+        {
+          "name": "Saturation",
+          "values": [ 1.0 ]
+        }
+      ]
+    },
+    {
+      "name": "projectdata:dynamic_color_overlay",
+      "intarget": "mixed",
+      "outtarget": "minecraft:main",
+      "uniforms": [
+        {
+          "name": "Prominence",
+          "values": [ 1.0 ]
+        },
+        {
+          "name": "Color",
+          "values": [ 0.9, 0.9, 0.9 ]
+        }
+      ]
+    }
+  ]
+}

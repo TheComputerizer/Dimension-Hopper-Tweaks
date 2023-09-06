@@ -8,10 +8,12 @@ import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillCapabilityStorage;
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import mods.thecomputerizer.dimhoppertweaks.network.NetworkHandler;
+import mods.thecomputerizer.dimhoppertweaks.registry.ParticleRegistry;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
@@ -31,6 +33,11 @@ public class DimHopperTweaks
             ClientHandler.registerRenderers();
         }
         Constants.LOGGER.info("Completed pre-init");
+    }
+
+    @Mod.EventHandler
+    public static void postInit(FMLPostInitializationEvent event) {
+        if(FMLCommonHandler.instance().getSide().isClient()) ParticleRegistry.postInit();
     }
 
     @Mod.EventHandler

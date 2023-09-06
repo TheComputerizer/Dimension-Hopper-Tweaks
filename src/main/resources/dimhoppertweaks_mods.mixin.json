@@ -7,14 +7,20 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinBaseRenderingManager",
+    "MixinBlockEnergyProvider",
+    "MixinBlockEnergyReceiver",
     "MixinCustomBlockRendererDispatcher",
     "MixinDefaultProbeInfoProvider",
+    "MixinEnergyStorage",
     "MixinEntityPixie",
     "MixinFlintPortal",
     "MixinInfinitySword",
     "MixinItemTreasureChest",
     "MixinModSpellPieces",
     "MixinPieceTrickCollapseBlock",
+    "MixinTileEntityEnergyProvider",
+    "MixinTileEntityEnergyReceiver",
+    "MixinTileEntityLightningUser",
     "MixinZGBlockBase"
   ],
   "client": []

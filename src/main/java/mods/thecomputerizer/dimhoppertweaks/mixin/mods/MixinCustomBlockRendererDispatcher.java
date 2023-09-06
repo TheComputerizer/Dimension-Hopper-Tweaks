@@ -23,11 +23,11 @@ import org.spongepowered.asm.mixin.Shadow;
 import javax.annotation.Nonnull;
 import java.util.Objects;
 
-@Mixin(targets = "gcewing.sg.BaseAORenderingManager$CustomBlockRendererDispatcher")
+@Mixin(targets = "gcewing.sg.BaseAORenderingManager$CustomBlockRendererDispatcher", remap = false)
 public abstract class MixinCustomBlockRendererDispatcher {
     @Shadow protected BlockRendererDispatcher base;
 
-    @Shadow @Final private BaseAORenderingManager this$0;
+    @Shadow @Final BaseAORenderingManager this$0;
 
     @Shadow public abstract BlockModelRenderer getBlockModelRenderer();
 
