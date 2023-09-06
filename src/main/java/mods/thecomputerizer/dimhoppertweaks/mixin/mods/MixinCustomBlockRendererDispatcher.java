@@ -38,7 +38,7 @@ public abstract class MixinCustomBlockRendererDispatcher {
     @Overwrite
     public void renderBlockDamage(@Nonnull IBlockState state, @Nonnull BlockPos pos, @Nonnull TextureAtlasSprite icon, @Nonnull IBlockAccess world) {
         try {
-            BaseModClient.ICustomRenderer rend = ((BaseRenderingManagerAccess)this$0).accessGetCustomRenderer(world, pos, state);
+            BaseModClient.ICustomRenderer rend = ((BaseRenderingManagerAccess)this$0).dimhoppertweaks$accessGetCustomRenderer(world, pos, state);
             if (Objects.nonNull(rend)) {
                 BaseBakedRenderTarget target = new BaseBakedRenderTarget(pos, icon);
                 for (BlockRenderLayer layer : BlockRenderLayer.values())
@@ -54,8 +54,7 @@ public abstract class MixinCustomBlockRendererDispatcher {
         try {
             this.base.renderBlockDamage(Blocks.AIR.getDefaultState(), pos, icon, world);
         } catch (Exception e) {
-            Constants.LOGGER.error("Stargate Damage Render Catch");
-            e.printStackTrace();
+            Constants.LOGGER.error("Stargate Damage Render Catch",e);
         }
     }
 }

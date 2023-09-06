@@ -14,7 +14,7 @@ public abstract class MixinBaseRenderingManager implements BaseRenderingManagerA
     @Shadow protected abstract BaseModClient.ICustomRenderer getCustomRenderer(IBlockAccess world, BlockPos pos, IBlockState state);
 
     @Override
-    public BaseModClient.ICustomRenderer accessGetCustomRenderer(IBlockAccess world, BlockPos pos, IBlockState state) {
+    public BaseModClient.ICustomRenderer dimhoppertweaks$accessGetCustomRenderer(IBlockAccess world, BlockPos pos, IBlockState state) {
         return this.getCustomRenderer(world,pos,state);
     }
 }

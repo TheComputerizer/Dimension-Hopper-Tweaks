@@ -7,5 +7,5 @@ import net.minecraft.world.IBlockAccess;
 
 public interface BaseRenderingManagerAccess {
 
-    BaseModClient.ICustomRenderer accessGetCustomRenderer(IBlockAccess world, BlockPos pos, IBlockState state);
+    BaseModClient.ICustomRenderer dimhoppertweaks$accessGetCustomRenderer(IBlockAccess world, BlockPos pos, IBlockState state);
 }
