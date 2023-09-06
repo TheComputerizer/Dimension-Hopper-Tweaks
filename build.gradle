@@ -74,8 +74,9 @@ dependencies {
     minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
 
     //galacticraft doesn't seem to work in dev?
-    compileOnly(fg.deobf("curse.maven:zollern-galaxy-241940:${project.zollern_version}"))
     compileOnly(fg.deobf("curse.maven:ore-stages-290201:${project.orestages_version}"))
+    compileOnly(fg.deobf("curse.maven:tesla-244651:${project.tesla_version}"))
+    compileOnly(fg.deobf("curse.maven:zollern-galaxy-241940:${project.zollern_version}"))
 
     //implemented stuff
     implementation(fg.deobf("curse.maven:the-impossible-library-661115:${project.til_version}"))
