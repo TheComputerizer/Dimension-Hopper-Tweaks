@@ -42,8 +42,9 @@ public class ClientEvents {
             Tuple<LightningEnhancerEntity,Double> entityTuple = getNearbyEnhancer(mc.player);
             float distanceFactor = Objects.nonNull(entityTuple) ?
                     (float)MathHelper.clamp(1d-(entityTuple.getSecond()/32),0d,1d) : 0f;
+            distanceFactor = 1f-distanceFactor;
             ClientEffects.COLOR_CORRECTION = distanceFactor;
-            ClientEffects.SCREEN_SHAKE = 1f-(distanceFactor/2f);
+            ClientEffects.SCREEN_SHAKE = distanceFactor;
             if(!shaderLoaded) {
                 mc.entityRenderer.loadShader(ClientEffects.GRAYSCALE_SHADER);
                 shaderLoaded = true;
