@@ -1,14 +1,12 @@
 package mods.thecomputerizer.dimhoppertweaks;
 
-import mods.thecomputerizer.dimhoppertweaks.client.ClientHandler;
-import mods.thecomputerizer.dimhoppertweaks.common.commands.RandomTP;
-import mods.thecomputerizer.dimhoppertweaks.common.commands.SummonBoss;
+import mods.thecomputerizer.dimhoppertweaks.client.ClientRegistryHandler;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillCapabilityStorage;
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import mods.thecomputerizer.dimhoppertweaks.network.NetworkHandler;
-import mods.thecomputerizer.dimhoppertweaks.registry.ParticleRegistry;
+import mods.thecomputerizer.dimhoppertweaks.registry.RegistryHandler;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -30,20 +28,18 @@ public class DimHopperTweaks
         CapabilityManager.INSTANCE.register(ISkillCapability.class, new SkillCapabilityStorage(), SkillCapability::new);
         if (FMLCommonHandler.instance().getSide().isClient()) {
             OBJLoader.INSTANCE.addDomain(Constants.MODID);
-            ClientHandler.registerRenderers();
+            ClientRegistryHandler.registerRenderers();
         }
         Constants.LOGGER.info("Completed pre-init");
     }
 
     @Mod.EventHandler
     public static void postInit(FMLPostInitializationEvent event) {
-        if(FMLCommonHandler.instance().getSide().isClient()) ParticleRegistry.postInit();
+        if(FMLCommonHandler.instance().getSide().isClient()) RegistryHandler.onPostInit(event);
     }
 
     @Mod.EventHandler
     public void start(FMLServerStartingEvent event) {
-        Constants.LOGGER.info("Registering commands");
-        event.registerServerCommand(new RandomTP());
-        event.registerServerCommand(new SummonBoss());
+        RegistryHandler.onServerStarting(event);
     }
 }

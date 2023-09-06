@@ -3,9 +3,9 @@ package mods.thecomputerizer.dimhoppertweaks.client.entity.render;
 import codechicken.lib.colour.ColourRGBA;
 import codechicken.lib.texture.TextureUtils;
 import codechicken.lib.util.TransformUtils;
-import mods.thecomputerizer.dimhoppertweaks.client.ClientHandler;
+import mods.thecomputerizer.dimhoppertweaks.client.ClientRegistryHandler;
 import mods.thecomputerizer.dimhoppertweaks.client.entity.model.ModelFinalBoss;
-import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.boss.EntityFinalBoss;
+import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -34,7 +34,7 @@ public class RenderFinalBoss extends GeoEntityRenderer<EntityFinalBoss> {
     public void doRender(@Nonnull EntityFinalBoss entity, double x, double y, double z, float entityYaw, float partialTicks) {
         super.doRender(entity, x, y, z, entityYaw, partialTicks);
         if(entity.getShieldUp()) {
-            OBJModel.OBJBakedModel bakedForceField = (OBJModel.OBJBakedModel) ClientHandler.FORCEFIELD_MODEL.bake(TransformUtils.DEFAULT_BLOCK, DefaultVertexFormats.BLOCK, TextureUtils.bakedTextureGetter);
+            OBJModel.OBJBakedModel bakedForceField = (OBJModel.OBJBakedModel) ClientRegistryHandler.FORCEFIELD_MODEL.bake(TransformUtils.DEFAULT_BLOCK, DefaultVertexFormats.BLOCK, TextureUtils.bakedTextureGetter);
             GlStateManager.pushMatrix();
             GlStateManager.disableCull();
             GlStateManager.disableAlpha();
@@ -51,7 +51,7 @@ public class RenderFinalBoss extends GeoEntityRenderer<EntityFinalBoss> {
             double translationZ = translationZLT + (((entity.posZ - viewingPlayer.posZ) - translationZLT) * partialTicks);
 
             GlStateManager.translate(translationX, translationY + 1.1, translationZ);
-            Minecraft.getMinecraft().getTextureManager().bindTexture(ClientHandler.FORCEFIELD);
+            Minecraft.getMinecraft().getTextureManager().bindTexture(ClientRegistryHandler.FORCEFIELD);
             GlStateManager.scale(8f, 8f, 8f);
             GlStateManager.color(0F, 0.5F, 0.9F, 0.1F);
             renderOBJ(bakedForceField.getQuads(null, null, 0), new ColourRGBA(0F, 0.5F, 0.9F, 0.1F).argb());
@@ -64,7 +64,7 @@ public class RenderFinalBoss extends GeoEntityRenderer<EntityFinalBoss> {
             GlStateManager.popMatrix();
         }
         if(entity.isChargingProjectile()) {
-            OBJModel.OBJBakedModel bakedForceField = (OBJModel.OBJBakedModel) ClientHandler.FORCEFIELD_MODEL.bake(TransformUtils.DEFAULT_BLOCK, DefaultVertexFormats.BLOCK, TextureUtils.bakedTextureGetter);
+            OBJModel.OBJBakedModel bakedForceField = (OBJModel.OBJBakedModel) ClientRegistryHandler.FORCEFIELD_MODEL.bake(TransformUtils.DEFAULT_BLOCK, DefaultVertexFormats.BLOCK, TextureUtils.bakedTextureGetter);
             GlStateManager.pushMatrix();
             GlStateManager.disableCull();
             GlStateManager.disableAlpha();
@@ -84,7 +84,7 @@ public class RenderFinalBoss extends GeoEntityRenderer<EntityFinalBoss> {
             double translationZ = translationZLT + (((chargeVec.z - viewingPlayer.posZ) - translationZLT) * partialTicks);
 
             GlStateManager.translate(translationX, translationY, translationZ);
-            Minecraft.getMinecraft().getTextureManager().bindTexture(ClientHandler.FORCEFIELD);
+            Minecraft.getMinecraft().getTextureManager().bindTexture(ClientRegistryHandler.FORCEFIELD);
             float alpha = entity.getProjectileChargePercent();
             GlStateManager.scale(0.5f*alpha, 0.5f*alpha, 0.5f*alpha);
             GlStateManager.color(1f,1f,1f, alpha);

@@ -17,7 +17,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.Objects;
 
 @Mod.EventBusSubscriber(modid = Constants.MODID)
-public class ParticleRegistry {
+public final class ParticleRegistry {
 
     private static final Class<?>[] PARTICLE_INIT_CLASSES = {String.class, int.class, boolean.class};
     public static final EnumParticleTypes RANDOM_ASCII = registerParticle("RANDOM_ASCII",true);

@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.mods;
 
-import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.boss.EntityFinalBoss;
+import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
 import morph.avaritia.item.tools.ItemSwordInfinity;
 import morph.avaritia.util.DamageSourceInfinitySword;
 import net.minecraft.entity.EntityLivingBase;

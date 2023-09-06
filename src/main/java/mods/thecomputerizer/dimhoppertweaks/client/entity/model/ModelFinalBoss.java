@@ -1,7 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.client.entity.model;
 
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
-import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.boss.EntityFinalBoss;
+import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
 
 import net.minecraft.util.ResourceLocation;
 import software.bernie.geckolib3.model.AnimatedGeoModel;

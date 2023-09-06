@@ -5,7 +5,7 @@
     "dstrgb": "zero"
   },
   "vertex": "sobel",
-  "fragment": "projectdata:dynamic_color_overlay",
+  "fragment": "dimhoppertweaks:dynamic_color_overlay",
   "attributes": [ "Position" ],
   "samplers": [
     { "name": "DiffuseSampler" }

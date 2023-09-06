@@ -8,9 +8,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ClientEffects {
     public static final ResourceLocation GRAYSCALE_SHADER = Constants.res("shaders/post/dynamic_color_overlay.json");
-    private static float FOV_ADJUST = 0f;
-    private static float COLOR_CORRECTION = 0f;
-    private static float SCREEN_SHAKE = 0f;
+    public static float FOV_ADJUST = 0f;
+    public static float COLOR_CORRECTION = 0f;
+    public static float SCREEN_SHAKE = 0f;
 
     public static float getFOVAdjustment(float fov) {
         return fov*((FOV_ADJUST/2f)+0.5f);

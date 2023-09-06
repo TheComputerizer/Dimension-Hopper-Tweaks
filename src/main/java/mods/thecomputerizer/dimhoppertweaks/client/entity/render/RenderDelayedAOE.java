@@ -3,8 +3,8 @@ package mods.thecomputerizer.dimhoppertweaks.client.entity.render;
 import codechicken.lib.colour.ColourRGBA;
 import codechicken.lib.texture.TextureUtils;
 import codechicken.lib.util.TransformUtils;
-import mods.thecomputerizer.dimhoppertweaks.client.ClientHandler;
-import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.boss.EntityFinalBoss;
+import mods.thecomputerizer.dimhoppertweaks.client.ClientRegistryHandler;
+import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -62,7 +62,7 @@ public class RenderDelayedAOE {
 
     public void render(float partialTicks) {
         if(this.canRender()) {
-            OBJModel.OBJBakedModel bakedForceField = (OBJModel.OBJBakedModel) ClientHandler.FORCEFIELD_MODEL.bake(TransformUtils.DEFAULT_BLOCK, DefaultVertexFormats.BLOCK, TextureUtils.bakedTextureGetter);
+            OBJModel.OBJBakedModel bakedForceField = (OBJModel.OBJBakedModel) ClientRegistryHandler.FORCEFIELD_MODEL.bake(TransformUtils.DEFAULT_BLOCK, DefaultVertexFormats.BLOCK, TextureUtils.bakedTextureGetter);
             GlStateManager.pushMatrix();
             GlStateManager.disableCull();
             GlStateManager.disableAlpha();
@@ -77,7 +77,7 @@ public class RenderDelayedAOE {
             double translationY = translationYLT+(((this.posVec.y-viewingPlayer.posY)-translationYLT)*partialTicks);
             double translationZ = translationZLT+(((this.posVec.z-viewingPlayer.posZ)-translationZLT)*partialTicks);
             GlStateManager.translate(translationX, translationY, translationZ);
-            Minecraft.getMinecraft().getTextureManager().bindTexture(ClientHandler.ATTACK);
+            Minecraft.getMinecraft().getTextureManager().bindTexture(ClientRegistryHandler.ATTACK);
             float scale = getRenderSize(partialTicks);
             GlStateManager.scale(scale, scale, scale);
             GlStateManager.color(1f, 1f, 1f, 1f);

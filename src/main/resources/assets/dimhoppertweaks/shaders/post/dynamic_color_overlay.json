@@ -17,7 +17,7 @@
       ]
     },
     {
-      "name": "projectdata:dynamic_color_overlay",
+      "name": "dimhoppertweaks:dynamic_color_overlay",
       "intarget": "mixed",
       "outtarget": "minecraft:main",
       "uniforms": [

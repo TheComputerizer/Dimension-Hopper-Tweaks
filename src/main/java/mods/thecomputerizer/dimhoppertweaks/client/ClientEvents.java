@@ -2,12 +2,19 @@ package mods.thecomputerizer.dimhoppertweaks.client;
 
 import mods.thecomputerizer.dimhoppertweaks.client.render.ClientEffects;
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.registry.tiles.LightningEnhancerEntity;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Tuple;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
+
+import java.util.Objects;
 
 @Mod.EventBusSubscriber(modid = Constants.MODID, value = Side.CLIENT)
 public class ClientEvents {
@@ -32,6 +39,11 @@ public class ClientEvents {
     public static void screenShakeUpdate(TickEvent.PlayerTickEvent event) {
         Minecraft mc = Minecraft.getMinecraft();
         if(event.phase==TickEvent.Phase.END && event.player==mc.player) {
+            Tuple<LightningEnhancerEntity,Double> entityTuple = getNearbyEnhancer(mc.player);
+            float distanceFactor = Objects.nonNull(entityTuple) ?
+                    (float)MathHelper.clamp(1d-(entityTuple.getSecond()/32),0d,1d) : 0f;
+            ClientEffects.COLOR_CORRECTION = distanceFactor;
+            ClientEffects.SCREEN_SHAKE = 1f-(distanceFactor/2f);
             if(!shaderLoaded) {
                 mc.entityRenderer.loadShader(ClientEffects.GRAYSCALE_SHADER);
                 shaderLoaded = true;
@@ -41,5 +53,15 @@ public class ClientEvents {
                 screenShakePositive = !screenShakePositive;
             }
         }
+    }
+
+    private static Tuple<LightningEnhancerEntity,Double> getNearbyEnhancer(EntityPlayerSP player) {
+        for(TileEntity entity : player.world.loadedTileEntityList) {
+            if(entity instanceof LightningEnhancerEntity) {
+                double distance = entity.getPos().getDistance((int)player.posX,(int)player.posY,(int)player.posZ);
+                if(distance<=32) return new Tuple<>((LightningEnhancerEntity)entity,distance);
+            }
+        }
+        return null;
     }
 }

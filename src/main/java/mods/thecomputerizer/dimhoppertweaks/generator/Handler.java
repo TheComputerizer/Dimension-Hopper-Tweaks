@@ -16,7 +16,7 @@ public class Handler {
     protected static void registerStructure(DimHopperStruct structure) {
         String name = structure.getName();
 
-        if (name != null && name.length() > 0)
+        if (name != null && !name.isEmpty())
             structures.put(name, structure);
     }
 

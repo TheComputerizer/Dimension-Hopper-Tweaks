@@ -2,8 +2,8 @@ package mods.thecomputerizer.dimhoppertweaks.network;
 
 import mods.thecomputerizer.dimhoppertweaks.client.entity.render.RenderDelayedAOE;
 import mods.thecomputerizer.dimhoppertweaks.client.entity.render.RenderEvents;
-import mods.thecomputerizer.dimhoppertweaks.common.objects.DimensionHopperSounds;
-import mods.thecomputerizer.dimhoppertweaks.common.objects.entity.boss.EntityFinalBoss;
+import mods.thecomputerizer.dimhoppertweaks.registry.SoundRegistry;
+import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.entity.Entity;
@@ -48,7 +48,7 @@ public class ClientPacketHandlers {
                 for (Vec3d posVec : vecList)
                     RenderEvents.ATTACKS.add(new RenderDelayedAOE(posVec,start,size,boss,phase));
             }
-        } else mc.getSoundHandler().playSound(PositionedSoundRecord.getMusicRecord(DimensionHopperSounds.MUSIC));
+        } else mc.getSoundHandler().playSound(PositionedSoundRecord.getMusicRecord(SoundRegistry.MUSIC));
     }
 
     @SideOnly(Side.CLIENT)
