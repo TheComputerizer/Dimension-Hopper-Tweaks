@@ -38,17 +38,15 @@ public abstract class MixinEntityCrazyZombie extends EntityCavenicZombie {
     protected void updateAITasks() {
         super.updateAITasks();
         if(!this.world.isRemote && this.dimhoppertweaks$inCavenia) {
-            boolean canSee = false;
-            double distance = -1d;
+            boolean isCloseEnough = false;
             for(EntityPlayerMP player : this.bossInfo.getPlayers()) {
-                distance = this.getDistance(player);
-                if (this.canEntityBeSeen(player) && distance<30d) {
-                    canSee = true;
+                if (this.getDistance(player)<30d) {
+                    isCloseEnough = true;
                     break;
                 }
             }
-            this.bossInfo.setDarkenSky(distance<30d);
-            this.bossInfo.setVisible(canSee);
+            this.bossInfo.setDarkenSky(isCloseEnough);
+            this.bossInfo.setVisible(isCloseEnough);
         }
         this.bossInfo.setPercent(this.getHealth()/this.getMaxHealth());
     }
