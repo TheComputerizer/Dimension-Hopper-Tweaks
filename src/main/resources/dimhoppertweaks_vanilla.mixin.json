@@ -6,6 +6,7 @@
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "MixinEntityLivingBase",
     "MixinItemHoe",
     "MixinMusicTicker",
     "MixinNetherPortal",
@@ -16,6 +17,7 @@
   ],
   "client": [
     "MixinParticle",
+    "MixinRenderManager",
     "MixinShaderGroup"
   ]
 }
