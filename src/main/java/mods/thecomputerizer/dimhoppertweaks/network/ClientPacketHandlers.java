@@ -1,7 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.network;
 
-import mods.thecomputerizer.dimhoppertweaks.client.entity.render.RenderDelayedAOE;
-import mods.thecomputerizer.dimhoppertweaks.client.entity.render.RenderEvents;
+import mods.thecomputerizer.dimhoppertweaks.client.render.RenderDelayedAOE;
+import mods.thecomputerizer.dimhoppertweaks.client.render.RenderEvents;
 import mods.thecomputerizer.dimhoppertweaks.registry.SoundRegistry;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
 import net.minecraft.client.Minecraft;

@@ -1,40 +1,50 @@
 package mods.thecomputerizer.dimhoppertweaks.client.particle;
 
+import mods.thecomputerizer.dimhoppertweaks.client.render.BetterBlightFireRenderer;
 import mods.thecomputerizer.dimhoppertweaks.registry.ParticleRegistry;
-import mods.thecomputerizer.theimpossiblelibrary.util.client.FontUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.silentchaos512.lib.event.ClientTicks;
+import net.silentchaos512.scalinghealth.lib.module.ModuleAprilTricks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.vecmath.Point4f;
 
 @SideOnly(Side.CLIENT)
-public class ParticleAscii extends Particle {
+public class ParticleBlightFire extends Particle {
 
-    private static final String  POTENTIAL_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private final double rangeFactor;
-    private char curChar;
-    private Point4f charUV;
+    private final boolean tomfoolery;
+    private Point4f frameUV;
 
-    public ParticleAscii(World world, double x, double y, double z, double velocityX, double velocityY, double velocityZ,
+    public ParticleBlightFire(World world, double x, double y, double z, double velocityX, double velocityY, double velocityZ,
                          float maxAge, double rangeFactor, float scale) {
         super(world, x, y, z, velocityX, velocityY, velocityZ);
         this.rangeFactor = rangeFactor;
         randomizeInitialPos();
-        this.particleTexture = ParticleRegistry.getFontAtlas();
+        this.tomfoolery = ModuleAprilTricks.instance.isEnabled() && ModuleAprilTricks.instance.isRightDay();
+        this.particleTexture = tomfoolery ? ParticleRegistry.getGrayFireAtlas() : ParticleRegistry.getFireAtlas();
         this.particleScale = scale+(this.rand.nextFloat()/(1f/(scale/2f)));
         this.particleMaxAge = (int)(maxAge-(this.rand.nextFloat()*(maxAge/4f)));
-        this.particleAlpha = 1.0f;
-        this.curChar = '0';
-        this.charUV = FontUtil.getCharUV(this.curChar, Minecraft.getMinecraft().fontRenderer);
+        this.particleAlpha = 1f;
+        this.frameUV = getUVFrame();
         setRBGColorF(0.2f,1f,0.2f);
+    }
+
+    private Point4f getUVFrame() {
+        int frame = ClientTicks.ticksInGame % 64;
+        boolean isOffset = frame>31;
+        if(isOffset) frame-=32;
+        float minU = isOffset ? 0.5f : 0;
+        return new Point4f(minU,minU+0.5f,(float)frame/32f,(float)(frame+1)/32f);
     }
 
     private double randomizeDouble(double original) {
@@ -66,18 +76,19 @@ public class ParticleAscii extends Particle {
             this.motionX *= 0.699999988079071;
             this.motionZ *= 0.699999988079071;
         }
-        this.curChar = POTENTIAL_CHARS.charAt(this.rand.nextInt(POTENTIAL_CHARS.length()));
-        this.charUV = FontUtil.getCharUV(this.curChar,Minecraft.getMinecraft().fontRenderer);
+        this.frameUV = getUVFrame();
     }
 
     @Override
     public void renderParticle(@Nonnull BufferBuilder buffer, @Nonnull Entity entityIn, float partialTicks,
                                float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
-        FontUtil.bufferCharTex(this.curChar,Minecraft.getMinecraft().fontRenderer);
-        double minU = particleTexture.getMinU() + this.charUV.x;
-        double maxU = particleTexture.getMinU() + this.charUV.y;
-        double minV = particleTexture.getMinV() + this.charUV.z;
-        double maxV = particleTexture.getMinV() + this.charUV.w;
+        TextureManager manager = Minecraft.getMinecraft().getTextureManager();
+        if(this.tomfoolery) manager.bindTexture(BetterBlightFireRenderer.TEXTURE_GRAY);
+        else manager.bindTexture(BetterBlightFireRenderer.TEXTURE);
+        double minU = particleTexture.getMinU()+this.frameUV.x;
+        double maxU = particleTexture.getMinU()+this.frameUV.y;
+        double minV = particleTexture.getMinV()+this.frameUV.z;
+        double maxV = particleTexture.getMinV()+this.frameUV.w;
         double x = this.prevPosX+(this.posX-this.prevPosX)*partialTicks-interpPosX;
         double y = this.prevPosY+(this.posY-this.prevPosY)*partialTicks-interpPosY;
         double z = this.prevPosZ+(this.posZ-this.prevPosZ)*partialTicks-interpPosZ;
@@ -111,7 +122,7 @@ public class ParticleAscii extends Particle {
         @Nullable
         @Override
         public Particle createParticle(int id, @Nonnull World world, double posX, double posY, double posZ, double velocityX, double velocityY, double velocityZ, @Nonnull int... args) {
-            return new ParticleAscii(Minecraft.getMinecraft().world, posX, posY, posZ, velocityX, velocityY, velocityZ,
+            return new ParticleBlightFire(Minecraft.getMinecraft().world, posX, posY, posZ, velocityX, velocityY, velocityZ,
                     args.length>=1 ? (float)args[0] : 100f, args.length>=2 ? (double)args[1] : 32d,
                     args.length>=3 ? ((float)args[2])/100f : 0.5f);
         }

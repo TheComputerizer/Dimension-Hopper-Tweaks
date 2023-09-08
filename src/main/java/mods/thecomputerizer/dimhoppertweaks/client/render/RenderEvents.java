@@ -1,4 +1,4 @@
-package mods.thecomputerizer.dimhoppertweaks.client.entity.render;
+package mods.thecomputerizer.dimhoppertweaks.client.render;
 
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import net.minecraftforge.client.event.RenderWorldLastEvent;

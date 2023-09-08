@@ -18,17 +18,19 @@ import java.util.Objects;
 
 public class BetterBlightFireRenderer {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation(
+    public static final ResourceLocation TEXTURE = new ResourceLocation(
             ScalingHealth.MOD_ID_LOWER,"textures/entity/blightfire.png");
-    private static final ResourceLocation TEXTURE_GRAY = new ResourceLocation(
+    public static final ResourceLocation TEXTURE_GRAY = new ResourceLocation(
             ScalingHealth.MOD_ID_LOWER,"textures/entity/blightfire_gray.png");
 
-    public static void render(RenderManager manager, EntityLivingBase parent, double x, double z) {
+    @SuppressWarnings("SuspiciousNameCombination")
+    public static void render(RenderManager manager, EntityLivingBase parent, double x, double y, double z) {
         if(Objects.nonNull(parent)) {
             boolean tomfoolery = ModuleAprilTricks.instance.isEnabled() && ModuleAprilTricks.instance.isRightDay();
             AxisAlignedBB box = parent.getEntityBoundingBox();
-            float width = averageBoxWidth(box)/2f;
-            float height = (float)MathHelper.clamp(Math.abs(box.maxY-box.minY)/2d,width*0.75d,width*1.25d);
+            float width = averageBoxWidth(box);
+            double height = Math.abs(box.maxY-box.minY);
+            float adjustedHeight = (float)MathHelper.clamp(height,width*0.75d,width*1.25d);
             Color color = new Color(255,255,255);
             if (tomfoolery) {
                 float entityID = parent.getEntityId();
@@ -44,13 +46,13 @@ public class BetterBlightFireRenderer {
             double maxV = (float)(frame+1)/32f;
             GlStateManager.disableLighting();
             GlStateManager.pushMatrix();
-            GlStateManager.translate(x,box.maxY+height,z);
-            GlStateManager.scale(width,height,width);
+            GlStateManager.translate(x,y+height*1.25d,z);
+            GlStateManager.scale(width,width,width);
             GlStateManager.rotate(-manager.playerViewY,0,1f,0);
-            GlStateManager.translate(0,0,(float)((int)(height/width))*0.02f);
+            GlStateManager.translate(0,0,(float)((int)(adjustedHeight/width))*0.02f);
             setColor(color.getRed(),color.getGreen(),color.getBlue());
             manager.renderEngine.bindTexture(tomfoolery ? TEXTURE_GRAY : TEXTURE);
-            draw(-width,width,-height,height,minU,minU+0.5f,minV,maxV);
+            draw(-width,width,-adjustedHeight,adjustedHeight,minU,minU+0.5f,minV,maxV);
             GlStateManager.popMatrix();
             GlStateManager.enableLighting();
         }

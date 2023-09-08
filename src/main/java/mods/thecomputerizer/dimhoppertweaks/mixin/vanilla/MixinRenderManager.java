@@ -20,7 +20,7 @@ public class MixinRenderManager {
         if(entity instanceof EntityLivingBase) {
             EntityLivingBase based = (EntityLivingBase)entity;
             if(((EntityLivinBaseAccess)based).dimhoppertweaks$isBlighted())
-                BetterBlightFireRenderer.render((RenderManager)(Object)this,based,x,z);
+                BetterBlightFireRenderer.render((RenderManager)(Object)this,based,x,y,z);
         }
     }
 }

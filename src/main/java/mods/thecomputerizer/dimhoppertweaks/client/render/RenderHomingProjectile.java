@@ -1,4 +1,4 @@
-package mods.thecomputerizer.dimhoppertweaks.client.entity.render;
+package mods.thecomputerizer.dimhoppertweaks.client.render;
 
 import codechicken.lib.colour.ColourRGBA;
 import codechicken.lib.texture.TextureUtils;

@@ -1,8 +1,8 @@
 package mods.thecomputerizer.dimhoppertweaks.client;
 
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
-import mods.thecomputerizer.dimhoppertweaks.client.entity.render.RenderFinalBoss;
-import mods.thecomputerizer.dimhoppertweaks.client.entity.render.RenderHomingProjectile;
+import mods.thecomputerizer.dimhoppertweaks.client.render.RenderFinalBoss;
+import mods.thecomputerizer.dimhoppertweaks.client.render.RenderHomingProjectile;
 import mods.thecomputerizer.dimhoppertweaks.registry.ItemRegistry;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.HomingProjectile;

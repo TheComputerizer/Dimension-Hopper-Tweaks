@@ -1,10 +1,10 @@
-package mods.thecomputerizer.dimhoppertweaks.client.entity.render;
+package mods.thecomputerizer.dimhoppertweaks.client.render;
 
 import codechicken.lib.colour.ColourRGBA;
 import codechicken.lib.texture.TextureUtils;
 import codechicken.lib.util.TransformUtils;
 import mods.thecomputerizer.dimhoppertweaks.client.ClientRegistryHandler;
-import mods.thecomputerizer.dimhoppertweaks.client.entity.model.ModelFinalBoss;
+import mods.thecomputerizer.dimhoppertweaks.client.model.ModelFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
