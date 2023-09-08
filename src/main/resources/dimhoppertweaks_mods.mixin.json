@@ -23,6 +23,7 @@
     "MixinFlintPortal",
     "MixinGatewayGenerator",
     "MixinInfinitySword",
+    "MixinItemTimeInABottle",
     "MixinItemTreasureChest",
     "MixinModSpellPieces",
     "MixinPieceTrickCollapseBlock",

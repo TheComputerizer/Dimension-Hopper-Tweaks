@@ -1,5 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.network;
 
+import mods.thecomputerizer.dimhoppertweaks.client.render.ClientEffects;
 import mods.thecomputerizer.dimhoppertweaks.client.render.RenderDelayedAOE;
 import mods.thecomputerizer.dimhoppertweaks.client.render.RenderEvents;
 import mods.thecomputerizer.dimhoppertweaks.registry.SoundRegistry;
@@ -56,5 +57,10 @@ public class ClientPacketHandlers {
         EntityPlayer player = Minecraft.getMinecraft().player;
         if(Objects.nonNull(player))
             player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(health);
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static void handleGrayScaleOverride(float scale) {
+        ClientEffects.COLOR_CORRECTION_OVERRIDE = scale;
     }
 }

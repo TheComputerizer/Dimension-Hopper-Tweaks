@@ -1,20 +1,30 @@
 package mods.thecomputerizer.dimhoppertweaks.common.events;
 
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import lumien.randomthings.item.ModItems;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;
+import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.mixin.access.ItemTimeInABottleAccess;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.dimdev.ddutils.TeleportUtils;
 import slimeknights.tconstruct.library.tools.TinkerToolCore;
+
+import java.util.Objects;
 
 @Mod.EventBusSubscriber(modid = Constants.MODID)
 public class WorldEvents {
+
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void blockBreak(BlockEvent.BreakEvent event) {
         if(event.getPlayer() instanceof EntityPlayerMP) {
@@ -34,9 +44,38 @@ public class WorldEvents {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void blockPlace(BlockEvent.PlaceEvent event) {
         if(event.getPlayer() instanceof EntityPlayerMP && event.getState().getBlock()!=Blocks.FARMLAND)
             SkillWrapper.addSP((EntityPlayerMP)event.getPlayer(),"building",1f,false);
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void worldTick(TickEvent.WorldTickEvent event) {
+        if(event.phase==TickEvent.Phase.END) {
+            int dim = event.world.provider.getDimension();
+            if(dim==44 || dim==45) {
+                for(EntityPlayer p : event.world.playerEntities) {
+                    EntityPlayerMP player = (EntityPlayerMP)p;
+                    int ticks = checkTime(player.getHeldItemOffhand()) || checkTime(player.getHeldItemMainhand()) ? -1 : 1;
+                    if(SkillWrapper.ticKDreamer(player,ticks)) wakeUp(player);
+                }
+            }
+        }
+    }
+
+    private static boolean checkTime(ItemStack stack) {
+        return stack.getItem()==ModItems.timeInABottle &&
+                ((ItemTimeInABottleAccess)stack.getItem()).dimhoppertweaks$hasTime(stack);
+    }
+
+    @SuppressWarnings("ConstantValue")
+    private static void wakeUp(EntityPlayerMP player) {
+        SkillWrapper.getSkillCapability(player).resetDreamTimer();
+        int respawnDim = player.getSpawnDimension();
+        BlockPos respawnPos = player.getBedLocation(respawnDim);
+        if(Objects.isNull(respawnPos)) respawnPos = player.getPosition();
+        TeleportUtils.teleport(player,respawnDim,respawnPos.getX(),respawnPos.getY(),respawnPos.getZ(),player.rotationYaw,player.rotationPitch);
     }
 }

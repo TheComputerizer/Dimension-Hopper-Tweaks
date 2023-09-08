@@ -1,8 +1,8 @@
 package mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.phase.actions;
 
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
-import mods.thecomputerizer.dimhoppertweaks.network.NetworkHandler;
-import mods.thecomputerizer.dimhoppertweaks.network.packets.PacketBossClientEffects;
+import mods.thecomputerizer.dimhoppertweaks.network.PacketBossClientEffects;
+import mods.thecomputerizer.theimpossiblelibrary.network.NetworkHandler;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ public final class IndiscriminateAOE extends Action {
                 vecList.add(i,getRandomPos(boss.getPositionVector(),boss.world.rand));
             boss.addAOECounter(vecList,this.aoeTime,this.aoeRange,this.activePhase);
             if(!this.skySwapped) {
-                NetworkHandler.sendToTracking(new PacketBossClientEffects.Message(true,0f),boss);
+                NetworkHandler.sendToTracking(new PacketBossClientEffects(true,0f),boss);
                 this.skySwapped = true;
             }
             if(!this.shieldDropped) {

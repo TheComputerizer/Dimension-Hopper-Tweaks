@@ -1,13 +1,11 @@
 package mods.thecomputerizer.dimhoppertweaks.common.skills;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.mutable.MutableInt;
 
-import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,5 +37,8 @@ public interface ISkillCapability {
     int getDrainLevels();
     void setTwilightRespawn(BlockPos pos);
     BlockPos getTwilightRespawn();
+    boolean incrementDreamTimer(EntityPlayerMP player, int time);
+    void resetDreamTimer();
+    void initDreamTimer(int time);
     NBTTagCompound writeNBT();
 }

@@ -6,9 +6,9 @@ import mods.thecomputerizer.dimhoppertweaks.registry.SoundRegistry;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.HomingProjectile;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.phase.*;
 import mods.thecomputerizer.dimhoppertweaks.registry.items.RealitySlasher;
-import mods.thecomputerizer.dimhoppertweaks.network.NetworkHandler;
-import mods.thecomputerizer.dimhoppertweaks.network.packets.PacketRenderBossAttack;
-import mods.thecomputerizer.dimhoppertweaks.network.packets.PacketUpdateBossRender;
+import mods.thecomputerizer.dimhoppertweaks.network.PacketRenderBossAttack;
+import mods.thecomputerizer.dimhoppertweaks.network.PacketUpdateBossRender;
+import mods.thecomputerizer.theimpossiblelibrary.network.NetworkHandler;
 import morph.avaritia.item.tools.ItemSwordInfinity;
 import morph.avaritia.util.DamageSourceInfinitySword;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -183,7 +183,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
         if(this.projectileChargeTime!=max) this.projectileChargeProgress = 0;
         this.projectileChargeTime = max;
         if(!this.world.isRemote)
-            NetworkHandler.sendToTracking(new PacketUpdateBossRender.Message(this.getEntityId(),this.phase,
+            NetworkHandler.sendToTracking(new PacketUpdateBossRender(this.getEntityId(),this.phase,
                     this.isShieldUp,this.currentAnimation,this.projectileChargeTime),this);
     }
 
@@ -201,7 +201,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
     public void addTrackingPlayer(@Nonnull EntityPlayerMP player) {
         super.addTrackingPlayer(player);
         this.bossInfo.addPlayer(player);
-        if(this.players.size()==0) this.phase = 0;
+        if(this.players.isEmpty()) this.phase = 0;
         this.players.add(player);
         if(this.doneWithIntro) {
             this.savedPlayerHealth.put(player.getUniqueID().toString(),player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).getAttributeValue());
@@ -217,7 +217,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
         this.players.remove(player);
         if(this.savedPlayerHealth.containsKey(player.getUniqueID().toString()))
             player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(this.savedPlayerHealth.get(player.getUniqueID().toString()));
-        if(getTrackingPlayers().size()==0) {
+        if(getTrackingPlayers().isEmpty()) {
             this.setHealth(this.getMaxHealth());
             this.phase = -1;
         }
@@ -229,8 +229,8 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
     }
 
     public void updateShieldForPlayer(EntityPlayerMP player, boolean isShieldUp) {
-        NetworkHandler.sendToPlayer(new PacketUpdateBossRender.Message(this.getEntityId(),this.phase,isShieldUp,
-                this.currentAnimation,this.projectileChargeTime),player);
+        new PacketUpdateBossRender(this.getEntityId(),this.phase,isShieldUp, this.currentAnimation,
+                this.projectileChargeTime).addPlayers(player).send();
         this.isShieldUp = isShieldUp;
     }
 
@@ -244,7 +244,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
         }
         this.projectileChargeTime = 0;
         if(!this.world.isRemote)
-            NetworkHandler.sendToTracking(new PacketUpdateBossRender.Message(this.getEntityId(),this.phase, isShieldUp,
+            NetworkHandler.sendToTracking(new PacketUpdateBossRender(this.getEntityId(),this.phase, isShieldUp,
                     this.currentAnimation,this.projectileChargeTime),this);
     }
 
@@ -324,7 +324,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
     public void addAOECounter(List<Vec3d> vecList, int time, int range, int phase) {
         if(!vecList.isEmpty()) {
             this.aoeAttacks.add(new DelayedAOE(vecList, time, range, phase));
-            NetworkHandler.sendToTracking(new PacketRenderBossAttack.Message(vecList, time, range,this.getEntityId(),phase),this);
+            NetworkHandler.sendToTracking(new PacketRenderBossAttack(vecList, time, range,this.getEntityId(),phase),this);
         }
     }
 
@@ -484,7 +484,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
         this.currentAnimation = animation;
         if(!this.world.isRemote) {
             if(animation.matches("damaged")) teleportRandomly();
-            if(sendUpdate) NetworkHandler.sendToTracking(new PacketUpdateBossRender.Message(this.getEntityId(),
+            if(sendUpdate) NetworkHandler.sendToTracking(new PacketUpdateBossRender(this.getEntityId(),
                     this.phase,this.isShieldUp, animation, this.projectileChargeTime),this);
         }
     }

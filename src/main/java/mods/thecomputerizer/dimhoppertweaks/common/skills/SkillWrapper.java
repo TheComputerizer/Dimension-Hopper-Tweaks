@@ -64,6 +64,10 @@ public class SkillWrapper {
             player.setSpawnPoint(pos,true);
     }
 
+    public static boolean ticKDreamer(EntityPlayerMP player, int ticks) {
+        return getSkillCapability(player).incrementDreamTimer(player,ticks);
+    }
+
     private final String modid;
     private final String name;
     private final int maxLevel;

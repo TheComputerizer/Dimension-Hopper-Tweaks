@@ -49,5 +49,6 @@ public class SkillCapabilityStorage implements Capability.IStorage<ISkillCapabil
         if(compound.hasKey("skill_to_drain") && compound.hasKey("drain_levels"))
             instance.setDrainSelection(compound.getString("skill_to_drain"), compound.getInteger("drain_levels"), null);
         if(compound.hasKey("twilight_respawn")) instance.setTwilightRespawn(BlockPos.fromLong(compound.getLong("twilight_respawn")));
+        instance.initDreamTimer(compound.getInteger("dream_timer"));
     }
 }

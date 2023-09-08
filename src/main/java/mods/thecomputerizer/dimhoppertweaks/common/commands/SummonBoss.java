@@ -1,8 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.common.commands;
 
 import mods.thecomputerizer.dimhoppertweaks.common.events.ServerEvents;
-import mods.thecomputerizer.dimhoppertweaks.network.NetworkHandler;
-import mods.thecomputerizer.dimhoppertweaks.network.packets.PacketRenderBossAttack;
+import mods.thecomputerizer.dimhoppertweaks.network.PacketRenderBossAttack;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -33,7 +32,7 @@ public class SummonBoss extends CommandBase {
             WorldServer world = server.getWorld(((EntityPlayer)sender).dimension);
             if (!world.isRemote && sender instanceof EntityPlayerMP) {
                 BlockPos pos = new BlockPos(sender.getPosition().getX()+2, sender.getPosition().getY(), sender.getPosition().getZ());
-                NetworkHandler.sendToPlayer(new PacketRenderBossAttack.Message(new ArrayList<>(),-1,4,0,0), (EntityPlayerMP)sender);
+                new PacketRenderBossAttack(new ArrayList<>(),-1,4,0,0).addPlayers((EntityPlayerMP)sender).send();
                 ServerEvents.startSummonBoss(world, pos);
             } else notifyCommandListener(sender, this, "It did not work");
         }

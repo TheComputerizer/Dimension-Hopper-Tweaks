@@ -1,6 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.common.skills;
 
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.network.PacketGrayScaleTimer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
@@ -15,6 +16,7 @@ import java.util.Set;
 
 public class SkillCapability implements ISkillCapability {
 
+    private final MutableInt DREAM_TIMER;
     private Map<String, SkillWrapper> skillMap = new HashMap<>();
     private String SKILL_TO_DRAIN = "mining";
     private int DRAIN_LEVELS = 1;
@@ -27,6 +29,7 @@ public class SkillCapability implements ISkillCapability {
         for(String skill : SkillCapabilityStorage.SKILLS) this.addDefaultSkillValues(skill);
         setDrainSelection("mining",1, null);
         this.TWILIGHT_RESPAWN = null;
+        this.DREAM_TIMER = new MutableInt();
     }
 
     private void addDefaultSkillValues(String name) {
@@ -200,6 +203,24 @@ public class SkillCapability implements ISkillCapability {
     }
 
     @Override
+    public boolean incrementDreamTimer(EntityPlayerMP player, int time) {
+        int val = this.DREAM_TIMER.addAndGet(time);
+        if(val<0) resetDreamTimer();
+        if(val%5==0) new PacketGrayScaleTimer(((float)val)/18000f).addPlayers(player).send();
+        return val>=18000;
+    }
+
+    @Override
+    public void resetDreamTimer() {
+        this.DREAM_TIMER.setValue(0);
+    }
+
+    @Override
+    public void initDreamTimer(int time) {
+        this.DREAM_TIMER.setValue(time);
+    }
+
+    @Override
     public NBTTagCompound writeNBT() {
         NBTTagCompound compound = new NBTTagCompound();
         compound.setInteger("skills_num",this.skillMap.size());
@@ -220,7 +241,8 @@ public class SkillCapability implements ISkillCapability {
             compound.setInteger("recent_gathering_counter_"+i,entry.getValue().getValue());
             i++;
         }
-        if(this.TWILIGHT_RESPAWN!=null) compound.setLong("twilight_respawn",this.TWILIGHT_RESPAWN.toLong());
+        if(Objects.nonNull(this.TWILIGHT_RESPAWN)) compound.setLong("twilight_respawn",this.TWILIGHT_RESPAWN.toLong());
+        compound.setInteger("dream_timer",this.DREAM_TIMER.getValue());
         return compound;
     }
 }

@@ -126,6 +126,7 @@ public class EntityEvents {
                 if(event.toDim!=-19 && GameStageHelper.hasStage(player,"finalfrontier"))
                     GameStageHelper.addStage(player,"finalfrontier");
                 SkillWrapper.addSP(player,"void",5f,false);
+                SkillWrapper.getSkillCapability(player).resetDreamTimer();
             }
         }
 

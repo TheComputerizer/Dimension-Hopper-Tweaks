@@ -5,8 +5,9 @@ import mods.thecomputerizer.dimhoppertweaks.common.skills.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillCapabilityStorage;
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
-import mods.thecomputerizer.dimhoppertweaks.network.NetworkHandler;
+import mods.thecomputerizer.dimhoppertweaks.network.*;
 import mods.thecomputerizer.dimhoppertweaks.registry.RegistryHandler;
+import mods.thecomputerizer.theimpossiblelibrary.network.NetworkHandler;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -21,10 +22,15 @@ public class DimHopperTweaks
     @Mod.Instance(Constants.MODID)
     public static DimHopperTweaks INSTANCE;
 
+    public DimHopperTweaks() {
+        NetworkHandler.queueServerPacketRegistries(PacketSyncGuiData.class);
+        NetworkHandler.queueClientPacketRegistries(PacketBossClientEffects.class,PacketGrayScaleTimer.class,
+                PacketOpenGui.class, PacketRenderBossAttack.class,PacketSyncPlayerHealth.class,PacketUpdateBossRender.class);
+    }
+
     @Mod.EventHandler
     public static void preInit(FMLPreInitializationEvent event) {
         Constants.LOGGER.info("Starting pre-init");
-        NetworkHandler.registerPackets();
         CapabilityManager.INSTANCE.register(ISkillCapability.class, new SkillCapabilityStorage(), SkillCapability::new);
         if (FMLCommonHandler.instance().getSide().isClient()) {
             OBJLoader.INSTANCE.addDomain(Constants.MODID);
