@@ -22,13 +22,13 @@ public class MixinEntityPlayerSP {
      */
     @Overwrite
     public void onCriticalHit(Entity entityHit) {
-        boolean isBLight = false;
+        boolean isBlight = false;
         if(entityHit instanceof EntityLivingBase) {
             EntityLivingBase based = (EntityLivingBase)entityHit;
             if(((EntityLivinBaseAccess)based).dimhoppertweaks$isBlighted())
-                isBLight = true;
+                isBlight = true;
         }
-        if(isBLight) this.mc.effectRenderer.emitParticleAtEntity(entityHit, ParticleRegistry.BLIGHT_FIRE);
+        if(isBlight) this.mc.effectRenderer.emitParticleAtEntity(entityHit, ParticleRegistry.BLIGHT_FIRE);
         else this.mc.effectRenderer.emitParticleAtEntity(entityHit, EnumParticleTypes.CRIT);
     }
 }

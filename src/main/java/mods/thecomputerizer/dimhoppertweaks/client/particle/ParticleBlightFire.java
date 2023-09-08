@@ -32,11 +32,10 @@ public class ParticleBlightFire extends Particle {
         randomizeInitialPos();
         this.tomfoolery = ModuleAprilTricks.instance.isEnabled() && ModuleAprilTricks.instance.isRightDay();
         this.particleTexture = tomfoolery ? ParticleRegistry.getGrayFireAtlas() : ParticleRegistry.getFireAtlas();
-        this.particleScale = scale+(this.rand.nextFloat()/(1f/(scale/2f)));
+        this.particleScale = 0.2f+(this.rand.nextFloat()/(1f/(0.2f/2f)));
         this.particleMaxAge = (int)(maxAge-(this.rand.nextFloat()*(maxAge/4f)));
         this.particleAlpha = 1f;
         this.frameUV = getUVFrame();
-        setRBGColorF(0.2f,1f,0.2f);
     }
 
     private Point4f getUVFrame() {
