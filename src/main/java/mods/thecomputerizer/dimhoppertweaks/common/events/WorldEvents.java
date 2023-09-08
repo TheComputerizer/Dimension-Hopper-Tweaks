@@ -56,10 +56,12 @@ public class WorldEvents {
         if(event.phase==TickEvent.Phase.END) {
             int dim = event.world.provider.getDimension();
             if(dim==44 || dim==45) {
-                for(EntityPlayer p : event.world.playerEntities) {
-                    EntityPlayerMP player = (EntityPlayerMP)p;
-                    int ticks = checkTime(player.getHeldItemOffhand()) || checkTime(player.getHeldItemMainhand()) ? -1 : 1;
-                    if(SkillWrapper.ticKDreamer(player,ticks)) wakeUp(player);
+                synchronized (event.world.playerEntities) {
+                    for (EntityPlayer p : event.world.playerEntities) {
+                        EntityPlayerMP player = (EntityPlayerMP) p;
+                        int ticks = checkTime(player.getHeldItemOffhand()) || checkTime(player.getHeldItemMainhand()) ? -1 : 1;
+                        if (SkillWrapper.ticKDreamer(player, ticks)) wakeUp(player);
+                    }
                 }
             }
         }

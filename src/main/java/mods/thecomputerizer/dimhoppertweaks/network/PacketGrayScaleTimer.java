@@ -2,6 +2,7 @@ package mods.thecomputerizer.dimhoppertweaks.network;
 
 import io.netty.buffer.ByteBuf;
 import mods.thecomputerizer.theimpossiblelibrary.network.MessageImpl;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
@@ -13,7 +14,7 @@ public class PacketGrayScaleTimer extends MessageImpl {
     public PacketGrayScaleTimer() {}
 
     public PacketGrayScaleTimer(float scale) {
-        this.grayScale = Math.min(1f,scale);
+        this.grayScale = MathHelper.clamp(1f-scale,0,1f);
     }
 
     @Override

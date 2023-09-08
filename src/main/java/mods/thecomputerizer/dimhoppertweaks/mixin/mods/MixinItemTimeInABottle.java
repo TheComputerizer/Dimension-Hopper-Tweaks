@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Unique;
 
-@Mixin(value = ItemTimeInABottle.class, remap = false)
+@Mixin(ItemTimeInABottle.class)
 public class MixinItemTimeInABottle implements ItemTimeInABottleAccess {
 
     @Unique private ItemTimeInABottle dimhoppertweaks$cast() {
@@ -29,7 +29,6 @@ public class MixinItemTimeInABottle implements ItemTimeInABottleAccess {
     }
 
     @Unique private void dimhoppertweaks$updateTime(ItemStack stack, int time) {
-        time = MathHelper.clamp(time,0,622080000);
         NBTTagCompound timeData = stack.getOrCreateSubCompound("timeData");
         int stored = timeData.getInteger("storedTime");
         boolean canAdd = (time>=0 && stored<622080000) || (time<0 && stored>0);
