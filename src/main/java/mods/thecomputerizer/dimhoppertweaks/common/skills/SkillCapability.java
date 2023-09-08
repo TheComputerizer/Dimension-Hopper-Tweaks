@@ -23,7 +23,7 @@ public class SkillCapability implements ISkillCapability {
     private Map<Item, MutableInt> GATHERING_LIST = new HashMap<>();
 
     public SkillCapability() {
-        Constants.LOGGER.info("Initializing skill capability with {} skills",SkillCapabilityStorage.SKILLS.size());
+        Constants.LOGGER.debug("Initializing skill capability with {} skills",SkillCapabilityStorage.SKILLS.size());
         for(String skill : SkillCapabilityStorage.SKILLS) this.addDefaultSkillValues(skill);
         setDrainSelection("mining",1, null);
         this.TWILIGHT_RESPAWN = null;

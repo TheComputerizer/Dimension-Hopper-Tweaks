@@ -83,7 +83,7 @@ public class SkillWrapper {
         if(skill!=null) cap = getSkill().getCap();
         this.maxLevel = cap;
         this.prestigeLevel = 0;
-        Constants.LOGGER.info("Registered skill {}:{} at level {} with xp {}/{}",modid,name,level,xp,levelXP);
+        Constants.LOGGER.debug("Registered skill {}:{} at level {} with xp {}/{}",modid,name,level,xp,levelXP);
     }
 
     public int getXP() {

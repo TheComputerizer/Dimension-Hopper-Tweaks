@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -45,7 +46,7 @@ public class ServerEvents {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void attachEntityCapabilities(AttachCapabilitiesEvent<Entity> event) {
-        if(event.getObject() instanceof EntityPlayerMP)
+        if(event.getObject() instanceof EntityPlayerMP && !(event.getObject() instanceof FakePlayer))
             event.addCapability(SkillWrapper.SKILL_CAPABILITY, new SkillCapabilityProvider());
     }
 
