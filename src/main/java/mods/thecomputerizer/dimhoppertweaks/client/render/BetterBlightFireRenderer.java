@@ -7,76 +7,71 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.MathHelper;
 import net.silentchaos512.lib.event.ClientTicks;
 import net.silentchaos512.scalinghealth.ScalingHealth;
 import net.silentchaos512.scalinghealth.lib.module.ModuleAprilTricks;
 import org.lwjgl.util.Color;
 
-import javax.annotation.Nonnull;
 import java.util.Objects;
 
 public class BetterBlightFireRenderer {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation(ScalingHealth.MOD_ID_LOWER,"textures/entity/blightfire.png");
-    private static final ResourceLocation TEXTURE_GRAY = new ResourceLocation(ScalingHealth.MOD_ID_LOWER,"textures/entity/blightfire_gray.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(
+            ScalingHealth.MOD_ID_LOWER,"textures/entity/blightfire.png");
+    private static final ResourceLocation TEXTURE_GRAY = new ResourceLocation(
+            ScalingHealth.MOD_ID_LOWER,"textures/entity/blightfire_gray.png");
 
-    private static @Nonnull ResourceLocation getFireTexture() {
-        return ModuleAprilTricks.instance.isRightDay() && ModuleAprilTricks.instance.isEnabled() ? TEXTURE_GRAY : TEXTURE;
-    }
-
-    public static void render(RenderManager manager, EntityLivingBase parent, double x, double y, double z) {
+    public static void render(RenderManager manager, EntityLivingBase parent, double x, double z) {
         if(Objects.nonNull(parent)) {
+            boolean tomfoolery = ModuleAprilTricks.instance.isEnabled() && ModuleAprilTricks.instance.isRightDay();
+            AxisAlignedBB box = parent.getEntityBoundingBox();
+            float width = averageBoxWidth(box)/2f;
+            float height = (float)MathHelper.clamp(Math.abs(box.maxY-box.minY)/2d,width*0.75d,width*1.25d);
+            Color color = new Color(255,255,255);
+            if (tomfoolery) {
+                float entityID = parent.getEntityId();
+                float hueOffset = 40f+entityID%80f;
+                float hue = (ClientTicks.ticksInGame+entityID)%hueOffset/hueOffset;
+                color.fromHSB(hue, 1f,1f);
+            }
+            int frame = ClientTicks.ticksInGame % 64;
+            boolean isOffset = frame>31;
+            if(isOffset) frame-=32;
+            double minU = isOffset ? 0.5f : 0;
+            double minV = (float)frame/32f;
+            double maxV = (float)(frame+1)/32f;
             GlStateManager.disableLighting();
             GlStateManager.pushMatrix();
-            GlStateManager.translate(x, y-(double)parent.height+0.5d, z);
-            float f = parent.width*0.5f;
-            GlStateManager.scale(f,f,f);
-            Tessellator tessellator = Tessellator.getInstance();
-            BufferBuilder vertexbuffer = tessellator.getBuffer();
-            float f1 = 0.5f;
-            float f2 = 0;
-            float f3 = parent.height/f;
-            float f4 = (float)(parent.posY-parent.getEntityBoundingBox().maxY);
+            GlStateManager.translate(x,box.maxY+height,z);
+            GlStateManager.scale(width,height,width);
             GlStateManager.rotate(-manager.playerViewY,0,1f,0);
-            GlStateManager.translate(0,0,(float)((int)f3)*0.02f);
-            float f5;
-            if (ModuleAprilTricks.instance.isRightDay() && ModuleAprilTricks.instance.isEnabled()) {
-                f5 = 40f+(float)parent.getEntityId()%80f;
-                Color color = new Color();
-                float hue = (float)(ClientTicks.ticksInGame+parent.getEntityId())%f5/f5;
-                color.fromHSB(hue, 1f,1f);
-                GlStateManager.color((float)color.getRed()/255f,(float)color.getGreen()/255f,
-                        (float)color.getBlue()/255f,1f);
-            } else GlStateManager.color(1f,1f,1f,1f);
-            f5 = 0;
-            int i = 0;
-            vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-            manager.renderEngine.bindTexture(getFireTexture());
-            while(f3 > 0) {
-                boolean flag = i % 2 == 0;
-                int frame = ClientTicks.ticksInGame % 32;
-                float minU = flag ? 0.5f : 0;
-                float minV = (float)frame/32f;
-                float maxU = flag ? 1f : 0.5f;
-                float maxV = (float)(frame+1)/32f;
-                if (flag) {
-                    float f10 = maxU;
-                    maxU = minU;
-                    minU = f10;
-                }
-                vertexbuffer.pos(f1-f2,-f4,f5).tex(maxU,maxV).endVertex();
-                vertexbuffer.pos(-f1-f2,-f4,f5).tex(minU,maxV).endVertex();
-                vertexbuffer.pos(-f1-f2,1.4f-f4,f5).tex(minU,minV).endVertex();
-                vertexbuffer.pos(f1-f2,1.4f-f4,f5).tex(maxU,minV).endVertex();
-                f3 -= 0.45f;
-                f4 -= 0.45f;
-                f1 *= 0.9f;
-                f5 += 0.03f;
-                ++i;
-            }
-            tessellator.draw();
+            GlStateManager.translate(0,0,(float)((int)(height/width))*0.02f);
+            setColor(color.getRed(),color.getGreen(),color.getBlue());
+            manager.renderEngine.bindTexture(tomfoolery ? TEXTURE_GRAY : TEXTURE);
+            draw(-width,width,-height,height,minU,minU+0.5f,minV,maxV);
             GlStateManager.popMatrix();
             GlStateManager.enableLighting();
         }
+    }
+
+    private static void draw(double xMin, double xMax, double yMin, double yMax, double minU, double maxU, double minV, double maxV) {
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = tessellator.getBuffer();
+        buffer.begin(7, DefaultVertexFormats.POSITION_TEX);
+        buffer.pos(xMax,yMin,0d).tex(maxU,maxV).endVertex();
+        buffer.pos(xMin,yMin,0d).tex(minU,maxV).endVertex();
+        buffer.pos(xMin,yMax,0d).tex(minU,minV).endVertex();
+        buffer.pos(xMax,yMax,0d).tex(maxU,minV).endVertex();
+        tessellator.draw();
+    }
+
+    private static void setColor(float r, float g, float b) {
+        GlStateManager.color(r/255f,g/255f, b/255f,1f);
+    }
+
+    private static float averageBoxWidth(AxisAlignedBB box) {
+        return (float)((Math.abs(box.maxX-box.minX)+Math.abs(box.maxZ-box.minZ))/2d);
     }
 }
