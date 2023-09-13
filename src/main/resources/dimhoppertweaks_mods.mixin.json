@@ -34,7 +34,25 @@
     "MixinTileEntityEnergyReceiver",
     "MixinTileEntityLightningCell",
     "MixinTileEntityLightningUser",
-    "MixinZGBlockBase"
+    "MixinZGBlockBase",
+    "staff.MixinBaronStaff",
+    "staff.MixinCelestialStaff",
+    "staff.MixinFireStaff",
+    "staff.MixinFirestormStaff",
+    "staff.MixinHauntersStaff",
+    "staff.MixinLunarStaff",
+    "staff.MixinMeteorStaff",
+    "staff.MixinNoxiousStaff",
+    "staff.MixinPhantomStaff",
+    "staff.MixinPoisonStaff",
+    "staff.MixinPowerStaff",
+    "staff.MixinPrimordialStaff",
+    "staff.MixinRosidianStaff",
+    "staff.MixinTangleStaff",
+    "staff.MixinUnderworldStaff",
+    "staff.MixinWaterStaff",
+    "staff.MixinWindStaff",
+    "staff.MixinWitherStaff"
   ],
   "client": []
 }
