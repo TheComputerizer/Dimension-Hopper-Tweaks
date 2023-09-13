@@ -27,6 +27,7 @@
     "MixinItemTreasureChest",
     "MixinModSpellPieces",
     "MixinPieceTrickCollapseBlock",
+    "MixinRecipeStage",
     "MixinTileEntityEnergyProvider",
     "MixinTileEntityEnergyReceiver",
     "MixinTileEntityLightningCell",

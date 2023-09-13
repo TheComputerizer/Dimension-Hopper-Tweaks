@@ -84,6 +84,7 @@ dependencies {
 
     //implemented cf stuff
     implementation(fg.deobf("curse.maven:actually-additions-228404:${project.aa_version}"))
+    implementation(fg.deobf("curse.maven:ae2-extended-life-570458:${project.ae2_verion}"))
     implementation(fg.deobf("curse.maven:aether-ii-223796:${project.aether_version}"))
     implementation(fg.deobf("curse.maven:aquaculture-60028:${project.aquaculture_version}"))
     implementation(fg.deobf("curse.maven:avaritia-261348:${project.avaritia_version}"))
@@ -101,6 +102,7 @@ dependencies {
     implementation(fg.deobf("curse.maven:overloaded-264601:${project.overloaded_version}"))
     implementation(fg.deobf("curse.maven:psi-241665:${project.psi_version}"))
     implementation(fg.deobf("curse.maven:random-things-59816:${project.randomthings_version}"))
+    implementation(fg.deobf("curse.maven:recipe-stages-280554:${project.recipestages_version}"))
     implementation(fg.deobf("curse.maven:reskillable-286382:${project.reskillable_version}"))
     implementation(fg.deobf("curse.maven:scaling-health-248027:${project.scalinghealth_version}"))
     implementation(fg.deobf("curse.maven:sgcraft-289115:${project.sgcraft_version}"))
