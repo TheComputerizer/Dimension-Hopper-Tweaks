@@ -21,6 +21,7 @@
     "MixinEntityCrazySpider",
     "MixinEntityCrazyZombie",
     "MixinEntityPixie",
+    "MixinEscapeTarget",
     "MixinFlintChunkProvider",
     "MixinFlintPortal",
     "MixinGatewayGenerator",
