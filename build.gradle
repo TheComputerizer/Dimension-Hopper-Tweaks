@@ -100,6 +100,7 @@ dependencies {
     implementation(fg.deobf("curse.maven:lockyz-extra-dimensions-mod-283789:${project.lockyz_version}"))
     implementation(fg.deobf("curse.maven:mixin-booter-419286:${project.mixinbooter_version}"))
     implementation(fg.deobf("curse.maven:openblocks-228816:${project.openblocks_version}"))
+    implementation(fg.deobf("curse.maven:openmodslib-228815:${project.openlib_version}"))
     implementation(fg.deobf("curse.maven:ore-stages-290201:${project.orestages_version}"))
     implementation(fg.deobf("curse.maven:overloaded-264601:${project.overloaded_version}"))
     implementation(fg.deobf("curse.maven:psi-241665:${project.psi_version}"))

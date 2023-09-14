@@ -27,6 +27,7 @@
     "MixinInfinitySword",
     "MixinItemTimeInABottle",
     "MixinItemTreasureChest",
+    "MixinLastStandEnchantmentsHandler",
     "MixinModSpellPieces",
     "MixinPieceTrickCollapseBlock",
     "MixinRecipeStage",
