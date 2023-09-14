@@ -99,6 +99,7 @@ dependencies {
     implementation(fg.deobf("curse.maven:lightningcraft-237422:${project.lightningcraft_version}"))
     implementation(fg.deobf("curse.maven:lockyz-extra-dimensions-mod-283789:${project.lockyz_version}"))
     implementation(fg.deobf("curse.maven:mixin-booter-419286:${project.mixinbooter_version}"))
+    implementation(fg.deobf("curse.maven:openblocks-228816:${project.openblocks_version}"))
     implementation(fg.deobf("curse.maven:ore-stages-290201:${project.orestages_version}"))
     implementation(fg.deobf("curse.maven:overloaded-264601:${project.overloaded_version}"))
     implementation(fg.deobf("curse.maven:psi-241665:${project.psi_version}"))
@@ -123,6 +124,7 @@ dependencies {
     implementation(fg.deobf("CraftTweaker2:CraftTweaker2-MC1120-Main:${project.ct_version}"))
     implementation(fg.deobf("CraftTweaker2:CraftTweaker2-API:${project.ct_version}"))
     implementation(fg.deobf("CraftTweaker2:ZenScript:${project.ct_version}"))
+    implementation(fg.deobf("maven.modrinth:misty-world:${project.misty_version}"))
     implementation(fg.deobf("maven.modrinth:the-midnight:${project.midnight_version}"))
 
     //runtime stuff and libraries
@@ -163,7 +165,7 @@ jar {
         attributes([
                 'FMLCorePlugin': 'mods.thecomputerizer.dimhoppertweaks.core.EarlyMixinPlugin',
                 'FMLCorePluginContainsFMLMod': true,
-                'ForceLoadAsMod': false,
+                'ForceLoadAsMod': true,
                 'FMLAT': 'dimhoppertweaks_at.cfg',
         ])
     }

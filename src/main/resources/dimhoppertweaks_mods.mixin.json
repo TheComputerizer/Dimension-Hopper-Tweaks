@@ -30,6 +30,7 @@
     "MixinModSpellPieces",
     "MixinPieceTrickCollapseBlock",
     "MixinRecipeStage",
+    "MixinServerEventHandler",
     "MixinTileEntityEnergyProvider",
     "MixinTileEntityEnergyReceiver",
     "MixinTileEntityLightningCell",
