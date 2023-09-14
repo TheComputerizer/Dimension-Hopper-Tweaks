@@ -25,6 +25,7 @@
     "MixinFlintPortal",
     "MixinGatewayGenerator",
     "MixinInfinitySword",
+    "MixinItemDice",
     "MixinItemTimeInABottle",
     "MixinItemTreasureChest",
     "MixinLastStandEnchantmentsHandler",
