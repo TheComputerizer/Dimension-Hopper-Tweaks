@@ -12,6 +12,7 @@ public class ClientEffects {
     public static float COLOR_CORRECTION = 0f;
     public static float COLOR_CORRECTION_OVERRIDE = 0f;
     public static float SCREEN_SHAKE = 0f;
+    public static float MINING_SPEED = 1f;
 
     public static float getFOVAdjustment(float fov) {
         return fov*((FOV_ADJUST/2f)+0.5f);

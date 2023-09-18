@@ -21,6 +21,7 @@ public interface ISkillCapability {
     void setPrestigeLevel(String skill, int level);
     int getPrestigeLevel(String skill);
     float getBreakSpeedMultiplier();
+    void syncBreakSpeed(EntityPlayerMP player);
     float getDamageMultiplier();
     float getDamageReduction();
     void setShieldedDamage(float amount);

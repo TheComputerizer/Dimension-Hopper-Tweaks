@@ -2,6 +2,7 @@ package mods.thecomputerizer.dimhoppertweaks.common.skills;
 
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketGrayScaleTimer;
+import mods.thecomputerizer.dimhoppertweaks.network.PacketSyncBreakSpeed;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
@@ -114,6 +115,12 @@ public class SkillCapability implements ISkillCapability {
     }
 
     @Override
+    public void syncBreakSpeed(EntityPlayerMP player) {
+        float speed = 1f+getBreakSpeedMultiplier();
+        new PacketSyncBreakSpeed(speed).addPlayers(player).send();
+    }
+
+    @Override
     public float getDamageMultiplier() {
         checkForExistingSkill("attack");
         return 3f*(((float)this.skillMap.get("attack").getLevel())/32f);
@@ -174,6 +181,7 @@ public class SkillCapability implements ISkillCapability {
     @Override
     public void syncSkills(EntityPlayerMP player) {
         for(SkillWrapper wrapper : this.skillMap.values()) wrapper.syncLevel(player);
+        syncBreakSpeed(player);
     }
 
     @Override

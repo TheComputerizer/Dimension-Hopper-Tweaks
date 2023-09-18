@@ -68,6 +68,10 @@ public class SkillWrapper {
         return getSkillCapability(player).incrementDreamTimer(player,ticks);
     }
 
+    public static void syncBreakSpeed(EntityPlayerMP player) {
+        getSkillCapability(player).syncBreakSpeed(player);
+    }
+
     private final String modid;
     private final String name;
     private final int maxLevel;

@@ -2,6 +2,7 @@ package mods.thecomputerizer.dimhoppertweaks.common.events;
 
 import codersafterdark.reskillable.api.event.LevelUpEvent;
 import com.google.common.collect.Iterables;
+import mods.thecomputerizer.dimhoppertweaks.client.render.ClientEffects;
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillCapability;
@@ -79,21 +80,24 @@ public class EntityEvents {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onDamage(LivingDamageEvent event) {
-        if(!event.getEntityLiving().world.isRemote && event.getSource() != DamageSource.OUT_OF_WORLD) {
+        if(!event.getEntityLiving().world.isRemote && Objects.nonNull(event.getSource()) && event.getSource() != DamageSource.OUT_OF_WORLD) {
             if (event.getEntityLiving() instanceof EntityPlayerMP) {
                 EntityPlayerMP player = (EntityPlayerMP) event.getEntityLiving();
-                event.setAmount(Math.max(0f,event.getAmount()-SkillWrapper.getSkillCapability(player).getDamageReduction()));
+                if(Objects.nonNull(player) && Objects.nonNull(SkillWrapper.getSkillCapability(player)))
+                    event.setAmount(Math.max(0f,event.getAmount()-SkillWrapper.getSkillCapability(player).getDamageReduction()));
             } else if (event.getSource().getTrueSource() instanceof EntityPlayerMP) {
                 EntityPlayerMP player = (EntityPlayerMP) event.getSource().getTrueSource();
-                float amount = event.getAmount()+SkillWrapper.getSkillCapability(player).getDamageMultiplier();
-                event.setAmount(amount);
-                SkillWrapper.addSP(player,"attack",Math.max(0.5f,(event.getAmount() / 2f)),false);
-                if(amount>=50f && player.getHeldItemMainhand().getItem() instanceof ItemElementiumSword) {
-                    EntityPixie pixie = new EntityPixie(player.getServerWorld());
-                    ((EntityPixieAccess)pixie).setBypassesTarget(true);
-                    pixie.setPosition(player.posX, player.posY + 2.0, player.posZ);
-                    pixie.onInitialSpawn(player.getServerWorld().getDifficultyForLocation(new BlockPos(pixie)), null);
-                    player.getServerWorld().spawnEntity(pixie);
+                if(Objects.nonNull(player) && Objects.nonNull(SkillWrapper.getSkillCapability(player))) {
+                    float amount = event.getAmount() + SkillWrapper.getSkillCapability(player).getDamageMultiplier();
+                    event.setAmount(amount);
+                    SkillWrapper.addSP(player, "attack", Math.max(0.5f, (event.getAmount() / 2f)), false);
+                    if (amount >= 50f && player.getHeldItemMainhand().getItem() instanceof ItemElementiumSword) {
+                        EntityPixie pixie = new EntityPixie(player.getServerWorld());
+                        ((EntityPixieAccess) pixie).setBypassesTarget(true);
+                        pixie.setPosition(player.posX, player.posY + 2.0, player.posZ);
+                        pixie.onInitialSpawn(player.getServerWorld().getDifficultyForLocation(new BlockPos(pixie)), null);
+                        player.getServerWorld().spawnEntity(pixie);
+                    }
                 }
             }
         }
@@ -102,11 +106,14 @@ public class EntityEvents {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onDamage(LivingDeathEvent event) {
         if(event.getSource().getTrueSource() instanceof EntityPlayerMP) {
-            NonNullList<ItemStack> armorList = NonNullList.from(ItemStack.EMPTY,
-                    Iterables.toArray(event.getEntityLiving().getArmorInventoryList(),ItemStack.class));
-            float armor = 10f-ISpecialArmor.ArmorProperties.applyArmor(
-                    event.getEntityLiving(),armorList, event.getSource(),10f);
-            SkillWrapper.addSP((EntityPlayerMP)event.getSource().getTrueSource(),"defense",armor,false);
+            EntityPlayerMP player = (EntityPlayerMP)event.getSource().getTrueSource();
+            if(Objects.nonNull(player) && Objects.nonNull(SkillWrapper.getSkillCapability(player))) {
+                NonNullList<ItemStack> armorList = NonNullList.from(ItemStack.EMPTY,
+                        Iterables.toArray(event.getEntityLiving().getArmorInventoryList(), ItemStack.class));
+                float armor = 10f - ISpecialArmor.ArmorProperties.applyArmor(
+                        event.getEntityLiving(), armorList, event.getSource(), 10f);
+                SkillWrapper.addSP(player, "defense", armor, false);
+            }
         }
     }
 
@@ -206,9 +213,16 @@ public class EntityEvents {
 
         @SubscribeEvent(priority = EventPriority.LOWEST)
         public static void breakSpeed(net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed event) {
-            if(event.getEntityPlayer() instanceof EntityPlayerMP)
-                event.setNewSpeed(event.getOriginalSpeed()*(1f+ SkillWrapper.getSkillCapability(event.getEntityPlayer())
-                        .getBreakSpeedMultiplier()));
+            if(Objects.nonNull(event.getEntityPlayer())) {
+                float speedFactor = 1;
+                if(event.getEntityPlayer() instanceof EntityPlayerMP) {
+                    EntityPlayerMP player = (EntityPlayerMP)event.getEntityPlayer();
+                    if (Objects.nonNull(player) && Objects.nonNull(SkillWrapper.getSkillCapability(player))) {
+                        speedFactor = 1f + SkillWrapper.getSkillCapability(event.getEntityPlayer()).getBreakSpeedMultiplier();
+                    }
+                } else speedFactor = ClientEffects.MINING_SPEED;
+                event.setNewSpeed(event.getNewSpeed() * speedFactor);
+            }
         }
 
         @SubscribeEvent(priority = EventPriority.LOWEST)

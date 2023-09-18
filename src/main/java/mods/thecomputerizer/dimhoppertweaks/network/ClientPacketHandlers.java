@@ -63,4 +63,9 @@ public class ClientPacketHandlers {
     public static void handleGrayScaleOverride(float scale) {
         ClientEffects.COLOR_CORRECTION_OVERRIDE = scale;
     }
+
+    @SideOnly(Side.CLIENT)
+    public static void handleMiningSpeed(float miningSpeed) {
+        ClientEffects.MINING_SPEED = miningSpeed;
+    }
 }
