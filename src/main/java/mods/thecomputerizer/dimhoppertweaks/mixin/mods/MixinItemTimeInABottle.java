@@ -21,7 +21,8 @@ public class MixinItemTimeInABottle implements ItemTimeInABottleAccess {
     }
 
     @Unique private boolean dimhoppertweaks$checkReversal(ItemStack stack, World world, Entity entity) {
-        if(!world.isRemote && entity instanceof EntityPlayer) {
+        if(!world.isRemote && (world.provider.getDimension()==44 || world.provider.getDimension()==45) &&
+                entity instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer)entity;
             return player.getHeldItemOffhand()==stack || player.getHeldItemMainhand()==stack;
         }

@@ -58,11 +58,17 @@ public class WorldEvents {
             int dim = event.world.provider.getDimension();
             if(dim==44 || dim==45) {
                 synchronized (event.world.playerEntities) {
-                    for (EntityPlayer p : event.world.playerEntities) {
+                    EntityPlayerMP wakingUp = null;
+                    for(EntityPlayer p : event.world.playerEntities) {
                         EntityPlayerMP player = (EntityPlayerMP) p;
                         int ticks = checkTime(player.getHeldItemOffhand()) || checkTime(player.getHeldItemMainhand()) ? -1 : 1;
-                        if (SkillWrapper.ticKDreamer(player, ticks)) wakeUp(player);
+                        if(SkillWrapper.ticKDreamer(player, ticks)) {
+                            wakingUp = player;
+                            break;
+                        }
                     }
+                    //This needs to be outside the loop to avoid a cmod error since teleporting removes the player from the list
+                    if(Objects.nonNull(wakingUp)) wakeUp(wakingUp);
                 }
             }
         }
