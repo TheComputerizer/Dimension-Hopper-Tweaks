@@ -11,13 +11,14 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.dimdev.ddutils.TeleportUtils;
 import slimeknights.tconstruct.library.tools.TinkerToolCore;
 
 import java.util.Objects;
@@ -78,6 +79,8 @@ public class WorldEvents {
         int respawnDim = player.getSpawnDimension();
         BlockPos respawnPos = player.getBedLocation(respawnDim);
         if(Objects.isNull(respawnPos)) respawnPos = player.getPosition();
-        TeleportUtils.teleport(player,respawnDim,respawnPos.getX(),respawnPos.getY(),respawnPos.getZ(),player.rotationYaw,player.rotationPitch);
+        MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+        server.getCommandManager().executeCommand(server,"/tpx "+player.getName()+" "+ respawnPos.getX()+" "+
+                respawnPos.getY()+" "+respawnPos.getZ()+" "+respawnDim);
     }
 }
