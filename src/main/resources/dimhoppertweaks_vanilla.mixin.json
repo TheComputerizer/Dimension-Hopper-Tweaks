@@ -9,6 +9,7 @@
     "MixinContainer",
     "MixinEntityLivingBase",
     "MixinEntityPlayer",
+    "MixinForgeHooks",
     "MixinInventoryCrafting",
     "MixinItemHoe",
     "MixinMusicTicker",

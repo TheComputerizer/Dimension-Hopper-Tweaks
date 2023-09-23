@@ -1,5 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.common.events;
 
+import mods.thecomputerizer.dimhoppertweaks.common.skills.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillCapabilityProvider;
@@ -54,8 +55,11 @@ public class ServerEvents {
     @SubscribeEvent
     public static void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
         EntityPlayer player = event.player;
-        BlockPos pos = SkillWrapper.getSkillCapability(player).getTwilightRespawn();
-        if(player.dimension==7 && Objects.isNull(player.getBedLocation(7)) && Objects.nonNull(pos))
-            player.setSpawnPoint(pos,true);
+        ISkillCapability cap = SkillWrapper.getSkillCapability(player);
+        if(Objects.nonNull(cap)) {
+            BlockPos pos = cap.getTwilightRespawn();
+            if(player.dimension == 7 && Objects.isNull(player.getBedLocation(7)) && Objects.nonNull(pos))
+                player.setSpawnPoint(pos, true);
+        }
     }
 }

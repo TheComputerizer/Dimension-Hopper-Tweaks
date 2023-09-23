@@ -1,5 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.common.commands;
 
+import mods.thecomputerizer.dimhoppertweaks.common.skills.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import net.minecraft.command.CommandBase;
@@ -64,8 +65,9 @@ public class RandomTP extends CommandBase {
                         for (int i=0; i<args.length-3; i++) {
                             if (Objects.requireNonNull(biome.getRegistryName()).toString().toLowerCase().contains(args[3 + i])) {
                                 TeleportUtils.teleport(player, (int)arg1,x,y,z,player.rotationYaw,player.rotationPitch);
-                                if((int) arg1==7) {
-                                    SkillWrapper.getSkillCapability(player).setTwilightRespawn(new BlockPos(x,100,z));
+                                ISkillCapability cap = SkillWrapper.getSkillCapability(player);
+                                if((int) arg1==7 && Objects.nonNull(cap)) {
+                                    cap.setTwilightRespawn(new BlockPos(x,100,z));
                                     SkillWrapper.forceTwilightRespawn(player);
                                 }
                                 notifyCommandListener(sender, this, "\u00A74\u00A7oYour consciousness " +

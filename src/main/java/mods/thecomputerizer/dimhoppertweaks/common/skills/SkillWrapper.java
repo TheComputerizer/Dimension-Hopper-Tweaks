@@ -21,6 +21,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
+import javax.annotation.Nullable;
 import java.util.Objects;
 
 public class SkillWrapper {
@@ -28,48 +29,54 @@ public class SkillWrapper {
     public static final ResourceLocation SKILL_CAPABILITY = new ResourceLocation(Constants.MODID, "skills");
 
     @SuppressWarnings("ConstantConditions")
-    public static ISkillCapability getSkillCapability(EntityPlayer player) {
-        return player.getCapability(SkillCapabilityProvider.SKILL_CAPABILITY,null);
+    public static @Nullable ISkillCapability getSkillCapability(EntityPlayer player) {
+        return Objects.nonNull(player) && Objects.nonNull(SkillCapabilityProvider.SKILL_CAPABILITY) ?
+                player.getCapability(SkillCapabilityProvider.SKILL_CAPABILITY,null) : null;
     }
 
     public static void addSP(EntityPlayerMP player, String skill, float amount, boolean fromXP) {
-        getSkillCapability(player).addSkillXP(skill, (int)withMultiplier(player, amount), player,fromXP);
+        ISkillCapability cap = getSkillCapability(player);
+        if(Objects.nonNull(cap)) cap.addSkillXP(skill, (int)withMultiplier(player, amount), player,fromXP);
     }
 
     public static float withMultiplier(EntityPlayerMP player, float amount) {
-        return getSkillCapability(player).getSkillXpMultiplier(amount);
+        ISkillCapability cap = getSkillCapability(player);
+        return Objects.nonNull(cap) ? cap.getSkillXpMultiplier(amount) : 0f;
     }
 
     public static void shieldHook(EntityPlayerMP player, byte state) {
-        float amount = getSkillCapability(player).getShieldedDamage();
+        ISkillCapability cap = getSkillCapability(player);
+        if(Objects.isNull(cap)) return;
+        float amount = cap.getShieldedDamage();
         if(state==29 && amount>0) addSP(player,"defense",Math.max(1f,amount/2f),false);
     }
 
     public static void updateTokens(EntityPlayerMP player) {
-        getSkillCapability(player).syncSkills(player);
+        ISkillCapability cap = getSkillCapability(player);
+        if(Objects.isNull(cap)) return;
+        cap.syncSkills(player);
         for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
             ItemStack stack = player.inventory.getStackInSlot(i);
             if (stack.getItem() instanceof SkillToken) {
                 SkillToken token = (SkillToken) stack.getItem();
-                ISkillCapability cap = getSkillCapability(player);
-                token.updateSkills(stack, cap.getCurrentValues(), cap.getDrainSelection(), cap.getDrainLevels());
+                token.updateSkills(stack,cap.getCurrentValues(),cap.getDrainSelection(),cap.getDrainLevels());
             }
         }
     }
 
     @SuppressWarnings("ConstantValue")
     public static void forceTwilightRespawn(EntityPlayer player) {
-        BlockPos pos = getSkillCapability(player).getTwilightRespawn();
+        ISkillCapability cap = getSkillCapability(player);
+        if(Objects.isNull(cap)) return;
+        BlockPos pos = cap.getTwilightRespawn();
         if(player.dimension==7 && Objects.isNull(player.getBedLocation(7)) && Objects.nonNull(pos))
             player.setSpawnPoint(pos,true);
     }
 
     public static boolean ticKDreamer(EntityPlayerMP player, int ticks) {
-        return getSkillCapability(player).incrementDreamTimer(player,ticks);
-    }
-
-    public static void syncBreakSpeed(EntityPlayerMP player) {
-        getSkillCapability(player).syncBreakSpeed(player);
+        ISkillCapability cap = getSkillCapability(player);
+        if(Objects.isNull(cap)) return false;
+        return cap.incrementDreamTimer(player,ticks);
     }
 
     private final String modid;

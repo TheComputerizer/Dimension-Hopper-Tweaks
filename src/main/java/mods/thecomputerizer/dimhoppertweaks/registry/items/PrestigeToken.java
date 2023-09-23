@@ -10,6 +10,7 @@ import net.minecraft.util.*;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
+import java.util.Objects;
 
 public class PrestigeToken extends EpicItem {
 
@@ -19,20 +20,21 @@ public class PrestigeToken extends EpicItem {
     }
 
     @Override
-    @Nonnull
-    public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, @Nonnull EntityPlayer playerIn, @Nonnull EnumHand hand) {
+    public @Nonnull ActionResult<ItemStack> onItemRightClick(@Nonnull World world, @Nonnull EntityPlayer playerIn, @Nonnull EnumHand hand) {
         ItemStack stack = playerIn.getHeldItemMainhand();
         if (playerIn instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP) playerIn;
             ISkillCapability cap = SkillWrapper.getSkillCapability(player);
-            String skill = cap.getDrainSelection();
-            if(cap.getPrestigeLevel(skill)<level && hand==EnumHand.MAIN_HAND) {
-                cap.setPrestigeLevel(skill,level);
-                SkillWrapper.updateTokens(player);
-                world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1.0F, 1.0F);
-                world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundCategory.MASTER, 1.0F, 1.0F);
-                stack.shrink(1);
-                return ActionResult.newResult(EnumActionResult.SUCCESS,stack);
+            if(Objects.nonNull(cap)) {
+                String skill = cap.getDrainSelection();
+                if(cap.getPrestigeLevel(skill) < level && hand == EnumHand.MAIN_HAND) {
+                    cap.setPrestigeLevel(skill, level);
+                    SkillWrapper.updateTokens(player);
+                    world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1.0F, 1.0F);
+                    world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundCategory.MASTER, 1.0F, 1.0F);
+                    stack.shrink(1);
+                    return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+                }
             }
         } return ActionResult.newResult(EnumActionResult.PASS,stack);
     }

@@ -9,8 +9,26 @@
     "authorList": ["The_Computerizer"],
     "credits": "TheSilkMiner",
     "logoFile": "tweaksLogo.png",
-    "dependencies": ["theimpossiblelibrary","avaritia","dimdoors","sgcraft","reskillable","tconstruct","geckolib3",
-      "twilightforest","psi","actuallyadditions","theoneprobe","xlfoodmod","gamestages","aquaculture",
-      "lockyzextradimensionsmod","tp","overloaded","botania","lightningcraft"]
+    "dependencies": [
+      "actuallyadditions",
+      "aquaculture",
+      "avaritia",
+      "botania",
+      "dimdoors",
+      "gamestages",
+      "geckolib3",
+      "lightningcraft",
+      "lockyzextradimensionsmod",
+      "psi",
+      "overloaded",
+      "reskillable",
+      "sgcraft",
+      "tconstruct",
+      "theimpossiblelibrary",
+      "theoneprobe",
+      "tp",
+      "twilightforest",
+      "xlfoodmod"
+    ]
   }
 ]

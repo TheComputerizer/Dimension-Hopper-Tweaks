@@ -1,6 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.network;
 
 import io.netty.buffer.ByteBuf;
+import mods.thecomputerizer.dimhoppertweaks.common.skills.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;
 import mods.thecomputerizer.theimpossiblelibrary.network.MessageImpl;
 import mods.thecomputerizer.theimpossiblelibrary.util.NetworkUtil;
@@ -11,6 +12,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class PacketSyncGuiData extends MessageImpl {
@@ -31,7 +33,8 @@ public class PacketSyncGuiData extends MessageImpl {
     public IMessage handle(MessageContext messageContext) {
         PlayerList players = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList();
         EntityPlayerMP player = players.getPlayerByUUID(this.playerUUID);
-        SkillWrapper.getSkillCapability(player).setDrainSelection(this.skill,this.level,player);
+        ISkillCapability cap = SkillWrapper.getSkillCapability(player);
+        if(Objects.nonNull(cap)) cap.setDrainSelection(this.skill,this.level,player);
         return null;
     }
 

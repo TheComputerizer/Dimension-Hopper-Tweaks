@@ -3,6 +3,7 @@ package mods.thecomputerizer.dimhoppertweaks.common.events;
 import codersafterdark.reskillable.api.event.LevelUpEvent;
 import com.google.common.collect.Iterables;
 import mods.thecomputerizer.dimhoppertweaks.client.render.ClientEffects;
+import mods.thecomputerizer.dimhoppertweaks.common.skills.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillCapability;
@@ -42,8 +43,10 @@ public class EntityEvents {
     public static void onLivingAttack(LivingAttackEvent event) {
         if(event.getEntityLiving() instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP)event.getEntityLiving();
-            if(!player.isEntityInvulnerable(event.getSource()) && player.canBlockDamageSource(event.getSource()))
-                SkillWrapper.getSkillCapability(player).setShieldedDamage(event.getAmount());
+            if(!player.isEntityInvulnerable(event.getSource()) && player.canBlockDamageSource(event.getSource())) {
+                ISkillCapability cap = SkillWrapper.getSkillCapability(player);
+                if(Objects.nonNull(cap)) cap.setShieldedDamage(event.getAmount());
+            }
         }
     }
 
@@ -83,14 +86,20 @@ public class EntityEvents {
         if(!event.getEntityLiving().world.isRemote && Objects.nonNull(event.getSource()) && event.getSource() != DamageSource.OUT_OF_WORLD) {
             if (event.getEntityLiving() instanceof EntityPlayerMP) {
                 EntityPlayerMP player = (EntityPlayerMP) event.getEntityLiving();
-                if(Objects.nonNull(player) && Objects.nonNull(SkillWrapper.getSkillCapability(player)))
-                    event.setAmount(Math.max(0f,event.getAmount()-SkillWrapper.getSkillCapability(player).getDamageReduction()));
+                if(Objects.nonNull(player)) {
+                    ISkillCapability cap = SkillWrapper.getSkillCapability(player);
+                    if(Objects.nonNull(cap)) event.setAmount(Math.max(0f,event.getAmount()-cap.getDamageReduction()));
+                }
             } else if (event.getSource().getTrueSource() instanceof EntityPlayerMP) {
                 EntityPlayerMP player = (EntityPlayerMP) event.getSource().getTrueSource();
-                if(Objects.nonNull(player) && Objects.nonNull(SkillWrapper.getSkillCapability(player))) {
-                    float amount = event.getAmount() + SkillWrapper.getSkillCapability(player).getDamageMultiplier();
-                    event.setAmount(amount);
-                    SkillWrapper.addSP(player, "attack", Math.max(0.5f, (event.getAmount() / 2f)), false);
+                if(Objects.nonNull(player)) {
+                    ISkillCapability cap = SkillWrapper.getSkillCapability(player);
+                    float amount = event.getAmount();
+                    if(Objects.nonNull(cap)) {
+                        amount += cap.getDamageMultiplier();
+                        event.setAmount(amount);
+                        SkillWrapper.addSP(player,"attack",Math.max(0.5f,(amount/2f)),false);
+                    }
                     if (amount >= 50f && player.getHeldItemMainhand().getItem() instanceof ItemElementiumSword) {
                         EntityPixie pixie = new EntityPixie(player.getServerWorld());
                         ((EntityPixieAccess) pixie).setBypassesTarget(true);
@@ -133,7 +142,8 @@ public class EntityEvents {
                 if(event.toDim!=-19 && GameStageHelper.hasStage(player,"finalfrontier"))
                     GameStageHelper.addStage(player,"finalfrontier");
                 SkillWrapper.addSP(player,"void",5f,false);
-                SkillWrapper.getSkillCapability(player).resetDreamTimer();
+                ISkillCapability cap = SkillWrapper.getSkillCapability(player);
+                if(Objects.nonNull(cap)) cap.resetDreamTimer();
             }
         }
 
@@ -187,7 +197,8 @@ public class EntityEvents {
                                     player.getActivePotionEffect(MobEffects.SPEED)).getAmplifier() + 2 : 1;
                             SkillWrapper.addSP(player, "agility", speedFactor, false);
                         }
-                        SkillWrapper.getSkillCapability(player).decrementGatheringItems(20);
+                        ISkillCapability cap = SkillWrapper.getSkillCapability(player);
+                        if(Objects.nonNull(cap)) cap.decrementGatheringItems(20);
                         TICK_DELAY = 0;
                     }
                 }
@@ -203,7 +214,8 @@ public class EntityEvents {
                         stack.getItem()==Item.getItemFromBlock(Blocks.BEDROCK))
                     stack.setCount(0);
                 if(stack.getCount()>0) {
-                    if(SkillWrapper.getSkillCapability(player).checkGatheringItem(stack.getItem())) {
+                    ISkillCapability cap = SkillWrapper.getSkillCapability(player);
+                    if(Objects.nonNull(cap) && cap.checkGatheringItem(stack.getItem())) {
                         int sizeFactor = stack.getCount() > 1 ? (int) (Math.log(stack.getCount()) / Math.log(2)) : 1;
                         SkillWrapper.addSP(player, "gathering", sizeFactor, false);
                     }
@@ -217,11 +229,12 @@ public class EntityEvents {
                 float speedFactor = 1;
                 if(event.getEntityPlayer() instanceof EntityPlayerMP) {
                     EntityPlayerMP player = (EntityPlayerMP)event.getEntityPlayer();
-                    if (Objects.nonNull(player) && Objects.nonNull(SkillWrapper.getSkillCapability(player))) {
-                        speedFactor = 1f + SkillWrapper.getSkillCapability(event.getEntityPlayer()).getBreakSpeedMultiplier();
+                    if (Objects.nonNull(player)) {
+                        ISkillCapability cap = SkillWrapper.getSkillCapability(player);
+                        if(Objects.nonNull(cap)) speedFactor = 1f+cap.getBreakSpeedMultiplier();
                     }
                 } else speedFactor = ClientEffects.MINING_SPEED;
-                event.setNewSpeed(event.getNewSpeed() * speedFactor);
+                event.setNewSpeed(event.getNewSpeed()*speedFactor);
             }
         }
 
@@ -235,8 +248,12 @@ public class EntityEvents {
         public static void onPlayerClone(net.minecraftforge.event.entity.player.PlayerEvent.Clone event) {
             if(event.getEntityPlayer() instanceof EntityPlayerMP) {
                 EntityPlayerMP to = (EntityPlayerMP) event.getEntityPlayer();
-                EntityPlayerMP from = (EntityPlayerMP) event.getOriginal();
-                SkillWrapper.getSkillCapability(to).of((SkillCapability) SkillWrapper.getSkillCapability(from),to);
+                ISkillCapability capTo = SkillWrapper.getSkillCapability(to);
+                if(Objects.nonNull(capTo)) {
+                    EntityPlayerMP from = (EntityPlayerMP) event.getOriginal();
+                    ISkillCapability capFrom = SkillWrapper.getSkillCapability(from);
+                    if(Objects.nonNull(capFrom)) capTo.of((SkillCapability)capFrom,to);
+                }
             }
         }
     }

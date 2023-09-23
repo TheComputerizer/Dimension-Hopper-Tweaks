@@ -117,7 +117,7 @@ public class SkillCapability implements ISkillCapability {
     @Override
     public void syncBreakSpeed(EntityPlayerMP player) {
         float speed = 1f+getBreakSpeedMultiplier();
-        new PacketSyncBreakSpeed(speed).addPlayers(player).send();
+        if(Objects.nonNull(player.connection)) new PacketSyncBreakSpeed(speed).addPlayers(player).send();
     }
 
     @Override

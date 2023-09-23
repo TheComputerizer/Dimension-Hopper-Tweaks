@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 public class SkillToken extends EpicItem {
@@ -51,8 +52,7 @@ public class SkillToken extends EpicItem {
     }
 
     @Override
-    @Nonnull
-    public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, @Nonnull EntityPlayer playerIn, @Nonnull EnumHand hand) {
+    public @Nonnull ActionResult<ItemStack> onItemRightClick(@Nonnull World world, @Nonnull EntityPlayer playerIn, @Nonnull EnumHand hand) {
         if(playerIn instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP)playerIn;
             ItemStack stack = player.getHeldItem(hand);
@@ -65,19 +65,21 @@ public class SkillToken extends EpicItem {
                 return new ActionResult<>(EnumActionResult.SUCCESS, stack);
             } else if(player.experienceLevel>=amount) {
                 ISkillCapability cap = SkillWrapper.getSkillCapability(player);
-                int prestige = cap.getPrestigeLevel(skill)+1;
-                for(int i=0;i<amount;i++) {
-                    int SP = (int)(convertXPToSP(player.experienceLevel)*SkillWrapper.getSkillCapability(player).getXPDumpMultiplier());
-                    int currSP = cap.getSkillXP(skill);
-                    int levelSP = cap.getSkillLevelXP(skill);
-                    int currLevel = cap.getSkillLevel(skill);
-                    boolean isWithinPrestigeRange = ((double)currLevel/32d)<prestige;
-                    if(currSP+SP<levelSP || (currSP+SP>=levelSP && isWithinPrestigeRange)) {
-                        cap.addSkillXP(skill, SP, player, true);
-                        player.addExperienceLevel(-1);
+                if(Objects.nonNull(cap)) {
+                    int prestige = cap.getPrestigeLevel(skill) + 1;
+                    for (int i = 0; i < amount; i++) {
+                        int SP = (int)(convertXPToSP(player.experienceLevel)*cap.getXPDumpMultiplier());
+                        int currSP = cap.getSkillXP(skill);
+                        int levelSP = cap.getSkillLevelXP(skill);
+                        int currLevel = cap.getSkillLevel(skill);
+                        boolean isWithinPrestigeRange = ((double) currLevel / 32d) < prestige;
+                        if (currSP + SP < levelSP || (currSP + SP >= levelSP && isWithinPrestigeRange)) {
+                            cap.addSkillXP(skill, SP, player, true);
+                            player.addExperienceLevel(-1);
+                        }
                     }
+                    SkillWrapper.updateTokens(player);
                 }
-                SkillWrapper.updateTokens(player);
                 return new ActionResult<>(EnumActionResult.SUCCESS, stack);
             } else return super.onItemRightClick(world, player, hand);
         } else return super.onItemRightClick(world, playerIn, hand);

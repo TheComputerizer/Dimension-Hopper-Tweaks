@@ -89,6 +89,7 @@ dependencies {
     implementation(fg.deobf("curse.maven:aoa-311054:${project.aoa_version}"))
     implementation(fg.deobf("curse.maven:aquaculture-60028:${project.aquaculture_version}"))
     implementation(fg.deobf("curse.maven:avaritia-261348:${project.avaritia_version}"))
+    implementation(fg.deobf("curse.maven:baubles-227083:${project.baubles_version}"))
     implementation(fg.deobf("curse.maven:botania-225643:${project.botania_version}"))
     implementation(fg.deobf("curse.maven:cavern-ii-285628:${project.cavern_version}"))
     implementation(fg.deobf("curse.maven:codechicken-lib-242818:${project.ccl_version}"))
@@ -131,8 +132,10 @@ dependencies {
     //runtime stuff and libraries
     runtimeOnly(fg.deobf("com.gildedgames.orbis:orbis-lib:${project.orbis_version}"))
     runtimeOnly(fg.deobf("curse.maven:autoreglib-250363:${project.autoreglib_version}"))
-    runtimeOnly(fg.deobf("curse.maven:baubles-227083:${project.baubles_version}"))
     runtimeOnly(fg.deobf("curse.maven:bookshelf-228525:${project.bookshelf_version}"))
+    runtimeOnly(fg.deobf("curse.maven:brandons-core-231382:${project.bc_version}"))
+    runtimeOnly(fg.deobf("curse.maven:caliper-266824:${project.caliper_version}"))
+    runtimeOnly(fg.deobf("curse.maven:censoredasm-460609:${project.asm_version}"))
     runtimeOnly(fg.deobf("curse.maven:cofh-core-69162:${project.cofhcore_version}"))
     runtimeOnly(fg.deobf("curse.maven:cofh-world-271384:${project.cofhworld_version}"))
     runtimeOnly(fg.deobf("curse.maven:good-nights-sleep-61461:${project.gn_version}"))
@@ -140,6 +143,7 @@ dependencies {
     runtimeOnly(fg.deobf("curse.maven:mantle-74924:${project.mantle_version}"))
     runtimeOnly(fg.deobf("curse.maven:mjrlegendslib-284331:${project.mjrlib_version}"))
     runtimeOnly(fg.deobf("curse.maven:redstone-flux-270789:${project.rf_version}"))
+    runtimeOnly(fg.deobf("curse.maven:reid-629017:${project.reid_version}"))
     runtimeOnly(fg.deobf("curse.maven:thermal-foundation-222880:${project.thermalfoundation_version}"))
     runtimeOnly(fg.deobf("dev.galacticraft:galacticraft-legacy:${project.galacticraft_version}"))
 }
