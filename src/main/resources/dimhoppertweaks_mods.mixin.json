@@ -64,5 +64,7 @@
     "staff.MixinWindStaff",
     "staff.MixinWitherStaff"
   ],
-  "client": []
+  "client": [
+    "MixinHUDHandler"
+  ]
 }
