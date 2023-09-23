@@ -11,8 +11,10 @@
     "MixinEntityPlayer",
     "MixinEntityTrackerEntry",
     "MixinForgeHooks",
+    "MixinForgeVersion",
     "MixinInventoryCrafting",
     "MixinItemHoe",
+    "MixinLightUtil",
     "MixinMusicTicker",
     "MixinNetherPortal",
     "MixinSPacketEntityEffect",
@@ -23,6 +25,7 @@
   ],
   "client": [
     "MixinEntityPlayerSP",
+    "MixinModelLoader",
     "MixinParticle",
     "MixinRenderManager",
     "MixinShaderGroup"

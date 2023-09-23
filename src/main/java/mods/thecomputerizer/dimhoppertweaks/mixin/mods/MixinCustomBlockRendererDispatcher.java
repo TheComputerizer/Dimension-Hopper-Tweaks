@@ -57,6 +57,24 @@ public abstract class MixinCustomBlockRendererDispatcher {
     }
      */
 
+    @Redirect(at = @At(value = "INVOKE", target = "Lgcewing/sg/BaseModClient$ICustomRenderer;" +
+            "renderBlock(Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/util/math/BlockPos;" +
+            "Lnet/minecraft/block/state/IBlockState;Lgcewing/sg/BaseModClient$IRenderTarget;" +
+            "Lnet/minecraft/util/BlockRenderLayer;Lgcewing/sg/Trans3;)V"), method = "renderBlockDamage")
+    private void dimhoppertweaks$onRenderBlock(BaseModClient.ICustomRenderer renderer, IBlockAccess block, BlockPos pos,
+                                               IBlockState state, BaseModClient.IRenderTarget target,
+                                               BlockRenderLayer layer, Trans3 trans) {
+        Constants.LOGGER.error("TESTING SGCRAFT BLOCK RENDER OF CLASS {}",renderer.getClass().getName());
+        renderer.renderBlock(block,pos,state,target,layer,trans);
+    }
+
+    @Redirect(at = @At(value = "INVOKE", target = "Lgcewing/sg/BaseBakedRenderTarget;getBakedModel()" +
+            "Lnet/minecraft/client/renderer/block/model/IBakedModel;"), method = "renderBlockDamage")
+    private IBakedModel dimhoppertweaks$onGetBakedModel(BaseBakedRenderTarget target) {
+        Constants.LOGGER.error("GETTING BAKED MODEL FOR TARGET OF CLASS {}",target.getClass().getName());
+        return target.getBakedModel();
+    }
+
     @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/BlockModelRenderer;renderModel(" +
             "Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/client/renderer/block/model/IBakedModel;" +
             "Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;" +
@@ -67,23 +85,5 @@ public abstract class MixinCustomBlockRendererDispatcher {
         Constants.LOGGER.error("BAKED MODEL IS OF CLASS {}",model.getClass().getName());
         renderer.renderModel(block,model,state,pos,buffer,checkSides);
         return false;
-    }
-
-    @Redirect(at = @At(value = "INVOKE", target = "Lgcewing/sg/BaseBakedRenderTarget;getBakedModel()" +
-            "Lnet/minecraft/client/renderer/block/model/IBakedModel;"), method = "renderBlockDamage")
-    private IBakedModel dimhoppertweaks$onGetBakedModel(BaseBakedRenderTarget target) {
-        Constants.LOGGER.error("GETTING BAKED MODEL FOR TARGET OF CLASS {}",target.getClass().getName());
-        return target.getBakedModel();
-    }
-
-    @Redirect(at = @At(value = "INVOKE", target = "Lgcewing/sg/BaseModClient$ICustomRenderer;" +
-            "renderBlock(Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/util/math/BlockPos;" +
-            "Lnet/minecraft/block/state/IBlockState;Lgcewing/sg/BaseModClient$IRenderTarget;" +
-            "Lnet/minecraft/util/BlockRenderLayer;Lgcewing/sg/Trans3;)V"), method = "renderBlockDamage")
-    private void dimhoppertweaks$onRenderBlock(BaseModClient.ICustomRenderer renderer, IBlockAccess block, BlockPos pos,
-                                               IBlockState state, BaseModClient.IRenderTarget target,
-                                               BlockRenderLayer layer, Trans3 trans) {
-        Constants.LOGGER.error("TESTING SGCRAFT BLOCK RENDER OF CLASS {}",renderer.getClass().getName());
-        renderer.renderBlock(block,pos,state,target,layer,trans);
     }
 }
