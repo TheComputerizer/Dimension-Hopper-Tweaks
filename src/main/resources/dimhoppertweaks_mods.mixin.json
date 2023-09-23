@@ -7,13 +7,11 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinBaseGateway",
-    "MixinBaseRenderingManager",
     "MixinBaublesApi",
     "MixinBlightHandler",
     "MixinBlockEnergyProvider",
     "MixinBlockEnergyReceiver",
     "MixinBlockFlintOre",
-    "MixinCustomBlockRendererDispatcher",
     "MixinDefaultProbeInfoProvider",
     "MixinEnergyStorage",
     "MixinEntityBlightFire",
