@@ -134,7 +134,7 @@ dependencies {
     runtimeOnly(fg.deobf("curse.maven:autoreglib-250363:${project.autoreglib_version}"))
     runtimeOnly(fg.deobf("curse.maven:bookshelf-228525:${project.bookshelf_version}"))
     runtimeOnly(fg.deobf("curse.maven:brandons-core-231382:${project.bc_version}"))
-    runtimeOnly(fg.deobf("curse.maven:caliper-266824:${project.caliper_version}"))
+    //runtimeOnly(fg.deobf("curse.maven:caliper-266824:${project.caliper_version}"))
     runtimeOnly(fg.deobf("curse.maven:censoredasm-460609:${project.asm_version}"))
     runtimeOnly(fg.deobf("curse.maven:cofh-core-69162:${project.cofhcore_version}"))
     runtimeOnly(fg.deobf("curse.maven:cofh-world-271384:${project.cofhworld_version}"))

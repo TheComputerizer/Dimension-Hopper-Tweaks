@@ -11,6 +11,8 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import vazkii.botania.api.mana.ManaItemHandler;
 import vazkii.botania.common.item.equipment.bauble.ItemTravelBelt;
 
@@ -67,5 +69,13 @@ public abstract class MixinItemTravelBelt {
                 }
             }
         }
+    }
+
+
+
+    @Redirect(at = @At(value = "INVOKE", target = "Lbaubles/api/cap/IBaublesItemHandler;" +
+            "getStackInSlot(I)Lnet/minecraft/item/ItemStack;"), method = "onPlayerJump")
+    private ItemStack dimhoppertweaks$redirectGetStackInSlot(IBaublesItemHandler handler, int i) {
+        return Objects.nonNull(handler) ? handler.getStackInSlot(i) : ItemStack.EMPTY;
     }
 }
