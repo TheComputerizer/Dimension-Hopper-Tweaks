@@ -26,7 +26,7 @@ import java.util.Objects;
 
 public class SkillWrapper {
 
-    public static final ResourceLocation SKILL_CAPABILITY = new ResourceLocation(Constants.MODID, "skills");
+    public static final ResourceLocation SKILL_CAPABILITY = Constants.res("skills");
 
     @SuppressWarnings("ConstantConditions")
     public static @Nullable ISkillCapability getSkillCapability(EntityPlayer player) {

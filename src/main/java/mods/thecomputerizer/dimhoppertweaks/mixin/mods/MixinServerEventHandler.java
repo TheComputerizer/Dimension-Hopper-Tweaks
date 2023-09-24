@@ -7,9 +7,15 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.relauncher.Side;
 import org.spongepowered.asm.mixin.*;
+import ru.liahim.mist.api.item.IMask;
 import ru.liahim.mist.api.registry.MistRegistry;
 import ru.liahim.mist.capability.FoodCapability;
 import ru.liahim.mist.capability.MistCapability;
@@ -28,10 +34,17 @@ import java.util.HashMap;
 import java.util.Objects;
 import java.util.UUID;
 
+@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 @Mixin(value = ServerEventHandler.class, remap = false)
-public class MixinServerEventHandler {
+public abstract class MixinServerEventHandler {
 
     @Shadow @Final private static HashMap<UUID, ItemStack> maskSync;
+
+    @Shadow @Final private static HashMap<UUID, Integer> portDelay;
+
+    @Shadow protected abstract boolean isAllPlayersAsleep(World world);
+
+    @Shadow @Final private static HashMap<UUID, Integer> mulchDelay;
 
     @Unique private IMistCapaHandler dimhoppertweaks$getMistHandler(EntityPlayer player) {
         if(Objects.isNull(player) || Objects.isNull(MistCapability.CAPABILITY_MIST)) return null;
@@ -45,6 +58,80 @@ public class MixinServerEventHandler {
         ISkillCapaHandler handler = player.getCapability(SkillCapability.CAPABILITY_SKILL,null);
         if(Objects.nonNull(handler)) handler.setPlayer(player);
         return handler;
+    }
+
+    /**
+     * @author The_Computerizer
+     * @reason Fix null capability stuff in dev environment
+     */
+    @SubscribeEvent@Overwrite
+    public void onPlayerTick(TickEvent.PlayerTickEvent event) {
+        if(event.phase == TickEvent.Phase.START && event.side == Side.SERVER) {
+            EntityPlayer player = event.player;
+            if(Objects.nonNull(player)) {
+                World world = player.world;
+                UUID uuid = player.getUniqueID();
+                if(!portDelay.isEmpty() && portDelay.containsKey(uuid)) {
+                    int i = portDelay.get(uuid);
+                    if (i > 0) portDelay.replace(uuid, i - 1);
+                    else {
+                        if(player instanceof EntityPlayerMP)
+                            ((EntityPlayerMP)player).clearInvulnerableDimensionChange();
+                        portDelay.remove(uuid);
+                    }
+                }
+                if(!maskSync.containsKey(uuid)) maskSync.put(uuid,ItemStack.EMPTY);
+                IMistCapaHandler maskHandler = dimhoppertweaks$getMistHandler(player);
+                if(Objects.nonNull(maskHandler)) {
+                    ItemStack stack = maskHandler.getMask();
+                    IMask mask = null;
+                    if(!stack.isEmpty() && stack.getItem() instanceof IMask) {
+                        mask = (IMask)stack.getItem();
+                        mask.onWornTick(stack,player);
+                    }
+                    if(maskHandler.isMaskChanged() || Objects.nonNull(mask) && mask.willAutoSync(stack,player) &&
+                            !ItemStack.areItemStacksEqual(stack,maskSync.get(uuid))) {
+                        try {
+                            if(maskHandler.isGlobalChanged())
+                                PacketHandler.INSTANCE.sendToDimension(new PacketMaskSync(player,stack),
+                                        player.world.provider.getDimension());
+                            else if(player instanceof EntityPlayerMP)
+                                PacketHandler.INSTANCE.sendTo(new PacketMaskSync(player,stack),(EntityPlayerMP)player);
+                            maskHandler.setMaskChanged(false,false);
+                        } catch (Exception ignored) {}
+                        maskSync.put(uuid,stack);
+                    }
+                }
+                if(player.isPlayerSleeping()) {
+                    WorldServer otherWorld;
+                    if(world.provider.getDimension()==0) {
+                        if(player.isPlayerSleeping() && player.ticksExisted%90==0) {
+                            otherWorld = DimensionManager.getWorld(Mist.getID());
+                            if(Objects.nonNull(otherWorld) && !otherWorld.playerEntities.isEmpty() &&
+                                    !this.isAllPlayersAsleep(otherWorld)) {
+                                player.bedLocation = player.getPosition().down();
+                                player.wakeUpPlayer(true, false, false);
+                                player.trySleep(player.bedLocation);
+                            }
+                        }
+                    } else if(world.provider.getDimension()==Mist.getID() && player.isPlayerSleeping() &&
+                            player.ticksExisted%90==0) {
+                        otherWorld = DimensionManager.getWorld(0);
+                        if(Objects.nonNull(otherWorld) && !otherWorld.playerEntities.isEmpty() &&
+                                !this.isAllPlayersAsleep(otherWorld)) {
+                            player.bedLocation = player.getPosition().down();
+                            player.wakeUpPlayer(true,false,false);
+                            player.trySleep(player.bedLocation);
+                        }
+                    }
+                }
+                if (!mulchDelay.isEmpty() && mulchDelay.containsKey(uuid)) {
+                    int i = mulchDelay.get(uuid);
+                    if(i>0) mulchDelay.replace(uuid,i-1);
+                    else mulchDelay.remove(uuid);
+                }
+            }
+        }
     }
 
     /**
@@ -95,6 +182,5 @@ public class MixinServerEventHandler {
                 }
             }
         }
-
     }
 }
