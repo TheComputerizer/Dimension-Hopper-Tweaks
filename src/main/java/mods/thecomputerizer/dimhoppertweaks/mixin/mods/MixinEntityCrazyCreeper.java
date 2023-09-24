@@ -1,11 +1,15 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.mods;
 
+import cavern.client.particle.ParticleCrazyMob;
 import cavern.entity.monster.EntityCavenicCreeper;
 import cavern.entity.monster.EntityCrazyCreeper;
 import cavern.world.CaveDimensions;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.BossInfoServer;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -49,5 +53,27 @@ public abstract class MixinEntityCrazyCreeper extends EntityCavenicCreeper {
             this.bossInfo.setVisible(isCloseEnough);
         }
         this.bossInfo.setPercent(this.getHealth()/this.getMaxHealth());
+    }
+
+    /**
+     * @author The_Computerizer
+     * @reason Fix too many particals being rendered
+     */
+    @Overwrite
+    @SideOnly(Side.CLIENT)
+    public void onUpdate() {
+        super.onUpdate();
+        if(this.world.isRemote) {
+            int var1 = this.rand.nextInt(2)*2-1;
+            int var2 = this.rand.nextInt(2)*2-1;
+            double ptX = this.posX+0.25*(double)var1;
+            double ptY = this.posY+0.65+(double)this.rand.nextFloat();
+            double ptZ = this.posZ+0.25*(double)var2;
+            double motionX = this.rand.nextFloat()*1f*(float)var1;
+            double motionY = ((double)this.rand.nextFloat()-0.25)*0.125;
+            double motionZ = this.rand.nextFloat()*1f*(float)var2;
+            ParticleCrazyMob particle = new ParticleCrazyMob(this.world,ptX,ptY,ptZ,motionX,motionY,motionZ);
+            FMLClientHandler.instance().getClient().effectRenderer.addEffect(particle);
+        }
     }
 }
