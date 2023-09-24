@@ -13,6 +13,7 @@
     "MixinBlockFlintOre",
     "MixinDefaultProbeInfoProvider",
     "MixinEnergyStorage",
+    "MixinEntityAechorPlant",
     "MixinEntityBlightFire",
     "MixinEntityCrazyCreeper",
     "MixinEntityCrazySkeleton",

@@ -151,6 +151,7 @@ dependencies {
     runtimeOnly(fg.deobf("curse.maven:cofh-core-69162:${project.cofhcore_version}"))
     runtimeOnly(fg.deobf("curse.maven:cofh-world-271384:${project.cofhworld_version}"))
     runtimeOnly(fg.deobf("curse.maven:ctm-267602:${project.ctm_version}"))
+    runtimeOnly(fg.deobf("curse.maven:ender-io-64578:${project.eio_version}"))
     runtimeOnly(fg.deobf("curse.maven:had-enough-items-557549:${project.hei_version}"))
     runtimeOnly(fg.deobf("curse.maven:mantle-74924:${project.mantle_version}"))
     runtimeOnly(fg.deobf("curse.maven:mjrlegendslib-284331:${project.mjrlib_version}"))
