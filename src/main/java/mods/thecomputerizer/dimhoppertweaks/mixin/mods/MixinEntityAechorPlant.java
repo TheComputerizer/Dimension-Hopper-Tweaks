@@ -20,9 +20,9 @@ public abstract class MixinEntityAechorPlant extends EntityAetherMob {
 
     @Shadow protected abstract void setPetalState(int index, boolean state);
 
-    @Shadow protected abstract int getRandomPetal(boolean state);
-
     @Shadow protected abstract int getPetalCountInState(boolean state);
+
+    @Shadow private boolean[] petals;
 
     public MixinEntityAechorPlant(World world) {
         super(world);
@@ -45,11 +45,36 @@ public abstract class MixinEntityAechorPlant extends EntityAetherMob {
                     int damage = remainingPetals-targetPetals;
                     Block.spawnAsEntity(this.world,this.getPosition(),new ItemStack(ItemsAether.aechor_petal,damage/2));
                     while(remainingPetals > targetPetals) {
-                        this.setPetalState(this.getRandomPetal(true),false);
+                        int petalIndex = this.getRandomPetal(true);
+                        if(petalIndex>=0) this.setPetalState(petalIndex,false);
                         --remainingPetals;
                     }
                 }
             }
         }
+    }
+
+    /**
+     * @author The_Computerizer
+     * @reason Fix negative rand issues
+     */
+    @Overwrite
+    private int getRandomPetal(boolean state) {
+        int total = this.getPetalCountInState(state);
+        if(total<=0) return -1;
+        int nth = this.rand.nextInt(total);
+        int selected = -1;
+        int i = 0;
+        for(int k=0; i<this.petals.length; ++i) {
+            boolean present = this.petals[i];
+            if(present == state) {
+                if(k==nth) {
+                    selected = i;
+                    break;
+                }
+                ++k;
+            }
+        }
+        return selected;
     }
 }

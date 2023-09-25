@@ -102,6 +102,7 @@ dependencies {
     implementation(fg.deobf("curse.maven:geckolib-388172:${project.gecko_version}"))
     implementation(fg.deobf("curse.maven:glacidus-286530:${project.glacidus_version}"))
     implementation(fg.deobf("curse.maven:good-nights-sleep-61461:${project.gn_version}"))
+    implementation(fg.deobf("curse.maven:jaopca-266936:${project.jaopca_version}"))
     implementation(fg.deobf("curse.maven:just-enough-calculation-242223:${project.jec_version}"))
     implementation(fg.deobf("curse.maven:lightningcraft-237422:${project.lightningcraft_version}"))
     implementation(fg.deobf("curse.maven:lockyz-extra-dimensions-mod-283789:${project.lockyz_version}"))
@@ -130,6 +131,7 @@ dependencies {
     implementation(fg.deobf("curse.maven:thermal-expansion-69163:${project.thermalexpansion_version}"))
     implementation(fg.deobf("curse.maven:tinkers-construct-74072:${project.tconstruct_version}"))
     implementation(fg.deobf("curse.maven:tiny-progressions-250850:${project.tp_version}"))
+    implementation(fg.deobf("curse.maven:vintagefix-871198:${project.vf_version}"))
     implementation(fg.deobf("curse.maven:xl-food-mod-247217:${project.xlfood_version}"))
     implementation(fg.deobf("curse.maven:zollern-galaxy-241940:${project.zollern_version}"))
 
