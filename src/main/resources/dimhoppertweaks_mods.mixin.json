@@ -23,6 +23,7 @@
     "MixinFlintChunkProvider",
     "MixinFlintPortal",
     "MixinGatewayGenerator",
+    "MixinGuideBookUtils",
     "MixinInfinitySword",
     "MixinItemDice",
     "MixinItemFlightTiara",
