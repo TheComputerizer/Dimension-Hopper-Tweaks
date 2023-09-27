@@ -13,6 +13,7 @@
     "MixinBlockFlintOre",
     "MixinDefaultProbeInfoProvider",
     "MixinDynamicBakedModelProvider",
+    "MixinDynamicModelProvider",
     "MixinEnergyStorage",
     "MixinEntityBlightFire",
     "MixinEntityCrazyCreeper",
