@@ -85,7 +85,6 @@ dependencies {
     //implemented cf stuff
     implementation(fg.deobf("curse.maven:actually-additions-228404:${project.aa_version}"))
     implementation(fg.deobf("curse.maven:ae2-extended-life-570458:${project.ae2_verion}"))
-    implementation(fg.deobf("curse.maven:aether-ii-223796:${project.aether_version}"))
     implementation(fg.deobf("curse.maven:aoa-311054:${project.aoa_version}"))
     implementation(fg.deobf("curse.maven:aquaculture-60028:${project.aquaculture_version}"))
     implementation(fg.deobf("curse.maven:atum-59621:${project.atum_version}"))
@@ -136,7 +135,6 @@ dependencies {
     implementation(fg.deobf("curse.maven:zollern-galaxy-241940:${project.zollern_version}"))
 
     //implemented other stuff
-    implementation(fg.deobf("com.gildedgames.orbis:orbis-lib:${project.orbis_version}"))
     implementation(fg.deobf("com.tiviacz.travelersbackpack:TravelersBackpack:${project.backpack_version}"))
     implementation(fg.deobf("CraftTweaker2:CraftTweaker2-MC1120-Main:${project.ct_version}"))
     implementation(fg.deobf("CraftTweaker2:CraftTweaker2-API:${project.ct_version}"))
@@ -157,6 +155,7 @@ dependencies {
     runtimeOnly(fg.deobf("curse.maven:had-enough-items-557549:${project.hei_version}"))
     runtimeOnly(fg.deobf("curse.maven:mantle-74924:${project.mantle_version}"))
     runtimeOnly(fg.deobf("curse.maven:mjrlegendslib-284331:${project.mjrlib_version}"))
+    runtimeOnly(fg.deobf("curse.maven:neat-238372:${project.neat_version}"))
     runtimeOnly(fg.deobf("curse.maven:potioncore-242872:${project.pc_version}"))
     runtimeOnly(fg.deobf("curse.maven:redstone-flux-270789:${project.rf_version}"))
     runtimeOnly(fg.deobf("curse.maven:reid-629017:${project.reid_version}"))
