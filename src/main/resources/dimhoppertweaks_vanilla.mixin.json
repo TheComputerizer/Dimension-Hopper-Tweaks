@@ -13,6 +13,7 @@
     "MixinEntityLivingBase",
     "MixinEntityPlayer",
     "MixinEntityTrackerEntry",
+    "MixinFMLModContainer",
     "MixinForgeHooks",
     "MixinForgeVersion",
     "MixinInventoryCrafting",
