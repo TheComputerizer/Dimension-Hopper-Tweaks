@@ -6,6 +6,7 @@
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "MixinApiGrid",
     "MixinBaseGateway",
     "MixinBlightHandler",
     "MixinBlockEnergyProvider",
@@ -29,6 +30,7 @@
     "MixinGuideBookUtils",
     "MixinInfinitySword",
     "MixinItemDice",
+    "MixinItemEnchantmentToken",
     "MixinItemFlightTiara",
     "MixinItemMonocle",
     "MixinItemTimeInABottle",
