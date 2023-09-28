@@ -9,6 +9,7 @@
     "MixinAdvancementList",
     "MixinContainer",
     "MixinCraftingHelper",
+    "MixinDimensionManager",
     "MixinEntityLivingBase",
     "MixinEntityPlayer",
     "MixinEntityTrackerEntry",
