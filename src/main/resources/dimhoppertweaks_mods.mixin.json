@@ -39,6 +39,7 @@
     "MixinItemTreasureChest",
     "MixinLastStandEnchantmentsHandler",
     "MixinModSpellPieces",
+    "MixinMutableLootPool",
     "MixinPieceTrickCollapseBlock",
     "MixinRecipeHandler",
     "MixinRecipeStage",

@@ -19,6 +19,7 @@
     "MixinItemHoe",
     "MixinMusicTicker",
     "MixinNetherPortal",
+    "MixinOreDictionary",
     "MixinSPacketEntityEffect",
     "MixinStatisticManager",
     "MixinStructureComponent",
