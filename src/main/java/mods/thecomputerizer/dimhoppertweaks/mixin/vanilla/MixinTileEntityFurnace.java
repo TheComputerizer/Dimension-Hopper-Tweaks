@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.vanilla;
 
-import mods.thecomputerizer.dimhoppertweaks.util.XLFoodUtil;
+import mods.thecomputerizer.dimhoppertweaks.mixin.access.DelayedModAccess;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -32,7 +32,7 @@ public abstract class MixinTileEntityFurnace {
             Block block = ((TileEntity)(Object)this).getWorld().getBlockState(((TileEntity)(Object)this).getPos()).getBlock();
             ItemStack itemstack = this.furnaceItemStacks.get(0);
             ItemStack itemstack1 = Loader.isModLoaded("xlfoodmod") && (block==Blocks.FURNACE || block==Blocks.LIT_FURNACE) ?
-                    XLFoodUtil.cheese() : FurnaceRecipes.instance().getSmeltingResult(itemstack);
+                    DelayedModAccess.cheese() : FurnaceRecipes.instance().getSmeltingResult(itemstack);
             ItemStack itemstack2 = this.furnaceItemStacks.get(2);
             if (itemstack2.isEmpty()) this.furnaceItemStacks.set(2, itemstack1.copy());
             else if (itemstack2.getItem() == itemstack1.getItem()) itemstack2.grow(itemstack1.getCount());

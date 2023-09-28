@@ -1,5 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.util;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public final class Lazy<T> implements Supplier<T> {
@@ -20,14 +21,11 @@ public final class Lazy<T> implements Supplier<T> {
     @Override
     public T get() {
         Object localLock = this.lock;
-        if (this.creator != null) {
-            //noinspection SynchronizationOnLocalVariableOrMethodParameter
+        if(Objects.nonNull(this.creator)) {
             synchronized (localLock) {
-                if (this.creator != null) {
-                    this.thing = this.creator.get();
-                    this.creator = null;
-                    this.lock = null;
-                }
+                this.thing = this.creator.get();
+                this.creator = null;
+                this.lock = null;
             }
         }
         return this.thing;

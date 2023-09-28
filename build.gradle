@@ -108,6 +108,7 @@ dependencies {
     implementation(fg.deobf("curse.maven:lockyz-extra-dimensions-mod-283789:${project.lockyz_version}"))
     implementation(fg.deobf("curse.maven:loottweaker-255257:${project.lt_version}"))
     implementation(fg.deobf("curse.maven:mcjtylib-233105:${project.mcjl_version}"))
+    implementation(fg.deobf("curse.maven:mekanism-ce-399904:${project.mce_version}"))
     implementation(fg.deobf("curse.maven:mixin-booter-419286:${project.mixinbooter_version}"))
     implementation(fg.deobf("curse.maven:multiblocked-604054:${project.mbd_version}"))
     implementation(fg.deobf("curse.maven:music-triggers-518410:${project.mt_version}"))
