@@ -91,6 +91,7 @@ dependencies {
     implementation(fg.deobf("curse.maven:avaritia-261348:${project.avaritia_version}"))
     implementation(fg.deobf("curse.maven:baubles-227083:${project.baubles_version}"))
     implementation(fg.deobf("curse.maven:blue-skies-312918:${project.blueskies_version}"))
+    implementation(fg.deobf("curse.maven:bookshelf-228525:${project.bookshelf_version}"))
     implementation(fg.deobf("curse.maven:botania-225643:${project.botania_version}"))
     implementation(fg.deobf("curse.maven:cavern-ii-285628:${project.cavern_version}"))
     implementation(fg.deobf("curse.maven:codechicken-lib-242818:${project.ccl_version}"))
@@ -122,6 +123,7 @@ dependencies {
     implementation(fg.deobf("curse.maven:quality-tools-264756:${project.qt_version}"))
     implementation(fg.deobf("curse.maven:random-things-59816:${project.randomthings_version}"))
     implementation(fg.deobf("curse.maven:recipe-stages-280554:${project.recipestages_version}"))
+    implementation(fg.deobf("curse.maven:redstone-flux-270789:${project.rf_version}"))
     implementation(fg.deobf("curse.maven:reskillable-286382:${project.reskillable_version}"))
     implementation(fg.deobf("curse.maven:scaling-health-248027:${project.scalinghealth_version}"))
     implementation(fg.deobf("curse.maven:sgcraft-289115:${project.sgcraft_version}"))
@@ -129,7 +131,6 @@ dependencies {
     implementation(fg.deobf("curse.maven:silent-lib-242998:${project.slib_version}"))
     implementation(fg.deobf("curse.maven:tesla-244651:${project.tesla_version}"))
     implementation(fg.deobf("curse.maven:the-impossible-library-661115:${project.til_version}"))
-    implementation(fg.deobf("curse.maven:the-one-probe-245211:${project.top_version}"))
     implementation(fg.deobf("curse.maven:the-twilight-forest-227639:${project.tf_version}"))
     implementation(fg.deobf("curse.maven:thermal-cultivation-271835:${project.thermalcultivation_version}"))
     implementation(fg.deobf("curse.maven:thermal-expansion-69163:${project.thermalexpansion_version}"))
@@ -151,7 +152,6 @@ dependencies {
 
     //runtime stuff and libraries
     runtimeOnly(fg.deobf("curse.maven:autoreglib-250363:${project.autoreglib_version}"))
-    runtimeOnly(fg.deobf("curse.maven:bookshelf-228525:${project.bookshelf_version}"))
     runtimeOnly(fg.deobf("curse.maven:brandons-core-231382:${project.bc_version}"))
     runtimeOnly(fg.deobf("curse.maven:censoredasm-460609:${project.asm_version}"))
     runtimeOnly(fg.deobf("curse.maven:cofh-core-69162:${project.cofhcore_version}"))
@@ -162,9 +162,12 @@ dependencies {
     runtimeOnly(fg.deobf("curse.maven:mjrlegendslib-284331:${project.mjrlib_version}"))
     runtimeOnly(fg.deobf("curse.maven:neat-238372:${project.neat_version}"))
     runtimeOnly(fg.deobf("curse.maven:potioncore-242872:${project.pc_version}"))
-    runtimeOnly(fg.deobf("curse.maven:redstone-flux-270789:${project.rf_version}"))
     runtimeOnly(fg.deobf("curse.maven:reid-629017:${project.reid_version}"))
+    runtimeOnly(fg.deobf("curse.maven:the-one-probe-245211:${project.top_version}"))
     runtimeOnly(fg.deobf("curse.maven:thermal-foundation-222880:${project.thermalfoundation_version}"))
+
+    //stuff only needed to compile
+    compileOnly(fg.deobf("curse.maven:industrial-craft-242638:${project.ic2_version}"))
 }
 
 processResources {

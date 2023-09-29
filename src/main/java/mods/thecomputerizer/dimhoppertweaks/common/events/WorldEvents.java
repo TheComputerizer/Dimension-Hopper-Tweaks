@@ -1,10 +1,13 @@
 package mods.thecomputerizer.dimhoppertweaks.common.events;
 
 import lumien.randomthings.item.ModItems;
+import mekanism.common.security.ISecurityTile;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.mixin.access.DelayedModAccess;
 import mods.thecomputerizer.dimhoppertweaks.mixin.access.ItemTimeInABottleAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.access.TileEntityAccess;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -13,6 +16,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -52,8 +56,14 @@ public class WorldEvents {
     @SuppressWarnings("deprecation")
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void blockPlace(BlockEvent.PlaceEvent event) {
-        if(event.getPlayer() instanceof EntityPlayerMP && event.getState().getBlock()!=Blocks.FARMLAND)
+        EntityPlayer player = event.getPlayer();
+        if(player instanceof EntityPlayerMP && event.getState().getBlock()!=Blocks.FARMLAND)
             SkillWrapper.addSP((EntityPlayerMP)event.getPlayer(),"building",1f,false);
+        if(Objects.nonNull(player)) {
+            TileEntity tile = event.getWorld().getTileEntity(event.getPos());
+            if(Objects.nonNull(tile) && !(tile instanceof ISecurityTile))
+                ((TileEntityAccess)tile).dimhoppertweaks$setStages(DelayedModAccess.getGameStages(player));
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

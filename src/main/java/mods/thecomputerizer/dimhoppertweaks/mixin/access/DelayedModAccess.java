@@ -32,5 +32,4 @@ public class DelayedModAccess {
     public static ItemStack cheese() {
         return new ItemStack(ItemListxlfoodmod.cheese);
     }
-
 }

@@ -45,7 +45,7 @@
     "MixinRecipeHandler",
     "MixinRecipeStage",
     "MixinServerEventHandler",
-    "MixinTileEntityDigitalMiner",
+    "MixinTileComponentSecurity",
     "MixinTileEntityEnergyProvider",
     "MixinTileEntityEnergyReceiver",
     "MixinTileEntityLightningCell",

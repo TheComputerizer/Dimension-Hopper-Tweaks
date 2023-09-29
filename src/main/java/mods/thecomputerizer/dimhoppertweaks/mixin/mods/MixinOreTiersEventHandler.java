@@ -1,6 +1,8 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.mods;
 
+import mekanism.common.security.ISecurityTile;
 import mods.thecomputerizer.dimhoppertweaks.mixin.access.TileEntityAccess;
+import mods.thecomputerizer.dimhoppertweaks.util.WorldUtil;
 import net.darkhax.bookshelf.util.BlockUtils;
 import net.darkhax.gamestages.GameStageHelper;
 import net.darkhax.orestages.OreStages;
@@ -23,9 +25,11 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import openblocks.common.tileentity.TileEntityBlockBreaker;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Unique;
+import sblectric.lightningcraft.tiles.TileEntityLightningBreaker;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -35,11 +39,15 @@ import java.util.Objects;
 public class MixinOreTiersEventHandler {
 
     @Unique private boolean dimhoppertweaks$verifyHooks(World world, @Nullable EntityPlayer player, BlockPos pos, String stage) {
-        TileEntity tile = world.getTileEntity(pos);
-        if(tile instanceof TileEntityAccess) {
-            TileEntityAccess access = (TileEntityAccess)tile;
-            return !access.dimhoppertweaks$hasStage(stage);
+        TileEntity tile;
+        if(player instanceof FakePlayer) {
+            tile = world.getTileEntity(player.getPosition());
+            if(tile instanceof ISecurityTile) return !((TileEntityAccess)tile).dimhoppertweaks$hasStage(stage);
         }
+        tile = WorldUtil.getTileOrAdjacent(world,pos,TileEntityBlockBreaker.class,
+                lumien.randomthings.tileentity.TileEntityBlockBreaker.class,TileEntityLightningBreaker.class,
+                TileEntityLightningBreaker.class);
+        if(Objects.nonNull(tile)) return !((TileEntityAccess)tile).dimhoppertweaks$hasStage(stage);
         return Objects.nonNull(player) && !GameStageHelper.hasStage(player,stage);
     }
 
