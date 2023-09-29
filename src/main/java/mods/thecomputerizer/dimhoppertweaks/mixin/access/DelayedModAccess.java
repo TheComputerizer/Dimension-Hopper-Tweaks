@@ -57,7 +57,7 @@ public class DelayedModAccess {
 
     public static Set<Class<?>> getBreakerTileClasses() {
         if(!FOUND_BREAKER_CLASSES) {
-            findClassesFromNames(BLOCK_BREAKER_CLASS_NAMES,BLOCK_BREAKER_CLASSES);
+            findClassesFromNames(BLOCK_BREAKER_CLASS_NAMES,BLOCK_BREAKER_CLASSES,"block breaker");
             FOUND_BREAKER_CLASSES = true;
         }
         return Collections.unmodifiableSet(BLOCK_BREAKER_CLASSES);
@@ -65,22 +65,22 @@ public class DelayedModAccess {
 
     public static Set<Class<?>> getPlacerTileClasses() {
         if(!FOUND_PLACER_CLASSES) {
-            findClassesFromNames(BLOCK_PLACER_CLASS_NAMES,BLOCK_PLACER_CLASSES);
+            findClassesFromNames(BLOCK_PLACER_CLASS_NAMES,BLOCK_PLACER_CLASSES,"block placer");
             FOUND_PLACER_CLASSES = true;
         }
         return Collections.unmodifiableSet(BLOCK_PLACER_CLASSES);
     }
 
-    private static void findClassesFromNames(Collection<String> classNames, Set<Class<?>> classSet) {
+    private static void findClassesFromNames(Collection<String> classNames, Set<Class<?>> classSet, String type) {
         for(String className : classNames) {
             try {
                 Class<?> foundClass = Class.forName(className);
                 if(TileEntity.class.isAssignableFrom(foundClass)) {
                     classSet.add(foundClass);
-                    Constants.LOGGER.info("Registered tile entity class with name `{}` as an automatic block "+
-                            "breaker",className);
+                    Constants.LOGGER.info("Registered tile entity class with name `{}` as an automatic {}",
+                            className,type);
                 } else Constants.LOGGER.error("Tried to register non tile entity class with name {} as an " +
-                        "automatic block breaker!",className);
+                        "automatic {}!",className,type);
             } catch (ClassNotFoundException ex) {
                 Constants.LOGGER.error("Could not locate class with name `{}`",className);
             }
