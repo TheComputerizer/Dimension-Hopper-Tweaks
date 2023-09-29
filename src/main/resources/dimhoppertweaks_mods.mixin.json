@@ -14,6 +14,7 @@
     "MixinBlockEnergyProvider",
     "MixinBlockEnergyReceiver",
     "MixinBlockFlintOre",
+    "MixinDamageSourceInfinitySword",
     "MixinDynamicBakedModelProvider",
     "MixinDynamicModelProvider",
     "MixinEnergyStorage",
