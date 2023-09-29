@@ -2,6 +2,7 @@ package mods.thecomputerizer.dimhoppertweaks.common.events;
 
 import lumien.randomthings.item.ModItems;
 import mekanism.common.security.ISecurityTile;
+import mods.thecomputerizer.dimhoppertweaks.common.commands.DHDebugCommands;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
@@ -101,7 +102,7 @@ public class WorldEvents {
         BlockPos respawnPos = player.getBedLocation(respawnDim);
         if(Objects.isNull(respawnPos)) respawnPos = player.getPosition();
         MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-        server.getCommandManager().executeCommand(server,"/tpx "+player.getName()+" "+ respawnPos.getX()+" "+
-                respawnPos.getY()+" "+respawnPos.getZ()+" "+respawnDim);
+        server.getCommandManager().executeCommand(server,DHDebugCommands.buildRawCommand("tpx",player.getName(),
+                respawnPos.getX(),respawnPos.getY(),respawnPos.getZ(),respawnDim));
     }
 }

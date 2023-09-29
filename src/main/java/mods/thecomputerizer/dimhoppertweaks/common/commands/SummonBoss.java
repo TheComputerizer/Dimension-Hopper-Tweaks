@@ -1,40 +1,35 @@
 package mods.thecomputerizer.dimhoppertweaks.common.commands;
 
+import mcp.MethodsReturnNonnullByDefault;
 import mods.thecomputerizer.dimhoppertweaks.common.events.ServerEvents;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketRenderBossAttack;
-import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.WorldServer;
 
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 
-public class SummonBoss extends CommandBase {
-    @Override
-    @Nonnull
-    public String getName() {
-        return "summoncommandtest";
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+public class SummonBoss extends DHTCommand {
+
+    public SummonBoss() {
+        super("summoncommandtest","Summon Test");
     }
 
     @Override
-    @Nonnull
-    public String getUsage(@Nonnull ICommandSender sender) {
-        return "Summon Test Command initiated";
-    }
-
-    @Override
-    public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args) {
-        if(sender instanceof EntityPlayer) {
-            WorldServer world = server.getWorld(((EntityPlayer)sender).dimension);
-            if (!world.isRemote && sender instanceof EntityPlayerMP) {
-                BlockPos pos = new BlockPos(sender.getPosition().getX()+2, sender.getPosition().getY(), sender.getPosition().getZ());
-                new PacketRenderBossAttack(new ArrayList<>(),-1,4,0,0).addPlayers((EntityPlayerMP)sender).send();
-                ServerEvents.startSummonBoss(world, pos);
-            } else notifyCommandListener(sender, this, "It did not work");
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+        if(sender instanceof EntityPlayerMP) {
+            try {
+                EntityPlayerMP player = (EntityPlayerMP)sender;
+                new PacketRenderBossAttack(new ArrayList<>(),-1,4,0,0).addPlayers(player).send();
+                ServerEvents.startSummonBoss(server.getWorld((player.dimension)),player.getPosition().add(2,0,0));
+                sendMessage(sender,false,null);
+            } catch (Exception ex) {
+                sendMessage(sender,true,null);
+            }
         }
     }
 }

@@ -1,3 +1,37 @@
+commands.dimhoppertweaks.dhd.error.blockdata=Usages: `/dhd 1` | `/dhd 1 ?` | `/dhd 1 ? entity`
+commands.dimhoppertweaks.dhd.error.entity=Failed to get entity for dhd command!
+commands.dimhoppertweaks.dhd.error.number=Error parsing number from argument `%1$s` for dhd command
+commands.dimhoppertweaks.dhd.error.options.entity=Options for /dhd command: `/dhd 1 ?` = `/blockdata ~ ~? ~ {}`
+commands.dimhoppertweaks.dhd.error.options.server=Options for /dhd command: `/dhd 1 ? entity` = `/blockdata ~ ~? ~ {}`
+commands.dimhoppertweaks.dhd.success.blockdata=Successfully excuted `/blockdata %1$s, %2$s, %3$s {}`
+commands.dimhoppertweaks.dimrandomtp.error=Usage: /dimrandomtp player dimension radius biomes
+commands.dimhoppertweaks.dimrandomtp.error.biome=Failed to get biome name at coords (%1$s, %2$s, %3$s) for dimrandomtp command!
+commands.dimhoppertweaks.dimrandomtp.error.player=Failed to get player for dimrandomtp command!
+commands.dimhoppertweaks.dimrandomtp.success=\u00A74\u00A7oYour consciousness fades for a second as you hear a nearly indistinguishable voice in your mind\n\uu00A7l\u00A74D\u00A7ko\u00A7r \u00A74\u00A7ln\u00A7ko\u00A7r\u00A74\u00A7lt tr\u00A7kus\u00A7r\u00A74\u00A7lt \u00A7ktha\u00A7r\u00A74\u00A7lt b\u00A7kook
+commands.dimhoppertweaks.summoncommandtest.error=Error exectuing summoncommandtest command
+commands.dimhoppertweaks.summoncommandtest.success=Summoning §5§l§kThe OverSeer
+
+entity.dimension_hopper_final_boss.name=§5§l§kThe OverSeer
+entity.boss_name_1.name=§5§l§kThe OverSeer
+entity.boss_name_2.name=§5§lT§khe OverSeer
+entity.boss_name_3.name=§5§lTh§ke OverSeer
+entity.boss_name_4.name=§5§lThe§k OverSeer
+entity.boss_name_5.name=§5§lThe §kOverSeer
+entity.boss_name_6.name=§5§lThe O§kverSeer
+entity.boss_name_7.name=§5§lThe Ov§kerSeer
+entity.boss_name_8.name=§5§lThe Ove§krSeer
+entity.boss_name_9.name=§5§lThe Over§kSeer
+entity.boss_name_10.name=§5§lThe OverS§keer
+entity.boss_name_11.name=§5§lThe OverSe§ker
+entity.boss_name_12.name=§5§lThe OverSee§kr
+entity.boss_name_13.name=§5§lThe OverSeer
+entity.boss.dialogue_1=I told you not to trust that book.
+entity.boss.dialogue_2=Now you must die.
+
+gui.dimhoppertweaks.skill_drain.name=Xp Drain Selection - Scroll on the circles to change them!
+gui.dimhoppertweaks.level.name=The number of levels XP conversion will drain
+gui.dimhoppertweaks.current_skill.name=The skill that XP will drain into
+
 item.dimhoppertweaks.stargate_addresser.name=Stargate Addresser
 item.dimhoppertweaks.reality_slasher.name=Reality Slasher
 item.dimhoppertweaks.skill_token.name=Skill Token
@@ -32,6 +66,7 @@ item.dimhoppertweaks.prestige_token_28.name=Prestige Token Level 28 [897]
 item.dimhoppertweaks.prestige_token_29.name=Prestige Token Level 29 [929]
 item.dimhoppertweaks.prestige_token_30.name=Prestige Token Level 30 [961]
 item.dimhoppertweaks.prestige_token_31.name=Prestige Token Level 31 [993]
+
 skill.dimhoppertweaks.mining.name=Mining
 skill.dimhoppertweaks.gathering.name=Gathering
 skill.dimhoppertweaks.attack.name=Attack
@@ -46,22 +81,3 @@ skill.dimhoppertweaks.draining=Draining
 skill.dimhoppertweaks.levels=level(s) into
 skill.dimhoppertweaks.info=Skill info for the
 skill.dimhoppertweaks.synced=skill has not yet been synced to this token
-gui.dimhoppertweaks.skill_drain.name=Xp Drain Selection - Scroll on the circles to change them!
-gui.dimhoppertweaks.level.name=The number of levels XP conversion will drain
-gui.dimhoppertweaks.current_skill.name=The skill that XP will drain into
-entity.dimension_hopper_final_boss.name=§5§l§kThe OverSeer
-entity.boss_name_1.name=§5§l§kThe OverSeer
-entity.boss_name_2.name=§5§lT§khe OverSeer
-entity.boss_name_3.name=§5§lTh§ke OverSeer
-entity.boss_name_4.name=§5§lThe§k OverSeer
-entity.boss_name_5.name=§5§lThe §kOverSeer
-entity.boss_name_6.name=§5§lThe O§kverSeer
-entity.boss_name_7.name=§5§lThe Ov§kerSeer
-entity.boss_name_8.name=§5§lThe Ove§krSeer
-entity.boss_name_9.name=§5§lThe Over§kSeer
-entity.boss_name_10.name=§5§lThe OverS§keer
-entity.boss_name_11.name=§5§lThe OverSe§ker
-entity.boss_name_12.name=§5§lThe OverSee§kr
-entity.boss_name_13.name=§5§lThe OverSeer
-entity.boss.dialogue_1=I told you not to trust that book.
-entity.boss.dialogue_2=Now you must die.

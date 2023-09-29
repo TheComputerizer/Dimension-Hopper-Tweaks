@@ -1,96 +1,86 @@
 package mods.thecomputerizer.dimhoppertweaks.common.commands;
 
+import mcp.MethodsReturnNonnullByDefault;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
-import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
-import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.DimensionManager;
 import org.dimdev.ddutils.TeleportUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Random;
 
-@SuppressWarnings("UnnecessaryUnicodeEscape")
-public class RandomTP extends CommandBase {
-    Random rand = new Random();
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+public class RandomTP extends DHTCommand {
 
-    @Nonnull
-    public String getName() {
-        return "dimrandomtp";
+    public RandomTP() {
+        super("dimrandomtp","Random TP");
     }
 
-    public int getRequiredPermissionLevel() {
-        return 2;
-    }
-
-    @Nonnull
-    public String getUsage(@Nonnull ICommandSender sender) {
-        return "Random TP initiated";
-    }
-
-    public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, String[] args) {
-        if (args.length > 3) {
-            long arg1=0;
-            long arg2=0;
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+        if(args.length>3) {
+            long dim=0;
+            long radius=0;
             EntityPlayerMP player=null;
             try {
-                arg1 = parseLong(args[1]);
-                arg2 = parseLong(args[2]);
+                dim = parseLong(args[1]);
+                radius = parseLong(args[2]);
                 player = getPlayer(server, sender, args[0]);
             }
             catch(Exception e) {
-                Constants.LOGGER.error("Failed to get player",e);
+                sendMessage(sender,true,"player");
             }
             if(Objects.nonNull(player)) {
-                DimensionManager.initDimension((int) arg1);
-                WorldServer world = DimensionManager.getWorld((int) arg1);
-                if (!world.isRemote) {
+                DimensionManager.initDimension((int) dim);
+                WorldServer world = DimensionManager.getWorld((int) dim);
+                if(!world.isRemote) {
                     boolean success = true;
                     while (success) {
-                        float x = rand.nextFloat() * arg2;
+                        float x = rand.nextFloat()*radius;
                         float y = 1000;
-                        float z = rand.nextFloat() * arg2;
-                        BlockPos pos = new BlockPos(x, y, z);
-                        Biome biome = world.getBiome(pos);
-                        for (int i=0; i<args.length-3; i++) {
-                            if (Objects.requireNonNull(biome.getRegistryName()).toString().toLowerCase().contains(args[3 + i])) {
-                                TeleportUtils.teleport(player, (int)arg1,x,y,z,player.rotationYaw,player.rotationPitch);
-                                ISkillCapability cap = SkillWrapper.getSkillCapability(player);
-                                if((int) arg1==7 && Objects.nonNull(cap)) {
-                                    cap.setTwilightRespawn(new BlockPos(x,100,z));
-                                    SkillWrapper.forceTwilightRespawn(player);
+                        float z = rand.nextFloat()*radius;
+                        ResourceLocation biomeName = world.getBiome(new BlockPos(x, y, z)).getRegistryName();
+                        if(Objects.nonNull(biomeName)) {
+                            for(int i=0; i<args.length-3; i++) {
+                                if(biomeName.toString().toLowerCase().contains(args[3+i])) {
+                                    TeleportUtils.teleport(player,(int)dim,x,y,z,player.rotationYaw,player.rotationPitch);
+                                    ISkillCapability cap = SkillWrapper.getSkillCapability(player);
+                                    if ((int)dim==7 && Objects.nonNull(cap)) {
+                                        cap.setTwilightRespawn(new BlockPos(x,100,z));
+                                        SkillWrapper.forceTwilightRespawn(player);
+                                    }
+                                    sendMessage(sender, false, null);
+                                    success = false;
+                                    break;
                                 }
-                                notifyCommandListener(sender, this, "\u00A74\u00A7oYour consciousness " +
-                                        "fades for a second as you hear a nearly indistinguishable voice in your mind\n" +
-                                        "\uu00A7l\u00A74D\u00A7ko\u00A7r \u00A74\u00A7ln\u00A7ko\u00A7r\u00A74\u00A7lt " +
-                                        "tr\u00A7kus\u00A7r\u00A74\u00A7lt \u00A7ktha\u00A7r\u00A74\u00A7lt b\u00A7kook");
-                                success = false;
-                                break;
                             }
-                        }
+                        } else sendMessage(sender, true, "biome",x,y,z);
                     }
                 }
-            } else notifyCommandListener(sender, this, "The player was null and cannot be teleported!");
-        }
-        else notifyCommandListener(sender, this, "Please whitelist some biomes");
+            }
+        } else sendMessage(sender, true, null);
     }
 
+    @Override
     public boolean isUsernameIndex(@Nonnull String[] args, int index) {
         return index == 0;
     }
 
-    @Nonnull
-    public List<String> getTabCompletions(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-        return args.length == 1 ? getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames()) : Collections.emptyList();
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args,
+                                          @Nullable BlockPos targetPos) {
+        if(args.length==1) return getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames());
+        if(args.length==2) return getDimensionsTabCompletion();
+        return args.length==3 ? Collections.emptyList() : getBiomesTabCompletion();
     }
 }
