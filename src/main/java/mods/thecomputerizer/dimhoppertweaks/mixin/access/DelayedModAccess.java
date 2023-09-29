@@ -1,19 +1,27 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.access;
 
-import de.ellpeck.actuallyadditions.mod.tile.TileEntityBreaker;
 import mariot7.xlfoodmod.init.ItemListxlfoodmod;
+import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import net.darkhax.gamestages.GameStageHelper;
 import net.darkhax.gamestages.data.IStageData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import openblocks.common.tileentity.TileEntityBlockBreaker;
-import sblectric.lightningcraft.tiles.TileEntityLightningBreaker;
+import net.minecraft.tileentity.TileEntity;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Objects;
+import java.util.*;
 
 public class DelayedModAccess {
+
+    private static final Collection<String> BLOCK_BREAKER_CLASS_NAME = Arrays.asList(
+            "openblocks.common.tileentity.TileEntityBlockBreaker",
+            "lumien.randomthings.tileentity.TileEntityBlockBreaker",
+            "sblectric.lightningcraft.tiles.TileEntityLightningBreaker",
+            "de.ellpeck.actuallyadditions.mod.tile.TileEntityBreaker",
+            "com.rwtema.extrautils2.tile.TileMine",
+            "li.cil.oc.common.tileentity.RobotProxy",
+            "appeng.tile.networking.TileCableBus");
+    private static final Set<Class<?>> BLOCK_BREAKER_CLASSES = new HashSet<>();
+    private static boolean FOUND_BREAKER_CLASSES = false;
 
     public static Collection<String> getGameStages(EntityPlayer player) {
         if(Objects.isNull(player)) return new ArrayList<>();
@@ -36,8 +44,25 @@ public class DelayedModAccess {
         return new ItemStack(ItemListxlfoodmod.cheese);
     }
 
-    public static Class<?>[] getBreakerTileClasses() {
-        return new Class<?>[]{TileEntityBlockBreaker.class,lumien.randomthings.tileentity.TileEntityBlockBreaker.class,
-                TileEntityLightningBreaker.class,TileEntityBreaker.class};
+    public static Set<Class<?>> getBreakerTileClasses() {
+        if(!FOUND_BREAKER_CLASSES) findBreakerClasses();
+        return Collections.unmodifiableSet(BLOCK_BREAKER_CLASSES);
+    }
+
+    private static void findBreakerClasses() {
+        for(String className : BLOCK_BREAKER_CLASS_NAME) {
+            try {
+                Class<?> foundClass = Class.forName(className);
+                if(TileEntity.class.isAssignableFrom(foundClass)) {
+                    BLOCK_BREAKER_CLASSES.add(foundClass);
+                    Constants.LOGGER.info("Registered tile entity class with name `{}` as an automatic block "+
+                            "breaker",className);
+                } else Constants.LOGGER.error("Tried to register non tile entity class with name {} as an " +
+                        "automatic block breaker!",className);
+            } catch (ClassNotFoundException ex) {
+                Constants.LOGGER.error("Could not locate class with name `{}`",className);
+            }
+        }
+        FOUND_BREAKER_CLASSES = true;
     }
 }

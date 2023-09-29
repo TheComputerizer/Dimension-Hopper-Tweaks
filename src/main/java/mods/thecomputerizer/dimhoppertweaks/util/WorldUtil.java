@@ -6,11 +6,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.Objects;
 
 public class WorldUtil {
 
-    public static @Nullable TileEntity getTileOrAdjacent(World world, BlockPos centerPos, Class<?> ... types) {
+    public static @Nullable TileEntity getTileOrAdjacent(World world, BlockPos centerPos,Collection<Class<?>> types) {
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(centerPos);
         TileEntity tile = checkValidTile(world,pos,types);
         if(Objects.nonNull(tile)) return tile;
@@ -22,7 +23,7 @@ public class WorldUtil {
     }
 
     private static @Nullable TileEntity addCoordsAndCheck(World world, BlockPos.MutableBlockPos pos, EnumFacing side,
-                                                          Class<?> ... types) {
+                                                          Collection<Class<?>> types) {
         pos.move(side);
         TileEntity tile = checkValidTile(world,pos,types);
         if(Objects.nonNull(tile)) return tile;
@@ -33,9 +34,9 @@ public class WorldUtil {
         return null;
     }
 
-    private static @Nullable TileEntity checkValidTile(World world, BlockPos pos, Class<?> ... types) {
+    private static @Nullable TileEntity checkValidTile(World world, BlockPos pos, Collection<Class<?>> types) {
         TileEntity tile = world.getTileEntity(pos);
-        if(Objects.isNull(tile) || types.length==0) return tile;
+        if(Objects.isNull(tile) || types.isEmpty()) return tile;
         for(Class<?> type : types)
             if(Objects.nonNull(type) && type.isAssignableFrom(tile.getClass()))
                 return tile;
