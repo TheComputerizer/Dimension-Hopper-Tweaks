@@ -1,10 +1,13 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.access;
 
+import de.ellpeck.actuallyadditions.mod.tile.TileEntityBreaker;
 import mariot7.xlfoodmod.init.ItemListxlfoodmod;
 import net.darkhax.gamestages.GameStageHelper;
 import net.darkhax.gamestages.data.IStageData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import openblocks.common.tileentity.TileEntityBlockBreaker;
+import sblectric.lightningcraft.tiles.TileEntityLightningBreaker;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,5 +34,10 @@ public class DelayedModAccess {
     }
     public static ItemStack cheese() {
         return new ItemStack(ItemListxlfoodmod.cheese);
+    }
+
+    public static Class<?>[] getBreakerTileClasses() {
+        return new Class<?>[]{TileEntityBlockBreaker.class,lumien.randomthings.tileentity.TileEntityBlockBreaker.class,
+                TileEntityLightningBreaker.class,TileEntityBreaker.class};
     }
 }

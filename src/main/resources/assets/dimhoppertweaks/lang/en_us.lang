@@ -3,7 +3,9 @@ commands.dimhoppertweaks.dhd.error.entity=Failed to get entity for dhd command!
 commands.dimhoppertweaks.dhd.error.number=Error parsing number from argument `%1$s` for dhd command
 commands.dimhoppertweaks.dhd.error.options.entity=Options for /dhd command: `/dhd 1 ?` = `/blockdata ~ ~? ~ {}`
 commands.dimhoppertweaks.dhd.error.options.server=Options for /dhd command: `/dhd 1 ? entity` = `/blockdata ~ ~? ~ {}`
+commands.dimhoppertweaks.dhd.error.tileclass.player=Failed to get player for dhd command!
 commands.dimhoppertweaks.dhd.success.blockdata=Successfully excuted `/blockdata %1$s, %2$s, %3$s {}`
+commands.dimhoppertweaks.dhd.success.tileclass=Successfully sent tile entity query to the client
 commands.dimhoppertweaks.dimrandomtp.error=Usage: /dimrandomtp player dimension radius biomes
 commands.dimhoppertweaks.dimrandomtp.error.biome=Failed to get biome name at coords (%1$s, %2$s, %3$s) for dimrandomtp command!
 commands.dimhoppertweaks.dimrandomtp.error.player=Failed to get player for dimrandomtp command!

@@ -1,5 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.registry;
 
+import mods.thecomputerizer.dimhoppertweaks.common.commands.DHDebugCommands;
 import mods.thecomputerizer.dimhoppertweaks.common.commands.RandomTP;
 import mods.thecomputerizer.dimhoppertweaks.common.commands.SummonBoss;
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
@@ -40,6 +41,7 @@ public final class RegistryHandler {
 
     public static void onServerStarting(FMLServerStartingEvent event) {
         Constants.LOGGER.info("Registering commands");
+        event.registerServerCommand(new DHDebugCommands());
         event.registerServerCommand(new RandomTP());
         event.registerServerCommand(new SummonBoss());
     }

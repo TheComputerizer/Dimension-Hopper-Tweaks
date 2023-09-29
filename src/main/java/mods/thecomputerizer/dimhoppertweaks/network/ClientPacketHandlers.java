@@ -10,6 +10,8 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -67,5 +69,18 @@ public class ClientPacketHandlers {
     @SideOnly(Side.CLIENT)
     public static void handleMiningSpeed(float miningSpeed) {
         ClientEffects.MINING_SPEED = miningSpeed;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static void handleTileEntityClassQuery() {
+        Minecraft mc = Minecraft.getMinecraft();
+        if(Objects.nonNull(mc.world)) {
+            RayTraceResult res = mc.objectMouseOver;
+            if(Objects.nonNull(res) && res.typeOfHit == RayTraceResult.Type.BLOCK) {
+                TileEntity tile = mc.world.getTileEntity(res.getBlockPos());
+                mc.player.sendChatMessage("You are looking at a tile of class "+(Objects.nonNull(tile) ?
+                        tile.getClass().getName() : "NULL"));
+            }
+        }
     }
 }

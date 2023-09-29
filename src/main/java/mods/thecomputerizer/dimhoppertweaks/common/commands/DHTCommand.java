@@ -42,7 +42,7 @@ public abstract class DHTCommand extends CommandBase {
 
     @Override
     public String getName() {
-        return "dimrandomtp";
+        return this.commandName;
     }
 
     @Override

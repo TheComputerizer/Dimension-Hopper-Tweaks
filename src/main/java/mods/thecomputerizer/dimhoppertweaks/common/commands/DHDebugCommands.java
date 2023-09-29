@@ -1,10 +1,13 @@
 package mods.thecomputerizer.dimhoppertweaks.common.commands;
 
 import mcp.MethodsReturnNonnullByDefault;
+import mods.thecomputerizer.dimhoppertweaks.network.PacketTileEntityClassQuery;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.EntityNotFoundException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 
 import javax.annotation.Nullable;
@@ -15,7 +18,7 @@ import java.util.Objects;
 @MethodsReturnNonnullByDefault
 public class DHDebugCommands extends DHTCommand {
 
-    protected DHDebugCommands() {
+    public DHDebugCommands() {
         super("dhd","Dimension Hopper Debug");
     }
 
@@ -29,6 +32,10 @@ public class DHDebugCommands extends DHTCommand {
         }
         if(option==1) {
             executeBlockData(server,sender,getOrNull(1,args),getOrNull(2,args));
+            return;
+        }
+        if(option==2) {
+            executeTileClass(server,sender,getOrNull(1,args));
             return;
         }
         sendMessage(sender,true,"options."+(sender instanceof Entity ? "entity" : "server"));
@@ -61,5 +68,21 @@ public class DHDebugCommands extends DHTCommand {
         int z = entity.getPosition().getZ();
         buildAndExecuteCommand(server,sender,"blockdata",x,y,z,"{}");
         sendMessage(sender,false,"blockdata",x,y,z);
+    }
+
+    private void executeTileClass(MinecraftServer server, ICommandSender sender, @Nullable String arg1)
+            throws CommandException {
+        EntityPlayerMP player = sender instanceof EntityPlayerMP ? (EntityPlayerMP)sender : null;
+        if(Objects.nonNull(arg1)) {
+            try {
+                player = getPlayer(server,sender,arg1);
+            } catch (PlayerNotFoundException ex) {
+                sendMessage(sender,true,"tileclass.player");
+            }
+        }
+        if(Objects.nonNull(player)) {
+            new PacketTileEntityClassQuery().addPlayers(player).send();
+            sendMessage(sender,false,"tileclass");
+        }
     }
 }

@@ -1,6 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.mods;
 
 import mekanism.common.security.ISecurityTile;
+import mods.thecomputerizer.dimhoppertweaks.mixin.access.DelayedModAccess;
 import mods.thecomputerizer.dimhoppertweaks.mixin.access.TileEntityAccess;
 import mods.thecomputerizer.dimhoppertweaks.util.WorldUtil;
 import net.darkhax.bookshelf.util.BlockUtils;
@@ -25,11 +26,9 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import openblocks.common.tileentity.TileEntityBlockBreaker;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Unique;
-import sblectric.lightningcraft.tiles.TileEntityLightningBreaker;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -44,9 +43,7 @@ public class MixinOreTiersEventHandler {
             tile = world.getTileEntity(player.getPosition());
             if(tile instanceof ISecurityTile) return !((TileEntityAccess)tile).dimhoppertweaks$hasStage(stage);
         }
-        tile = WorldUtil.getTileOrAdjacent(world,pos,TileEntityBlockBreaker.class,
-                lumien.randomthings.tileentity.TileEntityBlockBreaker.class,TileEntityLightningBreaker.class,
-                TileEntityLightningBreaker.class);
+        tile = WorldUtil.getTileOrAdjacent(world,pos,DelayedModAccess.getBreakerTileClasses());
         if(Objects.nonNull(tile)) return !((TileEntityAccess)tile).dimhoppertweaks$hasStage(stage);
         return Objects.nonNull(player) && !GameStageHelper.hasStage(player,stage);
     }
