@@ -34,6 +34,11 @@ public class MixinTileEntity implements TileEntityAccess {
     }
 
     @Override
+    public Collection<String> dimhoppertweaks$getStages() {
+        return this.dimhoppertweaks$stages;
+    }
+
+    @Override
     public void dimhoppertweaks$addStage(String stage) {
         if(Objects.nonNull(stage) && !stage.isEmpty()) this.dimhoppertweaks$stages.add(stage);
     }

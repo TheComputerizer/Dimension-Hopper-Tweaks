@@ -9,6 +9,7 @@ import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import mods.thecomputerizer.dimhoppertweaks.mixin.access.DelayedModAccess;
 import mods.thecomputerizer.dimhoppertweaks.mixin.access.ItemTimeInABottleAccess;
 import mods.thecomputerizer.dimhoppertweaks.mixin.access.TileEntityAccess;
+import mods.thecomputerizer.dimhoppertweaks.util.WorldUtil;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -19,6 +20,8 @@ import net.minecraft.item.ItemTool;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -27,7 +30,9 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import slimeknights.tconstruct.library.tools.TinkerToolCore;
 
+import java.util.Collection;
 import java.util.Objects;
+import java.util.Set;
 
 @Mod.EventBusSubscriber(modid = Constants.MODID)
 public class WorldEvents {
@@ -63,8 +68,20 @@ public class WorldEvents {
         if(Objects.nonNull(player)) {
             TileEntity tile = event.getWorld().getTileEntity(event.getPos());
             if(Objects.nonNull(tile) && !(tile instanceof ISecurityTile))
-                ((TileEntityAccess)tile).dimhoppertweaks$setStages(DelayedModAccess.getGameStages(player));
+                ((TileEntityAccess)tile).dimhoppertweaks$setStages(getPotentialFakePlayerStages(player,event.getPos()));
         }
+    }
+
+    private static Collection<String> getPotentialFakePlayerStages(EntityPlayer player, BlockPos pos) {
+        if(player instanceof FakePlayer) {
+            Set<Class<?>> placerClasses = DelayedModAccess.getPlacerTileClasses();
+            World world = player.getEntityWorld();
+            TileEntity tile = WorldUtil.checkValidTile(world,player.getPosition(),placerClasses);
+            if(Objects.nonNull(tile)) return ((TileEntityAccess)tile).dimhoppertweaks$getStages();
+            tile = WorldUtil.getTileOrAdjacent(world,pos,false,placerClasses);
+            if(Objects.nonNull(tile)) return ((TileEntityAccess)tile).dimhoppertweaks$getStages();
+        }
+        return DelayedModAccess.getGameStages(player);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

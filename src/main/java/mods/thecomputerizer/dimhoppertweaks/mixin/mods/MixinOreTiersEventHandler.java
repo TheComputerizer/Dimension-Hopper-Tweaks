@@ -43,7 +43,7 @@ public class MixinOreTiersEventHandler {
             tile = world.getTileEntity(player.getPosition());
             if(tile instanceof ISecurityTile) return !((TileEntityAccess)tile).dimhoppertweaks$hasStage(stage);
         }
-        tile = WorldUtil.getTileOrAdjacent(world,pos,DelayedModAccess.getBreakerTileClasses());
+        tile = WorldUtil.getTileOrAdjacent(world,pos,true,DelayedModAccess.getBreakerTileClasses());
         if(Objects.nonNull(tile)) return !((TileEntityAccess)tile).dimhoppertweaks$hasStage(stage);
         return Objects.nonNull(player) && !GameStageHelper.hasStage(player,stage);
     }

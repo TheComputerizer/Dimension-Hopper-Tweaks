@@ -11,10 +11,11 @@ import java.util.Objects;
 
 public class WorldUtil {
 
-    public static @Nullable TileEntity getTileOrAdjacent(World world, BlockPos centerPos,Collection<Class<?>> types) {
+    public static @Nullable TileEntity getTileOrAdjacent(World world, BlockPos centerPos, boolean checkCenter,
+                                                         Collection<Class<?>> types) {
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(centerPos);
         TileEntity tile = checkValidTile(world,pos,types);
-        if(Objects.nonNull(tile)) return tile;
+        if(Objects.nonNull(tile) && checkCenter) return tile;
         tile = addCoordsAndCheck(world,pos,EnumFacing.EAST,types);
         if(Objects.nonNull(tile)) return tile;
         tile = addCoordsAndCheck(world,pos,EnumFacing.NORTH,types);
@@ -34,7 +35,7 @@ public class WorldUtil {
         return null;
     }
 
-    private static @Nullable TileEntity checkValidTile(World world, BlockPos pos, Collection<Class<?>> types) {
+    public static @Nullable TileEntity checkValidTile(World world, BlockPos pos, Collection<Class<?>> types) {
         TileEntity tile = world.getTileEntity(pos);
         if(Objects.isNull(tile) || types.isEmpty()) return tile;
         for(Class<?> type : types)
