@@ -1,5 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.access;
 
+import de.ellpeck.naturesaura.blocks.tiles.TileEntityAutoCrafter;
 import mariot7.xlfoodmod.init.ItemListxlfoodmod;
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import net.darkhax.gamestages.GameStageHelper;
@@ -53,6 +54,11 @@ public class DelayedModAccess {
     }
     public static ItemStack cheese() {
         return new ItemStack(ItemListxlfoodmod.cheese);
+    }
+
+    public static void checkForAutoCrafter(TileEntity tile, Collection<String> stages) {
+        if(tile instanceof TileEntityAutoCrafter)
+            ((InventoryCraftingAccess)((TileEntityAutoCrafter)tile).crafting).dimhoppertweaks$setStages(stages);
     }
 
     public static Set<Class<?>> getBreakerTileClasses() {

@@ -1,5 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.vanilla;
 
+import mods.thecomputerizer.dimhoppertweaks.mixin.access.DelayedModAccess;
 import mods.thecomputerizer.dimhoppertweaks.mixin.access.TileEntityAccess;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -23,6 +24,10 @@ public class MixinTileEntity implements TileEntityAccess {
 
     @Unique private final Set<String> dimhoppertweaks$stages = new HashSet<>();
 
+    @Unique private TileEntity dimhoppertweaks$cast() {
+        return (TileEntity)(Object)this;
+    }
+
     @Override
     public void dimhoppertweaks$setStages(String ... stages) {
         for(String stage : stages) this.dimhoppertweaks$addStage(stage);
@@ -41,6 +46,7 @@ public class MixinTileEntity implements TileEntityAccess {
     @Override
     public void dimhoppertweaks$addStage(String stage) {
         if(Objects.nonNull(stage) && !stage.isEmpty()) this.dimhoppertweaks$stages.add(stage);
+        DelayedModAccess.checkForAutoCrafter(dimhoppertweaks$cast(),this.dimhoppertweaks$stages);
     }
 
     @Override
@@ -51,8 +57,8 @@ public class MixinTileEntity implements TileEntityAccess {
     @Inject(at = @At("TAIL"), method = "readFromNBT")
     private void dimhoppertweaks$readFromNBT(NBTTagCompound tag, CallbackInfo ci) {
         if(tag.hasKey("GameStageTileData"))
-            for(NBTBase stageTag : tag.getTagList("GameStageTileData",8))
-                this.dimhoppertweaks$addStage(((NBTTagString)stageTag).getString());
+            for(NBTBase stageTag : tag.getTagList("GameStageTileData", 8))
+                this.dimhoppertweaks$addStage(((NBTTagString) stageTag).getString());
     }
 
     @Inject(at = @At("TAIL"), method = "writeToNBT")
