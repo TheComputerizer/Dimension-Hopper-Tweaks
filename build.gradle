@@ -99,6 +99,7 @@ dependencies {
     implementation(fg.deobf("curse.maven:dimensionaldoors-284876:${project.dimdoors_version}"))
     implementation(fg.deobf("curse.maven:draconic-evolution-223565:${project.de_version}"))
     implementation(fg.deobf("curse.maven:extraplanets-241291:${project.extraplanets_version}"))
+    implementation(fg.deobf("curse.maven:extra-utilities-225561:${project.xu2_version}"))
     implementation(fg.deobf("curse.maven:game-stages-268655:${project.gamestages_version}"))
     implementation(fg.deobf("curse.maven:geckolib-388172:${project.gecko_version}"))
     implementation(fg.deobf("curse.maven:glacidus-286530:${project.glacidus_version}"))

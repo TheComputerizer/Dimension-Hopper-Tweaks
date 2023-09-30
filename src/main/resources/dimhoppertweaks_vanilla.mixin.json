@@ -7,7 +7,6 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinAdvancementList",
-    "MixinContainer",
     "MixinCraftingHelper",
     "MixinDimensionManager",
     "MixinEntityLivingBase",
@@ -17,7 +16,6 @@
     "MixinFMLModContainer",
     "MixinForgeHooks",
     "MixinForgeVersion",
-    "MixinInventoryCrafting",
     "MixinItemHoe",
     "MixinNetherPortal",
     "MixinOreDictionary",

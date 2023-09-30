@@ -51,6 +51,7 @@
     "MixinTileEntityEnergyReceiver",
     "MixinTileEntityLightningCell",
     "MixinTileEntityLightningUser",
+    "MixinTileMine",
     "MixinZGBlockBase",
     "staff.MixinBaronStaff",
     "staff.MixinCelestialStaff",
