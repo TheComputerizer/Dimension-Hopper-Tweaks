@@ -22,7 +22,8 @@ public class DelayedModAccess {
             "de.ellpeck.actuallyadditions.mod.tile.TileEntityDirectionalBreaker",
             "com.rwtema.extrautils2.tile.TileMine", "com.rwtema.extrautils2.tile.TileUse",
             "li.cil.oc.common.tileentity.RobotProxy",
-            "appeng.tile.networking.TileCableBus");
+            "appeng.tile.networking.TileCableBus",
+            "org.cyclops.integrateddynamics.core.tileentity.TileMultipartTicking");
     private static final Collection<String> BLOCK_PLACER_CLASS_NAMES = Arrays.asList(
             "openblocks.common.tileentity.TileEntityBlockPlacer",
             "com.rwtema.extrautils2.tile.TileUse",

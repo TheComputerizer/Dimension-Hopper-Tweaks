@@ -105,6 +105,7 @@ dependencies {
     implementation(fg.deobf("curse.maven:geckolib-388172:${project.gecko_version}"))
     implementation(fg.deobf("curse.maven:glacidus-286530:${project.glacidus_version}"))
     implementation(fg.deobf("curse.maven:good-nights-sleep-61461:${project.gn_version}"))
+    implementation(fg.deobf("curse.maven:item-stages-280316:${project.itemstages_version}"))
     implementation(fg.deobf("curse.maven:jaopca-266936:${project.jaopca_version}"))
     implementation(fg.deobf("curse.maven:just-enough-calculation-242223:${project.jec_version}"))
     implementation(fg.deobf("curse.maven:lightningcraft-237422:${project.lightningcraft_version}"))

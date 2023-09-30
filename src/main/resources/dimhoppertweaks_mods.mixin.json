@@ -36,6 +36,7 @@
     "MixinItemDice",
     "MixinItemFlightTiara",
     "MixinItemMonocle",
+    "MixinItemStages",
     "MixinItemTimeInABottle",
     "MixinItemTreasureChest",
     "MixinLastStandEnchantmentsHandler",
