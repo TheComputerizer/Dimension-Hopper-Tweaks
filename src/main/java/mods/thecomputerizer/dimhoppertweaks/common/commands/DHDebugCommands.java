@@ -2,6 +2,9 @@ package mods.thecomputerizer.dimhoppertweaks.common.commands;
 
 import mcp.MethodsReturnNonnullByDefault;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketTileEntityClassQuery;
+import net.darkhax.gamestages.GameStageHelper;
+import net.darkhax.gamestages.data.GameStageSaveHandler;
+import net.darkhax.gamestages.data.IStageData;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.EntityNotFoundException;
 import net.minecraft.command.ICommandSender;
@@ -36,6 +39,10 @@ public class DHDebugCommands extends DHTCommand {
         }
         if(option==2) {
             executeTileClass(server,sender,getOrNull(1,args));
+            return;
+        }
+        if(option==3) {
+            executeGamestage(server,sender,getOrNull(1,args));
             return;
         }
         sendMessage(sender,true,"options."+(sender instanceof Entity ? "entity" : "server"));
@@ -84,5 +91,26 @@ public class DHDebugCommands extends DHTCommand {
             new PacketTileEntityClassQuery().addPlayers(player).send();
             sendMessage(sender,false,"tileclass");
         }
+    }
+
+    private void executeGamestage(MinecraftServer server, ICommandSender sender, @Nullable String stage)
+            throws CommandException {
+        if(Objects.isNull(stage)) {
+            sendMessage(sender,true,"gamestage");
+            return;
+        }
+        EntityPlayerMP player = sender instanceof EntityPlayerMP ? (EntityPlayerMP)sender : null;
+        if(Objects.isNull(player)) {
+            sendMessage(sender,true,"gamestage.player");
+            return;
+        }
+        IStageData data = GameStageHelper.getPlayerData(player);
+        if(Objects.isNull(data) || data==GameStageSaveHandler.EMPTY_STAGE_DATA) {
+            sendMessage(sender, true, "gamestage.data",player.getName());
+            return;
+        }
+        String type = data.hasStage(stage) ? "remove" : "add";
+        buildAndExecuteCommand(server,sender,"gamestage",type,"@s",stage);
+        sendMessage(sender,false,"gamestage",type,stage);
     }
 }
