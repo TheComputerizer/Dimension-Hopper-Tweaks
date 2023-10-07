@@ -30,6 +30,10 @@ public abstract class MixinItemStages {
     @Unique private boolean dimhoppertweaks$verifyHooks(World world, @Nullable EntityPlayer player, BlockPos pos, String stage) {
         TileEntity tile = WorldUtil.getTileOrAdjacent(world,pos,true, DelayedModAccess.getPlacerTileClasses());
         if(Objects.nonNull(tile)) return !((TileEntityAccess)tile).dimhoppertweaks$hasStage(stage);
+        else if(Objects.nonNull(player) && !player.getPosition().equals(pos)) {
+            tile = WorldUtil.getTileOrAdjacent(world,player.getPosition(),true, DelayedModAccess.getPlacerTileClasses());
+            if(Objects.nonNull(tile)) return !((TileEntityAccess)tile).dimhoppertweaks$hasStage(stage);
+        }
         return Objects.nonNull(player) && !GameStageHelper.hasStage(player,stage);
     }
 
@@ -98,7 +102,7 @@ public abstract class MixinItemStages {
         EntityPlayer player = event.getEntityPlayer();
         if(event.isCancelable() && !ConfigurationHandler.allowInteractRestricted && !player.isCreative()) {
             String stage = getStage(event.getItemStack());
-            if(Objects.nonNull(stage) && dimhoppertweaks$verifyStage(player.getEntityWorld(),player,player.getPosition(),stage))
+            if(Objects.nonNull(stage) && dimhoppertweaks$verifyStage(player.getEntityWorld(),player,event.getPos(),stage))
                 event.setCanceled(true);
         }
 
