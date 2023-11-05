@@ -5,7 +5,9 @@ import gcewing.sg.interfaces.ISGBlock;
 import mods.thecomputerizer.dimhoppertweaks.generator.Stargate;
 import gcewing.sg.tileentity.SGBaseTE;
 import gcewing.sg.util.SGAddressing;
+import net.darkhax.gamestages.GameStageHelper;
 import net.minecraft.block.Block;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
@@ -14,35 +16,60 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraft.init.Items;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class StargateAddresser extends EpicItem {
-    public final Stargate gate = new Stargate();
-    public final HashMap<Integer, Integer> dimIDPairs = new HashMap<>();
+
+    public final Stargate gate;
+    public final Map<Integer,Integer> dimIDPairs;
+    public final Map<Integer,String> dimGateStages;
 
     public StargateAddresser() {
-        dimIDPairs.put(-28,-29);    //moon->mars
-        dimIDPairs.put(-29,-30);    //mars->asteroids
-        dimIDPairs.put(0,-31);      //overworld->venus
-        dimIDPairs.put(-31,-13);    //venus->mercury
-        dimIDPairs.put(-1502,-1503);//phobos->deimos
-        dimIDPairs.put(-30,-1502);  //asteroids->phobos
-        dimIDPairs.put(816,-15);    //lunalus->jupiter
-        dimIDPairs.put(-15,-1500);  //jupiter->io
-        dimIDPairs.put(-1500,-1501);//io->europa
-        dimIDPairs.put(-1501,-1506);//europa->ganymede
-        dimIDPairs.put(-1506,-16);  //ganymede->saturn
-        dimIDPairs.put(-16,-1508);  //saturn->titan
-        dimIDPairs.put(-1508,-1509);//titan->oberon
-        dimIDPairs.put(-1509,-1510);//oberon->titania
-        dimIDPairs.put(-1510,-17);  //titania->uranus
-        dimIDPairs.put(66,-19);     //erebus->pluto
-        dimIDPairs.put(-19,-21);    //pluto->eris
+        this.gate = new Stargate();
+        this.dimIDPairs = new HashMap<>();
+        this.dimGateStages = new HashMap<>();
+        this.dimIDPairs.put(-28,-29);    //moon->mars
+        this.dimGateStages.put(-28,"stargateMoon");
+        this.dimIDPairs.put(-29,-30);    //mars->asteroids
+        this.dimGateStages.put(-29,"stargateMars");
+        this.dimIDPairs.put(0,-31);      //overworld->venus
+        this.dimGateStages.put(0,"stargateOverworld");
+        this.dimIDPairs.put(-31,-13);    //venus->mercury
+        this.dimGateStages.put(-31,"stargateVenus");
+        this.dimIDPairs.put(-1502,-1503);//phobos->deimos
+        this.dimGateStages.put(-1502,"stargatePhobos");
+        this.dimIDPairs.put(-30,-1502);  //asteroids->phobos
+        this.dimGateStages.put(-30,"stargateAsteroids");
+        this.dimIDPairs.put(816,-15);    //lunalus->jupiter
+        this.dimGateStages.put(816,"stargateLunalus");
+        this.dimIDPairs.put(-15,-1500);  //jupiter->io
+        this.dimGateStages.put(-15,"stargateJupiter");
+        this.dimIDPairs.put(-1500,-1501);//io->europa
+        this.dimGateStages.put(-1500,"stargateIo");
+        this.dimIDPairs.put(-1501,-1506);//europa->ganymede
+        this.dimGateStages.put(-1501,"stargateEuropa");
+        this.dimIDPairs.put(-1506,-16);  //ganymede->saturn
+        this.dimGateStages.put(-1506,"stargateGanymede");
+        this.dimIDPairs.put(-16,-1508);  //saturn->titan
+        this.dimGateStages.put(-16,"stargateSaturn");
+        this.dimIDPairs.put(-1508,-1509);//titan->oberon
+        this.dimGateStages.put(-1508,"stargateTitan");
+        this.dimIDPairs.put(-1509,-1510);//oberon->titania
+        this.dimGateStages.put(-1509,"stargateOberon");
+        this.dimIDPairs.put(-1510,-17);  //titania->uranus
+        this.dimGateStages.put(-1510,"stargateTitania");
+        this.dimIDPairs.put(66,-19);     //erebus->pluto
+        this.dimGateStages.put(66,"stargateErebus");
+        this.dimIDPairs.put(-19,-21);    //pluto->eris
+        this.dimGateStages.put(-19,"stargatePluto");
     }
 
     @Override
@@ -51,25 +78,26 @@ public class StargateAddresser extends EpicItem {
         player.getCooldownTracker().setCooldown(this, 200);
         ItemStack stack = new ItemStack(Items.PAPER);
         EnumActionResult result = EnumActionResult.PASS;
-        if (!world.isRemote) {
+        if(!world.isRemote) {
             ItemStack chev = new ItemStack(SGCraft.sgChevronUpgrade);
             ITextComponent text = new TextComponentString("Gate could not be located");
-            int id = world.provider.getDimension();
-            if(dimIDPairs.containsKey(id)) {
-                DimensionManager.initDimension(dimIDPairs.get(id));
-                World genhere = DimensionManager.getWorld(dimIDPairs.get(id));
+            int dimFrom = world.provider.getDimension();
+            if(canPlayerUse(player,dimFrom)) {
+                int dimTo = this.dimIDPairs.get(dimFrom);
+                DimensionManager.initDimension(dimTo);
+                World genhere = DimensionManager.getWorld(dimTo);
                 BlockPos pos = player.getPosition();
-                gate.build(genhere, pos);
+                this.gate.build(genhere,pos);
                 Block block = genhere.getBlockState(pos).getBlock();
-                if (block instanceof ISGBlock) {
-                    SGBaseTE te = ((ISGBlock) block).getBaseTE(genhere, pos);
-                    if (te != null) {
-                        te.applyChevronUpgrade(chev, player);
+                if(block instanceof ISGBlock) {
+                    SGBaseTE gateBase = ((ISGBlock)block).getBaseTE(genhere,pos);
+                    if(Objects.nonNull(gateBase)) {
+                        gateBase.applyChevronUpgrade(chev, player);
                         String address;
                         try {
-                            address = te.getHomeAddress();
-                            text = new TextComponentString("Gate successfully located with address " + address + "!");
-                            stack.setStackDisplayName("§5" + address);
+                            address = gateBase.getHomeAddress();
+                            text = new TextComponentTranslation("item.dimhoppertweaks.stargate_addresser.success",address);
+                            stack.setStackDisplayName(I18n.format("stargate.dimhoppertweaks.address",address));
                             result = EnumActionResult.SUCCESS;
                         } catch (SGAddressing.AddressingError e) {
                             result = EnumActionResult.FAIL;
@@ -77,8 +105,13 @@ public class StargateAddresser extends EpicItem {
                     }
                 }
             }
-            player.sendStatusMessage(text, true);
+            player.sendStatusMessage(text,true);
         }
-        return new ActionResult<>(result, stack);
+        return new ActionResult<>(result,stack);
+    }
+
+    private boolean canPlayerUse(EntityPlayer player, int dimID) {
+        String stage = this.dimGateStages.get(dimID);
+        return Objects.nonNull(stage) && this.dimIDPairs.containsKey(dimID) && GameStageHelper.hasStage(player,stage);
     }
 }
