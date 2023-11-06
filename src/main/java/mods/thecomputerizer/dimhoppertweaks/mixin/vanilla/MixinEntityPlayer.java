@@ -34,6 +34,6 @@ public class MixinEntityPlayer {
         boolean isBlighted = Objects.nonNull(this.dimhoppertweaks$targetAttackedEntity) &&
                 ((EntityLivinBaseAccess)this.dimhoppertweaks$targetAttackedEntity).dimhoppertweaks$isBlighted();
         EnumParticleTypes particleType = isBlighted ? ParticleRegistry.BLIGHT_FIRE : particle;
-        world.spawnParticle(particleType,x,y,z,num,xOffset,yOffset,zOffset,speed,particleArguments);
+        world.spawnParticle(particleType,x,y,z,num/2,xOffset,yOffset,zOffset,speed,particleArguments);
     }
 }

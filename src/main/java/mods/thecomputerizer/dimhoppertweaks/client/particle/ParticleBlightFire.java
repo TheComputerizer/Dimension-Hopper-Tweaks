@@ -32,8 +32,8 @@ public class ParticleBlightFire extends Particle {
         randomizeInitialPos();
         this.tomfoolery = ModuleAprilTricks.instance.isEnabled() && ModuleAprilTricks.instance.isRightDay();
         this.particleTexture = tomfoolery ? ParticleRegistry.getGrayFireAtlas() : ParticleRegistry.getFireAtlas();
-        this.particleScale = 0.2f+(this.rand.nextFloat()/(1f/(0.2f/2f)));
-        this.particleMaxAge = (int)(maxAge-(this.rand.nextFloat()*(maxAge/4f)));
+        this.particleScale = (0.2f+(this.rand.nextFloat()/(1f/(0.2f/2f))))/2f;
+        this.particleMaxAge = (int)(maxAge-(this.rand.nextFloat()*maxAge));
         this.particleAlpha = 1f;
         this.frameUV = getUVFrame();
     }
@@ -47,7 +47,7 @@ public class ParticleBlightFire extends Particle {
     }
 
     private double randomizeDouble(double original) {
-        double factor = Math.log(this.rangeFactor) / Math.log(2);
+        double factor = Math.log(this.rangeFactor)/Math.log(2);
         return (original-factor)+(this.rand.nextDouble()*factor*2);
     }
 
@@ -66,14 +66,14 @@ public class ParticleBlightFire extends Particle {
         this.prevPosX = posX;
         this.prevPosY = posY;
         this.prevPosZ = posZ;
-        if (this.particleAge++ >= this.particleMaxAge) setExpired();
+        if(this.particleAge++>=this.particleMaxAge) setExpired();
         move(this.motionX, this.motionY, this.motionZ);
-        this.motionX *= 0.8999999761581421;
-        this.motionY *= 0.8999999761581421;
-        this.motionZ *= 0.8999999761581421;
-        if (this.onGround) {
-            this.motionX *= 0.699999988079071;
-            this.motionZ *= 0.699999988079071;
+        this.motionX *= 0.95d;
+        this.motionY *= 0.95d;
+        this.motionZ *= 0.95d;
+        if(this.onGround) {
+            this.motionX *= 0.8d;
+            this.motionZ *= 0.8d;
         }
         this.frameUV = getUVFrame();
     }
@@ -92,35 +92,36 @@ public class ParticleBlightFire extends Particle {
         double y = this.prevPosY+(this.posY-this.prevPosY)*partialTicks-interpPosY;
         double z = this.prevPosZ+(this.posZ-this.prevPosZ)*partialTicks-interpPosZ;
         double scaledUDDirX = rotationXY*this.particleScale;
-        double scaledUDDirY = rotationZ*this.particleScale;
-        double scaledUDDirZ = rotationXZ*this.particleScale;
-        double scaledLRDirX = rotationX*this.particleScale;
+        double scaledUDDirY = rotationZ*(this.particleScale/2f);
+        double scaledUDDirZ = rotationXZ*(this.particleScale/2f);
+        double scaledLRDirX = rotationX*(this.particleScale/2f);
         double scaledLRDirZ = rotationYZ*this.particleScale;
         int combinedBrightness = getBrightnessForRender(partialTicks);
         int skyLight = combinedBrightness >> 16 & 65535;
         int blockLight = combinedBrightness & 65535;
-        buffer.pos(x - scaledLRDirX - scaledUDDirX, y - scaledUDDirY, z - scaledLRDirZ - scaledUDDirZ)
+        buffer.pos(x-scaledLRDirX-scaledUDDirX,y-scaledUDDirY,z-scaledLRDirZ-scaledUDDirZ)
                 .tex(maxU,maxV)
-                .color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha)
-                .lightmap(skyLight, blockLight).endVertex();
-        buffer.pos(x - scaledLRDirX + scaledUDDirX,y + scaledUDDirY,z - scaledLRDirZ + scaledUDDirZ)
+                .color(this.particleRed,this.particleGreen,this.particleBlue,this.particleAlpha)
+                .lightmap(skyLight,blockLight).endVertex();
+        buffer.pos(x-scaledLRDirX+scaledUDDirX,y+scaledUDDirY,z-scaledLRDirZ+scaledUDDirZ)
                 .tex(maxU, minV)
-                .color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha)
-                .lightmap(skyLight, blockLight).endVertex();
-        buffer.pos(x + scaledLRDirX + scaledUDDirX,y + scaledUDDirY,z + scaledLRDirZ + scaledUDDirZ)
+                .color(this.particleRed,this.particleGreen,this.particleBlue,this.particleAlpha)
+                .lightmap(skyLight,blockLight).endVertex();
+        buffer.pos(x+scaledLRDirX+scaledUDDirX,y+scaledUDDirY,z+scaledLRDirZ+scaledUDDirZ)
                 .tex(minU, minV)
-                .color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha)
-                .lightmap(skyLight, blockLight).endVertex();
-        buffer.pos(x + scaledLRDirX - scaledUDDirX,y - scaledUDDirY,z + scaledLRDirZ - scaledUDDirZ)
+                .color(this.particleRed,this.particleGreen,this.particleBlue,this.particleAlpha)
+                .lightmap(skyLight,blockLight).endVertex();
+        buffer.pos(x+scaledLRDirX-scaledUDDirX,y-scaledUDDirY,z+scaledLRDirZ-scaledUDDirZ)
                 .tex(minU, maxV)
-                .color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha)
-                .lightmap(skyLight, blockLight).endVertex();
+                .color(this.particleRed,this.particleGreen,this.particleBlue,this.particleAlpha)
+                .lightmap(skyLight,blockLight).endVertex();
     }
 
     public static class Factory implements IParticleFactory {
-        @Nullable
+
         @Override
-        public Particle createParticle(int id, @Nonnull World world, double posX, double posY, double posZ, double velocityX, double velocityY, double velocityZ, @Nonnull int... args) {
+        public @Nullable Particle createParticle(int id, @Nonnull World world, double posX, double posY, double posZ,
+                                                 double velocityX, double velocityY, double velocityZ, @Nonnull int... args) {
             return new ParticleBlightFire(Minecraft.getMinecraft().world, posX, posY, posZ, velocityX, velocityY, velocityZ,
                     args.length>=1 ? (float)args[0] : 100f, args.length>=2 ? (double)args[1] : 32d,
                     args.length>=3 ? ((float)args[2])/100f : 0.5f);
