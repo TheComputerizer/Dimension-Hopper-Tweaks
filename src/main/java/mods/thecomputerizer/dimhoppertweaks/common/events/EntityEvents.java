@@ -62,9 +62,9 @@ public class EntityEvents {
             }
             else if(event.getEntityLiving() instanceof EntityPlayerMP) {
                 EntityPlayerMP player = (EntityPlayerMP)event.getEntityLiving();
-                float armor = ISpecialArmor.ArmorProperties.applyArmor(player, player.inventory.armorInventory, event.getSource(), event.getAmount());
+                float armor = ISpecialArmor.ArmorProperties.applyArmor(player, player.inventory.armorInventory,event.getSource(),event.getAmount());
                 if (armor > 0) {
-                    float amount = Math.min(Math.max(0f, ((event.getAmount() - armor) / 4f)),5f);
+                    float amount = Math.min(Math.max(0f,((event.getAmount()-armor)/4f)),5f);
                     SkillWrapper.addSP(player,"defense",amount,false);
                 }
             }
@@ -77,13 +77,13 @@ public class EntityEvents {
             EntityPlayerMP player = (EntityPlayerMP)event.getEntityLiving();
             int jumpFactor = player.isPotionActive(MobEffects.JUMP_BOOST) ?
                     Objects.requireNonNull(player.getActivePotionEffect(MobEffects.JUMP_BOOST)).getAmplifier()+3 : 2;
-            SkillWrapper.addSP((EntityPlayerMP) event.getEntityLiving(), "agility", jumpFactor, false);
+            SkillWrapper.addSP((EntityPlayerMP) event.getEntityLiving(),"agility", jumpFactor, false);
         }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onDamage(LivingDamageEvent event) {
-        if(!event.getEntityLiving().world.isRemote && Objects.nonNull(event.getSource()) && event.getSource() != DamageSource.OUT_OF_WORLD) {
+        if(!event.getEntityLiving().world.isRemote && Objects.nonNull(event.getSource()) && event.getSource()!=DamageSource.OUT_OF_WORLD) {
             if (event.getEntityLiving() instanceof EntityPlayerMP) {
                 EntityPlayerMP player = (EntityPlayerMP) event.getEntityLiving();
                 if(Objects.nonNull(player)) {
@@ -103,8 +103,8 @@ public class EntityEvents {
                     if (amount >= 50f && player.getHeldItemMainhand().getItem() instanceof ItemElementiumSword) {
                         EntityPixie pixie = new EntityPixie(player.getServerWorld());
                         ((EntityPixieAccess) pixie).setBypassesTarget(true);
-                        pixie.setPosition(player.posX, player.posY + 2.0, player.posZ);
-                        pixie.onInitialSpawn(player.getServerWorld().getDifficultyForLocation(new BlockPos(pixie)), null);
+                        pixie.setPosition(player.posX,player.posY+2d,player.posZ);
+                        pixie.onInitialSpawn(player.getServerWorld().getDifficultyForLocation(new BlockPos(pixie)),null);
                         player.getServerWorld().spawnEntity(pixie);
                     }
                 }
@@ -118,10 +118,10 @@ public class EntityEvents {
             EntityPlayerMP player = (EntityPlayerMP)event.getSource().getTrueSource();
             if(Objects.nonNull(player) && Objects.nonNull(SkillWrapper.getSkillCapability(player))) {
                 NonNullList<ItemStack> armorList = NonNullList.from(ItemStack.EMPTY,
-                        Iterables.toArray(event.getEntityLiving().getArmorInventoryList(), ItemStack.class));
-                float armor = 10f - ISpecialArmor.ArmorProperties.applyArmor(
-                        event.getEntityLiving(), armorList, event.getSource(), 10f);
-                SkillWrapper.addSP(player, "defense", armor, false);
+                        Iterables.toArray(event.getEntityLiving().getArmorInventoryList(),ItemStack.class));
+                float armor = 10f-ISpecialArmor.ArmorProperties.applyArmor(
+                        event.getEntityLiving(),armorList,event.getSource(),10f);
+                SkillWrapper.addSP(player,"defense",armor,false);
             }
         }
     }
@@ -174,8 +174,8 @@ public class EntityEvents {
         @SubscribeEvent(priority = EventPriority.LOWEST)
         public static void pickupXP(PlayerPickupXpEvent event) {
             if(event.getEntityPlayer() instanceof EntityPlayerMP) {
-                int factor = event.getOrb().xpValue>1 ? (int) (Math.log(event.getOrb().xpValue) / Math.log(2)) : 1;
-                SkillWrapper.addSP((EntityPlayerMP) event.getEntityPlayer(), "magic", factor, false);
+                int factor = event.getOrb().xpValue>1 ? (int)(Math.log(event.getOrb().xpValue)/Math.log(2)) : 1;
+                SkillWrapper.addSP((EntityPlayerMP)event.getEntityPlayer(),"magic",factor,false);
             }
         }
 
@@ -187,12 +187,12 @@ public class EntityEvents {
 
         @SubscribeEvent(priority = EventPriority.LOWEST)
         public static void playerTick(TickEvent.PlayerTickEvent event) {
-            if(event.phase== TickEvent.Phase.END) {
-                if (event.side == Side.SERVER) {
+            if(event.phase==TickEvent.Phase.END) {
+                if(event.side==Side.SERVER) {
                     TICK_DELAY++;
-                    if (TICK_DELAY >= 20) {
+                    if(TICK_DELAY>=20) {
                         EntityPlayerMP player = (EntityPlayerMP) event.player;
-                        if (player.isSprinting()) {
+                        if(player.isSprinting()) {
                             int speedFactor = player.isPotionActive(MobEffects.SPEED) ? Objects.requireNonNull(
                                     player.getActivePotionEffect(MobEffects.SPEED)).getAmplifier() + 2 : 1;
                             SkillWrapper.addSP(player, "agility", speedFactor, false);
@@ -216,8 +216,8 @@ public class EntityEvents {
                 if(stack.getCount()>0) {
                     ISkillCapability cap = SkillWrapper.getSkillCapability(player);
                     if(Objects.nonNull(cap) && cap.checkGatheringItem(stack.getItem())) {
-                        int sizeFactor = stack.getCount() > 1 ? (int) (Math.log(stack.getCount()) / Math.log(2)) : 1;
-                        SkillWrapper.addSP(player, "gathering", sizeFactor, false);
+                        int sizeFactor = stack.getCount()>1 ? (int)(Math.log(stack.getCount())/Math.log(2)) : 1;
+                        SkillWrapper.addSP(player,"gathering",sizeFactor,false);
                     }
                 }
             }

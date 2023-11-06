@@ -23,7 +23,6 @@ public class BetterBlightFireRenderer {
     public static final ResourceLocation TEXTURE_GRAY = new ResourceLocation(
             ScalingHealth.MOD_ID_LOWER,"textures/entity/blightfire_gray.png");
 
-    @SuppressWarnings("SuspiciousNameCombination")
     public static void render(RenderManager manager, EntityLivingBase parent, double x, double y, double z) {
         if(Objects.nonNull(parent)) {
             boolean tomfoolery = ModuleAprilTricks.instance.isEnabled() && ModuleAprilTricks.instance.isRightDay();
@@ -32,7 +31,7 @@ public class BetterBlightFireRenderer {
             double height = Math.abs(box.maxY-box.minY);
             float adjustedHeight = (float)MathHelper.clamp(height,width*0.75d,width*1.25d);
             Color color = new Color(255,255,255);
-            if (tomfoolery) {
+            if(tomfoolery) {
                 float entityID = parent.getEntityId();
                 float hueOffset = 40f+entityID%80f;
                 float hue = (ClientTicks.ticksInGame+entityID)%hueOffset/hueOffset;
@@ -47,7 +46,6 @@ public class BetterBlightFireRenderer {
             GlStateManager.disableLighting();
             GlStateManager.pushMatrix();
             GlStateManager.translate(x,y+height*1.25d,z);
-            GlStateManager.scale(width,width,width);
             GlStateManager.rotate(-manager.playerViewY,0,1f,0);
             GlStateManager.translate(0,0,(float)((int)(adjustedHeight/width))*0.02f);
             setColor(color.getRed(),color.getGreen(),color.getBlue());
