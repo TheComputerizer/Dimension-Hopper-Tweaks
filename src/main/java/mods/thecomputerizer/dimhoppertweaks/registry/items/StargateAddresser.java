@@ -5,11 +5,13 @@ import gcewing.sg.interfaces.ISGBlock;
 import mods.thecomputerizer.dimhoppertweaks.generator.Stargate;
 import gcewing.sg.tileentity.SGBaseTE;
 import gcewing.sg.util.SGAddressing;
+import mods.thecomputerizer.theimpossiblelibrary.util.object.ItemUtil;
 import net.darkhax.gamestages.GameStageHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
@@ -74,7 +76,7 @@ public class StargateAddresser extends EpicItem {
 
     @Override
     @Nonnull
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull  EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
         player.getCooldownTracker().setCooldown(this, 200);
         ItemStack stack = new ItemStack(Items.PAPER);
         EnumActionResult result = EnumActionResult.PASS;
@@ -82,7 +84,7 @@ public class StargateAddresser extends EpicItem {
             ItemStack chev = new ItemStack(SGCraft.sgChevronUpgrade);
             ITextComponent text = new TextComponentString("Gate could not be located");
             int dimFrom = world.provider.getDimension();
-            if(canPlayerUse(player,dimFrom)) {
+            if(canPlayerUse(player,player.getHeldItem(hand),dimFrom)) {
                 int dimTo = this.dimIDPairs.get(dimFrom);
                 DimensionManager.initDimension(dimTo);
                 World genhere = DimensionManager.getWorld(dimTo);
@@ -92,7 +94,7 @@ public class StargateAddresser extends EpicItem {
                 if(block instanceof ISGBlock) {
                     SGBaseTE gateBase = ((ISGBlock)block).getBaseTE(genhere,pos);
                     if(Objects.nonNull(gateBase)) {
-                        gateBase.applyChevronUpgrade(chev, player);
+                        gateBase.applyChevronUpgrade(chev,player);
                         String address;
                         try {
                             address = gateBase.getHomeAddress();
@@ -110,7 +112,9 @@ public class StargateAddresser extends EpicItem {
         return new ActionResult<>(result,stack);
     }
 
-    private boolean canPlayerUse(EntityPlayer player, int dimID) {
+    private boolean canPlayerUse(EntityPlayer player, ItemStack stack, int dimID) {
+        NBTTagCompound tag = ItemUtil.getOrCreateTag(stack);
+        if(!tag.hasKey("activeDimension") || tag.getInteger("activeDimension")!=dimID) return false;
         String stage = this.dimGateStages.get(dimID);
         return Objects.nonNull(stage) && this.dimIDPairs.containsKey(dimID) && GameStageHelper.hasStage(player,stage);
     }
