@@ -13,7 +13,7 @@ commands.dimhoppertweaks.dhd.success.tileclass=Successfully sent tile entity que
 commands.dimhoppertweaks.dimrandomtp.error=Usage: /dimrandomtp player dimension radius biomes
 commands.dimhoppertweaks.dimrandomtp.error.biome=Failed to get biome name at coords (%1$s, %2$s, %3$s) for dimrandomtp command!
 commands.dimhoppertweaks.dimrandomtp.error.player=Failed to get player for dimrandomtp command!
-commands.dimhoppertweaks.dimrandomtp.success=§4§oYour consciousness fades for a second as you hear a nearly indistinguishable voice in your mind\\n§l§4D§ko§r §4§ln§ko§r§4§lt tr§kus§r§4§lt §ktha§r§4§lt b§kook
+commands.dimhoppertweaks.dimrandomtp.success=§4§oYour consciousness fades for a second as you hear a nearly indistinguishable voice in your mind - §l§4D§ko§r §4§ln§ko§r§4§lt tr§kus§r§4§lt §ktha§r§4§lt b§kook
 commands.dimhoppertweaks.summoncommandtest.error=Error exectuing summoncommandtest command
 commands.dimhoppertweaks.summoncommandtest.success=Summoning §5§l§kThe OverSeer
 
