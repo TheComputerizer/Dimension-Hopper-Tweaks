@@ -7,6 +7,7 @@ import codersafterdark.reskillable.api.data.PlayerSkillInfo;
 import codersafterdark.reskillable.api.event.LevelUpEvent;
 import codersafterdark.reskillable.api.skill.Skill;
 import codersafterdark.reskillable.api.toast.ToastHelper;
+import codersafterdark.reskillable.api.unlockable.IAbilityEventHandler;
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import mods.thecomputerizer.dimhoppertweaks.registry.items.SkillToken;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,11 +19,14 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 public class SkillWrapper {
 
@@ -36,7 +40,7 @@ public class SkillWrapper {
 
     public static void addSP(EntityPlayerMP player, String skill, float amount, boolean fromXP) {
         ISkillCapability cap = getSkillCapability(player);
-        if(Objects.nonNull(cap)) cap.addSkillXP(skill, (int)withMultiplier(player, amount), player,fromXP);
+        if(Objects.nonNull(cap)) cap.addSkillXP(skill,(int)withMultiplier(player,amount),player,fromXP);
     }
 
     public static float withMultiplier(EntityPlayerMP player, float amount) {
@@ -55,9 +59,9 @@ public class SkillWrapper {
         ISkillCapability cap = getSkillCapability(player);
         if(Objects.isNull(cap)) return;
         cap.syncSkills(player);
-        for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
+        for(int i=0; i<player.inventory.getSizeInventory(); i++) {
             ItemStack stack = player.inventory.getStackInSlot(i);
-            if (stack.getItem() instanceof SkillToken) {
+            if(stack.getItem() instanceof SkillToken) {
                 SkillToken token = (SkillToken) stack.getItem();
                 token.updateSkills(stack,cap.getCurrentValues(),cap.getDrainSelection(),cap.getDrainLevels());
             }
@@ -77,6 +81,34 @@ public class SkillWrapper {
         ISkillCapability cap = getSkillCapability(player);
         if(Objects.isNull(cap)) return false;
         return cap.incrementDreamTimer(player,ticks);
+    }
+
+    public static double getPrestigeFactor(EntityPlayer player, String skill) {
+        ISkillCapability cap = getSkillCapability(player);
+        return Objects.isNull(cap) ? 1d : 1d+(((double)cap.getSkillLevel(skill))/32d);
+    }
+
+    public static @Nullable Skill getSkill(String name) {
+        ResourceLocation skillRes =  name.matches("research") || name.matches("void") ? Constants.res(name) :
+                new ResourceLocation("reskillable",name);
+        return ReskillableRegistries.SKILLS.containsKey(skillRes) ? ReskillableRegistries.SKILLS.getValue(skillRes) : null;
+    }
+
+    public static void executeOnSkills(@Nonnull PlayerData data, Consumer<IAbilityEventHandler> consumer) {
+        executeOnSkill(data,getSkill("mining"),consumer);
+        executeOnSkill(data,getSkill("gathering"),consumer);
+        executeOnSkill(data,getSkill("attack"),consumer);
+        executeOnSkill(data,getSkill("defense"),consumer);
+        executeOnSkill(data,getSkill("building"),consumer);
+        executeOnSkill(data,getSkill("agility"),consumer);
+        executeOnSkill(data,getSkill("farming"),consumer);
+        executeOnSkill(data,getSkill("magic"),consumer);
+        executeOnSkill(data,getSkill("void"),consumer);
+        executeOnSkill(data,getSkill("research"),consumer);
+    }
+
+    public static void executeOnSkill(@Nonnull PlayerData data, @Nullable Skill skill, Consumer<IAbilityEventHandler> consumer) {
+        if(Objects.nonNull(skill)) data.getSkillInfo(skill).forEachEventHandler(consumer);
     }
 
     private final String modid;
@@ -122,8 +154,8 @@ public class SkillWrapper {
     }
 
     private boolean canLevelUp(int amount) {
-        if(this.xp>=this.levelXP && this.level!=0 && !isMaxLevel()) {
-            if (((double) this.level) / 32d <= this.prestigeLevel+1) return true;
+        if(this.xp>=this.levelXP && this.level!=0 && !isMaxLevel() && !isMaxLevelForPrestige()) {
+            if(((double)this.level)/32d<=this.prestigeLevel+1) return true;
             else this.xp-=amount;
         }
         return false;
@@ -133,10 +165,23 @@ public class SkillWrapper {
         return this.level>=this.maxLevel;
     }
 
+    private boolean isMaxLevelForPrestige() {
+        return MathHelper.floor(((double)this.level)/32d)>=this.prestigeLevel+1;
+    }
+
+    private int getPrestigeFactor(int amount, boolean fromXP) {
+        float factor = this.prestigeLevel==0 ? 1f : (float)this.prestigeLevel*2f;
+        if(fromXP) factor = 1f/(factor*0.75f);
+        return Math.max(0,MathHelper.floor(((float)amount)*factor));
+    }
+
     public void addXP(int amount, EntityPlayerMP player, boolean fromXP) {
-        if(!isMaxLevel() && this.level!=0) {
-            this.xp+=amount;
-            if(canLevelUp(amount)) levelUpWithOverflow(player, true, fromXP);
+        if(!isMaxLevel() && !isMaxLevelForPrestige() && this.level!=0) {
+            amount = getPrestigeFactor(amount,fromXP);
+            if(amount>0) {
+                this.xp+=amount;
+                if(canLevelUp(amount)) levelUpWithOverflow(player,true,fromXP);
+            }
         }
     }
 
@@ -152,6 +197,10 @@ public class SkillWrapper {
                 this.levelXP = 0;
                 this.xp = 0;
                 break;
+            } else if(isMaxLevelForPrestige()) {
+                this.xp = 0;
+                this.levelXP = calculateLevelXP(this.level);
+                break;
             } else this.levelXP = calculateLevelXP(this.level);
             leveledUp = true;
         }
@@ -160,13 +209,12 @@ public class SkillWrapper {
         int oldLevel = skillInfo.getLevel();
         skillInfo.setLevel(this.level);
         data.saveAndSync();
-        if(showToast) ToastHelper.sendSkillToast(player, getSkill(), skillInfo.getLevel());
+        if(showToast) ToastHelper.sendSkillToast(player,getSkill(),skillInfo.getLevel());
         if(leveledUp) {
             World world = player.world;
-            SoundEvent levelSound = SoundEvents.BLOCK_END_PORTAL_SPAWN;
-            if(fromXP) levelSound = SoundEvents.ENTITY_PLAYER_LEVELUP;
-            world.playSound(null, player.posX, player.posY, player.posZ, levelSound, SoundCategory.MASTER, 1.0F, 1.0F);
-            MinecraftForge.EVENT_BUS.post(new LevelUpEvent.Post(player, getSkill(), this.level, oldLevel));
+            SoundEvent levelSound = fromXP ? SoundEvents.ENTITY_PLAYER_LEVELUP : SoundEvents.BLOCK_END_PORTAL_SPAWN;
+            world.playSound(null,player.posX,player.posY,player.posZ,levelSound,SoundCategory.MASTER,1f,1f);
+            MinecraftForge.EVENT_BUS.post(new LevelUpEvent.Post(player,getSkill(),this.level,oldLevel));
         }
     }
 
@@ -178,12 +226,12 @@ public class SkillWrapper {
                 this.levelXP = 0;
                 this.xp = 0;
             } else this.levelXP = calculateLevelXP(this.level);
-            if (this.xp >= this.levelXP) this.levelUpWithOverflow(player, false, true);
+            if (this.xp>=this.levelXP) this.levelUpWithOverflow(player,false,true);
         }
     }
 
     private Skill getSkill() {
-        return ReskillableRegistries.SKILLS.getValue(new ResourceLocation(this.modid, this.name));
+        return ReskillableRegistries.SKILLS.getValue(new ResourceLocation(this.modid,this.name));
     }
 
     //level xp calculations are fun...
@@ -197,30 +245,29 @@ public class SkillWrapper {
             if(levelProgress==0) levelProgress = 32;
             levelXP = xpMultiplier*Math.pow(1.1385d,Math.max(1d,levelProgress));
         }
-        return (int) (levelXP*levelFactor());
+        return (int)(levelXP*levelFactor());
     }
 
     private double levelFactor() {
-        switch (this.name) {
-            case "mining":
-            case "building":
-                return 2d;
+        switch(this.name) {
             case "gathering":
             case "magic":
                 return 3d;
             case "attack":
+            case "mining":
+            case "building":
+                return 1.5d;
+            case "agility": return 7.5d;
+            case "void": return 0.75d;
             case "defense":
             case "farming":
-                return 1.5d;
-            case "agility": return 10d;
-            case "void": return 0.75d;
             case "research": return 1.1d;
             default: return 1d;
         }
     }
 
     private double multipleFactor(int remainder) {
-        switch (remainder) {
+        switch(remainder) {
             case 1 : return 1.5d;
             case 2 : return 2d;
             case 3 : return 3d;

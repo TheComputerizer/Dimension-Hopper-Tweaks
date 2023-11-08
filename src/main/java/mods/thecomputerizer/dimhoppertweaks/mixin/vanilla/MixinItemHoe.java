@@ -21,7 +21,7 @@ public class MixinItemHoe {
     private void dimhoppertweaks_setBlock(ItemStack stack, EntityPlayer player, World worldIn, BlockPos pos,
                                           IBlockState state, CallbackInfo info) {
         if(player instanceof EntityPlayerMP && state.getBlock()==Blocks.FARMLAND) {
-            SkillWrapper.addSP((EntityPlayerMP) player, "farming", 3f, false);
+            SkillWrapper.addSP((EntityPlayerMP) player,"farming",3f,false);
         }
     }
 }

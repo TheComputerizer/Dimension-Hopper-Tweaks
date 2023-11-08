@@ -1,5 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.registry.items;
 
+import mcp.MethodsReturnNonnullByDefault;
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillCapabilityStorage;
@@ -22,11 +23,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class SkillToken extends EpicItem {
 
     private static final String WHITE = String.valueOf(TextFormatting.WHITE);
@@ -52,9 +56,9 @@ public class SkillToken extends EpicItem {
     }
 
     @Override
-    public @Nonnull ActionResult<ItemStack> onItemRightClick(@Nonnull World world, @Nonnull EntityPlayer playerIn, @Nonnull EnumHand hand) {
-        if(playerIn instanceof EntityPlayerMP) {
-            EntityPlayerMP player = (EntityPlayerMP)playerIn;
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer p, EnumHand hand) {
+        if(p instanceof EntityPlayerMP) {
+            EntityPlayerMP player = (EntityPlayerMP)p;
             ItemStack stack = player.getHeldItem(hand);
             checkAndUpdate(player, stack, "drain_selection");
             NBTTagCompound tag = getTag(stack);
@@ -62,27 +66,27 @@ public class SkillToken extends EpicItem {
             int amount = tag.getInteger("drain_amount");
             if(player.isSneaking()) {
                 new PacketOpenGui(SkillCapabilityStorage.SKILLS, skill,amount).addPlayers(player).send();
-                return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+                return new ActionResult<>(EnumActionResult.SUCCESS,stack);
             } else if(player.experienceLevel>=amount) {
                 ISkillCapability cap = SkillWrapper.getSkillCapability(player);
                 if(Objects.nonNull(cap)) {
-                    int prestige = cap.getPrestigeLevel(skill) + 1;
-                    for (int i = 0; i < amount; i++) {
+                    int prestige = cap.getPrestigeLevel(skill)+1;
+                    for(int i=0; i<amount; i++) {
                         int SP = (int)(convertXPToSP(player.experienceLevel)*cap.getXPDumpMultiplier());
                         int currSP = cap.getSkillXP(skill);
                         int levelSP = cap.getSkillLevelXP(skill);
                         int currLevel = cap.getSkillLevel(skill);
-                        boolean isWithinPrestigeRange = ((double) currLevel / 32d) < prestige;
-                        if (currSP + SP < levelSP || (currSP + SP >= levelSP && isWithinPrestigeRange)) {
-                            cap.addSkillXP(skill, SP, player, true);
+                        boolean isWithinPrestigeRange = ((double)currLevel/32d)<prestige;
+                        if (currSP+SP<levelSP || (currSP+SP>=levelSP && isWithinPrestigeRange)) {
+                            cap.addSkillXP(skill,SP,player,true);
                             player.addExperienceLevel(-1);
                         }
                     }
                     SkillWrapper.updateTokens(player);
                 }
-                return new ActionResult<>(EnumActionResult.SUCCESS, stack);
-            } else return super.onItemRightClick(world, player, hand);
-        } else return super.onItemRightClick(world, playerIn, hand);
+                return new ActionResult<>(EnumActionResult.SUCCESS,stack);
+            } else return super.onItemRightClick(world,player,hand);
+        } else return super.onItemRightClick(world,p,hand);
     }
 
     //XP calculations are fun...
@@ -130,9 +134,9 @@ public class SkillToken extends EpicItem {
             if(currentLevel<1024) {
                 int nextLevel = currentLevel + 1;
                 int neededPoints = nbt.getInteger(skill+"_level_xp");
-                return skill_color + BOLD + getSkillTranslation(skill) + "[" + currentLevel + "->" + nextLevel + "]: " +
-                        RESET + point_color + currentPoints + "/" + neededPoints+GOLD+" {"+prestigeLevel+"}";
-            } else return RESET + skill_color + BOLD + getSkillTranslation(skill) + "[" + currentLevel +"]";
+                return skill_color+BOLD+getSkillTranslation(skill)+"["+currentLevel+"->"+nextLevel+"]: "+
+                        RESET+point_color+currentPoints+"/"+neededPoints+GOLD+" {"+prestigeLevel+"}";
+            } else return RESET+skill_color+BOLD+getSkillTranslation(skill)+"["+currentLevel+"]";
         } return ITALICS+BOLD+getNotSyncedTranslation(skill);
     }
 
@@ -141,12 +145,12 @@ public class SkillToken extends EpicItem {
     }
 
     private String getDrainingTranslation(int levels, String skill) {
-        return I18n.format("skill."+ Constants.MODID+".draining")+" "+levels+" "+
-                I18n.format("skill."+ Constants.MODID+".levels")+" "+getSkillTranslation(skill);
+        return I18n.format("skill."+Constants.MODID+".draining")+" "+levels+" "+
+                I18n.format("skill."+Constants.MODID+".levels")+" "+getSkillTranslation(skill);
     }
 
     private String getNotSyncedTranslation(String skill) {
-        return I18n.format("skill."+ Constants.MODID+".info")+" "+getSkillTranslation(skill)+" "+
-                I18n.format("skill."+ Constants.MODID+".synced");
+        return I18n.format("skill."+Constants.MODID+".info")+" "+getSkillTranslation(skill)+" "+
+                I18n.format("skill."+Constants.MODID+".synced");
     }
 }

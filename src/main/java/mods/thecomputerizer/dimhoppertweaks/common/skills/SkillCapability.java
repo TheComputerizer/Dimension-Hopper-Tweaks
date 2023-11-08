@@ -18,12 +18,12 @@ import java.util.Set;
 public class SkillCapability implements ISkillCapability {
 
     private final MutableInt DREAM_TIMER;
-    private Map<String, SkillWrapper> skillMap = new HashMap<>();
+    private Map<String,SkillWrapper> skillMap = new HashMap<>();
     private String SKILL_TO_DRAIN = "mining";
     private int DRAIN_LEVELS = 1;
     private float SHIELD_DAMAGE = 1f;
     private BlockPos TWILIGHT_RESPAWN;
-    private Map<Item, MutableInt> GATHERING_LIST = new HashMap<>();
+    private Map<Item,MutableInt> GATHERING_LIST = new HashMap<>();
 
     public SkillCapability() {
         Constants.LOGGER.debug("Initializing skill capability with {} skills",SkillCapabilityStorage.SKILLS.size());
@@ -40,9 +40,7 @@ public class SkillCapability implements ISkillCapability {
     private void checkForExistingSkill(String name) {
         if(!this.skillMap.containsKey(name)) {
             Constants.LOGGER.error("Could not find "+name+" skill! Substituting with a new level 1 "+name+" skill :)");
-            String modid;
-            if(name.matches("void") || name.matches("research")) modid = "compatskills";
-            else modid = "reskillable";
+            String modid = name.matches("void") || name.matches("research") ? Constants.MODID : "reskillable";
             this.skillMap.put(name, new SkillWrapper(modid,name,0,100));
         }
     }
@@ -68,12 +66,10 @@ public class SkillCapability implements ISkillCapability {
 
     @Override
     public void setSkillXP(String skill, int xp, int level) {
-        if(this.skillMap.containsKey(skill) && skillMap.get(skill).getLevel()!=0)
+        if(this.skillMap.containsKey(skill) && this.skillMap.get(skill).getLevel()!=0)
             Constants.LOGGER.error("Tried to register duplicate "+skill+" skill!");
         else {
-            String modid;
-            if(skill.matches("void") || skill.matches("research")) modid = "compatskills";
-            else modid = "reskillable";
+            String modid = skill.matches("void") || skill.matches("research") ? Constants.MODID : "reskillable";
             this.skillMap.put(skill, new SkillWrapper(modid,skill,xp,level));
         }
     }

@@ -1,16 +1,22 @@
 package mods.thecomputerizer.dimhoppertweaks.common.events;
 
+import codersafterdark.reskillable.api.data.PlayerData;
+import codersafterdark.reskillable.api.data.PlayerDataHandler;
 import codersafterdark.reskillable.api.event.LevelUpEvent;
 import com.google.common.collect.Iterables;
 import mods.thecomputerizer.dimhoppertweaks.client.render.ClientEffects;
+import mods.thecomputerizer.dimhoppertweaks.common.skills.ExtendedEventsTrait;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.ISkillCapability;
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
-import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;
+import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import mods.thecomputerizer.dimhoppertweaks.mixin.access.EntityPixieAccess;
+import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
 import morph.avaritia.util.DamageSourceInfinitySword;
 import net.darkhax.gamestages.GameStageHelper;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.passive.EntityTameable;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.MobEffects;
@@ -23,7 +29,6 @@ import net.minecraftforge.common.ISpecialArmor;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.AdvancementEvent;
 import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
-import net.minecraftforge.event.entity.player.UseHoeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -54,18 +59,20 @@ public class EntityEvents {
     public static void onLivingHurt(LivingHurtEvent event) {
         if(event.getSource()!=DamageSource.OUT_OF_WORLD) {
             if(event.getEntityLiving() instanceof EntityFinalBoss) {
-                Constants.LOGGER.error("Hooking boss hurt");
-                if(!(event.getSource() instanceof DamageSourceInfinitySword)) {
-                    Constants.LOGGER.error("canceling!");
+                if(!(event.getSource() instanceof DamageSourceInfinitySword))
                     event.setCanceled(true);
-                }
-            }
-            else if(event.getEntityLiving() instanceof EntityPlayerMP) {
-                EntityPlayerMP player = (EntityPlayerMP)event.getEntityLiving();
-                float armor = ISpecialArmor.ArmorProperties.applyArmor(player, player.inventory.armorInventory,event.getSource(),event.getAmount());
-                if (armor > 0) {
-                    float amount = Math.min(Math.max(0f,((event.getAmount()-armor)/4f)),5f);
-                    SkillWrapper.addSP(player,"defense",amount,false);
+            } else if(event.getEntityLiving() instanceof EntityTameable) {
+                EntityTameable tameable = (EntityTameable)event.getEntityLiving();
+                if(!tameable.world.isRemote && tameable.isTamed()) {
+                    EntityLivingBase owner = tameable.getOwner();
+                    if(owner instanceof EntityPlayer) {
+                        PlayerData data = PlayerDataHandler.get((EntityPlayer)owner);
+                        if(Objects.nonNull(data)) {
+                            SkillWrapper.executeOnSkills(data, h -> {
+                                if(h instanceof ExtendedEventsTrait) ((ExtendedEventsTrait)h).onTamedHurt(event);
+                            });
+                        }
+                    }
                 }
             }
         }
@@ -76,31 +83,31 @@ public class EntityEvents {
         if(event.getEntityLiving() instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP)event.getEntityLiving();
             int jumpFactor = player.isPotionActive(MobEffects.JUMP_BOOST) ?
-                    Objects.requireNonNull(player.getActivePotionEffect(MobEffects.JUMP_BOOST)).getAmplifier()+3 : 2;
-            SkillWrapper.addSP((EntityPlayerMP) event.getEntityLiving(),"agility", jumpFactor, false);
+                    Objects.requireNonNull(player.getActivePotionEffect(MobEffects.JUMP_BOOST)).getAmplifier()+2 : 1;
+            SkillWrapper.addSP((EntityPlayerMP)event.getEntityLiving(),"agility",jumpFactor,false);
         }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onDamage(LivingDamageEvent event) {
         if(!event.getEntityLiving().world.isRemote && Objects.nonNull(event.getSource()) && event.getSource()!=DamageSource.OUT_OF_WORLD) {
-            if (event.getEntityLiving() instanceof EntityPlayerMP) {
+            if(event.getEntityLiving() instanceof EntityPlayerMP) {
                 EntityPlayerMP player = (EntityPlayerMP) event.getEntityLiving();
                 if(Objects.nonNull(player)) {
                     ISkillCapability cap = SkillWrapper.getSkillCapability(player);
                     if(Objects.nonNull(cap)) event.setAmount(Math.max(0f,event.getAmount()-cap.getDamageReduction()));
                 }
-            } else if (event.getSource().getTrueSource() instanceof EntityPlayerMP) {
+            } else if(event.getSource().getTrueSource() instanceof EntityPlayerMP) {
                 EntityPlayerMP player = (EntityPlayerMP) event.getSource().getTrueSource();
                 if(Objects.nonNull(player)) {
                     ISkillCapability cap = SkillWrapper.getSkillCapability(player);
                     float amount = event.getAmount();
                     if(Objects.nonNull(cap)) {
-                        amount += cap.getDamageMultiplier();
+                        amount+=cap.getDamageMultiplier();
                         event.setAmount(amount);
                         SkillWrapper.addSP(player,"attack",Math.max(0.5f,(amount/2f)),false);
                     }
-                    if (amount >= 50f && player.getHeldItemMainhand().getItem() instanceof ItemElementiumSword) {
+                    if(amount>=50f && player.getHeldItemMainhand().getItem() instanceof ItemElementiumSword) {
                         EntityPixie pixie = new EntityPixie(player.getServerWorld());
                         ((EntityPixieAccess) pixie).setBypassesTarget(true);
                         pixie.setPosition(player.posX,player.posY+2d,player.posZ);
@@ -108,19 +115,45 @@ public class EntityEvents {
                         player.getServerWorld().spawnEntity(pixie);
                     }
                 }
+            } else if(event.getSource().getTrueSource() instanceof EntityTameable) {
+                EntityTameable tameable = (EntityTameable)event.getSource().getTrueSource();
+                if(!tameable.world.isRemote && tameable.isTamed()) {
+                    EntityLivingBase owner = tameable.getOwner();
+                    if(owner instanceof EntityPlayer) {
+                        PlayerData data = PlayerDataHandler.get((EntityPlayer)owner);
+                        if(Objects.nonNull(data)) {
+                            SkillWrapper.executeOnSkills(data, h -> {
+                                if(h instanceof ExtendedEventsTrait) ((ExtendedEventsTrait)h).onTamedDamageOther(event);
+                            });
+                        }
+                    }
+                }
             }
         }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void onDamage(LivingDeathEvent event) {
+    public static void onLivingKnockBack(LivingKnockBackEvent event) {
+        EntityLivingBase entity = event.getEntityLiving();
+        if(!entity.world.isRemote && entity instanceof EntityPlayer) {
+            PlayerData data = PlayerDataHandler.get((EntityPlayer) entity);
+            if(Objects.nonNull(data)) {
+                SkillWrapper.executeOnSkills(data, h -> {
+                    if(h instanceof ExtendedEventsTrait) ((ExtendedEventsTrait) h).onLivingKnockback(event);
+                });
+            }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onDeath(LivingDeathEvent event) {
         if(event.getSource().getTrueSource() instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP)event.getSource().getTrueSource();
             if(Objects.nonNull(player) && Objects.nonNull(SkillWrapper.getSkillCapability(player))) {
                 NonNullList<ItemStack> armorList = NonNullList.from(ItemStack.EMPTY,
                         Iterables.toArray(event.getEntityLiving().getArmorInventoryList(),ItemStack.class));
-                float armor = 10f-ISpecialArmor.ArmorProperties.applyArmor(
-                        event.getEntityLiving(),armorList,event.getSource(),10f);
+                float armor = (25f-ISpecialArmor.ArmorProperties.applyArmor(
+                        event.getEntityLiving(),armorList,event.getSource(),25f))*2f;
                 SkillWrapper.addSP(player,"defense",armor,false);
             }
         }
@@ -133,6 +166,12 @@ public class EntityEvents {
 
         @SubscribeEvent(priority = EventPriority.LOWEST)
         public static void onChangedDimensions(PlayerEvent.PlayerChangedDimensionEvent event) {
+            PlayerData data = PlayerDataHandler.get(event.player);
+            if(Objects.nonNull(data)) {
+                SkillWrapper.executeOnSkills(data,h -> {
+                    if(h instanceof ExtendedEventsTrait) ((ExtendedEventsTrait)h).onChangeDimensions(event);
+                });
+            }
             if(event.player instanceof EntityPlayerMP) {
                 EntityPlayerMP player = (EntityPlayerMP)event.player;
                 if(event.toDim!=7 && GameStageHelper.hasStage(player,"twilight"))
@@ -149,7 +188,8 @@ public class EntityEvents {
 
         @SubscribeEvent(priority = EventPriority.LOWEST)
         public static void onLevelUp(LevelUpEvent.Post event) {
-            if(event.getEntityPlayer() instanceof EntityPlayerMP) SkillWrapper.updateTokens((EntityPlayerMP)event.getEntityPlayer());
+            if(event.getEntityPlayer() instanceof EntityPlayerMP)
+                SkillWrapper.updateTokens((EntityPlayerMP)event.getEntityPlayer());
         }
 
         @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -167,15 +207,29 @@ public class EntityEvents {
 
         @SubscribeEvent(priority = EventPriority.LOWEST)
         public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
-            if(event.player instanceof EntityPlayerMP)
-                SkillWrapper.forceTwilightRespawn(event.player);
+            if(event.player instanceof EntityPlayerMP) SkillWrapper.forceTwilightRespawn(event.player);
         }
 
         @SubscribeEvent(priority = EventPriority.LOWEST)
         public static void pickupXP(PlayerPickupXpEvent event) {
             if(event.getEntityPlayer() instanceof EntityPlayerMP) {
-                int factor = event.getOrb().xpValue>1 ? (int)(Math.log(event.getOrb().xpValue)/Math.log(2)) : 1;
+                int factor = (event.getOrb().xpValue>1 ? (int)(Math.log(event.getOrb().xpValue)/Math.log(2)) : 1)*2;
                 SkillWrapper.addSP((EntityPlayerMP)event.getEntityPlayer(),"magic",factor,false);
+            }
+        }
+
+        @SubscribeEvent(priority = EventPriority.LOWEST)
+        public static void onLootingLevel(LootingLevelEvent ev) {
+            if(ev.getDamageSource().getTrueSource() instanceof EntityPlayer) {
+                EntityPlayer player = (EntityPlayer)ev.getDamageSource().getTrueSource();
+                if(!player.world.isRemote) {
+                    PlayerData data = PlayerDataHandler.get(player);
+                    if(Objects.nonNull(data)) {
+                        SkillWrapper.executeOnSkills(data,h -> {
+                            if(h instanceof ExtendedEventsTrait) ((ExtendedEventsTrait)h).onLootingLevel(ev);
+                        });
+                    }
+                }
             }
         }
 
@@ -194,8 +248,8 @@ public class EntityEvents {
                         EntityPlayerMP player = (EntityPlayerMP) event.player;
                         if(player.isSprinting()) {
                             int speedFactor = player.isPotionActive(MobEffects.SPEED) ? Objects.requireNonNull(
-                                    player.getActivePotionEffect(MobEffects.SPEED)).getAmplifier() + 2 : 1;
-                            SkillWrapper.addSP(player, "agility", speedFactor, false);
+                                    player.getActivePotionEffect(MobEffects.SPEED)).getAmplifier()+2 : 1;
+                            SkillWrapper.addSP(player,"agility",speedFactor, false);
                         }
                         ISkillCapability cap = SkillWrapper.getSkillCapability(player);
                         if(Objects.nonNull(cap)) cap.decrementGatheringItems(20);
@@ -236,12 +290,6 @@ public class EntityEvents {
                 } else speedFactor = ClientEffects.MINING_SPEED;
                 event.setNewSpeed(event.getNewSpeed()*speedFactor);
             }
-        }
-
-        @SubscribeEvent(priority = EventPriority.LOWEST)
-        public static void onHoe(UseHoeEvent event) {
-            if(event.getEntityPlayer() instanceof EntityPlayerMP)
-                SkillWrapper.addSP((EntityPlayerMP)event.getEntityPlayer(),"farming",3f,false);
         }
 
         @SubscribeEvent(priority = EventPriority.LOWEST)

@@ -1,8 +1,11 @@
 package mods.thecomputerizer.dimhoppertweaks.common.events;
 
+import codersafterdark.reskillable.api.data.PlayerData;
+import codersafterdark.reskillable.api.data.PlayerDataHandler;
 import lumien.randomthings.item.ModItems;
 import mekanism.common.security.ISecurityTile;
 import mods.thecomputerizer.dimhoppertweaks.common.commands.DHDebugCommands;
+import mods.thecomputerizer.dimhoppertweaks.common.skills.ExtendedEventsTrait;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
@@ -20,9 +23,11 @@ import net.minecraft.item.ItemTool;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -63,12 +68,42 @@ public class WorldEvents {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void blockPlace(BlockEvent.PlaceEvent event) {
         EntityPlayer player = event.getPlayer();
-        if(player instanceof EntityPlayerMP && event.getState().getBlock()!=Blocks.FARMLAND)
-            SkillWrapper.addSP((EntityPlayerMP)event.getPlayer(),"building",1f,false);
+        if(player instanceof EntityPlayerMP) {
+            PlayerData data = PlayerDataHandler.get(player);
+            if(Objects.nonNull(data)) {
+                SkillWrapper.executeOnSkills(data,h -> {
+                    if(h instanceof ExtendedEventsTrait) ((ExtendedEventsTrait)h).onBlockPlaced(event);
+                });
+            }
+            if(event.getState().getBlock()!=Blocks.FARMLAND)
+                SkillWrapper.addSP((EntityPlayerMP)event.getPlayer(),"building",1f,false);
+        }
         if(Objects.nonNull(player)) {
             TileEntity tile = event.getWorld().getTileEntity(event.getPos());
             if(Objects.nonNull(tile) && !(tile instanceof ISecurityTile))
                 ((TileEntityAccess)tile).dimhoppertweaks$setStages(getPotentialFakePlayerStages(player,event.getPos()));
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onExplosionDetonate(ExplosionEvent.Detonate event) {
+        if(!event.getWorld().isRemote) {
+            Vec3d center = event.getExplosion().getPosition();
+            EntityPlayer harvester = null;
+            for(EntityPlayer player : event.getWorld().playerEntities) {
+                if(center.distanceTo(player.getPositionVector())<=56d) {
+                    harvester = player;
+                    break;
+                }
+            }
+            if(Objects.nonNull(harvester)) {
+                PlayerData data = PlayerDataHandler.get(harvester);
+                if(Objects.nonNull(data)) {
+                    SkillWrapper.executeOnSkills(data,h -> {
+                        if(h instanceof ExtendedEventsTrait) ((ExtendedEventsTrait)h).onExplosionDetonate(event);
+                    });
+                }
+            }
         }
     }
 
