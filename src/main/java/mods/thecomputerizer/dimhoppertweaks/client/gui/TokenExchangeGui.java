@@ -126,4 +126,9 @@ public class TokenExchangeGui extends GuiScreen {
         GlStateManager.enableTexture2D();
         GlStateManager.popMatrix();
     }
+
+    @Override
+    public boolean doesGuiPauseGame() {
+        return false;
+    }
 }

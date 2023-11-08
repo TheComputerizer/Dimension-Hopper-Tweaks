@@ -24,7 +24,7 @@ public class BetterBlightFireRenderer {
             ScalingHealth.MOD_ID_LOWER,"textures/entity/blightfire_gray.png");
 
     public static void render(RenderManager manager, EntityLivingBase parent, double x, double y, double z) {
-        if(Objects.nonNull(parent)) {
+        if(Objects.nonNull(parent) && !parent.isDead && parent.getHealth()>0f) {
             boolean tomfoolery = ModuleAprilTricks.instance.isEnabled() && ModuleAprilTricks.instance.isRightDay();
             AxisAlignedBB box = parent.getEntityBoundingBox();
             float width = averageBoxWidth(box);

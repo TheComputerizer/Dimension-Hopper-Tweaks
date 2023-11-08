@@ -23,6 +23,7 @@
     "MixinEntityCrazySkeleton",
     "MixinEntityCrazySpider",
     "MixinEntityCrazyZombie",
+    "MixinEntityHandler",
     "MixinEntityPixie",
     "MixinEscapeTarget",
     "MixinExploder",

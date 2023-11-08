@@ -5,11 +5,14 @@ import codersafterdark.reskillable.api.unlockable.Unlockable;
 import mods.thecomputerizer.dimhoppertweaks.common.commands.DHDebugCommands;
 import mods.thecomputerizer.dimhoppertweaks.common.commands.RandomTP;
 import mods.thecomputerizer.dimhoppertweaks.common.commands.SummonBoss;
+import mods.thecomputerizer.dimhoppertweaks.common.skills.attack.NoCooldowns;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.attack.SuperPets;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.building.ResistiveBuilder;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.defense.KnockbackImmunity;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.gathering.ExplosiveAura;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.gathering.LuckyAura;
+import mods.thecomputerizer.dimhoppertweaks.common.skills.magic.LivingBattery;
+import mods.thecomputerizer.dimhoppertweaks.common.skills.magic.NaturesAura;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.mining.ExpertMiner;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.research.ResearchSkill;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.research.TieredResearchTrait;
@@ -42,10 +45,10 @@ import static mods.thecomputerizer.dimhoppertweaks.registry.ItemRegistry.STARGAT
 
 @Mod.EventBusSubscriber(modid = Constants.MODID)
 public final class RegistryHandler {
+
     public static final CreativeTabs DIM_HOPPER_TAB = new CreativeTabs(Constants.MODID) {
         @SideOnly(Side.CLIENT)
-        @Nonnull
-        public ItemStack createIcon() {
+        public @Nonnull ItemStack createIcon() {
             return new ItemStack(STARGATE_ADDRESSER);
         }
     };
@@ -92,11 +95,11 @@ public final class RegistryHandler {
     public static void registerTraits(RegistryEvent.Register<Unlockable> event) {
         register(event.getRegistry(),new SuperPets(),new ResistiveBuilder(),new KnockbackImmunity(),new ExplosiveAura(),
                 new LuckyAura(),new ExpertMiner(),new RefreshingPortals(),new VoidCheater(),new VoidWalker(),
-                new TieredResearchTrait("oil",1,0),new TieredResearchTrait("oil",2,0),
-                new TieredResearchTrait("oil",3,0),new TieredResearchTrait("factory",1,1),
-                new TieredResearchTrait("factory",2,1),new TieredResearchTrait("factory",3,1),
-                new TieredResearchTrait("psionic",1,2),new TieredResearchTrait("psionic",2,2),
-                new TieredResearchTrait("psionic",3,2));
+                new LivingBattery(),new NaturesAura(),new NoCooldowns(),new TieredResearchTrait("oil",1,0),
+                new TieredResearchTrait("oil",2,0),new TieredResearchTrait("oil",3,0),
+                new TieredResearchTrait("factory",1,1),new TieredResearchTrait("factory",2,1),
+                new TieredResearchTrait("factory",3,1),new TieredResearchTrait("psionic",1,2),
+                new TieredResearchTrait("psionic",2,2),new TieredResearchTrait("psionic",3,2));
     }
 
     @SafeVarargs

@@ -30,4 +30,8 @@ public abstract class ExtendedEventsTrait extends Trait {
 
     @SuppressWarnings("deprecation")
     public void onBlockPlaced(BlockEvent.PlaceEvent ev) {}
+
+    public boolean shouldCancelNoDamiThresholds() {
+        return false;
+    }
 }
