@@ -34,20 +34,20 @@ public class ClientEvents {
     private static boolean shaderLoaded = false;
     private static boolean screenShakePositive = true;
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onFogDensity(EntityViewRenderEvent.FogDensity event) {
         //if(ClientHandler.FOG_DENSITY_OVERRIDE>=0)
             //event.setDensity(ClientHandler.FOG_DENSITY_OVERRIDE);
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onFogColors(EntityViewRenderEvent.FogColors event) {
         //event.setRed(0.5f);
         //event.setGreen(0.5f);
         //event.setBlue(1f);
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void screenShakeUpdate(TickEvent.PlayerTickEvent event) {
         if(event.isCanceled()) return;
         Minecraft mc = Minecraft.getMinecraft();
@@ -79,7 +79,7 @@ public class ClientEvents {
         return null;
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onRenderBossBars(RenderGameOverlayEvent.BossInfo event) {
         if(event.isCanceled()) return;
         if(event.getY()>12 && event.getY() >= event.getResolution().getScaledHeight()/5) event.setCanceled(true);

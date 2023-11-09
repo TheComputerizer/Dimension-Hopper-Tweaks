@@ -26,7 +26,7 @@ public class ServerEvents {
     private static WorldServer WORLD_SERVER;
     private static BlockPos POS_SERVER;
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void serverTick(TickEvent.ServerTickEvent event) {
         if(event.isCanceled()) return;
         if(event.phase==TickEvent.Phase.END) {
@@ -53,7 +53,7 @@ public class ServerEvents {
     }
 
     @SuppressWarnings("ConstantValue")
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
         if(event.isCanceled()) return;
         EntityPlayer player = event.player;
