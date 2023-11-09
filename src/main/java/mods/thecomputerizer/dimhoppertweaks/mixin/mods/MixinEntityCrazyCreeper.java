@@ -5,6 +5,8 @@ import cavern.entity.monster.EntityCrazyCreeper;
 import cavern.world.CaveDimensions;
 import mods.thecomputerizer.dimhoppertweaks.client.particle.ParticleBlightFire;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BossInfoServer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -64,17 +66,20 @@ public abstract class MixinEntityCrazyCreeper extends EntityCavenicCreeper {
     public void onUpdate() {
         super.onUpdate();
         if(this.world.isRemote) {
-            int var1 = this.rand.nextInt(2)*2-1;
-            int var2 = this.rand.nextInt(2)*2-1;
-            double ptX = this.posX+0.25*(double)var1;
-            double ptY = this.posY+0.65+(double)this.rand.nextFloat();
-            double ptZ = this.posZ+0.25*(double)var2;
-            double motionX = this.rand.nextFloat()*1f*(float)var1;
-            double motionY = ((double)this.rand.nextFloat()-0.25)*0.125;
-            double motionZ = this.rand.nextFloat()*1f*(float)var2;
+            AxisAlignedBB aabb = this.getEntityBoundingBox();
+            Vec3d center = aabb.getCenter();
+            double xFlip = this.rand.nextInt(2)*2-1;
+            double yFlip = this.rand.nextInt(2)*2-1;
+            double zFlip = this.rand.nextInt(2)*2-1;
+            double ptX = center.x+(Math.abs(aabb.maxX-aabb.minX)*2d*xFlip);
+            double ptY = center.y+(Math.abs(aabb.maxY-aabb.minY)*1.5d*yFlip);
+            double ptZ = center.z+(Math.abs(aabb.maxZ-aabb.minZ)*2d*zFlip);
+            double motionX = this.rand.nextDouble()*xFlip;
+            double motionY = this.rand.nextDouble()*0.75d*yFlip;
+            double motionZ = this.rand.nextDouble()*zFlip;
             ParticleBlightFire particle = new ParticleBlightFire(this.world,ptX,ptY,ptZ,motionX,motionY,motionZ,
                     100f,32d,0.5f);
-            particle.setCenter(ptX,ptY,ptZ);
+            particle.setCenter(center);
             FMLClientHandler.instance().getClient().effectRenderer.addEffect(particle);
         }
     }

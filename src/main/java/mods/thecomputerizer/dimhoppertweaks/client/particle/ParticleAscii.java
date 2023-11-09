@@ -11,7 +11,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.vecmath.Point4f;
@@ -25,8 +24,8 @@ public class ParticleAscii extends Particle {
     private char curChar;
     private Point4f charUV;
 
-    public ParticleAscii(World world, double x, double y, double z, double velocityX, double velocityY, double velocityZ,
-                         float maxAge, double rangeFactor, float scale) {
+    public ParticleAscii(World world, double x, double y, double z, double velocityX, double velocityY,
+                         double velocityZ, float maxAge, double rangeFactor, float scale) {
         super(world,x,y,z,velocityX,velocityY,velocityZ);
         this.rangeFactor = rangeFactor;
         randomizeInitialPos();
@@ -73,8 +72,8 @@ public class ParticleAscii extends Particle {
     }
 
     @Override
-    public void renderParticle(@Nonnull BufferBuilder buffer, @Nonnull Entity entityIn, float partialTicks,
-                               float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+    public void renderParticle(BufferBuilder buffer, Entity entity, float partialTicks, float rotationX, float rotationZ,
+                               float rotationYZ, float rotationXY, float rotationXZ) {
         FontUtil.bufferCharTex(this.curChar,Minecraft.getMinecraft().fontRenderer);
         double minU = particleTexture.getMinU()+this.charUV.x;
         double maxU = particleTexture.getMinU()+this.charUV.y;

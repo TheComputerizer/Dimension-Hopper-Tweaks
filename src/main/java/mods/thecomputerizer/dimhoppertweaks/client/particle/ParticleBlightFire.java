@@ -15,7 +15,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.silentchaos512.lib.event.ClientTicks;
 import net.silentchaos512.scalinghealth.lib.module.ModuleAprilTricks;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.vecmath.Point4f;
@@ -30,8 +29,8 @@ public class ParticleBlightFire extends Particle {
     private Point4f frameUV;
     private Vec3d centerVec = null;
 
-    public ParticleBlightFire(World world, double x, double y, double z, double velocityX, double velocityY, double velocityZ,
-                         float maxAge, double rangeFactor, float scale) {
+    public ParticleBlightFire(World world, double x, double y, double z, double velocityX, double velocityY,
+                              double velocityZ, float maxAge, double rangeFactor, float scale) {
         super(world, x, y, z, velocityX, velocityY, velocityZ);
         this.rangeFactor = rangeFactor;
         randomizeInitialPos();
@@ -43,8 +42,8 @@ public class ParticleBlightFire extends Particle {
         this.frameUV = getUVFrame();
     }
 
-    public void setCenter(double x, double y, double z) {
-        this.centerVec = new Vec3d(x,y,z);
+    public void setCenter(Vec3d center) {
+        this.centerVec = center;
     }
 
     private Point4f getUVFrame() {
@@ -86,7 +85,7 @@ public class ParticleBlightFire extends Particle {
                 this.motionZ*=0.8d;
             }
         } else {
-            float ageFactor = (float)this.particleAge / (float)this.particleMaxAge;
+            float ageFactor = (float)this.particleAge/(float)this.particleMaxAge;
             float distanceFactor = 1f-(-ageFactor+ageFactor*ageFactor*2f);
             this.posX = this.centerVec.x+this.motionX*(double)distanceFactor;
             this.posY = this.centerVec.y+this.motionY*(double)distanceFactor+(double)(1f-ageFactor);
@@ -97,12 +96,12 @@ public class ParticleBlightFire extends Particle {
 
     @Override
     public int getFXLayer() {
-        return 3;
+        return 2;
     }
 
     @Override
-    public void renderParticle(@Nonnull BufferBuilder buffer, @Nonnull Entity entityIn, float partialTicks,
-                               float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+    public void renderParticle(BufferBuilder buffer, Entity entity, float partialTicks, float rotationX, float rotationZ,
+                               float rotationYZ, float rotationXY, float rotationXZ) {
         TextureManager manager = Minecraft.getMinecraft().getTextureManager();
         if(this.tomfoolery) manager.bindTexture(BetterBlightFireRenderer.TEXTURE_GRAY);
         else manager.bindTexture(BetterBlightFireRenderer.TEXTURE);
