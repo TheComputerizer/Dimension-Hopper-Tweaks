@@ -27,8 +27,9 @@ public class ServerEvents {
     private static BlockPos POS_SERVER;
 
     @SubscribeEvent
-    public static void serverTick(TickEvent.ServerTickEvent ev) {
-        if(ev.phase==TickEvent.Phase.END) {
+    public static void serverTick(TickEvent.ServerTickEvent event) {
+        if(event.isCanceled()) return;
+        if(event.phase==TickEvent.Phase.END) {
             if (BOSS_SPAWN_COUNT > 0) BOSS_SPAWN_COUNT--;
             else if (BOSS_SPAWN_COUNT == 0) {
                 EntityFinalBoss boss = new EntityFinalBoss(WORLD_SERVER);
@@ -48,12 +49,13 @@ public class ServerEvents {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void attachEntityCapabilities(AttachCapabilitiesEvent<Entity> event) {
         if(event.getObject() instanceof EntityPlayerMP && !(event.getObject() instanceof FakePlayer))
-            event.addCapability(SkillWrapper.SKILL_CAPABILITY, new SkillCapabilityProvider());
+            event.addCapability(SkillWrapper.SKILL_CAPABILITY,new SkillCapabilityProvider());
     }
 
     @SuppressWarnings("ConstantValue")
     @SubscribeEvent
     public static void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
+        if(event.isCanceled()) return;
         EntityPlayer player = event.player;
         ISkillCapability cap = SkillWrapper.getSkillCapability(player);
         if(Objects.nonNull(cap)) {

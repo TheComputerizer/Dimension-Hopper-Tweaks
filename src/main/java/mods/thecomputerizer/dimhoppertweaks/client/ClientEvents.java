@@ -49,6 +49,7 @@ public class ClientEvents {
 
     @SubscribeEvent
     public static void screenShakeUpdate(TickEvent.PlayerTickEvent event) {
+        if(event.isCanceled()) return;
         Minecraft mc = Minecraft.getMinecraft();
         if(event.phase==TickEvent.Phase.END && event.player==mc.player) {
             Tuple<LightningEnhancerEntity,Double> entityTuple = getNearbyEnhancer(mc.player);
@@ -80,11 +81,13 @@ public class ClientEvents {
 
     @SubscribeEvent
     public static void onRenderBossBars(RenderGameOverlayEvent.BossInfo event) {
+        if(event.isCanceled()) return;
         if(event.getY()>12 && event.getY() >= event.getResolution().getScaledHeight()/5) event.setCanceled(true);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onPreTextRender(RenderGameOverlayEvent.Pre event) {
+        if(event.isCanceled()) return;
         if(event.getType()==RenderGameOverlayEvent.ElementType.TEXT) {
             RenderHelper.disableStandardItemLighting();
             GlStateManager.disableRescaleNormal();
@@ -103,6 +106,7 @@ public class ClientEvents {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onGetTooltip(ItemTooltipEvent event) {
+        if(event.isCanceled()) return;
         if(autoFeedItems.contains(event.getItemStack().getItem()))
             event.getToolTip().add(TextUtil.getTranslated("trait.dimhoppertweaks.hungry_farmer.auto_feed_enabled"));
     }

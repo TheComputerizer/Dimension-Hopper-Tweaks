@@ -44,6 +44,7 @@ public class WorldEvents {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void blockBreak(BlockEvent.BreakEvent event) {
+        if(event.isCanceled()) return;
         if(event.getPlayer() instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP) event.getPlayer();
             ISkillCapability cap = SkillWrapper.getSkillCapability(player);
@@ -67,6 +68,7 @@ public class WorldEvents {
     @SuppressWarnings("deprecation")
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void blockPlace(BlockEvent.PlaceEvent event) {
+        if(event.isCanceled()) return;
         EntityPlayer player = event.getPlayer();
         if(player instanceof EntityPlayerMP) {
             PlayerData data = PlayerDataHandler.get(player);
@@ -87,6 +89,7 @@ public class WorldEvents {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onExplosionDetonate(ExplosionEvent.Detonate event) {
+        if(event.isCanceled()) return;
         if(!event.getWorld().isRemote) {
             Vec3d center = event.getExplosion().getPosition();
             EntityPlayer harvester = null;
@@ -121,6 +124,7 @@ public class WorldEvents {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void worldTick(TickEvent.WorldTickEvent event) {
+        if(event.isCanceled()) return;
         if(event.phase==TickEvent.Phase.END) {
             int dim = event.world.provider.getDimension();
             if(dim==44 || dim==45) {
