@@ -1,18 +1,17 @@
 package mods.thecomputerizer.dimhoppertweaks.util;
 
-import net.minecraft.client.Minecraft;
+import mods.thecomputerizer.dimhoppertweaks.client.particle.ParticleBlightFire;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Objects;
-import java.util.Random;
 
 public class WorldUtil {
 
@@ -50,14 +49,14 @@ public class WorldUtil {
     }
 
     @SideOnly(Side.CLIENT)
-    public static void spawnParticle(EnumParticleTypes particle, Random rand, double x, double y, double z,
-                                     double width, double height) {
-        double speedX = (rand.nextDouble()*2d)-1d;
-        double speedY = (rand.nextDouble()*2d)-1d;
-        double speedZ = (rand.nextDouble()*2d)-1d;
+    public static void spawnBlightParticle(World world, double x, double y, double z, double width, double height) {
+        double speedX = (world.rand.nextDouble()*2d)-1d;
+        double speedY = (world.rand.nextDouble()*2d)-1d;
+        double speedZ = (world.rand.nextDouble()*2d)-1d;
         double posX = x+(speedX*width/4d);
         double posY = y+((height/2d)+(speedY*height/4d));
         double posZ = z+(speedZ*width/4d);
-        Minecraft.getMinecraft().renderGlobal.spawnParticle(particle,posX,posY,posZ,speedX,speedY,speedZ);
+        ParticleBlightFire particle = new ParticleBlightFire(world,posX,posY,posZ,speedX,speedY,speedZ,100f,32d,0.5f);
+        FMLClientHandler.instance().getClient().effectRenderer.addEffect(particle);
     }
 }

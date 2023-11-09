@@ -8,7 +8,6 @@ import mods.thecomputerizer.dimhoppertweaks.common.skills.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import mods.thecomputerizer.dimhoppertweaks.mixin.access.EntityPixieAccess;
-import mods.thecomputerizer.dimhoppertweaks.registry.ParticleRegistry;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.util.WorldUtil;
 import morph.avaritia.util.DamageSourceInfinitySword;
@@ -159,8 +158,8 @@ public class EntityEvents {
             EntityLivingBase entity = event.getEntityLiving();
             if(entity.world.isRemote && BlightHandler.isBlight(entity))
                 for(int i=0; i<MathHelper.clamp(entity.getMaxHealth()/500f,5f,64f); i++)
-                    WorldUtil.spawnParticle(ParticleRegistry.BLIGHT_FIRE,entity.world.rand,entity.posX,
-                            entity.getEntityBoundingBox().minY,entity.posZ,entity.width,entity.height);
+                    WorldUtil.spawnBlightParticle(entity.world,entity.posX,entity.getEntityBoundingBox().minY,
+                            entity.posZ,entity.width,entity.height);
         }
     }
 }

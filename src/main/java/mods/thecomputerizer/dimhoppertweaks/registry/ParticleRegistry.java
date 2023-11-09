@@ -22,6 +22,7 @@ import java.util.Objects;
 @Mod.EventBusSubscriber(modid = Constants.MODID)
 public final class ParticleRegistry {
 
+    public static final ResourceLocation PARTICLE_TEXTURES = new ResourceLocation("textures/particle/particles.png");
     private static final Class<?>[] PARTICLE_INIT_CLASSES = {String.class, int.class, boolean.class};
     public static final EnumParticleTypes RANDOM_ASCII = registerParticle("RANDOM_ASCII",true);
     public static final EnumParticleTypes BLIGHT_FIRE = registerParticle("BLIGHT_FIRE",false);

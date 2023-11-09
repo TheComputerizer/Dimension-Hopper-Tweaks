@@ -74,6 +74,7 @@ public abstract class MixinEntityCrazySkeleton extends EntityCavenicSkeleton {
             double motionZ = this.rand.nextFloat()*1f*(float)var2;
             ParticleBlightFire particle = new ParticleBlightFire(this.world,ptX,ptY,ptZ,motionX,motionY,motionZ,
                     100f,32d,0.5f);
+            particle.setCenter(ptX,ptY,ptZ);
             FMLClientHandler.instance().getClient().effectRenderer.addEffect(particle);
         }
     }
