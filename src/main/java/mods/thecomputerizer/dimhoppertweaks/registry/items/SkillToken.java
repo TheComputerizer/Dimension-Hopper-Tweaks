@@ -124,7 +124,7 @@ public class SkillToken extends EpicItem {
         boolean isDraining = name.matches(skillToDrain);
         name = translateSkill(name);
         int curLevel = tag.getInteger("level");
-        String skillColor = isDraining ? TextUtil.DARK_RED : (curLevel==1024 ? TextUtil.GOLD : TextUtil.DARK_GRAY);
+        String skillColor = isDraining ? TextUtil.DARK_RED : (curLevel==1024 ? TextUtil.ITALICS : TextUtil.DARK_GRAY);
         if(curLevel==1024)
             return TextUtil.getTranslated("item.dimhoppertweaks.skill_token.skill_maxed",skillColor,name);
         else {

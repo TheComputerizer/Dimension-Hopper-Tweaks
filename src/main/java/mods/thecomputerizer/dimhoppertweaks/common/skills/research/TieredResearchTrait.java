@@ -24,12 +24,12 @@ public class TieredResearchTrait extends ExtendedEventsTrait {
     private int timer = 0;
     private final String stageName;
 
-    public TieredResearchTrait(String type, int level, int yOffset) {
-        this(type,level,getLevelName(level),yOffset);
+    public TieredResearchTrait(String type, int level, int xOffset, int yOffset) {
+        this(type,level,getLevelName(level),xOffset,yOffset);
     }
 
-    private TieredResearchTrait(String type, int level, String levelName, int yOffset) {
-        super(type+"_mk_"+levelName,level-1,yOffset,RESEARCH,8,"research|"+(32*level));
+    private TieredResearchTrait(String type, int level, String levelName, int xOffset, int yOffset) {
+        super(type+"_mk_"+levelName,level-1+xOffset,yOffset,RESEARCH,8,"research|"+(32*level));
         this.stageName = type+levelName.toUpperCase();
     }
 
