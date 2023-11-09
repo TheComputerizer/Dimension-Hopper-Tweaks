@@ -1,9 +1,9 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.mods;
 
-import cavern.client.particle.ParticleCrazyMob;
 import cavern.entity.monster.EntityCavenicCreeper;
 import cavern.entity.monster.EntityCrazyCreeper;
 import cavern.world.CaveDimensions;
+import mods.thecomputerizer.dimhoppertweaks.client.particle.ParticleBlightFire;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.BossInfoServer;
 import net.minecraft.world.World;
@@ -72,7 +72,8 @@ public abstract class MixinEntityCrazyCreeper extends EntityCavenicCreeper {
             double motionX = this.rand.nextFloat()*1f*(float)var1;
             double motionY = ((double)this.rand.nextFloat()-0.25)*0.125;
             double motionZ = this.rand.nextFloat()*1f*(float)var2;
-            ParticleCrazyMob particle = new ParticleCrazyMob(this.world,ptX,ptY,ptZ,motionX,motionY,motionZ);
+            ParticleBlightFire particle = new ParticleBlightFire(this.world,ptX,ptY,ptZ,motionX,motionY,motionZ,
+                    100f,32d,0.5f);
             FMLClientHandler.instance().getClient().effectRenderer.addEffect(particle);
         }
     }

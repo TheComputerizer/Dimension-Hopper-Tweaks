@@ -27,7 +27,6 @@
     "MixinWorldServer"
   ],
   "client": [
-    "MixinEntityPlayerSP",
     "MixinModelLoader",
     "MixinParticle",
     "MixinRenderManager",
