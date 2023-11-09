@@ -1,15 +1,12 @@
 package mods.thecomputerizer.dimhoppertweaks.common.skills.mining;
 
-import codersafterdark.reskillable.api.unlockable.Trait;
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
-import net.minecraft.util.ResourceLocation;
+import mods.thecomputerizer.dimhoppertweaks.common.skills.ExtendedEventsTrait;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
-public class ExpertMiner extends Trait {
+public class ExpertMiner extends ExtendedEventsTrait {
 
     public ExpertMiner() {
-        super(Constants.res("expert_miner"),1,0,new ResourceLocation("reskillable","mining"),
-                12,"reskillable:mining|40");
+        super("expert_miner",1,0,MINING, 12,"mining|40");
     }
 
     @Override

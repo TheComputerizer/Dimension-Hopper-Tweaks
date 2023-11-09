@@ -9,6 +9,7 @@ import mods.thecomputerizer.dimhoppertweaks.common.skills.attack.NoCooldowns;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.attack.SuperPets;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.building.ResistiveBuilder;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.defense.KnockbackImmunity;
+import mods.thecomputerizer.dimhoppertweaks.common.skills.farming.HungryFarmer;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.gathering.ExplosiveAura;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.gathering.LuckyAura;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.magic.LivingBattery;
@@ -95,11 +96,16 @@ public final class RegistryHandler {
     public static void registerTraits(RegistryEvent.Register<Unlockable> event) {
         register(event.getRegistry(),new SuperPets(),new ResistiveBuilder(),new KnockbackImmunity(),new ExplosiveAura(),
                 new LuckyAura(),new ExpertMiner(),new RefreshingPortals(),new VoidCheater(),new VoidWalker(),
-                new LivingBattery(),new NaturesAura(),new NoCooldowns(),new TieredResearchTrait("oil",1,0),
-                new TieredResearchTrait("oil",2,0),new TieredResearchTrait("oil",3,0),
-                new TieredResearchTrait("factory",1,1),new TieredResearchTrait("factory",2,1),
-                new TieredResearchTrait("factory",3,1),new TieredResearchTrait("psionic",1,2),
-                new TieredResearchTrait("psionic",2,2),new TieredResearchTrait("psionic",3,2));
+                new LivingBattery(),new NaturesAura(),new NoCooldowns(),new HungryFarmer(),
+                new TieredResearchTrait("oil",1,0),
+                new TieredResearchTrait("oil",2,0),
+                new TieredResearchTrait("oil",3,0),
+                new TieredResearchTrait("factory",1,1),
+                new TieredResearchTrait("factory",2,1),
+                new TieredResearchTrait("factory",3,1),
+                new TieredResearchTrait("psionic",1,2),
+                new TieredResearchTrait("psionic",2,2),
+                new TieredResearchTrait("psionic",3,2));
     }
 
     @SafeVarargs

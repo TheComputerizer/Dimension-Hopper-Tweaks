@@ -2,11 +2,9 @@ package mods.thecomputerizer.dimhoppertweaks.common.skills.attack;
 
 import mods.thecomputerizer.dimhoppertweaks.common.skills.ExtendedEventsTrait;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
@@ -15,8 +13,7 @@ import java.util.Objects;
 public class SuperPets extends ExtendedEventsTrait {
 
     public SuperPets() {
-        super(Constants.res("super_pets"),3,0,new ResourceLocation("reskillable","attack"),
-                20,"reskillable:attack|64","reskillable:defense|32");
+        super("super_pets",3,0,ATTACK,20,"attack|64","defense|32");
     }
 
     @Override

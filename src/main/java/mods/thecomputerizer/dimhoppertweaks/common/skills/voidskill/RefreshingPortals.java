@@ -2,7 +2,6 @@ package mods.thecomputerizer.dimhoppertweaks.common.skills.voidskill;
 
 import mods.thecomputerizer.dimhoppertweaks.common.skills.ExtendedEventsTrait;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import net.minecraft.init.MobEffects;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.math.MathHelper;
@@ -11,8 +10,7 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 public class RefreshingPortals extends ExtendedEventsTrait {
 
     public RefreshingPortals() {
-        super(Constants.res("refreshing_portals"),2,3,Constants.res("void"),8,
-                "dimhoppertweaks:void|16","reskillable:magic|32");
+        super("refreshing_portals",2,3,VOID,8,"void|16","magic|32");
     }
 
     @Override

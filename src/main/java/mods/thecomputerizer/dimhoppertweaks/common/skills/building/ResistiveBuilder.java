@@ -2,18 +2,15 @@ package mods.thecomputerizer.dimhoppertweaks.common.skills.building;
 
 import mods.thecomputerizer.dimhoppertweaks.common.skills.ExtendedEventsTrait;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import net.minecraft.init.MobEffects;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.event.world.BlockEvent;
 
 public class ResistiveBuilder extends ExtendedEventsTrait {
 
     public ResistiveBuilder() {
-        super(Constants.res("resistive_builder"),3,0,new ResourceLocation("reskillable","building"),
-                12,"reskillable:building|32","reskillable:building|32");
+        super("resistive_builder",3,0,BUILDING,24,"building|64","building|32");
     }
 
     @SuppressWarnings("deprecation")

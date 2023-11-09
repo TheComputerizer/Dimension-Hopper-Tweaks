@@ -2,18 +2,15 @@ package mods.thecomputerizer.dimhoppertweaks.common.skills.gathering;
 
 import mods.thecomputerizer.dimhoppertweaks.common.skills.ExtendedEventsTrait;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.event.entity.living.LootingLevelEvent;
 
 public class LuckyAura extends ExtendedEventsTrait {
 
     public LuckyAura() {
-        super(Constants.res("lucky_aura"),3,0,new ResourceLocation("reskillable","gathering"),
-                16,"reskillable:gathering|40","reskillable:magic|32");
+        super("lucky_aura",3,0,GATHERING,16,"gathering|40","magic|32");
     }
 
     @Override

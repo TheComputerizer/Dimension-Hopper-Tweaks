@@ -14,7 +14,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
@@ -119,8 +118,8 @@ public class SkillWrapper {
     private int levelXP;
     private int prestigeLevel;
 
-    public SkillWrapper(String modid, String name, int xp, int level) {
-        this.modid = modid;
+    public SkillWrapper(String name, int xp, int level, int prestigeLevel) {
+        this.modid = name.matches("research") || name.matches("void") ? Constants.MODID : "reskillable";
         this.name = name;
         this.xp = xp;
         this.level = level;
@@ -129,7 +128,7 @@ public class SkillWrapper {
         int cap = 1024;
         if(skill!=null) cap = getSkill().getCap();
         this.maxLevel = cap;
-        this.prestigeLevel = 0;
+        this.prestigeLevel = prestigeLevel;
         Constants.LOGGER.debug("Registered skill {}:{} at level {} with xp {}/{}",modid,name,level,xp,levelXP);
     }
 
@@ -276,12 +275,5 @@ public class SkillWrapper {
             case 6 : return 6d;
             default : return 1d;
         }
-    }
-
-    public NBTTagCompound writeNBT(NBTTagCompound compound) {
-        compound.setInteger(this.name+"_xp",this.xp);
-        compound.setInteger(this.name+"_level",this.level);
-        compound.setInteger(this.name+"_prestige",this.prestigeLevel);
-        return compound;
     }
 }

@@ -1,10 +1,8 @@
 package mods.thecomputerizer.dimhoppertweaks.common.skills.magic;
 
 import mods.thecomputerizer.dimhoppertweaks.common.skills.ExtendedEventsTrait;
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import vazkii.botania.common.item.ItemManaTablet;
 import vazkii.botania.common.item.ModItems;
@@ -17,9 +15,7 @@ import java.util.Objects;
 public class LivingBattery extends ExtendedEventsTrait {
 
     public LivingBattery() {
-        super(Constants.res("living_battery"),1,3,new ResourceLocation("reskillable","magic"),
-                120,"reskillable:magic|256","dimhoppertweaks:void|128","dimhoppertweaks:research|64",
-                "reskillable:defense|32");
+        super("living_battery",1,3,MAGIC,120,"magic|256","void|128","research|64","defense|32");
     }
 
     @Override

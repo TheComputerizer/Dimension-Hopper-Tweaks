@@ -65,7 +65,7 @@ public class SkillToken extends EpicItem {
             String skill = tag.getString("drain_selection");
             int amount = tag.getInteger("drain_amount");
             if(player.isSneaking()) {
-                new PacketOpenGui(SkillCapabilityStorage.SKILLS, skill,amount).addPlayers(player).send();
+                new PacketOpenGui(SkillCapabilityStorage.SKILLS,skill,amount).addPlayers(player).send();
                 return new ActionResult<>(EnumActionResult.SUCCESS,stack);
             } else if(player.experienceLevel>=amount) {
                 ISkillCapability cap = SkillWrapper.getSkillCapability(player);

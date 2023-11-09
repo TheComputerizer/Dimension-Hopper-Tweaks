@@ -4,7 +4,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
-import org.apache.commons.lang3.mutable.MutableInt;
 
 import java.util.Map;
 import java.util.Set;
@@ -14,7 +13,6 @@ public interface ISkillCapability {
 
     void of(SkillCapability copy, EntityPlayerMP newPlayer);
     void addSkillXP(String skill, int amount, EntityPlayerMP player, boolean fromXP);
-    void setSkillXP(String skill, int xp, int levelXP);
     int getSkillXP(String skill);
     int getSkillLevel(String skill);
     int getSkillLevelXP(String skill);
@@ -30,7 +28,8 @@ public interface ISkillCapability {
     int getSkillXpMultiplier(float initialAmount);
     void decrementGatheringItems(int amount);
     boolean checkGatheringItem(Item item);
-    void syncGatheringItems(Map<Item, MutableInt> items);
+    void togglePassiveFood(Item item);
+    boolean canAutoFeed(Item item);
     Set<Map.Entry<String, SkillWrapper>> getCurrentValues();
     void syncSkills(EntityPlayerMP player);
     void setDrainSelection(String skill, int levels, EntityPlayerMP player);
@@ -40,6 +39,6 @@ public interface ISkillCapability {
     BlockPos getTwilightRespawn();
     boolean incrementDreamTimer(EntityPlayerMP player, int time);
     void resetDreamTimer();
-    void initDreamTimer(int time);
-    NBTTagCompound writeNBT();
+    NBTTagCompound writeToNBT();
+    void readFromNBT(NBTTagCompound tag);
 }

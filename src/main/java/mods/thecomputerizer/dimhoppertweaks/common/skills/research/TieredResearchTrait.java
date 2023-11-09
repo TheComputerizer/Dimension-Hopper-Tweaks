@@ -1,11 +1,10 @@
 package mods.thecomputerizer.dimhoppertweaks.common.skills.research;
 
-import codersafterdark.reskillable.api.unlockable.Trait;
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.common.skills.ExtendedEventsTrait;
 import net.darkhax.gamestages.GameStageHelper;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-public class TieredResearchTrait extends Trait {
+public class TieredResearchTrait extends ExtendedEventsTrait {
 
     private static String getLevelName(int level) {
         switch(level) {
@@ -30,8 +29,7 @@ public class TieredResearchTrait extends Trait {
     }
 
     private TieredResearchTrait(String type, int level, String levelName, int yOffset) {
-        super(Constants.res(type+"_mk_"+levelName),level-1,yOffset,Constants.res("research"), 8,
-                "reskillable:research|"+(32*level));
+        super(type+"_mk_"+levelName,level-1,yOffset,RESEARCH,8,"research|"+(32*level));
         this.stageName = type+levelName.toUpperCase();
     }
 

@@ -1,8 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.common.skills.voidskill;
 
-import codersafterdark.reskillable.api.unlockable.Trait;
 import mods.thecomputerizer.dimhoppertweaks.common.commands.DHDebugCommands;
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.common.skills.ExtendedEventsTrait;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
@@ -10,11 +9,10 @@ import net.minecraft.util.DamageSource;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class VoidCheater extends Trait {
+public class VoidCheater extends ExtendedEventsTrait {
 
     public VoidCheater() {
-        super(Constants.res("void_cheater"),0,1,Constants.res("void"),16,
-                "dimhoppertweaks:void|64","reskillable:magic|40","reskillable:defense|40");
+        super("void_cheater",0,1,VOID,16,"void|64","magic|40","defense|40");
     }
 
     @Override
