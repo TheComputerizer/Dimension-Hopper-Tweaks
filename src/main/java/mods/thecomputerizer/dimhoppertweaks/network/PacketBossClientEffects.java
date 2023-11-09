@@ -19,7 +19,7 @@ public class PacketBossClientEffects extends MessageImpl {
     }
 
     @Override
-    public IMessage handle(MessageContext messageContext) {
+    public IMessage handle(MessageContext ctx) {
         ClientPacketHandlers.handleBossClientEffects();
         return null;
     }

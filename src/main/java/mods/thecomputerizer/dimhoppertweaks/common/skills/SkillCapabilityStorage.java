@@ -11,7 +11,7 @@ import java.util.Arrays;
 
 public class SkillCapabilityStorage implements Capability.IStorage<ISkillCapability> {
 
-    public static final ImmutableList<String> SKILLS = ImmutableList.copyOf(Arrays.asList("mining","gathering", "attack",
+    public static final ImmutableList<String> SKILLS = ImmutableList.copyOf(Arrays.asList("mining","gathering","attack",
             "defense","building","agility","farming","magic","void","research"));
 
 

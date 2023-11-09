@@ -28,7 +28,7 @@ public class PacketOpenGui extends MessageImpl {
     }
 
     @Override
-    public IMessage handle(MessageContext messageContext) {
+    public IMessage handle(MessageContext ctx) {
         openGui(this.skills,this.currentSkill,this.currentLevel);
         return null;
     }

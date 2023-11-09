@@ -25,7 +25,7 @@ public class DimHopperTweaks
     public DimHopperTweaks() {
         NetworkHandler.queueServerPacketRegistries(PacketSyncGuiData.class);
         NetworkHandler.queueClientPacketRegistries(PacketBossClientEffects.class,PacketGrayScaleTimer.class,
-                PacketOpenGui.class,PacketRenderBossAttack.class,PacketSyncBreakSpeed.class,
+                PacketOpenGui.class,PacketRenderBossAttack.class, PacketSyncCapabilityData.class,
                 PacketSyncPlayerHealth.class,PacketTileEntityClassQuery.class,PacketUpdateBossRender.class);
     }
 

@@ -2,7 +2,7 @@ package mods.thecomputerizer.dimhoppertweaks.common.skills;
 
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketGrayScaleTimer;
-import mods.thecomputerizer.dimhoppertweaks.network.PacketSyncBreakSpeed;
+import mods.thecomputerizer.dimhoppertweaks.network.PacketSyncCapabilityData;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
@@ -97,10 +97,10 @@ public class SkillCapability implements ISkillCapability {
         return 0.2f*(((float)this.skillMap.get("mining").getLevel())/32f);
     }
 
-    @Override
-    public void syncBreakSpeed(EntityPlayerMP player) {
-        float speed = 1f+getBreakSpeedMultiplier();
-        if(Objects.nonNull(player.connection)) new PacketSyncBreakSpeed(speed).addPlayers(player).send();
+    private void syncClientData(EntityPlayerMP player) {
+        float breakSpeed = 1f+getBreakSpeedMultiplier();
+        if(Objects.nonNull(player.connection))
+            new PacketSyncCapabilityData(breakSpeed,this.autoFeedWhitelist).addPlayers(player).send();
     }
 
     @Override
@@ -152,10 +152,11 @@ public class SkillCapability implements ISkillCapability {
     }
 
     @Override
-    public void togglePassiveFood(Item item) {
+    public void togglePassiveFood(EntityPlayerMP player, Item item) {
         if(item instanceof ItemFood) {
             if(this.autoFeedWhitelist.contains(item)) this.autoFeedWhitelist.remove(item);
             else this.autoFeedWhitelist.add(item);
+            syncClientData(player);
         } else this.autoFeedWhitelist.remove(item);
     }
 
@@ -165,14 +166,14 @@ public class SkillCapability implements ISkillCapability {
     }
 
     @Override
-    public Set<Map.Entry<String, SkillWrapper>> getCurrentValues() {
+    public Set<Map.Entry<String,SkillWrapper>> getCurrentValues() {
         return this.skillMap.entrySet();
     }
 
     @Override
     public void syncSkills(EntityPlayerMP player) {
         for(SkillWrapper wrapper : this.skillMap.values()) wrapper.syncLevel(player);
-        syncBreakSpeed(player);
+        syncClientData(player);
     }
 
     @Override

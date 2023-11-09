@@ -15,7 +15,7 @@ import java.util.Objects;
 public class LivingBattery extends ExtendedEventsTrait {
 
     public LivingBattery() {
-        super("living_battery",1,2,MAGIC,120,"magic|256","void|128","research|64","defense|32");
+        super("living_battery",1,3,MAGIC,120,"magic|256","void|128","research|64","defense|32");
     }
 
     @Override

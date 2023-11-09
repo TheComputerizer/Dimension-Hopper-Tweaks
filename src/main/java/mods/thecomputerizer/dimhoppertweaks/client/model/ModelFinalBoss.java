@@ -8,6 +8,7 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 
 public class ModelFinalBoss extends AnimatedGeoModel<EntityFinalBoss> {
+
     @Override
     public ResourceLocation getAnimationFileLocation(EntityFinalBoss entity) {
         return Constants.res("animations/boss.animation.json");

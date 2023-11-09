@@ -15,7 +15,7 @@ public class ScrollableInteger extends CircularScrollableElement {
     @Override
     public void handleScroll() {
         this.currentLevel = translateScroll(this.currentLevel);
-        this.setCenterString(""+this.currentLevel);
+        this.setCenterString(String.valueOf(this.currentLevel));
         this.getParentScreen().setConversionRate(this.currentLevel);
     }
 

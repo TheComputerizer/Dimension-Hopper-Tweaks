@@ -1,6 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.client.gui;
 
-import mods.thecomputerizer.dimhoppertweaks.util.ItemUtil;
+import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -8,6 +9,8 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import org.lwjgl.opengl.GL11;
+
+import java.util.Objects;
 
 public abstract class CircularScrollableElement extends Gui {
 
@@ -88,7 +91,7 @@ public abstract class CircularScrollableElement extends Gui {
         GlStateManager.popMatrix();
         int color = this.hover ? 16777120 : 14737632;
         this.drawCenteredString(mc.fontRenderer,this.displayString,this.centerX,this.centerY,color);
-        if(this.hover && this.hoverText!=null)
-            parentScreen.drawHoveringText(ItemUtil.getTranslationForType("gui",this.hoverText),mouseX,mouseY);
+        if(this.hover && Objects.nonNull(this.hoverText))
+            parentScreen.drawHoveringText(TextUtil.getTranslated("gui."+ Constants.MODID+"."+this.hoverText),mouseX,mouseY);
     }
 }

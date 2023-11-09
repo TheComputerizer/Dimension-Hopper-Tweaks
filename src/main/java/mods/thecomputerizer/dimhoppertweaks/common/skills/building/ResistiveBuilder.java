@@ -10,7 +10,7 @@ import net.minecraftforge.event.world.BlockEvent;
 public class ResistiveBuilder extends ExtendedEventsTrait {
 
     public ResistiveBuilder() {
-        super("resistive_builder",3,0,BUILDING,24,"building|64","building|32");
+        super("resistive_builder",3,0,BUILDING,24,"building|64","defense|32");
     }
 
     @SuppressWarnings("deprecation")

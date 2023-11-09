@@ -18,7 +18,7 @@ public class PacketSyncPlayerHealth extends MessageImpl {
 
 
     @Override
-    public IMessage handle(MessageContext messageContext) {
+    public IMessage handle(MessageContext ctx) {
         ClientPacketHandlers.handleSyncPlayerHealth(this.health);
         return null;
     }

@@ -1,7 +1,8 @@
 package mods.thecomputerizer.dimhoppertweaks.client.gui;
 
+import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketSyncGuiData;
-import mods.thecomputerizer.dimhoppertweaks.util.ItemUtil;
+import mods.thecomputerizer.dimhoppertweaks.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -52,7 +53,7 @@ public class TokenExchangeGui extends GuiScreen {
     }
 
     private String getSkillTranslation(String skill) {
-        return ItemUtil.getTranslationForType("skill",skill);
+        return TextUtil.getTranslated("skill."+Constants.MODID+"."+skill);
     }
 
     private List<String> getListTranslation() {
@@ -67,10 +68,11 @@ public class TokenExchangeGui extends GuiScreen {
             this.drawDefaultBackground();
             synchronized (this.scrollables) {
                 for (CircularScrollableElement circle : this.scrollables)
-                    circle.render(Minecraft.getMinecraft(), mouseX, mouseY, 0, 0, 0, 64);
+                    circle.render(Minecraft.getMinecraft(),mouseX,mouseY,0,0,0,64);
             }
-            this.drawCenteredString(this.fontRenderer, ItemUtil.getTranslationForType("gui", "skill_drain"), this.width / 2, 8, 10526880);
-            this.renderSmallCircleOnCursor(Minecraft.getMinecraft(), mouseX, mouseY);
+            this.drawCenteredString(this.fontRenderer,TextUtil.getTranslated("gui."+Constants.MODID+"."+"skill_drain"),
+                    this.width/2,8,10526880);
+            this.renderSmallCircleOnCursor(Minecraft.getMinecraft(),mouseX,mouseY);
             super.drawScreen(mouseX, mouseY, partialTicks);
         } catch (NullPointerException ignored) {
             this.currentSkill = Objects.nonNull(this.currentSkill) && this.currentSkill.length()>1 ? this.currentSkill : "mining";
@@ -82,8 +84,8 @@ public class TokenExchangeGui extends GuiScreen {
     @Override
     public void handleMouseInput() throws IOException {
         super.handleMouseInput();
-        synchronized (this.scrollables) {
-            for (CircularScrollableElement circle : this.scrollables) circle.handleScroll();
+        synchronized(this.scrollables) {
+            for(CircularScrollableElement circle : this.scrollables) circle.handleScroll();
         }
     }
 
@@ -93,32 +95,28 @@ public class TokenExchangeGui extends GuiScreen {
     }
 
     private void renderSmallCircleOnCursor(Minecraft ignored, int mouseX, int mouseY) {
-        int r = 255;
-        int g = 255;
-        int b = 255;
-        int a = 255;
         GlStateManager.pushMatrix();
         GlStateManager.disableAlpha();
         GlStateManager.enableBlend();
         GlStateManager.disableTexture2D();
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color(1f,1f,1f,1f);
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
         float startAngle = (float) Math.toRadians(180);
         float endAngle = (float) Math.toRadians(540);
-        float angle = endAngle - startAngle;
+        float angle = endAngle-startAngle;
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-        for (int i = 0; i < 72; i++) {
-            float angle1 = startAngle + (i / 72f) * angle;
-            float angle2 = startAngle + ((i + 1) / 72f) * angle;
-            float xOut = mouseX + 5 * (float) Math.cos(angle1);
-            float yOut = mouseY + 5 * (float) Math.sin(angle1);
-            float xOut2 = mouseX + 5 * (float) Math.cos(angle2);
-            float yOut2 = mouseY + 5 * (float) Math.sin(angle2);
-            buffer.pos(xOut, yOut, this.zLevel).color(r, g, b, a).endVertex();
-            buffer.pos(mouseX, mouseY, this.zLevel).color(r, g, b, a).endVertex();
-            buffer.pos(mouseX, mouseY, this.zLevel).color(r, g, b, a).endVertex();
-            buffer.pos(xOut2, yOut2, this.zLevel).color(r, g, b, a).endVertex();
+        for (int i=0; i<72; i++) {
+            float angle1 = startAngle+(i/72f)*angle;
+            float angle2 = startAngle+((i+1)/72f)*angle;
+            float xOut = mouseX+5*(float)Math.cos(angle1);
+            float yOut = mouseY+5*(float)Math.sin(angle1);
+            float xOut2 = mouseX+5*(float)Math.cos(angle2);
+            float yOut2 = mouseY+5*(float)Math.sin(angle2);
+            buffer.pos(xOut,yOut, this.zLevel).color(255,255,255,255).endVertex();
+            buffer.pos(mouseX,mouseY,this.zLevel).color(255,255,255,255).endVertex();
+            buffer.pos(mouseX,mouseY,this.zLevel).color(255,255,255,255).endVertex();
+            buffer.pos(xOut2,yOut2,this.zLevel).color(255,255,255,255).endVertex();
         }
         tessellator.draw();
         GlStateManager.enableAlpha();

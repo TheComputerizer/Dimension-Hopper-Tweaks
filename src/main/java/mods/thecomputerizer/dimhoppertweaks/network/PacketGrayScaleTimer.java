@@ -18,7 +18,7 @@ public class PacketGrayScaleTimer extends MessageImpl {
     }
 
     @Override
-    public IMessage handle(MessageContext messageContext) {
+    public IMessage handle(MessageContext ctx) {
         ClientPacketHandlers.handleGrayScaleOverride(this.grayScale);
         return null;
     }

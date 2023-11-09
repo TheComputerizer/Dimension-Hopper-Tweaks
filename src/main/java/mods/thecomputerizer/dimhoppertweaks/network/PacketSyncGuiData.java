@@ -30,7 +30,7 @@ public class PacketSyncGuiData extends MessageImpl {
     }
 
     @Override
-    public IMessage handle(MessageContext messageContext) {
+    public IMessage handle(MessageContext ctx) {
         PlayerList players = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList();
         EntityPlayerMP player = players.getPlayerByUUID(this.playerUUID);
         ISkillCapability cap = SkillWrapper.getSkillCapability(player);

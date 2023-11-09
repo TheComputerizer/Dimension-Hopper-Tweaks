@@ -30,8 +30,8 @@ public class ScrollableList extends CircularScrollableElement {
 
     private int translateScroll(int original) {
         int mouseScroll = Mouse.getEventDWheel();
-        if (mouseScroll == 0 || !getHover()) return original;
-        if (mouseScroll > 0) {
+        if(mouseScroll==0 || !getHover()) return original;
+        if(mouseScroll>0) {
             original++;
             if(original>=this.originalElements.size()) original-=this.originalElements.size();
             return original;

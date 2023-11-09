@@ -17,9 +17,11 @@ import net.silentchaos512.scalinghealth.lib.module.ModuleAprilTricks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.vecmath.Point4f;
 import java.util.Objects;
 
+@ParametersAreNonnullByDefault
 @SideOnly(Side.CLIENT)
 public class ParticleBlightFire extends Particle {
 
@@ -76,12 +78,12 @@ public class ParticleBlightFire extends Particle {
         if(this.particleAge++>=this.particleMaxAge) setExpired();
         if(Objects.isNull(this.centerVec)) {
             move(this.motionX, this.motionY, this.motionZ);
-            this.motionX *= 0.95d;
-            this.motionY *= 0.95d;
-            this.motionZ *= 0.95d;
+            this.motionX*=0.95d;
+            this.motionY*=0.95d;
+            this.motionZ*=0.95d;
             if (this.onGround) {
-                this.motionX *= 0.8d;
-                this.motionZ *= 0.8d;
+                this.motionX*=0.8d;
+                this.motionZ*=0.8d;
             }
         } else {
             float ageFactor = (float)this.particleAge / (float)this.particleMaxAge;
@@ -95,7 +97,7 @@ public class ParticleBlightFire extends Particle {
 
     @Override
     public int getFXLayer() {
-        return 69;
+        return 3;
     }
 
     @Override
@@ -120,29 +122,25 @@ public class ParticleBlightFire extends Particle {
         int skyLight = combinedBrightness >> 16 & 65535;
         int blockLight = combinedBrightness & 65535;
         buffer.pos(x-((scaledLRDirX-scaledUDDirX)/2d),y-scaledUDDirY,z-((scaledLRDirZ-scaledUDDirZ)/2d))
-                .tex(maxU,maxV)
-                .color(this.particleRed,this.particleGreen,this.particleBlue,this.particleAlpha)
+                .tex(maxU,maxV).color(this.particleRed,this.particleGreen,this.particleBlue,this.particleAlpha)
                 .lightmap(skyLight,blockLight).endVertex();
         buffer.pos(x-((scaledLRDirX+scaledUDDirX)/2d),y+scaledUDDirY,z-((scaledLRDirZ+scaledUDDirZ)/2d))
-                .tex(maxU, minV)
-                .color(this.particleRed,this.particleGreen,this.particleBlue,this.particleAlpha)
+                .tex(maxU,minV).color(this.particleRed,this.particleGreen,this.particleBlue,this.particleAlpha)
                 .lightmap(skyLight,blockLight).endVertex();
         buffer.pos(x+((scaledLRDirX+scaledUDDirX)/2d),y+scaledUDDirY,z+((scaledLRDirZ+scaledUDDirZ)/2d))
-                .tex(minU, minV)
-                .color(this.particleRed,this.particleGreen,this.particleBlue,this.particleAlpha)
+                .tex(minU,minV).color(this.particleRed,this.particleGreen,this.particleBlue,this.particleAlpha)
                 .lightmap(skyLight,blockLight).endVertex();
         buffer.pos(x+((scaledLRDirX-scaledUDDirX)/2d),y-scaledUDDirY,z+((scaledLRDirZ-scaledUDDirZ)/2d))
-                .tex(minU, maxV)
-                .color(this.particleRed,this.particleGreen,this.particleBlue,this.particleAlpha)
+                .tex(minU,maxV).color(this.particleRed,this.particleGreen,this.particleBlue,this.particleAlpha)
                 .lightmap(skyLight,blockLight).endVertex();
     }
 
     public static class Factory implements IParticleFactory {
 
         @Override
-        public @Nullable Particle createParticle(int id, @Nonnull World world, double posX, double posY, double posZ,
-                                                 double velocityX, double velocityY, double velocityZ, @Nonnull int... args) {
-            return new ParticleBlightFire(Minecraft.getMinecraft().world, posX, posY, posZ, velocityX, velocityY, velocityZ,
+        public @Nullable ParticleBlightFire createParticle(int id, World world, double posX, double posY, double posZ,
+                                                 double velocityX, double velocityY, double velocityZ, int... args) {
+            return new ParticleBlightFire(Minecraft.getMinecraft().world,posX,posY,posZ,velocityX,velocityY,velocityZ,
                     args.length>=1 ? (float)args[0] : 100f, args.length>=2 ? (double)args[1] : 32d,
                     args.length>=3 ? ((float)args[2])/100f : 0.5f);
         }

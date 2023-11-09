@@ -13,14 +13,23 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.living.LootingLevelEvent;
 import net.minecraftforge.event.entity.player.AdvancementEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteractSpecific;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem;
 import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.*;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.ItemPickupEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import org.apache.commons.lang3.mutable.MutableInt;
@@ -163,6 +172,25 @@ public class PlayerEvents {
         if(passedDimCheck && goodStage==GameStageHelper.hasStage(player,stage)) {
             if(!goodStage) GameStageHelper.addStage(player,stage);
             else GameStageHelper.removeStage(player,stage);
+        }
+    }
+
+
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onFoodRightClick(PlayerInteractEvent event) {
+        if(event.isCanceled()) return;
+        Item item = event.getItemStack().getItem();
+        EntityPlayer player = event.getEntityPlayer();
+        if(!event.getWorld().isRemote && item instanceof ItemFood && player.isSneaking() &&
+                (event instanceof RightClickItem || event instanceof RightClickBlock ||
+                        event instanceof EntityInteract || event instanceof EntityInteractSpecific)) {
+            PlayerData data = PlayerDataHandler.get(player);
+            if(Objects.nonNull(data)) {
+                SkillWrapper.executeOnSkills(data,h -> {
+                    if(h instanceof ExtendedEventsTrait) ((ExtendedEventsTrait)h).onEat(player,(ItemFood)item);
+                });
+            }
         }
     }
 }

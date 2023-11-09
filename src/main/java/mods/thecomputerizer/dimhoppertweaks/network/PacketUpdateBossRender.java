@@ -26,7 +26,7 @@ public class PacketUpdateBossRender extends MessageImpl {
     }
 
     @Override
-    public IMessage handle(MessageContext messageContext) {
+    public IMessage handle(MessageContext ctx) {
         ClientPacketHandlers.handleUpdateBossRender(this.bossID, this.phase, this.isShieldUp,
                 this.animationState, this.projectileChargeTime);
         return null;

@@ -1,5 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.network;
 
+import mods.thecomputerizer.dimhoppertweaks.client.ClientEvents;
 import mods.thecomputerizer.dimhoppertweaks.client.render.ClientEffects;
 import mods.thecomputerizer.dimhoppertweaks.client.render.RenderDelayedAOE;
 import mods.thecomputerizer.dimhoppertweaks.client.render.RenderEvents;
@@ -10,6 +11,7 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -18,6 +20,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class ClientPacketHandlers {
 
@@ -67,8 +70,9 @@ public class ClientPacketHandlers {
     }
 
     @SideOnly(Side.CLIENT)
-    public static void handleMiningSpeed(float miningSpeed) {
+    public static void handleCapData(float miningSpeed, Set<Item> autoFeedItems) {
         ClientEffects.MINING_SPEED = miningSpeed;
+        ClientEvents.autoFeedItems = autoFeedItems;
     }
 
     @SideOnly(Side.CLIENT)

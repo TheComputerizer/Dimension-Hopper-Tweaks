@@ -1,27 +1,26 @@
 package mods.thecomputerizer.dimhoppertweaks.registry.items;
 
 import mcp.MethodsReturnNonnullByDefault;
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillCapabilityStorage;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;
+import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketOpenGui;
-import mods.thecomputerizer.dimhoppertweaks.util.ItemUtil;
-import net.minecraft.client.resources.I18n;
+import mods.thecomputerizer.dimhoppertweaks.util.TextUtil;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
@@ -33,26 +32,24 @@ import java.util.Set;
 @MethodsReturnNonnullByDefault
 public class SkillToken extends EpicItem {
 
-    private static final String WHITE = String.valueOf(TextFormatting.WHITE);
-    private static final String DARK_GRAY = String.valueOf(TextFormatting.DARK_GRAY);
-    private static final String GRAY = String.valueOf(TextFormatting.GRAY);
-    private static final String RED = String.valueOf(TextFormatting.RED);
-    private static final String DARK_RED = String.valueOf(TextFormatting.DARK_RED);
-    private static final String GOLD = String.valueOf(TextFormatting.GOLD);
-    private static final String ITALICS = String.valueOf(TextFormatting.ITALIC);
-    private static final String BOLD = String.valueOf(TextFormatting.ITALIC);
-    private static final String RESET = String.valueOf(TextFormatting.RESET);
-
-    public void updateSkills(ItemStack stack, Set<Map.Entry<String, SkillWrapper>> skillSet, String selectedSkill, int drainLevels) {
+    public void updateSkills(ItemStack stack, Set<Map.Entry<String,SkillWrapper>> skillSet, String selectedSkill, int drainLevels) {
         NBTTagCompound tag = getTag(stack);
-        for(Map.Entry<String, SkillWrapper> entry : skillSet) {
-            tag.setInteger(entry.getKey()+"_xp",entry.getValue().getXP());
-            tag.setInteger(entry.getKey()+"_level",entry.getValue().getLevel());
-            tag.setInteger(entry.getKey()+"_level_xp",entry.getValue().getLevelXP());
-            tag.setInteger(entry.getKey()+"_prestige_level",entry.getValue().getPrestigeLevel());
-        }
-        tag.setString("drain_selection",selectedSkill);
-        tag.setInteger("drain_amount",drainLevels);
+        NBTTagList listTag = new NBTTagList();
+        for(Map.Entry<String, SkillWrapper> entry : skillSet)
+            listTag.appendTag(updateSkill(entry.getKey(),entry.getValue()));
+        tag.setTag("skillData",listTag);
+        tag.setString("skillToDrain",selectedSkill);
+        tag.setInteger("drainLevels",drainLevels);
+    }
+    
+    private NBTTagCompound updateSkill(String skill, SkillWrapper wrapper) {
+        NBTTagCompound tag = new NBTTagCompound();
+        tag.setString("name",skill);
+        tag.setInteger("xp",wrapper.getXP());
+        tag.setInteger("level",wrapper.getLevel());
+        tag.setInteger("levelXP",wrapper.getLevelXP());
+        tag.setInteger("prestige",wrapper.getPrestigeLevel());
+        return tag;
     }
 
     @Override
@@ -60,10 +57,10 @@ public class SkillToken extends EpicItem {
         if(p instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP)p;
             ItemStack stack = player.getHeldItem(hand);
-            checkAndUpdate(player, stack, "drain_selection");
+            checkAndUpdate(player,stack);
             NBTTagCompound tag = getTag(stack);
-            String skill = tag.getString("drain_selection");
-            int amount = tag.getInteger("drain_amount");
+            String skill = tag.getString("skillToDrain");
+            int amount = tag.getInteger("drainLevels");
             if(player.isSneaking()) {
                 new PacketOpenGui(SkillCapabilityStorage.SKILLS,skill,amount).addPlayers(player).send();
                 return new ActionResult<>(EnumActionResult.SUCCESS,stack);
@@ -91,66 +88,67 @@ public class SkillToken extends EpicItem {
 
     //XP calculations are fun...
     private float convertXPToSP(int level) {
-        if (level <= 16) return ((float)(2*(level-1)+7))/2f;
-        else if (level <= 31) return ((float)(5*(level-1)-38))/2f;
+        if(level<=16) return ((float)(2*(level-1)+7))/2f;
+        else if(level<=31) return ((float)(5*(level-1)-38))/2f;
         return ((float)(9*(level-1)-158))/2f;
     }
 
-    @SuppressWarnings("SameParameterValue")
-    private void checkAndUpdate(EntityPlayerMP player, ItemStack stack, String data) {
-        if(!getTag(stack).hasKey(data)) SkillWrapper.updateTokens(player);
+
+    private void checkAndUpdate(EntityPlayerMP player, ItemStack stack) {
+        if(!getTag(stack).hasKey("skillToDrain")) SkillWrapper.updateTokens(player);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(@Nonnull ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flag) {
-        tooltip.add(getFormattedSkillLine(stack,"mining"));
-        tooltip.add(getFormattedSkillLine(stack,"gathering"));
-        tooltip.add(getFormattedSkillLine(stack,"attack"));
-        tooltip.add(getFormattedSkillLine(stack,"defense"));
-        tooltip.add(getFormattedSkillLine(stack,"building"));
-        tooltip.add(getFormattedSkillLine(stack,"agility"));
-        tooltip.add(getFormattedSkillLine(stack,"farming"));
-        tooltip.add(getFormattedSkillLine(stack,"magic"));
-        tooltip.add(getFormattedSkillLine(stack,"void"));
-        tooltip.add(getFormattedSkillLine(stack,"research"));
-        if(flag.isAdvanced() && getTag(stack).hasKey("drain_selection"))
-            tooltip.add(RESET+ITALICS+GRAY+ getDrainingTranslation(getTag(stack).getInteger("drain_amount"),
-                            getTag(stack).getString("drain_selection")));
-    }
-
-    private String getFormattedSkillLine(ItemStack stack, String skill) {
-        NBTTagCompound nbt = getTag(stack);
-        if(nbt.hasKey(skill+"_xp") && nbt.hasKey(skill+"_level") && nbt.hasKey(skill+"_level_xp")) {
-            String skill_color = DARK_GRAY;
-            String point_color = WHITE;
-            if(nbt.hasKey("drain_selection") && nbt.getString("drain_selection").matches(skill)) {
-                skill_color = DARK_RED;
-                point_color = RED;
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flag) {
+        NBTTagCompound tag = getTag(stack);
+        boolean hasDrainKey = tag.hasKey("skillToDrain");
+        String skillToDrain = hasDrainKey ? tag.getString("skillToDrain") : "mining";
+        if(tag.hasKey("skillData")) {
+            NBTBase listTag = tag.getTag("skillData");
+            if(listTag instanceof NBTTagList) {
+                for(NBTBase baseTag : (NBTTagList)listTag) {
+                    String skillLine = getSkillLine(baseTag,skillToDrain);
+                    if(Objects.nonNull(skillLine)) tooltip.add(skillLine);
+                }
             }
-            int currentPoints = nbt.getInteger(skill+"_xp");
-            int currentLevel = nbt.getInteger(skill+"_level");
-            int prestigeLevel = nbt.getInteger(skill+"_prestige_level");
-            if(currentLevel<1024) {
-                int nextLevel = currentLevel + 1;
-                int neededPoints = nbt.getInteger(skill+"_level_xp");
-                return skill_color+BOLD+getSkillTranslation(skill)+"["+currentLevel+"->"+nextLevel+"]: "+
-                        RESET+point_color+currentPoints+"/"+neededPoints+GOLD+" {"+prestigeLevel+"}";
-            } else return RESET+skill_color+BOLD+getSkillTranslation(skill)+"["+currentLevel+"]";
-        } return ITALICS+BOLD+getNotSyncedTranslation(skill);
+        } else addNotSyncedLines(tooltip);
+        if(flag.isAdvanced() && hasDrainKey)
+            tooltip.add(addXPDrainLine(skillToDrain,tag.getInteger("drainLevels")));
     }
 
-    private String getSkillTranslation(String skill) {
-        return ItemUtil.getTranslationForType("skill",skill);
+    private @Nullable String getSkillLine(NBTBase baseTag, String skillToDrain) {
+        if(!(baseTag instanceof NBTTagCompound)) return null;
+        NBTTagCompound tag = (NBTTagCompound)baseTag;
+        String name = tag.getString("name");
+        boolean isDraining = name.matches(skillToDrain);
+        name = translateSkill(name);
+        int curLevel = tag.getInteger("level");
+        String skillColor = isDraining ? TextUtil.DARK_RED : (curLevel==1024 ? TextUtil.GOLD : TextUtil.DARK_GRAY);
+        if(curLevel==1024)
+            return TextUtil.getTranslated("item.dimhoppertweaks.skill_token.skill_maxed",skillColor,name);
+        else {
+            int xp = tag.getInteger("xp");
+            int levelXP = tag.getInteger("levelXP");
+            int prestige = tag.getInteger("prestige");
+            String pointColor = isDraining ? TextUtil.RED : TextUtil.WHITE;
+            return TextUtil.getTranslated("item.dimhoppertweaks.skill_token.skill_normal",skillColor,
+                    name,curLevel,curLevel+1,pointColor,xp,levelXP,prestige);
+        }
     }
 
-    private String getDrainingTranslation(int levels, String skill) {
-        return I18n.format("skill."+Constants.MODID+".draining")+" "+levels+" "+
-                I18n.format("skill."+Constants.MODID+".levels")+" "+getSkillTranslation(skill);
+    private void addNotSyncedLines(List<String> tooltipLines) {
+        for(String skill : SkillCapabilityStorage.SKILLS)
+            tooltipLines.add(TextUtil.getTranslated("item.dimhoppertweaks.skill_token.not_synced",
+                    translateSkill(skill)));
     }
 
-    private String getNotSyncedTranslation(String skill) {
-        return I18n.format("skill."+Constants.MODID+".info")+" "+getSkillTranslation(skill)+" "+
-                I18n.format("skill."+Constants.MODID+".synced");
+    private String addXPDrainLine(String skill, int levels) {
+        return TextUtil.getTranslated("item.dimhoppertweaks.skill_token.xp_drain",levels,
+                levels==1 ? "level" : "levels",translateSkill(skill));
+    }
+
+    private String translateSkill(String skillName) {
+        return TextUtil.getTranslated("skill."+Constants.MODID+"."+skillName);
     }
 }

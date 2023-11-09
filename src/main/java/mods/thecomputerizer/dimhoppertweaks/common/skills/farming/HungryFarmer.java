@@ -9,6 +9,7 @@ import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;
 import net.darkhax.gamestages.GameStageHelper;
 import net.darkhax.itemstages.ItemStages;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
@@ -54,5 +55,11 @@ public class HungryFarmer extends ExtendedEventsTrait {
     private boolean isItemWhitelisted(EntityPlayer player, Item item) {
         ISkillCapability cap = SkillWrapper.getSkillCapability(player);
         return Objects.nonNull(cap) && cap.canAutoFeed(item);
+    }
+
+    @Override
+    public void onEat(EntityPlayer player, ItemFood food) {
+        ISkillCapability cap = SkillWrapper.getSkillCapability(player);
+        if(Objects.nonNull(cap)) cap.togglePassiveFood((EntityPlayerMP)player,food);
     }
 }

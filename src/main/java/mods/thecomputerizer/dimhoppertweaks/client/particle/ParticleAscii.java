@@ -13,8 +13,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.vecmath.Point4f;
 
+@ParametersAreNonnullByDefault
 @SideOnly(Side.CLIENT)
 public class ParticleAscii extends Particle {
 
@@ -25,7 +27,7 @@ public class ParticleAscii extends Particle {
 
     public ParticleAscii(World world, double x, double y, double z, double velocityX, double velocityY, double velocityZ,
                          float maxAge, double rangeFactor, float scale) {
-        super(world, x, y, z, velocityX, velocityY, velocityZ);
+        super(world,x,y,z,velocityX,velocityY,velocityZ);
         this.rangeFactor = rangeFactor;
         randomizeInitialPos();
         this.particleTexture = ParticleRegistry.getFontAtlas();
@@ -33,7 +35,7 @@ public class ParticleAscii extends Particle {
         this.particleMaxAge = (int)(maxAge-(this.rand.nextFloat()*(maxAge/4f)));
         this.particleAlpha = 1.0f;
         this.curChar = '0';
-        this.charUV = FontUtil.getCharUV(this.curChar, Minecraft.getMinecraft().fontRenderer);
+        this.charUV = FontUtil.getCharUV(this.curChar,Minecraft.getMinecraft().fontRenderer);
         setRBGColorF(0.2f,1f,0.2f);
     }
 
@@ -57,14 +59,14 @@ public class ParticleAscii extends Particle {
         this.prevPosX = posX;
         this.prevPosY = posY;
         this.prevPosZ = posZ;
-        if (this.particleAge++ >= this.particleMaxAge) setExpired();
-        move(this.motionX, this.motionY, this.motionZ);
-        this.motionX *= 0.8999999761581421;
-        this.motionY *= 0.8999999761581421;
-        this.motionZ *= 0.8999999761581421;
-        if (this.onGround) {
-            this.motionX *= 0.699999988079071;
-            this.motionZ *= 0.699999988079071;
+        if(this.particleAge++ >= this.particleMaxAge) setExpired();
+        move(this.motionX,this.motionY,this.motionZ);
+        this.motionX*=0.8999999761581421;
+        this.motionY*=0.8999999761581421;
+        this.motionZ*=0.8999999761581421;
+        if(this.onGround) {
+            this.motionX*=0.699999988079071;
+            this.motionZ*=0.699999988079071;
         }
         this.curChar = POTENTIAL_CHARS.charAt(this.rand.nextInt(POTENTIAL_CHARS.length()));
         this.charUV = FontUtil.getCharUV(this.curChar,Minecraft.getMinecraft().fontRenderer);
@@ -74,10 +76,10 @@ public class ParticleAscii extends Particle {
     public void renderParticle(@Nonnull BufferBuilder buffer, @Nonnull Entity entityIn, float partialTicks,
                                float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
         FontUtil.bufferCharTex(this.curChar,Minecraft.getMinecraft().fontRenderer);
-        double minU = particleTexture.getMinU() + this.charUV.x;
-        double maxU = particleTexture.getMinU() + this.charUV.y;
-        double minV = particleTexture.getMinV() + this.charUV.z;
-        double maxV = particleTexture.getMinV() + this.charUV.w;
+        double minU = particleTexture.getMinU()+this.charUV.x;
+        double maxU = particleTexture.getMinU()+this.charUV.y;
+        double minV = particleTexture.getMinV()+this.charUV.z;
+        double maxV = particleTexture.getMinV()+this.charUV.w;
         double x = this.prevPosX+(this.posX-this.prevPosX)*partialTicks-interpPosX;
         double y = this.prevPosY+(this.posY-this.prevPosY)*partialTicks-interpPosY;
         double z = this.prevPosZ+(this.posZ-this.prevPosZ)*partialTicks-interpPosZ;
@@ -89,30 +91,27 @@ public class ParticleAscii extends Particle {
         int combinedBrightness = getBrightnessForRender(partialTicks);
         int skyLight = combinedBrightness >> 16 & 65535;
         int blockLight = combinedBrightness & 65535;
-        buffer.pos(x - scaledLRDirX - scaledUDDirX, y - scaledUDDirY, z - scaledLRDirZ - scaledUDDirZ)
-                .tex(maxU,maxV)
-                .color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha)
-                .lightmap(skyLight, blockLight).endVertex();
-        buffer.pos(x - scaledLRDirX + scaledUDDirX,y + scaledUDDirY,z - scaledLRDirZ + scaledUDDirZ)
-                .tex(maxU, minV)
-                .color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha)
-                .lightmap(skyLight, blockLight).endVertex();
-        buffer.pos(x + scaledLRDirX + scaledUDDirX,y + scaledUDDirY,z + scaledLRDirZ + scaledUDDirZ)
-                .tex(minU, minV)
-                .color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha)
-                .lightmap(skyLight, blockLight).endVertex();
-        buffer.pos(x + scaledLRDirX - scaledUDDirX,y - scaledUDDirY,z + scaledLRDirZ - scaledUDDirZ)
-                .tex(minU, maxV)
-                .color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha)
-                .lightmap(skyLight, blockLight).endVertex();
+        buffer.pos(x-scaledLRDirX-scaledUDDirX,y-scaledUDDirY,z-scaledLRDirZ-scaledUDDirZ)
+                .tex(maxU,maxV).color(this.particleRed,this.particleGreen,this.particleBlue,this.particleAlpha)
+                .lightmap(skyLight,blockLight).endVertex();
+        buffer.pos(x-scaledLRDirX+scaledUDDirX,y+scaledUDDirY,z-scaledLRDirZ+scaledUDDirZ)
+                .tex(maxU,minV).color(this.particleRed,this.particleGreen,this.particleBlue,this.particleAlpha)
+                .lightmap(skyLight,blockLight).endVertex();
+        buffer.pos(x+scaledLRDirX+scaledUDDirX,y+scaledUDDirY,z+scaledLRDirZ+scaledUDDirZ)
+                .tex(minU,minV).color(this.particleRed,this.particleGreen,this.particleBlue,this.particleAlpha)
+                .lightmap(skyLight,blockLight).endVertex();
+        buffer.pos(x+scaledLRDirX-scaledUDDirX,y-scaledUDDirY,z+scaledLRDirZ-scaledUDDirZ)
+                .tex(minU,maxV).color(this.particleRed,this.particleGreen,this.particleBlue,this.particleAlpha)
+                .lightmap(skyLight,blockLight).endVertex();
     }
 
     public static class Factory implements IParticleFactory {
-        @Nullable
+
         @Override
-        public Particle createParticle(int id, @Nonnull World world, double posX, double posY, double posZ, double velocityX, double velocityY, double velocityZ, @Nonnull int... args) {
-            return new ParticleAscii(Minecraft.getMinecraft().world, posX, posY, posZ, velocityX, velocityY, velocityZ,
-                    args.length>=1 ? (float)args[0] : 100f, args.length>=2 ? (double)args[1] : 32d,
+        public @Nullable ParticleAscii createParticle(int id, World world, double posX, double posY, double posZ,
+                                       double velocityX, double velocityY, double velocityZ, int... args) {
+            return new ParticleAscii(Minecraft.getMinecraft().world,posX,posY,posZ,velocityX,velocityY,velocityZ,
+                    args.length>=1 ? (float)args[0] : 100f,args.length>=2 ? (double)args[1] : 32d,
                     args.length>=3 ? ((float)args[2])/100f : 0.5f);
         }
     }
