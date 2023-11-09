@@ -94,6 +94,11 @@ public class ParticleBlightFire extends Particle {
     }
 
     @Override
+    public int getFXLayer() {
+        return 69;
+    }
+
+    @Override
     public void renderParticle(@Nonnull BufferBuilder buffer, @Nonnull Entity entityIn, float partialTicks,
                                float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
         TextureManager manager = Minecraft.getMinecraft().getTextureManager();
@@ -130,7 +135,6 @@ public class ParticleBlightFire extends Particle {
                 .tex(minU, maxV)
                 .color(this.particleRed,this.particleGreen,this.particleBlue,this.particleAlpha)
                 .lightmap(skyLight,blockLight).endVertex();
-        manager.bindTexture(ParticleRegistry.PARTICLE_TEXTURES);
     }
 
     public static class Factory implements IParticleFactory {
