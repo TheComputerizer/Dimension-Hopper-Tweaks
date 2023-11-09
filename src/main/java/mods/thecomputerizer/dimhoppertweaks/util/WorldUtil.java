@@ -1,13 +1,18 @@
 package mods.thecomputerizer.dimhoppertweaks.util;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Random;
 
 public class WorldUtil {
 
@@ -42,5 +47,17 @@ public class WorldUtil {
             if(Objects.nonNull(type) && type.isAssignableFrom(tile.getClass()))
                 return tile;
         return null;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static void spawnParticle(EnumParticleTypes particle, Random rand, double x, double y, double z,
+                                     double width, double height) {
+        double speedX = (rand.nextDouble()*2d)-1d;
+        double speedY = (rand.nextDouble()*2d)-1d;
+        double speedZ = (rand.nextDouble()*2d)-1d;
+        double posX = x+(speedX*width/4d);
+        double posY = y+((height/2d)+(speedY*height/4d));
+        double posZ = z+(speedZ*width/4d);
+        Minecraft.getMinecraft().renderGlobal.spawnParticle(particle,posX,posY,posZ,speedX,speedY,speedZ);
     }
 }

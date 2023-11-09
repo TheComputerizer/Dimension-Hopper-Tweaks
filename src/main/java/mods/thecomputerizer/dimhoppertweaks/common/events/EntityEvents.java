@@ -2,39 +2,32 @@ package mods.thecomputerizer.dimhoppertweaks.common.events;
 
 import codersafterdark.reskillable.api.data.PlayerData;
 import codersafterdark.reskillable.api.data.PlayerDataHandler;
-import codersafterdark.reskillable.api.event.LevelUpEvent;
 import com.google.common.collect.Iterables;
-import mods.thecomputerizer.dimhoppertweaks.client.render.ClientEffects;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.ExtendedEventsTrait;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.ISkillCapability;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import mods.thecomputerizer.dimhoppertweaks.mixin.access.EntityPixieAccess;
+import mods.thecomputerizer.dimhoppertweaks.registry.ParticleRegistry;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
+import mods.thecomputerizer.dimhoppertweaks.util.WorldUtil;
 import morph.avaritia.util.DamageSourceInfinitySword;
-import net.darkhax.gamestages.GameStageHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.MobEffects;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.ISpecialArmor;
 import net.minecraftforge.event.entity.living.*;
-import net.minecraftforge.event.entity.player.AdvancementEvent;
-import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.relauncher.Side;
+import net.silentchaos512.scalinghealth.event.BlightHandler;
 import vazkii.botania.common.entity.EntityPixie;
 import vazkii.botania.common.item.equipment.tool.elementium.ItemElementiumSword;
 
@@ -46,6 +39,7 @@ public class EntityEvents {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onLivingAttack(LivingAttackEvent event) {
+        if(event.isCanceled()) return;
         if(event.getEntityLiving() instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP)event.getEntityLiving();
             if(!player.isEntityInvulnerable(event.getSource()) && player.canBlockDamageSource(event.getSource())) {
@@ -57,6 +51,7 @@ public class EntityEvents {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onLivingHurt(LivingHurtEvent event) {
+        if(event.isCanceled()) return;
         if(event.getSource()!=DamageSource.OUT_OF_WORLD) {
             if(event.getEntityLiving() instanceof EntityFinalBoss) {
                 if(!(event.getSource() instanceof DamageSourceInfinitySword))
@@ -80,6 +75,7 @@ public class EntityEvents {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onJump(LivingEvent.LivingJumpEvent event) {
+        if(event.isCanceled()) return;
         if(event.getEntityLiving() instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP)event.getEntityLiving();
             int jumpFactor = player.isPotionActive(MobEffects.JUMP_BOOST) ?
@@ -90,6 +86,7 @@ public class EntityEvents {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onDamage(LivingDamageEvent event) {
+        if(event.isCanceled()) return;
         if(!event.getEntityLiving().world.isRemote && Objects.nonNull(event.getSource()) && event.getSource()!=DamageSource.OUT_OF_WORLD) {
             if(event.getEntityLiving() instanceof EntityPlayerMP) {
                 EntityPlayerMP player = (EntityPlayerMP) event.getEntityLiving();
@@ -134,6 +131,7 @@ public class EntityEvents {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onLivingKnockBack(LivingKnockBackEvent event) {
+        if(event.isCanceled()) return;
         EntityLivingBase entity = event.getEntityLiving();
         if(!entity.world.isRemote && entity instanceof EntityPlayer) {
             PlayerData data = PlayerDataHandler.get((EntityPlayer) entity);
@@ -147,6 +145,7 @@ public class EntityEvents {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onDeath(LivingDeathEvent event) {
+        if(event.isCanceled()) return;
         if(event.getSource().getTrueSource() instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP)event.getSource().getTrueSource();
             if(Objects.nonNull(player) && Objects.nonNull(SkillWrapper.getSkillCapability(player))) {
@@ -156,153 +155,12 @@ public class EntityEvents {
                         event.getEntityLiving(),armorList,event.getSource(),25f))*2f;
                 SkillWrapper.addSP(player,"defense",armor,false);
             }
-        }
-    }
-
-    @Mod.EventBusSubscriber(modid = Constants.MODID)
-    public static class PlayerEvents {
-
-        private static int TICK_DELAY = 0;
-
-        @SubscribeEvent(priority = EventPriority.LOWEST)
-        public static void onChangedDimensions(PlayerEvent.PlayerChangedDimensionEvent event) {
-            PlayerData data = PlayerDataHandler.get(event.player);
-            if(Objects.nonNull(data)) {
-                SkillWrapper.executeOnSkills(data,h -> {
-                    if(h instanceof ExtendedEventsTrait) ((ExtendedEventsTrait)h).onChangeDimensions(event);
-                });
-            }
-            if(event.player instanceof EntityPlayerMP) {
-                EntityPlayerMP player = (EntityPlayerMP)event.player;
-                if(event.toDim!=7 && GameStageHelper.hasStage(player,"twilight"))
-                    GameStageHelper.removeStage(player,"twilight");
-                if(event.toDim==-1 && !GameStageHelper.hasStage(player,"nether"))
-                    GameStageHelper.addStage(player,"nether");
-                if(event.toDim!=-19 && GameStageHelper.hasStage(player,"finalfrontier"))
-                    GameStageHelper.addStage(player,"finalfrontier");
-                SkillWrapper.addSP(player,"void",5f,false);
-                ISkillCapability cap = SkillWrapper.getSkillCapability(player);
-                if(Objects.nonNull(cap)) cap.resetDreamTimer();
-            }
-        }
-
-        @SubscribeEvent(priority = EventPriority.LOWEST)
-        public static void onLevelUp(LevelUpEvent.Post event) {
-            if(event.getEntityPlayer() instanceof EntityPlayerMP)
-                SkillWrapper.updateTokens((EntityPlayerMP)event.getEntityPlayer());
-        }
-
-        @SubscribeEvent(priority = EventPriority.LOWEST)
-        public static void playerJoin(PlayerEvent.PlayerLoggedInEvent event) {
-            if(event.player instanceof EntityPlayerMP) {
-                EntityPlayerMP player = (EntityPlayerMP)event.player;
-                int dim = player.dimension;
-                if(dim!=7 && dim!=20 && dim!=684 && !GameStageHelper.hasStage(player,"bridgeone"))
-                    GameStageHelper.addStage(player,"bridgeone");
-                if(!GameStageHelper.hasStage(player,"bedrockFinal"))
-                    player.inventory.clearMatchingItems(Item.getItemFromBlock(Blocks.BEDROCK),-1,0,null);
-                SkillWrapper.updateTokens(player);
-            }
-        }
-
-        @SubscribeEvent(priority = EventPriority.LOWEST)
-        public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
-            if(event.player instanceof EntityPlayerMP) SkillWrapper.forceTwilightRespawn(event.player);
-        }
-
-        @SubscribeEvent(priority = EventPriority.LOWEST)
-        public static void pickupXP(PlayerPickupXpEvent event) {
-            if(event.getEntityPlayer() instanceof EntityPlayerMP) {
-                int factor = (event.getOrb().xpValue>1 ? (int)(Math.log(event.getOrb().xpValue)/Math.log(2)) : 1)*2;
-                SkillWrapper.addSP((EntityPlayerMP)event.getEntityPlayer(),"magic",factor,false);
-            }
-        }
-
-        @SubscribeEvent(priority = EventPriority.LOWEST)
-        public static void onLootingLevel(LootingLevelEvent ev) {
-            if(ev.getDamageSource().getTrueSource() instanceof EntityPlayer) {
-                EntityPlayer player = (EntityPlayer)ev.getDamageSource().getTrueSource();
-                if(!player.world.isRemote) {
-                    PlayerData data = PlayerDataHandler.get(player);
-                    if(Objects.nonNull(data)) {
-                        SkillWrapper.executeOnSkills(data,h -> {
-                            if(h instanceof ExtendedEventsTrait) ((ExtendedEventsTrait)h).onLootingLevel(ev);
-                        });
-                    }
-                }
-            }
-        }
-
-        @SubscribeEvent(priority = EventPriority.LOWEST)
-        public static void onAdvancement(AdvancementEvent event) {
-            if(event.getEntityPlayer() instanceof EntityPlayerMP)
-                SkillWrapper.addSP((EntityPlayerMP)event.getEntityPlayer(),"research",5f,false);
-        }
-
-        @SubscribeEvent(priority = EventPriority.LOWEST)
-        public static void playerTick(TickEvent.PlayerTickEvent event) {
-            if(event.phase==TickEvent.Phase.END) {
-                if(event.side==Side.SERVER) {
-                    TICK_DELAY++;
-                    if(TICK_DELAY>=20) {
-                        EntityPlayerMP player = (EntityPlayerMP) event.player;
-                        if(player.isSprinting()) {
-                            int speedFactor = player.isPotionActive(MobEffects.SPEED) ? Objects.requireNonNull(
-                                    player.getActivePotionEffect(MobEffects.SPEED)).getAmplifier()+2 : 1;
-                            SkillWrapper.addSP(player,"agility",speedFactor, false);
-                        }
-                        ISkillCapability cap = SkillWrapper.getSkillCapability(player);
-                        if(Objects.nonNull(cap)) cap.decrementGatheringItems(20);
-                        TICK_DELAY = 0;
-                    }
-                }
-            }
-        }
-
-        @SubscribeEvent(priority = EventPriority.LOWEST)
-        public static void pickUpItem(PlayerEvent.ItemPickupEvent event) {
-            if(event.player instanceof EntityPlayerMP) {
-                EntityPlayerMP player = (EntityPlayerMP)event.player;
-                ItemStack stack = event.getStack();
-                if(!GameStageHelper.hasStage(player,"bedrockFinal") &&
-                        stack.getItem()==Item.getItemFromBlock(Blocks.BEDROCK))
-                    stack.setCount(0);
-                if(stack.getCount()>0) {
-                    ISkillCapability cap = SkillWrapper.getSkillCapability(player);
-                    if(Objects.nonNull(cap) && cap.checkGatheringItem(stack.getItem())) {
-                        int sizeFactor = stack.getCount()>1 ? (int)(Math.log(stack.getCount())/Math.log(2)) : 1;
-                        SkillWrapper.addSP(player,"gathering",sizeFactor,false);
-                    }
-                }
-            }
-        }
-
-        @SubscribeEvent(priority = EventPriority.LOWEST)
-        public static void breakSpeed(net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed event) {
-            if(Objects.nonNull(event.getEntityPlayer())) {
-                float speedFactor = 1;
-                if(event.getEntityPlayer() instanceof EntityPlayerMP) {
-                    EntityPlayerMP player = (EntityPlayerMP)event.getEntityPlayer();
-                    if (Objects.nonNull(player)) {
-                        ISkillCapability cap = SkillWrapper.getSkillCapability(player);
-                        if(Objects.nonNull(cap)) speedFactor = 1f+cap.getBreakSpeedMultiplier();
-                    }
-                } else speedFactor = ClientEffects.MINING_SPEED;
-                event.setNewSpeed(event.getNewSpeed()*speedFactor);
-            }
-        }
-
-        @SubscribeEvent(priority = EventPriority.LOWEST)
-        public static void onPlayerClone(net.minecraftforge.event.entity.player.PlayerEvent.Clone event) {
-            if(event.getEntityPlayer() instanceof EntityPlayerMP) {
-                EntityPlayerMP to = (EntityPlayerMP) event.getEntityPlayer();
-                ISkillCapability capTo = SkillWrapper.getSkillCapability(to);
-                if(Objects.nonNull(capTo)) {
-                    EntityPlayerMP from = (EntityPlayerMP) event.getOriginal();
-                    ISkillCapability capFrom = SkillWrapper.getSkillCapability(from);
-                    if(Objects.nonNull(capFrom)) capTo.of((SkillCapability)capFrom,to);
-                }
-            }
+        } else {
+            EntityLivingBase entity = event.getEntityLiving();
+            if(entity.world.isRemote && BlightHandler.isBlight(entity))
+                for(int i=0; i<MathHelper.clamp(entity.getMaxHealth()/500f,5f,64f); i++)
+                    WorldUtil.spawnParticle(ParticleRegistry.BLIGHT_FIRE,entity.world.rand,entity.posX,
+                            entity.getEntityBoundingBox().minY,entity.posZ,entity.width,entity.height);
         }
     }
 }

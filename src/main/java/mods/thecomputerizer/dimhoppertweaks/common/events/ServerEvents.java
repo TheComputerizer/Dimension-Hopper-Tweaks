@@ -58,7 +58,7 @@ public class ServerEvents {
         ISkillCapability cap = SkillWrapper.getSkillCapability(player);
         if(Objects.nonNull(cap)) {
             BlockPos pos = cap.getTwilightRespawn();
-            if(player.dimension == 7 && Objects.isNull(player.getBedLocation(7)) && Objects.nonNull(pos))
+            if(player.dimension==7 && Objects.isNull(player.getBedLocation(7)) && Objects.nonNull(pos))
                 player.setSpawnPoint(pos, true);
         }
     }

@@ -119,7 +119,7 @@ dependencies {
     implementation(fg.deobf("curse.maven:music-triggers-518410:${project.mt_version}"))
     implementation(fg.deobf("curse.maven:natures-aura-306626:${project.na_version}"))
     implementation(fg.deobf("curse.maven:neat-238372:${project.neat_version}"))
-    implementation(fg.deobf("curse.maven:nodami-267721:${project.nodami_verion}"))
+    implementation(fg.deobf("curse.maven:nodamitem-377815:${project.nodami_verion}"))
     implementation(fg.deobf("curse.maven:openblocks-228816:${project.openblocks_version}"))
     implementation(fg.deobf("curse.maven:openmodslib-228815:${project.openlib_version}"))
     implementation(fg.deobf("curse.maven:ore-stages-290201:${project.orestages_version}"))

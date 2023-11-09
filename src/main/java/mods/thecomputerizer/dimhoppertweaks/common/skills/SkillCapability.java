@@ -21,7 +21,7 @@ import java.util.function.Function;
 
 public class SkillCapability implements ISkillCapability {
 
-    private final MutableInt dreamTimer;
+    private final MutableInt dreamTimer = new MutableInt();
     private Map<String,SkillWrapper> skillMap = new HashMap<>();
     private Map<Item,MutableInt> gatheringCooldown = new HashMap<>();
     private Set<Item> autoFeedWhitelist = new HashSet<>();
@@ -32,9 +32,6 @@ public class SkillCapability implements ISkillCapability {
 
     public SkillCapability() {
         Constants.LOGGER.debug("Initializing skill capability");
-        setDrainSelection("mining",1, null);
-        this.twilightRespawn = null;
-        this.dreamTimer = new MutableInt();
     }
 
     private void checkForExistingSkill(String name) {

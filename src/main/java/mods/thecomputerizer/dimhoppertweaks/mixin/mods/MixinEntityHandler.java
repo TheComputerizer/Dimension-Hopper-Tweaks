@@ -32,19 +32,18 @@ public class MixinEntityHandler {
             PlayerData data = PlayerDataHandler.get(player);
             AtomicBoolean skip = new AtomicBoolean(false);
             if(Objects.nonNull(data)) {
-                SkillWrapper.executeOnSkills(data, h -> {
-                    if(h instanceof ExtendedEventsTrait)
-                        if(((ExtendedEventsTrait)h).shouldCancelNoDamiThresholds())
-                            skip.set(true);
+                SkillWrapper.executeOnSkills(data,h -> {
+                    if(h instanceof ExtendedEventsTrait && ((ExtendedEventsTrait)h).shouldCancelNoDamiThresholds())
+                        skip.set(true);
                 });
             }
             if(!skip.get()) {
                 float str = player.getCooledAttackStrength(0f);
-                if (str <= NodamiConfig.attackCancelThreshold) {
+                if(str<=NodamiConfig.thresholds.attackCancelThreshold) {
                     event.setCanceled(true);
                     return;
                 }
-                if (str <= NodamiConfig.knockbackCancelThreshold) player.hurtTime = -1;
+                if(str<=NodamiConfig.thresholds.knockbackCancelThreshold) player.hurtTime = -1;
             }
         }
     }
