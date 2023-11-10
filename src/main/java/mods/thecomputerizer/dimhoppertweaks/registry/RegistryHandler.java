@@ -35,6 +35,7 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -90,12 +91,12 @@ public final class RegistryHandler {
         register(event.getRegistry(),SoundRegistry.getSounds());
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void registerSkills(RegistryEvent.Register<Skill> event) {
         register(event.getRegistry(),new ResearchSkill(),new VoidSkill());
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void registerTraits(RegistryEvent.Register<Unlockable> event) {
         register(event.getRegistry(),new SuperPets(),new ResistiveBuilder(),new KnockbackImmunity(),new ExplosiveAura(),
                 new LuckyAura(),new ExpertMiner(),new RefreshingPortals(),new VoidCheater(),new VoidWalker(),

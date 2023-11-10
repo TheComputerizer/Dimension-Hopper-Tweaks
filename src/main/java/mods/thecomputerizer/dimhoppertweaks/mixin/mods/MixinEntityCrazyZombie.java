@@ -78,7 +78,7 @@ public abstract class MixinEntityCrazyZombie extends EntityCavenicZombie {
             double motionY = this.rand.nextDouble()*0.8d*yFlip;
             double motionZ = this.rand.nextDouble()*zFlip;
             ParticleBlightFire particle = new ParticleBlightFire(this.world,ptX,ptY,ptZ,motionX,motionY,motionZ,
-                    100f,32d,0.5f);
+                    100f,32d,0.5f,false);
             particle.setCenter(center);
             FMLClientHandler.instance().getClient().effectRenderer.addEffect(particle);
         }

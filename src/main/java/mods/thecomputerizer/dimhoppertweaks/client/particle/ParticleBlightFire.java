@@ -30,10 +30,10 @@ public class ParticleBlightFire extends Particle {
     private Vec3d centerVec = null;
 
     public ParticleBlightFire(World world, double x, double y, double z, double velocityX, double velocityY,
-                              double velocityZ, float maxAge, double rangeFactor, float scale) {
+                              double velocityZ, float maxAge, double rangeFactor, float scale, boolean shouldRandomize) {
         super(world, x, y, z, velocityX, velocityY, velocityZ);
         this.rangeFactor = rangeFactor;
-        randomizeInitialPos();
+        if(shouldRandomize) randomizeInitialPos();
         this.tomfoolery = ModuleAprilTricks.instance.isEnabled() && ModuleAprilTricks.instance.isRightDay();
         this.particleTexture = tomfoolery ? ParticleRegistry.getGrayFireAtlas() : ParticleRegistry.getFireAtlas();
         this.particleScale = (0.2f+(this.rand.nextFloat()/(1f/(0.2f/2f))))*scale;
@@ -141,7 +141,7 @@ public class ParticleBlightFire extends Particle {
                                                  double velocityX, double velocityY, double velocityZ, int... args) {
             return new ParticleBlightFire(Minecraft.getMinecraft().world,posX,posY,posZ,velocityX,velocityY,velocityZ,
                     args.length>=1 ? (float)args[0] : 100f, args.length>=2 ? (double)args[1] : 32d,
-                    args.length>=3 ? ((float)args[2])/100f : 0.5f);
+                    args.length>=3 ? ((float)args[2])/100f : 0.5f, args.length<4 || args[3]!=1);
         }
     }
 }

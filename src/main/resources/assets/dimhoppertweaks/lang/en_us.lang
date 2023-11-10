@@ -83,7 +83,7 @@ reskillable.skill.dimhoppertweaks.void=Void
 reskillable.unlock.dimhoppertweaks.expert_miner=Expert Miner
 reskillable.unlock.dimhoppertweaks.expert_miner.desc=Excessive mining has made your arms incredibly buff. You now mine twice as fast!
 reskillable.unlock.dimhoppertweaks.explosive_aura=Explosive Aura
-reskillable.unlock.dimhoppertweaks.explosive_aura.desc=All blocks broken from explosions within a 56 block radius that are able to be dropped from an explosion will have a 100% drop rate.
+reskillable.unlock.dimhoppertweaks.explosive_aura.desc=All blocks broken from explosions within a 56 block radius that are able to be dropped from an explosion will always do so
 reskillable.unlock.dimhoppertweaks.factory_mk_one=The Factory Mk1
 reskillable.unlock.dimhoppertweaks.factory_mk_one.desc=That factorizer is too slow. Progress demands upgrades!
 reskillable.unlock.dimhoppertweaks.factory_mk_two=The Factory Mk2
@@ -152,5 +152,5 @@ skill.dimhoppertweaks.research=Research
 
 stargate.dimhoppertweaks.address=Stargate Address: §5%1$s
 
-trait.dimhoppertweaks.hungry_farmer.auto_feed_enabled=§aAuto-Feed is enabled for the Hungry Farmer trait on this item
+trait.dimhoppertweaks.hungry_farmer.auto_feed_enabled=§aAuto-Feed is enabled for the Hungry Farmer trait on this item (%1$s)
 trait.dimhoppertweaks.potion_master.auto_drink_enabled=§aAuto-Drink is enabled for the Potion Master trait on this potion (%1$s,%2$s)

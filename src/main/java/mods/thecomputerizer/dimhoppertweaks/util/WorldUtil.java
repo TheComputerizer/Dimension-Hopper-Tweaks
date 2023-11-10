@@ -56,7 +56,8 @@ public class WorldUtil {
         double posX = x+(speedX*width/4d);
         double posY = y+((height/2d)+(speedY*height/4d));
         double posZ = z+(speedZ*width/4d);
-        ParticleBlightFire particle = new ParticleBlightFire(world,posX,posY,posZ,speedX,speedY,speedZ,100f,32d,0.5f);
+        ParticleBlightFire particle = new ParticleBlightFire(world,posX,posY,posZ,speedX,speedY,speedZ,100f,
+                32d,0.5f,true);
         FMLClientHandler.instance().getClient().effectRenderer.addEffect(particle);
     }
 }

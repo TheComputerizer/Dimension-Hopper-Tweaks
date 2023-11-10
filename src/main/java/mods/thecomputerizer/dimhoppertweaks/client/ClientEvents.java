@@ -112,7 +112,8 @@ public class ClientEvents {
     public static void onGetTooltip(ItemTooltipEvent event) {
         if(event.isCanceled()) return;
         if(autoFeedItems.contains(event.getItemStack().getItem()))
-            event.getToolTip().add(TextUtil.getTranslated("trait.dimhoppertweaks.hungry_farmer.auto_feed_enabled"));
+            event.getToolTip().add(TextUtil.getTranslated("trait.dimhoppertweaks.hungry_farmer.auto_feed_enabled",
+                    event.getItemStack().getItem().getRegistryName()));
         Tuple<Potion,Integer> validPotion = isValidPotion(event.getItemStack());
         if(Objects.nonNull(validPotion))
             event.getToolTip().add(TextUtil.getTranslated("trait.dimhoppertweaks.potion_master.auto_drink_enabled",

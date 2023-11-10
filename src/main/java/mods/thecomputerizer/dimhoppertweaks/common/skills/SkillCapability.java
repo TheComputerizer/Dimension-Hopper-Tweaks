@@ -270,6 +270,7 @@ public class SkillCapability implements ISkillCapability {
         tag.setInteger("drainLevels",this.drainLevels);
         tag.setTag("gatheringTimers",writeGatheringList());
         tag.setTag("autoFeedWhitelist",writeCollection(this.autoFeedWhitelist,this::writeItemTag));
+        tag.setTag("autoPotionWhitelist",writeCollection(this.autoPotionWhitelist,this::writePotionTag));
         if(Objects.nonNull(this.twilightRespawn)) tag.setLong("twilightRespawn",this.twilightRespawn.toLong());
         tag.setInteger("dreamTimer",this.dreamTimer.getValue());
         return tag;
@@ -308,6 +309,15 @@ public class SkillCapability implements ISkillCapability {
         return tag;
     }
 
+    private @Nullable NBTTagCompound writePotionTag(Tuple<Potion,Integer> potionTuple) {
+        ResourceLocation potionRes = potionTuple.getFirst().getRegistryName();
+        if(Objects.isNull(potionRes)) return null;
+        NBTTagCompound tag = new NBTTagCompound();
+        tag.setString("potionReg",potionRes.toString());
+        tag.setInteger("amplifier",potionTuple.getSecond());
+        return tag;
+    }
+
     private @Nullable NBTTagString writeItemTag(Item item) {
         String itemString = writeItemString(item);
         return Objects.nonNull(itemString) ? new NBTTagString(itemString) : null;
@@ -337,6 +347,7 @@ public class SkillCapability implements ISkillCapability {
             this.drainLevels = tag.getInteger("drainLevels");
         }
         readCollection(tag.getTag("autoFeedWhitelist"),this.autoFeedWhitelist,this::readItem);
+        readCollection(tag.getTag("autoPotionWhitelist"),this.autoPotionWhitelist,this::readPotionTuple);
         if(tag.hasKey("twilightRespawn")) this.setTwilightRespawn(BlockPos.fromLong(tag.getLong("twilightRespawn")));
         this.dreamTimer.setValue(tag.getInteger("dreamTimer"));
     }
@@ -369,11 +380,23 @@ public class SkillCapability implements ISkillCapability {
             this.gatheringCooldown.put(item,new MutableInt(gatheringTag.getInteger("cooldown")));
     }
 
+    private @Nullable Tuple<Potion,Integer> readPotionTuple(NBTBase base) {
+        if(!(base instanceof NBTTagCompound)) return null;
+        NBTTagCompound tag = (NBTTagCompound)base;
+        String potionString = tag.getString("potionReg");
+        if(potionString.isEmpty()) return null;
+        ResourceLocation potionRes = new ResourceLocation(potionString);
+        if(!ForgeRegistries.POTIONS.containsKey(potionRes)) return null;
+        Potion potion = ForgeRegistries.POTIONS.getValue(potionRes);
+        return Objects.nonNull(potion) ? new Tuple<>(potion,tag.getInteger("amplifier")) : null;
+    }
+
     private @Nullable Item readItem(NBTBase tag) {
         return tag instanceof NBTTagString ? readItem(((NBTTagString)tag).getString()) : null;
     }
 
     private @Nullable Item readItem(String itemString) {
+        if(itemString.isEmpty()) return null;
         ResourceLocation itemRes = new ResourceLocation(itemString);
         return ForgeRegistries.ITEMS.containsKey(itemRes) ? ForgeRegistries.ITEMS.getValue(itemRes) : null;
     }
