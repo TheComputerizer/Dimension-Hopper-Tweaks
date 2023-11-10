@@ -93,4 +93,25 @@ public class DelayedModAccess {
             }
         }
     }
+
+    public static double incrementDifficultyWithStageFactor(EntityPlayer player, double original) {
+        IStageData data = GameStageHelper.getPlayerData(player);
+        if(Objects.nonNull(data)) {
+            Collection<String> stages = data.getStages();
+            if(stages.contains("hardcore")) return 5000d;
+            else if(stages.contains("bedrockfinal")) original*=100d;
+            else if(stages.contains("finalfrontier")) original*=50d;
+            else if(stages.contains("deepdown")) original*=40d;
+            else if(stages.contains("deepspace")) original*=30d;
+            else if(stages.contains("advent")) original*=20d;
+            else if(stages.contains("planets")) original*=15d;
+            else if(stages.contains("swamp")) original*=10d;
+            else if(stages.contains("cavern")) original*=6d;
+            else if(stages.contains("labyrinth")) original*=4d;
+            else if(stages.contains("overworld")) original*=2d;
+            if(stages.contains("shopper")) original*=1.5d;
+            if(stages.contains("emc")) original*=1.5d;
+        }
+        return original;
+    }
 }

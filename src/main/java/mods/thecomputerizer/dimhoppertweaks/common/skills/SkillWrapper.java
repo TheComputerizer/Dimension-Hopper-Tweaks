@@ -169,8 +169,8 @@ public class SkillWrapper {
     }
 
     private int getPrestigeFactor(int amount, boolean fromXP) {
-        float factor = this.prestigeLevel==0 ? 1f : (float)this.prestigeLevel*2f;
-        if(fromXP) factor = 1f/(factor*0.75f);
+        float pl = (float)this.prestigeLevel*2f;
+        float factor = this.prestigeLevel<=0 ? 1f : (fromXP ? 1f/(pl*0.75f) : pl);
         return Math.max(0,MathHelper.floor(((float)amount)*factor));
     }
 

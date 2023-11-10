@@ -17,16 +17,14 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -105,19 +103,28 @@ public class SkillToken extends EpicItem {
         boolean hasDrainKey = tag.hasKey("skillToDrain");
         String skillToDrain = hasDrainKey ? tag.getString("skillToDrain") : "mining";
         if(tag.hasKey("skillData")) {
+            Map<String,String> formattedSkillData = new HashMap<>();
             NBTBase listTag = tag.getTag("skillData");
             if(listTag instanceof NBTTagList) {
                 for(NBTBase baseTag : (NBTTagList)listTag) {
-                    String skillLine = getSkillLine(baseTag,skillToDrain);
-                    if(Objects.nonNull(skillLine)) tooltip.add(skillLine);
+                    Tuple<String,String> skillLine = getSkillLine(baseTag,skillToDrain);
+                    if(Objects.nonNull(skillLine)) {
+                        //tooltip.add(skillLine.getFirst());
+                        //tooltip.add(skillLine.getSecond());
+                        formattedSkillData.put(skillLine.getFirst(),skillLine.getSecond());
+                    }
                 }
+            }
+            for(String skill : SkillCapabilityStorage.SKILLS) {
+                String line = formattedSkillData.get(skill);
+                if(Objects.nonNull(line)) tooltip.add(line);
             }
         } else addNotSyncedLines(tooltip);
         if(flag.isAdvanced() && hasDrainKey)
             tooltip.add(addXPDrainLine(skillToDrain,tag.getInteger("drainLevels")));
     }
 
-    private @Nullable String getSkillLine(NBTBase baseTag, String skillToDrain) {
+    private @Nullable Tuple<String,String> getSkillLine(NBTBase baseTag, String skillToDrain) {
         if(!(baseTag instanceof NBTTagCompound)) return null;
         NBTTagCompound tag = (NBTTagCompound)baseTag;
         String name = tag.getString("name");
@@ -127,14 +134,15 @@ public class SkillToken extends EpicItem {
         boolean isMaxed = curLevel==1024;
         String skillColor = isDraining ? (isMaxed ? TextUtil.ITALICS+TextUtil.BOLD : TextUtil.DARK_RED) :
                 (isMaxed ? TextUtil.BOLD : TextUtil.DARK_GRAY);
-        if(isMaxed) return TextUtil.getTranslated("item.dimhoppertweaks.skill_token.skill_maxed",skillColor,name);
+        if(isMaxed) return new Tuple<>(name,
+                TextUtil.getTranslated("item.dimhoppertweaks.skill_token.skill_maxed",skillColor,name));
         else {
             int xp = tag.getInteger("xp");
             int levelXP = tag.getInteger("levelXP");
             int prestige = tag.getInteger("prestige");
             String pointColor = isDraining ? TextUtil.RED : TextUtil.WHITE;
-            return TextUtil.getTranslated("item.dimhoppertweaks.skill_token.skill_normal",skillColor,
-                    name,curLevel,curLevel+1,pointColor,xp,levelXP,prestige);
+            return new Tuple<>(name,TextUtil.getTranslated("item.dimhoppertweaks.skill_token.skill_normal",
+                    skillColor,name,curLevel,curLevel+1,pointColor,xp,levelXP,prestige,32*(prestige+1)));
         }
     }
 

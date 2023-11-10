@@ -44,7 +44,7 @@ public class SkillCapability implements ISkillCapability {
     private void checkForExistingSkill(String name) {
         if(!this.skillMap.containsKey(name)) {
             Constants.LOGGER.error("Could not find "+name+" skill! Substituting with a new level 1 "+name+" skill :)");
-            this.skillMap.put(name,new SkillWrapper(name,0,100,0));
+            this.skillMap.put(name.toLowerCase(),new SkillWrapper(name,0,100,0));
         }
     }
 
@@ -127,12 +127,6 @@ public class SkillCapability implements ISkillCapability {
         float damage = Math.max(0f,this.shieldDamage);
         this.shieldDamage = 1f;
         return damage;
-    }
-
-    @Override
-    public float getDamageReduction() {
-        checkForExistingSkill("defense");
-        return 2f*(((float)this.skillMap.get("defense").getLevel())/32f);
     }
 
     @Override
@@ -361,7 +355,7 @@ public class SkillCapability implements ISkillCapability {
     private void readSkill(NBTBase tag) {
         if(!(tag instanceof NBTTagCompound)) return;
         NBTTagCompound skillTag = (NBTTagCompound)tag;
-        String name = skillTag.getString("skillName");
+        String name = skillTag.getString("skillName").toLowerCase();
         this.skillMap.put(name,new SkillWrapper(name,skillTag.getInteger("skillXp"),
                 skillTag.getInteger("skillLevel"),skillTag.getInteger("skillPrestige")));
     }
@@ -412,7 +406,7 @@ public class SkillCapability implements ISkillCapability {
 
     private void readOldSkills(NBTTagCompound tag) {
         for(int i=0; i<tag.getInteger("skills_num"); i++) {
-            String name = tag.getString("skill_"+i);
+            String name = tag.getString("skill_"+i).toLowerCase();
             this.skillMap.put(name,new SkillWrapper(name,tag.getInteger(name+"_xp"),
                     tag.getInteger(name+"_level"),tag.getInteger(name+"_prestige")));
         }

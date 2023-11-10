@@ -6,10 +6,11 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @SuppressWarnings("ConstantConditions")
+@ParametersAreNonnullByDefault
 public class SkillCapabilityProvider implements ICapabilitySerializable<NBTBase> {
 
 
@@ -18,13 +19,12 @@ public class SkillCapabilityProvider implements ICapabilitySerializable<NBTBase>
     private final ISkillCapability impl = SKILL_CAPABILITY.getDefaultInstance();
 
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
+    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
         return capability==SKILL_CAPABILITY;
     }
 
-    @Nullable
     @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+    public <T> @Nullable T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
         return capability == SKILL_CAPABILITY ? SKILL_CAPABILITY.cast(this.impl) : null;
     }
 

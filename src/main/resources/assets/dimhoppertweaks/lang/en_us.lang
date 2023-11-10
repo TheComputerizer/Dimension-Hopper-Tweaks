@@ -44,7 +44,7 @@ item.dimhoppertweaks.reality_slasher.name=Reality Slasher
 item.dimhoppertweaks.skill_token.name=Skill Token
 item.dimhoppertweaks.skill_token.not_synced=§o§lSkill info for the %1$s skill has not yet been synced to this token
 item.dimhoppertweaks.skill_token.skill_maxed=§r§6%1$s%2$s[1024]
-item.dimhoppertweaks.skill_token.skill_normal=%1$s§l%2$s[%3$s->%4$s]:§r %5$s%6$s/%7$s§r §6§l{%8$s}
+item.dimhoppertweaks.skill_token.skill_normal=%1$s§l%2$s[%3$s->%4$s]:§r %5$s%6$s/%7$s§r §6§l%8$s§r§6§o{%9$s}
 item.dimhoppertweaks.skill_token.xp_drain=§r§o§7Draining %1$s XP %2$s into %3$s
 item.dimhoppertweaks.prestige_token_1.name=Prestige Token Level 1 [64]
 item.dimhoppertweaks.prestige_token_2.name=Prestige Token Level 2 [96]
@@ -77,6 +77,8 @@ item.dimhoppertweaks.prestige_token_28.name=Prestige Token Level 28 [928]
 item.dimhoppertweaks.prestige_token_29.name=Prestige Token Level 29 [960]
 item.dimhoppertweaks.prestige_token_30.name=Prestige Token Level 30 [992]
 item.dimhoppertweaks.prestige_token_31.name=Prestige Token Level 31 [1024]
+
+misc.dimhoppertweaks.sleep_warning=Warning, difficulty increases by %1$s from sleeping!
 
 reskillable.skill.dimhoppertweaks.research=Research
 reskillable.skill.dimhoppertweaks.void=Void

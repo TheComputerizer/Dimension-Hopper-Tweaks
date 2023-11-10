@@ -87,14 +87,8 @@ public class EntityEvents {
     public static void onDamage(LivingDamageEvent event) {
         if(event.isCanceled()) return;
         if(!event.getEntityLiving().world.isRemote && Objects.nonNull(event.getSource()) && event.getSource()!=DamageSource.OUT_OF_WORLD) {
-            if(event.getEntityLiving() instanceof EntityPlayerMP) {
-                EntityPlayerMP player = (EntityPlayerMP) event.getEntityLiving();
-                if(Objects.nonNull(player)) {
-                    ISkillCapability cap = SkillWrapper.getSkillCapability(player);
-                    if(Objects.nonNull(cap)) event.setAmount(Math.max(0f,event.getAmount()-cap.getDamageReduction()));
-                }
-            } else if(event.getSource().getTrueSource() instanceof EntityPlayerMP) {
-                EntityPlayerMP player = (EntityPlayerMP) event.getSource().getTrueSource();
+            if(event.getSource().getTrueSource() instanceof EntityPlayerMP) {
+                EntityPlayerMP player = (EntityPlayerMP)event.getSource().getTrueSource();
                 if(Objects.nonNull(player)) {
                     ISkillCapability cap = SkillWrapper.getSkillCapability(player);
                     float amount = event.getAmount();
