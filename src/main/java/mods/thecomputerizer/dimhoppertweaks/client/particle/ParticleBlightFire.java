@@ -75,23 +75,30 @@ public class ParticleBlightFire extends Particle {
         this.prevPosY = posY;
         this.prevPosZ = posZ;
         if(this.particleAge++>=this.particleMaxAge) setExpired();
-        if(Objects.isNull(this.centerVec)) {
-            move(this.motionX, this.motionY, this.motionZ);
-            this.motionX*=0.95d;
-            this.motionY*=0.95d;
-            this.motionZ*=0.95d;
-            if (this.onGround) {
-                this.motionX*=0.8d;
-                this.motionZ*=0.8d;
+        else {
+            if(Objects.isNull(this.centerVec)) {
+                move(this.motionX, this.motionY, this.motionZ);
+                this.motionX *= 0.95d;
+                this.motionY *= 0.95d;
+                this.motionZ *= 0.95d;
+                if (this.onGround) {
+                    this.motionX *= 0.8d;
+                    this.motionZ *= 0.8d;
+                }
+            } else {
+                float ageFactor = (float)this.particleAge/(float)this.particleMaxAge;
+                this.posX = getClampedDistance(this.centerVec.x,this.posX,ageFactor);
+                this.posY = getClampedDistance(this.centerVec.y,this.posY,ageFactor);
+                this.posZ = getClampedDistance(this.centerVec.z,this.posZ,ageFactor);
             }
-        } else {
-            float ageFactor = (float)this.particleAge/(float)this.particleMaxAge;
-            float distanceFactor = 1f-(-ageFactor+ageFactor*ageFactor*2f);
-            this.posX = this.centerVec.x+this.motionX*(double)distanceFactor;
-            this.posY = this.centerVec.y+this.motionY*(double)distanceFactor+(double)(1f-ageFactor);
-            this.posZ = this.centerVec.z+this.motionZ*(double)distanceFactor;
+            this.frameUV = getUVFrame();
         }
-        this.frameUV = getUVFrame();
+    }
+
+    private double getClampedDistance(double target, double from, double ageFactor) {
+        double dif = target-from;
+        double max = dif*ageFactor;
+        return from+(max>0d ? Math.min(max,dif) : Math.max(max,dif));
     }
 
     @Override
