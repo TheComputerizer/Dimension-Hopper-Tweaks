@@ -71,11 +71,11 @@ public abstract class MixinEntityCrazyZombie extends EntityCavenicZombie {
             double xFlip = this.rand.nextInt(2)*2-1;
             double yFlip = this.rand.nextInt(2)*2-1;
             double zFlip = this.rand.nextInt(2)*2-1;
-            double ptX = center.x+(Math.abs(aabb.maxX-aabb.minX)*2d*xFlip);
-            double ptY = center.y+(Math.abs(aabb.maxY-aabb.minY)*1.5d*yFlip);
-            double ptZ = center.z+(Math.abs(aabb.maxZ-aabb.minZ)*2d*zFlip);
+            double ptX = center.x+(Math.abs(aabb.maxX-aabb.minX)*0.25d*xFlip);
+            double ptY = center.y+(Math.abs(aabb.maxY-aabb.minY)*0.2d*yFlip);
+            double ptZ = center.z+(Math.abs(aabb.maxZ-aabb.minZ)*0.25d*zFlip);
             double motionX = this.rand.nextDouble()*xFlip;
-            double motionY = this.rand.nextDouble()*0.75d*yFlip;
+            double motionY = this.rand.nextDouble()*0.8d*yFlip;
             double motionZ = this.rand.nextDouble()*zFlip;
             ParticleBlightFire particle = new ParticleBlightFire(this.world,ptX,ptY,ptZ,motionX,motionY,motionZ,
                     100f,32d,0.5f);

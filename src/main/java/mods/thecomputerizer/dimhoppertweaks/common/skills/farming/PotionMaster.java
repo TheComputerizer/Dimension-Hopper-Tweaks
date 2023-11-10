@@ -10,18 +10,17 @@ import net.darkhax.gamestages.GameStageHelper;
 import net.darkhax.itemstages.ItemStages;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemFood;
+import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.Objects;
 
-public class HungryFarmer extends ExtendedEventsTrait {
+public class PotionMaster extends ExtendedEventsTrait {
 
-    public HungryFarmer() {
-        super("hungry_farmer",2,3,FARMING,20,"farming|64");
+    public PotionMaster() {
+        super("potion_master",2,0,FARMING,32,"farming|128","magic|96");
     }
 
     @Override
@@ -30,37 +29,34 @@ public class HungryFarmer extends ExtendedEventsTrait {
         if(Objects.nonNull(player) && !player.isCreative() && !player.isSpectator()) {
             PlayerData data = PlayerDataHandler.get(player);
             if(Objects.nonNull(data) && data.getSkillInfo(this.getParentSkill()).isUnlocked(this)) {
-                if(player.canEat(false)) {
-                    NonNullList<ItemStack> inventoryList = player.inventoryContainer.getInventory();
-                    ItemStack curStack = ItemStack.EMPTY;
-                    for(ItemStack stack : inventoryList) {
-                        if(canUseItem(player,stack)) {
-                            curStack = stack;
-                            break;
-                        }
+                NonNullList<ItemStack> inventoryList = player.inventoryContainer.getInventory();
+                ItemStack curStack = ItemStack.EMPTY;
+                for(ItemStack stack : inventoryList) {
+                    if(canUseItem(player,stack)) {
+                        curStack = stack;
+                        break;
                     }
-                    if(!curStack.isEmpty()) curStack.getItem().onItemUseFinish(curStack,player.world,player);
                 }
+                if(!curStack.isEmpty()) curStack.getItem().onItemUseFinish(curStack,player.world,player);
             }
         }
     }
 
     private boolean canUseItem(EntityPlayer player, ItemStack stack) {
-        Item item = stack.getItem();
-        if(stack.isEmpty() || !(item instanceof ItemFood)) return false;
+        if(stack.isEmpty() || !(stack.getItem() instanceof ItemPotion)) return false;
         String stage = ItemStages.getStage(stack);
-        return LevelLockHandler.canPlayerUseItem(player,stack) && isItemWhitelisted(player,item) &&
+        return LevelLockHandler.canPlayerUseItem(player,stack) && isItemWhitelisted(player,stack) &&
                 (Objects.isNull(stage) || GameStageHelper.hasStage(player,stage));
     }
 
-    private boolean isItemWhitelisted(EntityPlayer player, Item item) {
+    private boolean isItemWhitelisted(EntityPlayer player, ItemStack potionStack) {
         ISkillCapability cap = SkillWrapper.getSkillCapability(player);
-        return Objects.nonNull(cap) && cap.canAutoFeed(item);
+        return Objects.nonNull(cap) && cap.canAutoDrink((EntityPlayerMP)player,potionStack);
     }
 
     @Override
-    public void onShiftRightClickFood(EntityPlayer player, ItemFood food) {
+    public void onShiftRightClickPotion(EntityPlayer player, ItemStack potionStack) {
         ISkillCapability cap = SkillWrapper.getSkillCapability(player);
-        if(Objects.nonNull(cap)) cap.togglePassiveFood((EntityPlayerMP)player,food);
+        if(Objects.nonNull(cap)) cap.togglePassivePotion((EntityPlayerMP)player,potionStack);
     }
 }

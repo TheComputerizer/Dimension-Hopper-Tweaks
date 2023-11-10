@@ -71,9 +71,9 @@ public abstract class MixinEntityCrazyCreeper extends EntityCavenicCreeper {
             double xFlip = this.rand.nextInt(2)*2-1;
             double yFlip = this.rand.nextInt(2)*2-1;
             double zFlip = this.rand.nextInt(2)*2-1;
-            double ptX = center.x+(Math.abs(aabb.maxX-aabb.minX)*2d*xFlip);
-            double ptY = center.y+(Math.abs(aabb.maxY-aabb.minY)*1.5d*yFlip);
-            double ptZ = center.z+(Math.abs(aabb.maxZ-aabb.minZ)*2d*zFlip);
+            double ptX = center.x+(Math.abs(aabb.maxX-aabb.minX)*0.0625d*xFlip);
+            double ptY = center.y+(Math.abs(aabb.maxY-aabb.minY)*0.0625d*0.75d*yFlip);
+            double ptZ = center.z+(Math.abs(aabb.maxZ-aabb.minZ)*0.0625d*zFlip);
             double motionX = this.rand.nextDouble()*xFlip;
             double motionY = this.rand.nextDouble()*0.75d*yFlip;
             double motionZ = this.rand.nextDouble()*zFlip;

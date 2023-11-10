@@ -4,6 +4,7 @@ import codersafterdark.reskillable.api.unlockable.Trait;
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemFood;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.world.BlockEvent;
@@ -26,7 +27,7 @@ public abstract class ExtendedEventsTrait extends Trait {
     private static String[] getReqs(String ... skills) {
         for(int i=0; i<skills.length; i++) {
             boolean isCustom = skills[i].startsWith("research") || skills[i].startsWith("void");
-            skills[i] = (isCustom ? Constants.MODID : "reskillable")+skills[i];
+            skills[i] = (isCustom ? Constants.MODID : "reskillable")+":"+skills[i];
         }
         return skills;
     }
@@ -54,5 +55,7 @@ public abstract class ExtendedEventsTrait extends Trait {
         return false;
     }
 
-    public void onEat(EntityPlayer player, ItemFood food) {}
+    public void onShiftRightClickFood(EntityPlayer player, ItemFood food) {}
+
+    public void onShiftRightClickPotion(EntityPlayer player, ItemStack potionStack) {}
 }

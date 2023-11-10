@@ -14,6 +14,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
+import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.living.LootingLevelEvent;
 import net.minecraftforge.event.entity.player.AdvancementEvent;
@@ -182,13 +183,17 @@ public class PlayerEvents {
         if(event.isCanceled()) return;
         Item item = event.getItemStack().getItem();
         EntityPlayer player = event.getEntityPlayer();
-        if(!event.getWorld().isRemote && item instanceof ItemFood && player.isSneaking() &&
+        if(!event.getWorld().isRemote && player.isSneaking() &&
                 (event instanceof RightClickItem || event instanceof RightClickBlock ||
                         event instanceof EntityInteract || event instanceof EntityInteractSpecific)) {
             PlayerData data = PlayerDataHandler.get(player);
             if(Objects.nonNull(data)) {
                 SkillWrapper.executeOnSkills(data,h -> {
-                    if(h instanceof ExtendedEventsTrait) ((ExtendedEventsTrait)h).onEat(player,(ItemFood)item);
+                    if(h instanceof ExtendedEventsTrait) {
+                        ExtendedEventsTrait trait = (ExtendedEventsTrait)h;
+                        if(item instanceof ItemFood) trait.onShiftRightClickFood(player,(ItemFood)item);
+                        else if(item instanceof ItemPotion) trait.onShiftRightClickPotion(player,event.getItemStack());
+                    }
                 });
             }
         }

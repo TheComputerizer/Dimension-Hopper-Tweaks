@@ -15,6 +15,7 @@ public class TextUtil {
     public static final String DARK_GRAY = String.valueOf(TextFormatting.DARK_GRAY);
     public static final String RED = String.valueOf(TextFormatting.RED);
     public static final String WHITE = String.valueOf(TextFormatting.WHITE);
+    public static final String BOLD = String.valueOf(TextFormatting.BOLD);
     public static final String ITALICS = String.valueOf(TextFormatting.ITALIC);
 
     public static String getTranslated(String langKey, Object ... args) {

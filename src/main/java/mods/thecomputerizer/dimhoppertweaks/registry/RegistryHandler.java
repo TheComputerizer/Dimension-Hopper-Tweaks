@@ -10,6 +10,7 @@ import mods.thecomputerizer.dimhoppertweaks.common.skills.attack.SuperPets;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.building.ResistiveBuilder;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.defense.KnockbackImmunity;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.farming.HungryFarmer;
+import mods.thecomputerizer.dimhoppertweaks.common.skills.farming.PotionMaster;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.gathering.ExplosiveAura;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.gathering.LuckyAura;
 import mods.thecomputerizer.dimhoppertweaks.common.skills.magic.LivingBattery;
@@ -99,7 +100,8 @@ public final class RegistryHandler {
         register(event.getRegistry(),new SuperPets(),new ResistiveBuilder(),new KnockbackImmunity(),new ExplosiveAura(),
                 new LuckyAura(),new ExpertMiner(),new RefreshingPortals(),new VoidCheater(),new VoidWalker(),
                 new LivingBattery(),new NaturesAura(),new NoCooldowns(),new HungryFarmer(),new LimbonicGenerator(),
-                new TokenGamble(),new TieredResearchTrait("oil",1,0,0),
+                new TokenGamble(),new PotionMaster(),
+                new TieredResearchTrait("oil",1,0,0),
                 new TieredResearchTrait("oil",2,0,0),
                 new TieredResearchTrait("oil",3,0,0),
                 new TieredResearchTrait("factory",1,0,1),

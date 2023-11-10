@@ -12,7 +12,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.potion.Potion;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Tuple;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
@@ -70,9 +72,10 @@ public class ClientPacketHandlers {
     }
 
     @SideOnly(Side.CLIENT)
-    public static void handleCapData(float miningSpeed, Set<Item> autoFeedItems) {
+    public static void handleCapData(float miningSpeed, Set<Item> autoFeedItems, List<Tuple<Potion,Integer>> autoPotionItems) {
         ClientEffects.MINING_SPEED = miningSpeed;
         ClientEvents.autoFeedItems = autoFeedItems;
+        ClientEvents.autoPotionItems = autoPotionItems;
     }
 
     @SideOnly(Side.CLIENT)

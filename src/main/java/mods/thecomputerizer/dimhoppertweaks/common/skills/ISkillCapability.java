@@ -2,6 +2,7 @@ package mods.thecomputerizer.dimhoppertweaks.common.skills;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 
@@ -29,6 +30,8 @@ public interface ISkillCapability {
     boolean checkGatheringItem(Item item);
     void togglePassiveFood(EntityPlayerMP player, Item item);
     boolean canAutoFeed(Item item);
+    void togglePassivePotion(EntityPlayerMP player, ItemStack stack);
+    boolean canAutoDrink(EntityPlayerMP player, ItemStack stack);
     Set<Map.Entry<String, SkillWrapper>> getCurrentValues();
     void syncSkills(EntityPlayerMP player);
     void setDrainSelection(String skill, int levels, EntityPlayerMP player);

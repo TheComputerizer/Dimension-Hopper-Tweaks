@@ -10,6 +10,10 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.PotionUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.MathHelper;
@@ -23,14 +27,14 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import org.lwjgl.opengl.GL11;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import javax.annotation.Nullable;
+import java.util.*;
 
 @Mod.EventBusSubscriber(modid = Constants.MODID, value = Side.CLIENT)
 public class ClientEvents {
 
     public static Set<Item> autoFeedItems = new HashSet<>();
+    public static List<Tuple<Potion,Integer>> autoPotionItems = new ArrayList<>();
     private static boolean shaderLoaded = false;
     private static boolean screenShakePositive = true;
 
@@ -109,5 +113,17 @@ public class ClientEvents {
         if(event.isCanceled()) return;
         if(autoFeedItems.contains(event.getItemStack().getItem()))
             event.getToolTip().add(TextUtil.getTranslated("trait.dimhoppertweaks.hungry_farmer.auto_feed_enabled"));
+        Tuple<Potion,Integer> validPotion = isValidPotion(event.getItemStack());
+        if(Objects.nonNull(validPotion))
+            event.getToolTip().add(TextUtil.getTranslated("trait.dimhoppertweaks.potion_master.auto_drink_enabled",
+                    validPotion.getFirst().getRegistryName(),validPotion.getSecond()+1));
+    }
+
+    private static @Nullable Tuple<Potion,Integer> isValidPotion(ItemStack stack) {
+        for(PotionEffect effect : PotionUtils.getEffectsFromStack(stack))
+            for(Tuple<Potion,Integer> validPotion : autoPotionItems)
+                if(effect.getPotion()==validPotion.getFirst() && effect.getAmplifier()==validPotion.getSecond())
+                    return validPotion;
+        return null;
     }
 }

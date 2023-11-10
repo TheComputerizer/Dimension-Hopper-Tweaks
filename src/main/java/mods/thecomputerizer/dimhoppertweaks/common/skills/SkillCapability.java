@@ -6,11 +6,17 @@ import mods.thecomputerizer.dimhoppertweaks.network.PacketSyncCapabilityData;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
+import net.minecraft.item.ItemPotion;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import org.apache.commons.lang3.mutable.MutableInt;
@@ -25,6 +31,7 @@ public class SkillCapability implements ISkillCapability {
     private Map<String,SkillWrapper> skillMap = new HashMap<>();
     private Map<Item,MutableInt> gatheringCooldown = new HashMap<>();
     private Set<Item> autoFeedWhitelist = new HashSet<>();
+    private List<Tuple<Potion,Integer>> autoPotionWhitelist = new ArrayList<>();
     private String skillToDrain = "mining";
     private int drainLevels = 1;
     private float shieldDamage = 1f;
@@ -46,6 +53,7 @@ public class SkillCapability implements ISkillCapability {
         this.skillMap = copy.skillMap;
         this.gatheringCooldown = copy.gatheringCooldown;
         this.autoFeedWhitelist = copy.autoFeedWhitelist;
+        this.autoPotionWhitelist = copy.autoPotionWhitelist;
         this.skillToDrain = copy.skillToDrain;
         this.drainLevels = copy.drainLevels;
         this.twilightRespawn = copy.twilightRespawn;
@@ -100,7 +108,7 @@ public class SkillCapability implements ISkillCapability {
     private void syncClientData(EntityPlayerMP player) {
         float breakSpeed = 1f+getBreakSpeedMultiplier();
         if(Objects.nonNull(player.connection))
-            new PacketSyncCapabilityData(breakSpeed,this.autoFeedWhitelist).addPlayers(player).send();
+            new PacketSyncCapabilityData(breakSpeed,this.autoFeedWhitelist,this.autoPotionWhitelist).addPlayers(player).send();
     }
 
     @Override
@@ -163,6 +171,45 @@ public class SkillCapability implements ISkillCapability {
     @Override
     public boolean canAutoFeed(Item item) {
         return item instanceof ItemFood && this.autoFeedWhitelist.contains(item);
+    }
+
+    @Override
+    public void togglePassivePotion(EntityPlayerMP player, ItemStack stack) {
+        if(stack.getItem() instanceof ItemPotion) {
+            for(PotionEffect effect : PotionUtils.getEffectsFromStack(stack)) {
+                Potion potion = effect.getPotion();
+                int amplifier = effect.getAmplifier();
+                if(containsPotion(potion,amplifier)) removePotion(potion,amplifier);
+                else this.autoPotionWhitelist.add(new Tuple<>(potion,amplifier));
+            }
+            syncClientData(player);
+        }
+    }
+
+    private void removePotion(Potion potion, int amplifier) {
+        this.autoPotionWhitelist.removeIf(validPotion -> potion == validPotion.getFirst() &&
+                amplifier == validPotion.getSecond());
+    }
+
+    @Override
+    public boolean canAutoDrink(EntityPlayerMP player, ItemStack stack) {
+        if(stack.getItem() instanceof ItemPotion) {
+            for(PotionEffect effect : PotionUtils.getEffectsFromStack(stack)) {
+                Potion potion = effect.getPotion();
+                if(containsPotion(potion,effect.getAmplifier())) {
+                    PotionEffect playerEffect = player.getActivePotionEffect(effect.getPotion());
+                    if(Objects.isNull(playerEffect) || playerEffect.getAmplifier()<effect.getAmplifier())
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean containsPotion(Potion potion, int amplifier) {
+        for(Tuple<Potion,Integer> validPotion : this.autoPotionWhitelist)
+            if(potion==validPotion.getFirst() && amplifier==validPotion.getSecond()) return true;
+        return false;
     }
 
     @Override
