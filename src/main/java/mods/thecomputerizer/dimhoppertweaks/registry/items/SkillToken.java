@@ -98,7 +98,7 @@ public class SkillToken extends EpicItem {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flag) {
+    public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
         NBTTagCompound tag = getTag(stack);
         boolean hasDrainKey = tag.hasKey("skillToDrain");
         String skillToDrain = hasDrainKey ? tag.getString("skillToDrain") : "mining";
@@ -108,11 +108,8 @@ public class SkillToken extends EpicItem {
             if(listTag instanceof NBTTagList) {
                 for(NBTBase baseTag : (NBTTagList)listTag) {
                     Tuple<String,String> skillLine = getSkillLine(baseTag,skillToDrain);
-                    if(Objects.nonNull(skillLine)) {
-                        //tooltip.add(skillLine.getFirst());
-                        //tooltip.add(skillLine.getSecond());
+                    if(Objects.nonNull(skillLine))
                         formattedSkillData.put(skillLine.getFirst(),skillLine.getSecond());
-                    }
                 }
             }
             for(String skill : SkillCapabilityStorage.SKILLS) {
@@ -134,15 +131,16 @@ public class SkillToken extends EpicItem {
         boolean isMaxed = curLevel==1024;
         String skillColor = isDraining ? (isMaxed ? TextUtil.ITALICS+TextUtil.BOLD : TextUtil.DARK_RED) :
                 (isMaxed ? TextUtil.BOLD : TextUtil.DARK_GRAY);
-        if(isMaxed) return new Tuple<>(name,
+        if(isMaxed) return new Tuple<>(tag.getString("name"),
                 TextUtil.getTranslated("item.dimhoppertweaks.skill_token.skill_maxed",skillColor,name));
         else {
             int xp = tag.getInteger("xp");
             int levelXP = tag.getInteger("levelXP");
             int prestige = tag.getInteger("prestige");
             String pointColor = isDraining ? TextUtil.RED : TextUtil.WHITE;
-            return new Tuple<>(name,TextUtil.getTranslated("item.dimhoppertweaks.skill_token.skill_normal",
-                    skillColor,name,curLevel,curLevel+1,pointColor,xp,levelXP,prestige,32*(prestige+1)));
+            return new Tuple<>(tag.getString("name"),TextUtil.getTranslated(
+                    "item.dimhoppertweaks.skill_token.skill_normal",skillColor,name,curLevel,curLevel+1,
+                    pointColor,xp,levelXP,prestige,32*(prestige+1)));
         }
     }
 

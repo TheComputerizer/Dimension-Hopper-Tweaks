@@ -7,7 +7,6 @@ import appeng.me.GridNode;
 import appeng.util.Platform;
 import com.cleanroommc.multiblocked.client.util.TrackedDummyWorld;
 import com.google.common.base.Preconditions;
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 
@@ -16,17 +15,14 @@ public class MixinApiGrid {
 
     /**
      * @author The_Computerizer
-     * @reason Try ignoring the exception when inside of a TrackedDummyWorld from mbd
+     * @reason Try ignoring the exception when inside a TrackedDummyWorld from mbd
      */
     @Overwrite
     public IGridNode createGridNode(IGridBlock blk) {
         Preconditions.checkNotNull(blk);
         if(Platform.isClient()) {
-            if(blk.getLocation().getWorld() instanceof TrackedDummyWorld) {
-                Constants.LOGGER.error("Trying to ignore dummy worlds");
-                return new GridNode(blk);
-            }
-            throw new IllegalStateException("Grid features for " + blk + " are server side only.");
+            if(blk.getLocation().getWorld() instanceof TrackedDummyWorld) return new GridNode(blk);
+            throw new IllegalStateException("Grid features for "+blk+" are server side only.");
         } else return new GridNode(blk);
     }
 }

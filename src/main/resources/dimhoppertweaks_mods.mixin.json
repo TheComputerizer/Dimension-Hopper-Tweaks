@@ -45,6 +45,8 @@
     "MixinItemTreasureChest",
     "MixinLastStandEnchantmentsHandler",
     "MixinModSpellPieces",
+    "MixinMultiblockRecipeCategory",
+    "MixinMultiblockRecipeWrapper",
     "MixinMutableLootPool",
     "MixinMutableLootTable",
     "MixinOreTiersEventHandler",
@@ -87,6 +89,7 @@
     "staff.MixinWitherStaff"
   ],
   "client": [
+    "MixinGuiSkills",
     "MixinItemEnchantmentToken"
   ]
 }
