@@ -2,8 +2,8 @@ package mods.thecomputerizer.dimhoppertweaks.mixin.mods;
 
 import codersafterdark.reskillable.api.data.PlayerData;
 import codersafterdark.reskillable.api.data.PlayerDataHandler;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.ExtendedEventsTrait;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;
+import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;

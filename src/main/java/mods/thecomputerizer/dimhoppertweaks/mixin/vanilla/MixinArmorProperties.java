@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.vanilla;
 
-import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.player.EntityPlayer;

@@ -1,8 +1,8 @@
 package mods.thecomputerizer.dimhoppertweaks.registry.items;
 
 import mcp.MethodsReturnNonnullByDefault;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.ISkillCapability;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.ISkillCapability;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;

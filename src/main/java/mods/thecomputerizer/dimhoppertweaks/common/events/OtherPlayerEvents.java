@@ -1,9 +1,9 @@
 package mods.thecomputerizer.dimhoppertweaks.common.events;
 
 import mods.thecomputerizer.dimhoppertweaks.client.render.ClientEffects;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.ISkillCapability;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillCapability;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.ISkillCapability;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillCapability;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.event.entity.player.PlayerEvent.*;

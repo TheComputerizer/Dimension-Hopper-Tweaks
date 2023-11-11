@@ -8,7 +8,6 @@ import mods.thecomputerizer.dimhoppertweaks.registry.items.StargateAddresser;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -19,7 +18,7 @@ import java.util.function.Supplier;
 
 import static mods.thecomputerizer.dimhoppertweaks.registry.RegistryHandler.DIM_HOPPER_TAB;
 
-@GameRegistry.ObjectHolder(Constants.MODID)
+@SuppressWarnings("unused")
 public final class ItemRegistry {
 
     private static final List<Item> ALL_ITEMS = new ArrayList<>();
@@ -114,6 +113,7 @@ public final class ItemRegistry {
         ALL_ITEMS.add(item);
         return item;
     }
+
     public static Item[] getItems() {
         return ALL_ITEMS.toArray(new Item[0]);
     }

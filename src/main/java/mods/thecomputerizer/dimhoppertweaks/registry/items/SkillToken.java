@@ -1,9 +1,9 @@
 package mods.thecomputerizer.dimhoppertweaks.registry.items;
 
 import mcp.MethodsReturnNonnullByDefault;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.ISkillCapability;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillCapabilityStorage;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.ISkillCapability;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillCapabilityStorage;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketOpenGui;
 import mods.thecomputerizer.dimhoppertweaks.util.TextUtil;

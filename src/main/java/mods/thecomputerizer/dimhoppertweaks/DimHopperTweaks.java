@@ -1,9 +1,9 @@
 package mods.thecomputerizer.dimhoppertweaks;
 
 import mods.thecomputerizer.dimhoppertweaks.client.ClientRegistryHandler;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.ISkillCapability;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillCapability;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillCapabilityStorage;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.ISkillCapability;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillCapability;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillCapabilityStorage;
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import mods.thecomputerizer.dimhoppertweaks.network.*;
 import mods.thecomputerizer.dimhoppertweaks.registry.RegistryHandler;
@@ -17,10 +17,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
 @Mod(modid = Constants.MODID, name = Constants.NAME, version = Constants.VERSION, dependencies = Constants.DEPENDENCIES)
-public class DimHopperTweaks
-{
-    @Mod.Instance(Constants.MODID)
-    public static DimHopperTweaks INSTANCE;
+public class DimHopperTweaks {
 
     public DimHopperTweaks() {
         NetworkHandler.queueServerPacketRegistries(PacketSyncGuiData.class);

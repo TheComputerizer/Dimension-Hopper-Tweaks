@@ -1,10 +1,10 @@
 package mods.thecomputerizer.dimhoppertweaks.common.events;
 
-import mods.thecomputerizer.dimhoppertweaks.common.skills.ISkillCapability;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillCapabilityProvider;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillCapabilityProvider;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;

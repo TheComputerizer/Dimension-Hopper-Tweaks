@@ -1,8 +1,8 @@
 package mods.thecomputerizer.dimhoppertweaks.network;
 
 import io.netty.buffer.ByteBuf;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.ISkillCapability;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.SkillWrapper;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.ISkillCapability;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
 import mods.thecomputerizer.theimpossiblelibrary.network.MessageImpl;
 import mods.thecomputerizer.theimpossiblelibrary.util.NetworkUtil;
 import net.minecraft.entity.player.EntityPlayerMP;

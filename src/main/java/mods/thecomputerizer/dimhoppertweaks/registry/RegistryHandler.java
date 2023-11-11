@@ -5,25 +5,6 @@ import codersafterdark.reskillable.api.unlockable.Unlockable;
 import mods.thecomputerizer.dimhoppertweaks.common.commands.DHDebugCommands;
 import mods.thecomputerizer.dimhoppertweaks.common.commands.RandomTP;
 import mods.thecomputerizer.dimhoppertweaks.common.commands.SummonBoss;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.attack.NoCooldowns;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.attack.SuperPets;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.building.ResistiveBuilder;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.defense.KnockbackImmunity;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.farming.HungryFarmer;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.farming.PotionMaster;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.gathering.ExplosiveAura;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.gathering.LuckyAura;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.magic.LivingBattery;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.magic.NaturesAura;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.mining.ExpertMiner;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.research.LimbonicGenerator;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.research.ResearchSkill;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.research.TieredResearchTrait;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.research.TokenGamble;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.voidskill.RefreshingPortals;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.voidskill.VoidCheater;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.voidskill.VoidSkill;
-import mods.thecomputerizer.dimhoppertweaks.common.skills.voidskill.VoidWalker;
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import mods.thecomputerizer.dimhoppertweaks.registry.tiles.LightningEnhancerEntity;
 import net.minecraft.block.Block;
@@ -35,18 +16,14 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
-
-import static mods.thecomputerizer.dimhoppertweaks.registry.ItemRegistry.STARGATE_ADDRESSER;
 
 @Mod.EventBusSubscriber(modid = Constants.MODID)
 public final class RegistryHandler {
@@ -54,7 +31,7 @@ public final class RegistryHandler {
     public static final CreativeTabs DIM_HOPPER_TAB = new CreativeTabs(Constants.MODID) {
         @SideOnly(Side.CLIENT)
         public @Nonnull ItemStack createIcon() {
-            return new ItemStack(STARGATE_ADDRESSER);
+            return new ItemStack(ItemRegistry.STARGATE_ADDRESSER);
         }
     };
 
@@ -72,53 +49,37 @@ public final class RegistryHandler {
     }
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
-        register(event.getRegistry(),BlockRegistry.getBlocks());
-        GameRegistry.registerTileEntity(LightningEnhancerEntity.class, Constants.res("tile.lightning_enhancer"));
+        register(event,BlockRegistry.getBlocks());
+        GameRegistry.registerTileEntity(LightningEnhancerEntity.class,Constants.res("tile.lightning_enhancer"));
     }
 
     @SubscribeEvent
-    public static void registerEntities(RegistryEvent.Register<EntityEntry> entities) {
-        EntityRegistry.register();
+    public static void registerEntities(RegistryEvent.Register<EntityEntry> event) {
+        register(event,EntityRegistry.getEntityEntries());
     }
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
-        register(event.getRegistry(),ItemRegistry.getItems());
+        register(event,ItemRegistry.getItems());
+    }
+
+    @SubscribeEvent
+    public static void registerSkills(RegistryEvent.Register<Skill> event) {
+        register(event,SkillRegistry.getSkills());
     }
 
     @SubscribeEvent
     public static void registerSoundEvents(RegistryEvent.Register<SoundEvent> event) {
-        register(event.getRegistry(),SoundRegistry.getSounds());
+        register(event,SoundRegistry.getSounds());
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void registerSkills(RegistryEvent.Register<Skill> event) {
-        register(event.getRegistry(),new ResearchSkill(),new VoidSkill());
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent
     public static void registerTraits(RegistryEvent.Register<Unlockable> event) {
-        register(event.getRegistry(),new SuperPets(),new ResistiveBuilder(),new KnockbackImmunity(),new ExplosiveAura(),
-                new LuckyAura(),new ExpertMiner(),new RefreshingPortals(),new VoidCheater(),new VoidWalker(),
-                new LivingBattery(),new NaturesAura(),new NoCooldowns(),new HungryFarmer(),new LimbonicGenerator(),
-                new TokenGamble(),new PotionMaster(),
-                new TieredResearchTrait("oil",1,0,0),
-                new TieredResearchTrait("oil",2,0,0),
-                new TieredResearchTrait("oil",3,0,0),
-                new TieredResearchTrait("factory",1,0,1),
-                new TieredResearchTrait("factory",2,0,1),
-                new TieredResearchTrait("factory",3,0,1),
-                new TieredResearchTrait("psionic",1,0,2),
-                new TieredResearchTrait("psionic",2,0,2),
-                new TieredResearchTrait("psionic",3,0,2),
-                new TieredResearchTrait("lightning",2,-1,3),
-                new TieredResearchTrait("lightning",3,-1,3),
-                new TieredResearchTrait("lightning",4,-1,3),
-                new TieredResearchTrait("lightning",5,-1,3));
+        register(event,TraitRegistry.getTraits());
     }
 
     @SafeVarargs
-    public static <T extends IForgeRegistryEntry<T>> void register(IForgeRegistry<T> registry, T ... entries) {
-        registry.registerAll(entries);
+    private static <E extends IForgeRegistryEntry<E>> void register(RegistryEvent.Register<E> event, E ... toRegister) {
+        event.getRegistry().registerAll(toRegister);
     }
 }

@@ -3,12 +3,11 @@ package mods.thecomputerizer.dimhoppertweaks.registry;
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@GameRegistry.ObjectHolder(Constants.MODID)
+@SuppressWarnings("unused")
 public final class SoundRegistry {
 
     private static final List<SoundEvent> ALL_SOUNDS = new ArrayList<>();
