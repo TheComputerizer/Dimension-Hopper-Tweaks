@@ -6,7 +6,9 @@ import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.event.entity.player.PlayerEvent.*;
+import net.minecraftforge.event.entity.player.BonemealEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
+import net.minecraftforge.event.entity.player.PlayerEvent.Clone;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -36,13 +38,21 @@ public class OtherPlayerEvents {
     public static void onPlayerClone(Clone event) {
         if(event.isCanceled()) return;
         if(event.getEntityPlayer() instanceof EntityPlayerMP) {
-            EntityPlayerMP to = (EntityPlayerMP) event.getEntityPlayer();
+            EntityPlayerMP to = (EntityPlayerMP)event.getEntityPlayer();
             ISkillCapability capTo = SkillWrapper.getSkillCapability(to);
             if(Objects.nonNull(capTo)) {
-                EntityPlayerMP from = (EntityPlayerMP) event.getOriginal();
+                EntityPlayerMP from = (EntityPlayerMP)event.getOriginal();
                 ISkillCapability capFrom = SkillWrapper.getSkillCapability(from);
                 if(Objects.nonNull(capFrom)) capTo.of((SkillCapability)capFrom,to);
             }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onBoneMeal(BonemealEvent event) {
+        if(!event.getWorld().isRemote) {
+            double prestigeFactor = (SkillWrapper.getPrestigeFactor(event.getEntityPlayer(),"farming")-1d)/32d;
+            if(event.getWorld().rand.nextDouble()<=prestigeFactor) event.getStack().grow(1);
         }
     }
 }

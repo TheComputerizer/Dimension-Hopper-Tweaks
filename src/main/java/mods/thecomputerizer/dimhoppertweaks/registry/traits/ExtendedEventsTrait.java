@@ -2,6 +2,7 @@ package mods.thecomputerizer.dimhoppertweaks.registry.traits;
 
 import codersafterdark.reskillable.api.unlockable.Trait;
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
@@ -58,4 +59,6 @@ public abstract class ExtendedEventsTrait extends Trait {
     public void onShiftRightClickFood(EntityPlayer player, ItemFood food) {}
 
     public void onShiftRightClickPotion(EntityPlayer player, ItemStack potionStack) {}
+
+    public void onSetTargetToTamed(EntityPlayer player, EntityLiving attacker) {}
 }

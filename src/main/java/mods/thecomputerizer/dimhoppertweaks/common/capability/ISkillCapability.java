@@ -20,7 +20,6 @@ public interface ISkillCapability {
     void setPrestigeLevel(String skill, int level);
     int getPrestigeLevel(String skill);
     float getBreakSpeedMultiplier();
-    float getDamageMultiplier();
     void setShieldedDamage(float amount);
     float getShieldedDamage();
     float getXPDumpMultiplier();

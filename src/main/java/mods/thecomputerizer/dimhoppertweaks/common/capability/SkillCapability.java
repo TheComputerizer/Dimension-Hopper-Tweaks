@@ -112,12 +112,6 @@ public class SkillCapability implements ISkillCapability {
     }
 
     @Override
-    public float getDamageMultiplier() {
-        checkForExistingSkill("attack");
-        return 3f*(((float)this.skillMap.get("attack").getLevel())/32f);
-    }
-
-    @Override
     public void setShieldedDamage(float amount) {
         this.shieldDamage = amount;
     }

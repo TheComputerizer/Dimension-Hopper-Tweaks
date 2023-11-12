@@ -11,6 +11,7 @@ import mods.thecomputerizer.dimhoppertweaks.mixin.access.EntityPixieAccess;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.util.WorldUtil;
 import morph.avaritia.util.DamageSourceInfinitySword;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
@@ -93,7 +94,7 @@ public class EntityEvents {
                     ISkillCapability cap = SkillWrapper.getSkillCapability(player);
                     float amount = event.getAmount();
                     if(Objects.nonNull(cap)) {
-                        amount+=cap.getDamageMultiplier();
+                        amount+=(float)(3d*SkillWrapper.getPrestigeFactor(player,"attack"));
                         event.setAmount(amount);
                         SkillWrapper.addSP(player,"attack",Math.max(0.5f,(amount/2f)),false);
                     }
@@ -154,6 +155,33 @@ public class EntityEvents {
                 for(int i=0; i<MathHelper.clamp(entity.getMaxHealth()/500f,5f,64f); i++)
                     WorldUtil.spawnBlightParticle(entity.world,entity.posX,entity.getEntityBoundingBox().minY,
                             entity.posZ,entity.width,entity.height);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onLivingFall(LivingFallEvent event) {
+        if(event.isCanceled()) return;
+        if(event.getEntityLiving() instanceof EntityPlayerMP) {
+            EntityPlayerMP player = (EntityPlayerMP)event.getEntityLiving();
+            float prestigeFactor = (float)SkillWrapper.getPrestigeFactor(player,"agility")-1f;
+            event.setDistance(Math.max(0f,event.getDistance()-prestigeFactor));
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onTargetSet(LivingSetAttackTargetEvent event) {
+        EntityLiving entity = (EntityLiving)event.getEntityLiving();
+            if(!entity.world.isRemote && entity.getAttackTarget() instanceof EntityTameable) {
+            EntityTameable tameable = (EntityTameable)event.getEntityLiving();
+            if(tameable.isTamed() && tameable.getOwner() instanceof EntityPlayer) {
+                EntityPlayer player = (EntityPlayer)tameable.getOwner();
+                PlayerData data = PlayerDataHandler.get(player);
+                if(Objects.nonNull(data)) {
+                    SkillWrapper.executeOnSkills(data, h -> {
+                        if(h instanceof ExtendedEventsTrait) ((ExtendedEventsTrait) h).onSetTargetToTamed(player,entity);
+                    });
+                }
+            }
         }
     }
 }
