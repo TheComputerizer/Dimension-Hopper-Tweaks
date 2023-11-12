@@ -6,6 +6,7 @@ import mods.thecomputerizer.dimhoppertweaks.common.commands.DHDebugCommands;
 import mods.thecomputerizer.dimhoppertweaks.common.commands.RandomTP;
 import mods.thecomputerizer.dimhoppertweaks.common.commands.SummonBoss;
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.registry.structures.AbstractStructure;
 import mods.thecomputerizer.dimhoppertweaks.registry.tiles.LightningEnhancerEntity;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
@@ -71,6 +72,11 @@ public final class RegistryHandler {
     @SubscribeEvent
     public static void registerSoundEvents(RegistryEvent.Register<SoundEvent> event) {
         register(event,SoundRegistry.getSounds());
+    }
+
+    @SubscribeEvent
+    public static void registerStructures(RegistryEvent.Register<AbstractStructure> event) {
+        register(event,StructureRegistry.getStructures());
     }
 
     @SubscribeEvent

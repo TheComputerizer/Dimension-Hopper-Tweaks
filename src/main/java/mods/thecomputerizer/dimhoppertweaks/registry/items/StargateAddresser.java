@@ -2,14 +2,15 @@ package mods.thecomputerizer.dimhoppertweaks.registry.items;
 
 import gcewing.sg.SGCraft;
 import gcewing.sg.interfaces.ISGBlock;
-import mods.thecomputerizer.dimhoppertweaks.generator.Stargate;
 import gcewing.sg.tileentity.SGBaseTE;
 import gcewing.sg.util.SGAddressing;
+import mods.thecomputerizer.dimhoppertweaks.registry.StructureRegistry;
 import mods.thecomputerizer.theimpossiblelibrary.util.object.ItemUtil;
 import net.darkhax.gamestages.GameStageHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
@@ -21,7 +22,6 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
-import net.minecraft.init.Items;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -30,12 +30,10 @@ import java.util.Objects;
 
 public class StargateAddresser extends EpicItem {
 
-    public final Stargate gate;
     public final Map<Integer,Integer> dimIDPairs;
     public final Map<Integer,String> dimGateStages;
 
     public StargateAddresser() {
-        this.gate = new Stargate();
         this.dimIDPairs = new HashMap<>();
         this.dimGateStages = new HashMap<>();
         this.dimIDPairs.put(-28,-29);    //moon->mars
@@ -89,7 +87,7 @@ public class StargateAddresser extends EpicItem {
                 DimensionManager.initDimension(dimTo);
                 World genhere = DimensionManager.getWorld(dimTo);
                 BlockPos pos = player.getPosition();
-                this.gate.build(genhere,pos);
+                StructureRegistry.STARGATE.build(genhere,pos);
                 Block block = genhere.getBlockState(pos).getBlock();
                 if(block instanceof ISGBlock) {
                     SGBaseTE gateBase = ((ISGBlock)block).getBaseTE(genhere,pos);
