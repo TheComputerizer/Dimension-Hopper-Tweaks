@@ -5,6 +5,7 @@ import mariot7.xlfoodmod.init.ItemListxlfoodmod;
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import net.darkhax.gamestages.GameStageHelper;
 import net.darkhax.gamestages.data.IStageData;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -112,5 +113,9 @@ public class DelayedModAccess {
             if(stages.contains("emc")) original*=1.5d;
         }
         return original;
+    }
+
+    public static boolean isFakeEntity(Entity entity) {
+        return entity.getEntityData().getBoolean("isFakeEntityForMoBends");
     }
 }

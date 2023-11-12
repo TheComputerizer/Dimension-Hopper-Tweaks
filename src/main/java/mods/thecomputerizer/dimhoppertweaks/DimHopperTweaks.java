@@ -22,14 +22,14 @@ public class DimHopperTweaks {
     public DimHopperTweaks() {
         NetworkHandler.queueServerPacketRegistries(PacketSyncGuiData.class);
         NetworkHandler.queueClientPacketRegistries(PacketBossClientEffects.class,PacketGrayScaleTimer.class,
-                PacketOpenGui.class,PacketRenderBossAttack.class, PacketSyncCapabilityData.class,
+                PacketOpenGui.class,PacketRenderBossAttack.class,PacketSyncCapabilityData.class,
                 PacketSyncPlayerHealth.class,PacketTileEntityClassQuery.class,PacketUpdateBossRender.class);
     }
 
     @Mod.EventHandler
     public static void preInit(FMLPreInitializationEvent event) {
         Constants.LOGGER.info("Starting pre-init");
-        CapabilityManager.INSTANCE.register(ISkillCapability.class, new SkillCapabilityStorage(), SkillCapability::new);
+        CapabilityManager.INSTANCE.register(ISkillCapability.class,new SkillCapabilityStorage(),SkillCapability::new);
         if (FMLCommonHandler.instance().getSide().isClient()) {
             OBJLoader.INSTANCE.addDomain(Constants.MODID);
             ClientRegistryHandler.registerRenderers();
