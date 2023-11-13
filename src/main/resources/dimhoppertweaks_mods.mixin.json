@@ -93,6 +93,8 @@
   ],
   "client": [
     "MixinGuiSkills",
-    "MixinItemEnchantmentToken"
+    "MixinItemEnchantmentToken",
+    "MixinLayerCustomBipedArmor",
+    "MixinModelArmorInfinity"
   ]
 }

@@ -171,8 +171,8 @@ public class EntityEvents {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onTargetSet(LivingSetAttackTargetEvent event) {
         EntityLiving entity = (EntityLiving)event.getEntityLiving();
-            if(!entity.world.isRemote && entity.getAttackTarget() instanceof EntityTameable) {
-            EntityTameable tameable = (EntityTameable)event.getEntityLiving();
+            if(!entity.world.isRemote && event.getTarget() instanceof EntityTameable) {
+            EntityTameable tameable = (EntityTameable)event.getTarget();
             if(tameable.isTamed() && tameable.getOwner() instanceof EntityPlayer) {
                 EntityPlayer player = (EntityPlayer)tameable.getOwner();
                 PlayerData data = PlayerDataHandler.get(player);

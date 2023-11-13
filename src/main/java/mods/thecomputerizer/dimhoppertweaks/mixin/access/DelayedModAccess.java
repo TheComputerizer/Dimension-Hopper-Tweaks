@@ -1,14 +1,27 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.access;
 
 import de.ellpeck.naturesaura.blocks.tiles.TileEntityAutoCrafter;
+import goblinbob.mobends.core.data.EntityData;
+import goblinbob.mobends.core.data.EntityDatabase;
+import goblinbob.mobends.standard.client.model.armor.ArmorModelFactory;
+import goblinbob.mobends.standard.client.model.armor.MalformedArmorModelException;
+import goblinbob.mobends.standard.client.renderer.entity.layers.LayerCustomBipedArmor;
+import goblinbob.mobends.standard.data.BipedEntityData;
 import mariot7.xlfoodmod.init.ItemListxlfoodmod;
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import morph.avaritia.client.render.entity.ModelArmorInfinity;
 import net.darkhax.gamestages.GameStageHelper;
 import net.darkhax.gamestages.data.IStageData;
+import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.renderer.entity.layers.LayerArmorBase;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.*;
 
@@ -117,5 +130,27 @@ public class DelayedModAccess {
 
     public static boolean isFakeEntity(Entity entity) {
         return entity.getEntityData().getBoolean("isFakeEntityForMoBends");
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static <M extends ModelBase> boolean isInfinityArmorModel(M model) {
+        return model instanceof ModelArmorInfinity;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static boolean isMoBendsArmorLayer(LayerArmorBase<?> layer) {
+        return layer instanceof LayerCustomBipedArmor;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static ModelBiped fixOverlay(EntityLivingBase entity, ModelBiped overlay) {
+        EntityData<?> entityData = EntityDatabase.instance.get(entity);
+        boolean shouldBeMutated = Objects.nonNull(entityData) && entityData instanceof BipedEntityData;
+        try {
+            return ArmorModelFactory.getArmorModel(overlay,shouldBeMutated);
+        } catch(MalformedArmorModelException ex) {
+            Constants.LOGGER.error("Could not transform infinity armor :(",ex);
+            return overlay;
+        }
     }
 }

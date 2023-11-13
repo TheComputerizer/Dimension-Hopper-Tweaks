@@ -28,6 +28,7 @@
     "MixinWorldServer"
   ],
   "client": [
+    "MixinLayerArmorBase",
     "MixinModelLoader",
     "MixinParticle",
     "MixinRenderManager",
