@@ -3,6 +3,7 @@ package mods.thecomputerizer.dimhoppertweaks.registry.traits.magic;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import vazkii.botania.common.item.ItemManaTablet;
 import vazkii.botania.common.item.ModItems;
@@ -16,6 +17,7 @@ public class LivingBattery extends ExtendedEventsTrait {
 
     public LivingBattery() {
         super("living_battery",1,3,MAGIC,120,"magic|256","void|128","research|64","defense|32");
+        setIcon(new ResourceLocation("psicosts","textures/items/creative_cell.png"));
     }
 
     @Override

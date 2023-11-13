@@ -9,6 +9,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -17,6 +18,7 @@ public class GreenThumb extends ExtendedEventsTrait {
 
     public GreenThumb() {
         super("green_thumb",3,1,FARMING,10,"farming|24","magic|16");
+        setIcon(new ResourceLocation("reskillable","textures/skills/green_thumb.png"));
     }
 
     @Override

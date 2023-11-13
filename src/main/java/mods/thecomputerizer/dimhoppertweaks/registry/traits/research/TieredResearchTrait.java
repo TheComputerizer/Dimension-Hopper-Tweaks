@@ -2,6 +2,7 @@ package mods.thecomputerizer.dimhoppertweaks.registry.traits.research;
 
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
 import net.darkhax.gamestages.GameStageHelper;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class TieredResearchTrait extends ExtendedEventsTrait {
@@ -31,6 +32,22 @@ public class TieredResearchTrait extends ExtendedEventsTrait {
     private TieredResearchTrait(String type, int level, String levelName, int xOffset, int yOffset) {
         super(type+"_mk_"+levelName,level-1+xOffset,yOffset,RESEARCH,8,"research|"+(32*level));
         this.stageName = type+levelName.toUpperCase();
+        if(type.matches("lightning")) setLightningTexture(level);
+    }
+
+    private void setLightningTexture(int level) {
+        String modid = "lightningcraft";
+        String texturePath = "ingot_skyfather";
+        if(level==3) texturePath = "ingot_mystic";
+        else if(level==4) {
+            modid = "extendedcrafting";
+            texturePath = "material_ultimate_ingot";
+        }
+        else if(level==5) {
+            modid = "avaritia";
+            texturePath = "resource/infinity_catalyst";
+        }
+        setIcon(new ResourceLocation(modid,"textures/items/"+texturePath+".png"));
     }
 
     @Override

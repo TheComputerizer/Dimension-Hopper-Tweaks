@@ -14,6 +14,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.Objects;
@@ -22,6 +23,7 @@ public class HungryFarmer extends ExtendedEventsTrait {
 
     public HungryFarmer() {
         super("hungry_farmer",2,3,FARMING,20,"farming|64");
+        setIcon(new ResourceLocation("reskillable","textures/skills/hungry_farmer.png"));
     }
 
     @Override
