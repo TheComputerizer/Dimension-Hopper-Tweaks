@@ -4,31 +4,27 @@ import io.netty.buffer.ByteBuf;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
 import mods.thecomputerizer.theimpossiblelibrary.network.MessageImpl;
-import mods.thecomputerizer.theimpossiblelibrary.util.NetworkUtil;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.Objects;
 
-public class PacketSyncGuiData extends MessageImpl {
+public class PacketSendKeyPressed extends MessageImpl {
 
-    private String skill;
-    private int level;
+    private int keyType;
 
-    public PacketSyncGuiData() {}
+    public PacketSendKeyPressed() {}
 
-    public PacketSyncGuiData(String skill, int level) {
-        this.skill = skill;
-        this.level = level;
+    public PacketSendKeyPressed(int keyType) {
+        this.keyType = keyType;
     }
-
     @Override
     public IMessage handle(MessageContext ctx) {
-        EntityPlayerMP player = ctx.getServerHandler().player;
-        ISkillCapability cap = SkillWrapper.getSkillCapability(player);
-        if(Objects.nonNull(cap)) cap.setDrainSelection(this.skill,this.level,player);
+        ISkillCapability cap = SkillWrapper.getSkillCapability(ctx.getServerHandler().player);
+        if(Objects.nonNull(cap)) {
+            if(this.keyType==1) cap.markSkillKeyPressed();
+        }
         return null;
     }
 
@@ -39,13 +35,11 @@ public class PacketSyncGuiData extends MessageImpl {
 
     @Override
     public void fromBytes(ByteBuf buf) {
-        this.skill = NetworkUtil.readString(buf);
-        this.level = buf.readInt();
+        this.keyType = buf.readInt();
     }
 
     @Override
     public void toBytes(ByteBuf buf) {
-        NetworkUtil.writeString(buf,this.skill);
-        buf.writeInt(this.level);
+        buf.writeInt(this.keyType);
     }
 }

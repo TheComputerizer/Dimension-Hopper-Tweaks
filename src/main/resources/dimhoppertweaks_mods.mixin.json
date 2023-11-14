@@ -62,6 +62,7 @@
     "MixinRecipeStage",
     "MixinScalingHealthCommonEvents",
     "MixinServerEventHandler",
+    "MixinSkillsRenderer",
     "MixinTileAutomationInterface",
     "MixinTileComponentSecurity",
     "MixinTileCraftCrate",
@@ -95,6 +96,7 @@
   "client": [
     "MixinGuiSkills",
     "MixinItemEnchantmentToken",
+    "MixinKeyBinder",
     "MixinLayerCustomBipedArmor",
     "MixinModelArmorInfinity"
   ]

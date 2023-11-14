@@ -91,7 +91,7 @@ public class TokenExchangeGui extends GuiScreen {
 
     @Override
     public void onGuiClosed() {
-        new PacketSyncGuiData(this.currentSkill,this.conversionRate,mc.player.getUniqueID()).send();
+        new PacketSyncGuiData(this.currentSkill,this.conversionRate).send();
     }
 
     private void renderSmallCircleOnCursor(Minecraft ignored, int mouseX, int mouseY) {

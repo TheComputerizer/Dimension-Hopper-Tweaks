@@ -36,6 +36,7 @@ public class SkillCapability implements ISkillCapability {
     private int drainLevels = 1;
     private float shieldDamage = 1f;
     private BlockPos twilightRespawn;
+    private boolean pressedSkillKey = false;
 
     public SkillCapability() {
         Constants.LOGGER.debug("Initializing skill capability");
@@ -251,6 +252,16 @@ public class SkillCapability implements ISkillCapability {
     }
 
     @Override
+    public boolean pressedSkillKey() {
+        return this.pressedSkillKey;
+    }
+
+    @Override
+    public void markSkillKeyPressed() {
+        this.pressedSkillKey = true;
+    }
+
+    @Override
     public NBTTagCompound writeToNBT() {
         NBTTagCompound tag = new NBTTagCompound();
         tag.setTag("skills",writeSkills());
@@ -261,6 +272,7 @@ public class SkillCapability implements ISkillCapability {
         tag.setTag("autoPotionWhitelist",writeCollection(this.autoPotionWhitelist,this::writePotionTag));
         if(Objects.nonNull(this.twilightRespawn)) tag.setLong("twilightRespawn",this.twilightRespawn.toLong());
         tag.setInteger("dreamTimer",this.dreamTimer.getValue());
+        tag.setBoolean("pressedSkillKey",this.pressedSkillKey);
         return tag;
     }
 
@@ -338,6 +350,7 @@ public class SkillCapability implements ISkillCapability {
         readCollection(tag.getTag("autoPotionWhitelist"),this.autoPotionWhitelist,this::readPotionTuple);
         if(tag.hasKey("twilightRespawn")) this.setTwilightRespawn(BlockPos.fromLong(tag.getLong("twilightRespawn")));
         this.dreamTimer.setValue(tag.getInteger("dreamTimer"));
+        this.pressedSkillKey = tag.getBoolean("pressedSkillKey");
     }
 
     private void readSkills(NBTBase tag) {

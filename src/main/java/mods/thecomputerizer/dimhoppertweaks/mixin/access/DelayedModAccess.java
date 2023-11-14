@@ -9,6 +9,7 @@ import goblinbob.mobends.standard.client.renderer.entity.layers.LayerCustomBiped
 import goblinbob.mobends.standard.data.BipedEntityData;
 import mariot7.xlfoodmod.init.ItemListxlfoodmod;
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.network.PacketSendKeyPressed;
 import morph.avaritia.client.render.entity.ModelArmorInfinity;
 import net.darkhax.gamestages.GameStageHelper;
 import net.darkhax.gamestages.data.IStageData;
@@ -161,5 +162,10 @@ public class DelayedModAccess {
             Constants.LOGGER.error("Could not transform infinity armor :(",ex);
             return overlay;
         }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static void sendKeyPress(int type) {
+        new PacketSendKeyPressed(type).send();
     }
 }

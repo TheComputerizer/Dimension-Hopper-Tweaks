@@ -39,6 +39,8 @@ public interface ISkillCapability {
     BlockPos getTwilightRespawn();
     boolean incrementDreamTimer(EntityPlayerMP player, int time);
     void resetDreamTimer();
+    boolean pressedSkillKey();
+    void markSkillKeyPressed();
     NBTTagCompound writeToNBT();
     void readFromNBT(NBTTagCompound tag);
 }
