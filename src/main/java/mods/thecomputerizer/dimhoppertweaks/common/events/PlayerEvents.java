@@ -102,6 +102,7 @@ public class PlayerEvents {
         if(event.getDamageSource().getTrueSource() instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer)event.getDamageSource().getTrueSource();
             if(!player.world.isRemote) {
+                if(GameStageHelper.hasStage(player,"hardcore")) event.setLootingLevel(event.getLootingLevel()+100);
                 PlayerData data = PlayerDataHandler.get(player);
                 if(Objects.nonNull(data)) {
                     SkillWrapper.executeOnSkills(data,h -> {

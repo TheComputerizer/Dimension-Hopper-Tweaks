@@ -45,7 +45,7 @@ public class MixinOreTiersEventHandler {
         }
         tile = WorldUtil.getTileOrAdjacent(world,pos,true,DelayedModAccess.getBreakerTileClasses());
         if(Objects.nonNull(tile)) return !((TileEntityAccess)tile).dimhoppertweaks$hasStage(stage);
-        return Objects.nonNull(player) && !GameStageHelper.hasStage(player,stage);
+        return Objects.isNull(player) || !GameStageHelper.hasStage(player,stage);
     }
 
     @Unique private boolean dimhoppertweaks$verifyStage(World world, EntityPlayer player, BlockPos pos, String stage) {
@@ -140,6 +140,5 @@ public class MixinOreTiersEventHandler {
                         event.getDropChance(),event.isSilkTouching(),player));
             }
         }
-
     }
 }

@@ -12,6 +12,8 @@ import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import morph.avaritia.client.render.entity.ModelArmorInfinity;
 import net.darkhax.gamestages.GameStageHelper;
 import net.darkhax.gamestages.data.IStageData;
+import net.darkhax.orestages.api.OreTiersAPI;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.entity.layers.LayerArmorBase;
@@ -20,9 +22,11 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Tuple;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 public class DelayedModAccess {
@@ -64,8 +68,13 @@ public class DelayedModAccess {
         if(Objects.nonNull(player)) GameStageHelper.addStage(player,stage);
     }
 
-    public static boolean hasGameStage(EntityPlayer player, String stage) {
-        return Objects.nonNull(player) && GameStageHelper.hasStage(player,stage);
+    public static boolean hasGameStage(Entity entity, String stage) {
+        return entity instanceof EntityPlayer && GameStageHelper.hasStage((EntityPlayer)entity,stage);
+    }
+
+    public static IBlockState getWithOreStage(@Nullable Entity entity, IBlockState original) {
+        Tuple<String,IBlockState> stageInfo = OreTiersAPI.getStageInfo(original);
+        return Objects.isNull(stageInfo) || hasGameStage(entity,stageInfo.getFirst()) ? original : stageInfo.getSecond();
     }
     public static ItemStack cheese() {
         return new ItemStack(ItemListxlfoodmod.cheese);

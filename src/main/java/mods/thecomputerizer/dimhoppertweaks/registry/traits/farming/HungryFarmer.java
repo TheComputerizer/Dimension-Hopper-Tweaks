@@ -23,7 +23,7 @@ public class HungryFarmer extends ExtendedEventsTrait {
 
     public HungryFarmer() {
         super("hungry_farmer",2,3,FARMING,20,"farming|64");
-        setIcon(new ResourceLocation("reskillable","textures/skills/hungry_farmer.png"));
+        setIcon(new ResourceLocation("reskillable","textures/unlockables/hungry_farmer.png"));
     }
 
     @Override

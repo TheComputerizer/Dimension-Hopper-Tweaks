@@ -18,7 +18,7 @@ public class GreenThumb extends ExtendedEventsTrait {
 
     public GreenThumb() {
         super("green_thumb",3,1,FARMING,10,"farming|24","magic|16");
-        setIcon(new ResourceLocation("reskillable","textures/skills/green_thumb.png"));
+        setIcon(new ResourceLocation("reskillable","textures/unlockables/green_thumb.png"));
     }
 
     @Override
