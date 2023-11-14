@@ -19,6 +19,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.tslat.aoa3.client.event.KeyBinder;
 
 import java.util.List;
 import java.util.Objects;
@@ -72,8 +73,10 @@ public class ClientPacketHandlers {
     }
 
     @SideOnly(Side.CLIENT)
-    public static void handleCapData(float miningSpeed, Set<Item> autoFeedItems, List<Tuple<Potion,Integer>> autoPotionItems) {
+    public static void handleCapData(float miningSpeed, boolean skillKey, Set<Item> autoFeedItems,
+                                     List<Tuple<Potion,Integer>> autoPotionItems) {
         ClientEffects.MINING_SPEED = miningSpeed;
+        KeyBinder.statusSkillGuiMessage = !skillKey;
         ClientEvents.autoFeedItems = autoFeedItems;
         ClientEvents.autoPotionItems = autoPotionItems;
     }

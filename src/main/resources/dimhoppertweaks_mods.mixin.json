@@ -62,7 +62,6 @@
     "MixinRecipeStage",
     "MixinScalingHealthCommonEvents",
     "MixinServerEventHandler",
-    "MixinSkillsRenderer",
     "MixinTileAutomationInterface",
     "MixinTileComponentSecurity",
     "MixinTileCraftCrate",

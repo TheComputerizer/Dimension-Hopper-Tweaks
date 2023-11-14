@@ -109,7 +109,8 @@ public class SkillCapability implements ISkillCapability {
     private void syncClientData(EntityPlayerMP player) {
         float breakSpeed = 1f+getBreakSpeedMultiplier();
         if(Objects.nonNull(player.connection))
-            new PacketSyncCapabilityData(breakSpeed,this.autoFeedWhitelist,this.autoPotionWhitelist).addPlayers(player).send();
+            new PacketSyncCapabilityData(breakSpeed,this.pressedSkillKey,this.autoFeedWhitelist,this.autoPotionWhitelist)
+                    .addPlayers(player).send();
     }
 
     @Override
