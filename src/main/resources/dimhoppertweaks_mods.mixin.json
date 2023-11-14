@@ -45,6 +45,7 @@
     "MixinItemTimeInABottle",
     "MixinItemTreasureChest",
     "MixinLastStandEnchantmentsHandler",
+    "MixinMM_Choke",
     "MixinModSpellPieces",
     "MixinMultiblockRecipeCategory",
     "MixinMultiblockRecipeWrapper",

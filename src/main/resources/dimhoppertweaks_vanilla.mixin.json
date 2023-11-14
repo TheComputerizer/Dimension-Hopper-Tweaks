@@ -13,6 +13,7 @@
     "MixinEntityLivingBase",
     "MixinEntityPlayer",
     "MixinEntityTrackerEntry",
+    "MixinEntityWolf",
     "MixinFakePlayer",
     "MixinFMLModContainer",
     "MixinForgeHooks",

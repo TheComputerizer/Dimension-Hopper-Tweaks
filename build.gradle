@@ -87,6 +87,7 @@ dependencies {
     implementation(fg.deobf("curse.maven:ae2-extended-life-570458:${project.ae2_verion}"))
     implementation(fg.deobf("curse.maven:aoa-311054:${project.aoa_version}"))
     implementation(fg.deobf("curse.maven:aquaculture-60028:${project.aquaculture_version}"))
+    implementation(fg.deobf("curse.maven:atomicstrykers-infernal-mobs-227875:${project.aim_version}"))
     implementation(fg.deobf("curse.maven:atum-59621:${project.atum_version}"))
     implementation(fg.deobf("curse.maven:avaritia-261348:${project.avaritia_version}"))
     implementation(fg.deobf("curse.maven:baubles-227083:${project.baubles_version}"))
