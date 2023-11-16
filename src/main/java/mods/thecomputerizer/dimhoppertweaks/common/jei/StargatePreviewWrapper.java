@@ -2,7 +2,9 @@ package mods.thecomputerizer.dimhoppertweaks.common.jei;
 
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
+import mods.thecomputerizer.dimhoppertweaks.util.TextUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
@@ -10,6 +12,7 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.DimensionType;
 import org.dave.compactmachines3.misc.RenderTickCounter;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -38,9 +41,13 @@ public class StargatePreviewWrapper implements IRecipeWrapper {
         if(Objects.isNull(renderer)) return;
         GlStateManager.pushMatrix();
         GlStateManager.translate(0f, 0f, 216.5f);
-        mc.fontRenderer.drawString(getDimensionsString(),153-mc.fontRenderer.getStringWidth(getDimensionsString()),105,4473924);
+        FontRenderer font = mc.fontRenderer;
+        String dimensions = getDimensionsString();
+        font.drawString(dimensions,153-font.getStringWidth(dimensions),105,4473924);
+        String dimName = getDimensionName(this.recipe.getDimension());
+        font.drawString(dimName,0,105,4473924);
         GlStateManager.popMatrix();
-        float angle = (float)RenderTickCounter.renderTicks*20f/128f;
+        float angle = (float)RenderTickCounter.renderTicks*25f/128f;
         TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
         textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         textureManager.getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);
@@ -71,15 +78,21 @@ public class StargatePreviewWrapper implements IRecipeWrapper {
         float scale = 1f/((float)maxDiff/4f);
         GlStateManager.enableCull();
         GlStateManager.scale(scale,scale,scale);
-        GlStateManager.translate((diffX+1f)/-4f,(diffY+1f)/-4f,(diffZ+1f)/-4f);
         renderer.render(0f);
         textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         textureManager.getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).restoreLastBlurMipmap();
         GlStateManager.popMatrix();
     }
 
+    private String getDimensionName(int id) {
+        try {
+            return DimensionType.getById(id).getName();
+        } catch (IllegalArgumentException ex) {
+            return TextUtil.getTranslated("category.dimhoppertweaks.ancient_stargate.unknown_dimension",id);
+        }
+    }
+
     private String getDimensionsString() {
         return String.format("%dx%dx%d",7,6,7);
     }
-
 }

@@ -1,7 +1,14 @@
 package mods.thecomputerizer.dimhoppertweaks.common.jei;
 
+import gcewing.sg.BaseOrientation;
+import gcewing.sg.SGCraft;
+import gcewing.sg.block.SGBaseBlock;
+import gcewing.sg.block.SGBlock;
+import gcewing.sg.tileentity.SGBaseTE;
+import gcewing.sg.util.SGState;
 import mcp.MethodsReturnNonnullByDefault;
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.mixin.access.SGBaseTEAccess;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -32,6 +39,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
 
+@SuppressWarnings("unchecked")
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class AncientStargateRenderer {
@@ -77,10 +85,10 @@ public class AncientStargateRenderer {
 
     public AncientStargateRenderer(int heavyDutyLevel, ItemStack cornerStack) {
         this.relativePosMap = new HashMap<>();
-        this.stargateBaseState = getState("sgcraft:stargatebase",0);
+        this.heavyDutyState = getState("contenttweaker:rocket_block_"+heavyDutyLevel,0);
+        this.stargateBaseState = getState("sgcraft:stargatebase",0).withProperty(BaseOrientation.Orient4WaysByState.FACING,EnumFacing.NORTH);
         this.stargateRingState1 = getState("sgcraft:stargatering",0);
         this.stargateRingState2 = getState("sgcraft:stargatering",1);
-        this.heavyDutyState = getState("contenttweaker:rocket_block_"+heavyDutyLevel,0);
         this.cornerState = Block.getBlockFromItem(cornerStack.getItem()).getStateFromMeta(cornerStack.getMetadata());
         this.proxyWorld = new ProxyWorld();
         this.blockAccess = getBlockAccess(this.proxyWorld);
@@ -142,54 +150,52 @@ public class AncientStargateRenderer {
         return Objects.nonNull(item) ? Block.getBlockFromItem(item).getStateFromMeta(meta) : Blocks.AIR.getDefaultState();
     }
 
-    private void addPos(BlockPos.MutableBlockPos copyFrom, IBlockState state) {
-        this.relativePosMap.put(new BlockPos(copyFrom.getX(),copyFrom.getY(),copyFrom.getZ()),state);
+    private void addPos(BlockPos pos, IBlockState state) {
+        this.relativePosMap.put(pos,state);
     }
 
     private void setUpPosMap() {
-        BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos(BlockPos.ORIGIN);
-        addPos(mutablePos,Blocks.BEDROCK.getDefaultState());
-        addGatePositions(mutablePos);
-        addPlatformPositions(mutablePos);
+        BlockPos pos = BlockPos.ORIGIN;
+        addPos(pos,Blocks.BEDROCK.getDefaultState());
+        addGatePositions(pos);
+        addPlatformPositions();
     }
 
-    private void addGatePositions(BlockPos.MutableBlockPos mutablePos) {
-        mutablePos.add(0,1,0);
-        addGateHorizontal(mutablePos,this.stargateBaseState);
-        addGateSides(mutablePos,this.stargateRingState1);
-        addGateSides(mutablePos,this.stargateRingState2);
-        addGateSides(mutablePos,this.stargateRingState1);
-        addGateHorizontal(mutablePos,this.stargateRingState2);
-        mutablePos.setPos(BlockPos.ORIGIN);
+    private void addGatePositions(BlockPos pos) {
+        pos = pos.add(0,1,0);
+        pos = addGateHorizontal(pos,this.stargateBaseState);
+        pos = addGateSides(pos,this.stargateRingState1);
+        pos = addGateSides(pos,this.stargateRingState2);
+        pos = addGateSides(pos,this.stargateRingState1);
+        addGateHorizontal(pos,this.stargateRingState2);
     }
 
-    private void addGateHorizontal(BlockPos.MutableBlockPos mutablePos, IBlockState center) {
-        addPos(mutablePos,center);
-        mutablePos.add(1,0,0);
-        addPos(mutablePos,this.stargateRingState1);
-        mutablePos.add(-2,0,0);
-        addPos(mutablePos,this.stargateRingState1);
-        mutablePos.add(3,0,0);
-        addPos(mutablePos,this.stargateRingState2);
-        mutablePos.add(-4,0,0);
-        addPos(mutablePos,this.stargateRingState2);
-        mutablePos.add(2,-1,0);
+    private BlockPos addGateHorizontal(BlockPos pos, IBlockState center) {
+        addPos(pos,center);
+        pos = pos.add(1,0,0);
+        addPos(pos,this.stargateRingState1);
+        pos = pos.add(-2,0,0);
+        addPos(pos,this.stargateRingState1);
+        pos = pos.add(3,0,0);
+        addPos(pos,this.stargateRingState2);
+        pos = pos.add(-4,0,0);
+        addPos(pos,this.stargateRingState2);
+        return pos.add(2,1,0);
     }
 
-    private void addGateSides(BlockPos.MutableBlockPos mutablePos, IBlockState state) {
-        mutablePos.add(2,0,0);
-        addPos(mutablePos,state);
-        mutablePos.add(-2,0,0);
-        addPos(mutablePos,state);
-        mutablePos.add(2,-1,0);
+    private BlockPos addGateSides(BlockPos pos, IBlockState state) {
+        pos = pos.add(2,0,0);
+        addPos(pos,state);
+        pos = pos.add(-4,0,0);
+        addPos(pos,state);
+        return pos.add(2,1,0);
     }
 
-    private void addPlatformPositions(BlockPos.MutableBlockPos mutablePos) {
+    private void addPlatformPositions() {
         for(int x=-3; x<=3; x++) {
             for(int z=-3; z<=3; z++) {
                 if(x==0 && z==0) continue;
-                mutablePos.setPos(x,0,z);
-                addPos(mutablePos,Math.abs(x)==3 && Math.abs(z)==3 ? this.cornerState : this.heavyDutyState);
+                addPos(new BlockPos(x,0,z),Math.abs(x)==3 && Math.abs(z)==3 ? this.cornerState : this.heavyDutyState);
             }
         }
     }
@@ -205,8 +211,8 @@ public class AncientStargateRenderer {
             if(Objects.nonNull(tile)) {
                 tile.setWorld(this.proxyWorld);
                 tile.setPos(relativePos);
-                //if(tile instanceof SGBaseTE) ((SGBaseTE)tile).applyChevronUpgrade(new ItemStack(SGCraft.sgChevronUpgrade),null);
                 if(tile instanceof ITickable) ((ITickable)tile).update();
+                updateSGBaseTile(tile);
                 GlStateManager.pushMatrix();
                 GlStateManager.pushAttrib();
                 try {
@@ -221,7 +227,19 @@ public class AncientStargateRenderer {
         ForgeHooksClient.setRenderLayer(null);
     }
 
+    private void updateSGBaseTile(TileEntity tile) {
+        if(tile instanceof SGBaseTE) {
+            SGBaseTE sgTile = (SGBaseTE)tile;
+            ((SGBaseTEAccess)sgTile).dimhoppertweaks$mergeWithoutAddressing();
+            if(!sgTile.hasChevronUpgrade) sgTile.applyChevronUpgrade(new ItemStack(SGCraft.sgChevronUpgrade),null);
+            sgTile.state = SGState.Connected;
+        }
+    }
+
     private void initializeDisplayList() {
+        BlockPos pos = new BlockPos(0,1,0);
+        IBlockState state = this.relativePosMap.get(pos);
+        if(state.getBlock() instanceof SGBaseBlock) state.getBlock().onBlockAdded(this.proxyWorld,pos,state);
         this.glListId = GLAllocation.generateDisplayLists(1);
         GlStateManager.glNewList(this.glListId, 4864);
         GlStateManager.pushAttrib();
@@ -246,7 +264,8 @@ public class AncientStargateRenderer {
     private void renderLayer(BlockRendererDispatcher dispatcher, BufferBuilder buffer, BlockRenderLayer layer) {
         for(BlockPos relativePos : this.relativePosMap.keySet()) {
             IBlockState state = this.proxyWorld.getBlockState(relativePos);
-            if (state.getBlock().canRenderInLayer(state,layer)) {
+            Block block = state.getBlock();
+            if(block.canRenderInLayer(state,layer) && !(block instanceof SGBlock)) {
                 ForgeHooksClient.setRenderLayer(layer);
                 try {
                     dispatcher.renderBlock(state,relativePos,this.blockAccess,buffer);

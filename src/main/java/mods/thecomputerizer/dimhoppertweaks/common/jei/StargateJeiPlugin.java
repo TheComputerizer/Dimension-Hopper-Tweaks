@@ -21,23 +21,22 @@ public class StargateJeiPlugin implements IModPlugin {
 
     public static ItemStack getCornerStack(int dimension) {
         switch(dimension) {
-            case -28: return getItemStack("galacticraftcore:basic_block_moon",2); //moon
+            case -28: return getItemStack("galacticraftcore:basic_block_moon",4); //moon
             case -1502: return getItemStack("extraplanets:phobos",2); //phobos
             case -31: return getItemStack("galacticraftplanets:venus",2); //venus
-            case -30: return getItemStack("galacticraftplanets:asteroids_block",2); //asteroids
-            case -29: return getItemStack("galacticraftplanets:mars",2); //mars
-            case 816: return getItemStack("aoa3:lunar_block",2); //lunalus
+            case -30: return getItemStack("galacticraftplanets:asteroids_block",0); //asteroids
+            case -29: return getItemStack("galacticraftplanets:mars",9); //mars
+            case 816: return getItemStack("aoa3:lunar_block",0); //lunalus
             case -1506: return getItemStack("extraplanets:ganymede",2); //ganymede
             case -1501: return getItemStack("extraplanets:europa",2); //europa
             case -1500: return getItemStack("extraplanets:io",2); //io
             case -15: return getItemStack("extraplanets:jupiter",2); //jupiter
             case -1510: return getItemStack("extraplanets:titania",2); //titania
             case -1509: return getItemStack("extraplanets:oberon",2); //oberon
-            case -1508: return getItemStack("extraplanets:titan",2); //titan
+            case -1508: return getItemStack("extraplanets:titan",8); //titan
             case -16: return getItemStack("extraplanets:saturn",2); //saturn
-            case 66: return getItemStack("erebus:umberstone",2); //erebus
+            case 66: return getItemStack("erebus:umberstone",0); //erebus
             case -19: return getItemStack("extraplanets:pluto",2); //pluto
-            case 0:
             default: return getItemStack("minecraft:stone",0); //overworld
         }
     }

@@ -1,8 +1,9 @@
 category.dimhoppertweaks.ancient_stargate=Ancient Stargate Visualizer
-category.dimhoppertweaks.ancient_stargate.addresser=§5This will only in the dimension it is created in
+category.dimhoppertweaks.ancient_stargate.addresser=§5This will only work in the dimension it is created in
 category.dimhoppertweaks.ancient_stargate.corner=§5Replace the corners of the platform with this
 category.dimhoppertweaks.ancient_stargate.heavy_duty=§5Replace the bricks and cracked bricks with this
 category.dimhoppertweaks.ancient_stargate.schematic=§5Use this schematic on the top middle block of the stargate ring while sneaking
+category.dimhoppertweaks.ancient_stargate.unknown_dimension=Unknown dimension ID `%4$s`
 
 commands.dimhoppertweaks.dhd.error.blockdata=Usages: `/dhd 1` | `/dhd 1 ?` | `/dhd 1 ? entity`
 commands.dimhoppertweaks.dhd.error.entity=Failed to get entity for dhd command!
