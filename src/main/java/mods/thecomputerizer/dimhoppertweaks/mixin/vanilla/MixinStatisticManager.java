@@ -27,10 +27,9 @@ public class MixinStatisticManager {
             TupleIntJsonSerializable tupleintjsonserializable = statsData.get(stat);
             cir.setReturnValue(tupleintjsonserializable == null ? 0 : tupleintjsonserializable.getIntegerValue());
         } catch (Exception e) {
-            e.printStackTrace();
             if(Objects.nonNull(stat))
-                Constants.LOGGER.error("Stat with ID {} errored",stat.statId);
-            else Constants.LOGGER.error("Stat was null and could not sync");
+                Constants.LOGGER.error("Stat with ID {} errored",stat.statId,e);
+            else Constants.LOGGER.error("Stat was null and could not sync",e);
             cir.setReturnValue(0);
         }
     }

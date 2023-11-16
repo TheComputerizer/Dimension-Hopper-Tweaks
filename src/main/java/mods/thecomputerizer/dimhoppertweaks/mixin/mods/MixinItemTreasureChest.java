@@ -20,8 +20,8 @@ public class MixinItemTreasureChest {
     @Shadow
     private WeightedLootSet loot;
 
-    @Inject(at = @At(value = "HEAD"), method = "onItemRightClick", cancellable = true)
-    private void dimhoppertweaks_onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player,
+    @Inject(at = @At(value = "HEAD"), method = "onItemRightClick")
+    private void dimhoppertweaks$onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player,
                                                          CallbackInfoReturnable<ItemStack> cir) {
         if(!world.isRemote) {
             this.loot = new WeightedLootSet();

@@ -11,8 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Particle.class)
 public class MixinParticle {
 
-    @Shadow
-    protected boolean canCollide;
+    @Shadow protected boolean canCollide;
 
     @Inject(at = @At(value = "HEAD"), method = "move")
     private void dimhoppertweaks$move(double x, double y, double z, CallbackInfo ci) {

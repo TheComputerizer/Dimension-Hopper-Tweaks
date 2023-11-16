@@ -25,8 +25,7 @@ import vazkii.psi.common.spell.trick.block.PieceTrickCollapseBlock;
 @Mixin(value = PieceTrickCollapseBlock.class, remap = false)
 public abstract class MixinPieceTrickCollapseBlock {
 
-    @Shadow
-    SpellParam position;
+    @Shadow SpellParam position;
 
     /**
      * @author The_Computerizer
@@ -48,9 +47,7 @@ public abstract class MixinPieceTrickCollapseBlock {
             IBlockState stateDown = world.getBlockState(posDown);
             Block block = state.getBlock();
             Block blockBelow = stateDown.getBlock();
-            if (!world.isBlockModifiable(context.caster, pos)) {
-                return null;
-            } else {
+            if (world.isBlockModifiable(context.caster, pos)) {
                 if (blockBelow.isAir(stateDown, world, posDown) && state.getBlockHardness(world, pos) != -1.0F &&
                         PieceTrickBreakBlock.canHarvestBlock(block, context.caster, world, pos, tool) &&
                         world.getTileEntity(pos) == null && block.canSilkHarvest(world, pos, state, context.caster)) {
@@ -61,13 +58,13 @@ public abstract class MixinPieceTrickCollapseBlock {
                         state = Blocks.REDSTONE_ORE.getDefaultState();
                         world.setBlockState(pos, state);
                     }
-                    EntityFallingBlock falling = new EntityFallingBlock(world, (double)pos.getX() + 0.5,
-                            (double)pos.getY() + 0.5, (double)pos.getZ() + 0.5, Loader.isModLoaded("orestages") ?
-                            PsiUtil.accountForOreStages(event.getPlayer(),state) : state);
+                    EntityFallingBlock falling = new EntityFallingBlock(world, (double) pos.getX() + 0.5,
+                            (double) pos.getY() + 0.5, (double) pos.getZ() + 0.5, Loader.isModLoaded("orestages") ?
+                            PsiUtil.accountForOreStages(event.getPlayer(), state) : state);
                     world.spawnEntity(falling);
                 }
-                return null;
             }
+            return null;
         }
     }
 }

@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MixinInfinitySword {
 
     @Inject(at = @At(value = "HEAD"), method = "hitEntity", cancellable = true)
-    private void dimhoppertweaks_hitEntity(ItemStack stack, EntityLivingBase victim, EntityLivingBase player,
+    private void dimhoppertweaks$hitEntity(ItemStack stack, EntityLivingBase victim, EntityLivingBase player,
                                                   CallbackInfoReturnable<Boolean> cir) {
         if(victim instanceof EntityFinalBoss) {
             victim.attackEntityFrom(new DamageSourceInfinitySword(player),5f);

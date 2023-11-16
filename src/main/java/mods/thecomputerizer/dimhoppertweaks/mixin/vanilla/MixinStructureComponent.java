@@ -19,14 +19,11 @@ import java.util.Random;
 @Mixin(StructureComponent.class)
 public abstract class MixinStructureComponent {
 
-    @Shadow
-    protected abstract int getXWithOffset(int x, int z);
+    @Shadow protected abstract int getXWithOffset(int x, int z);
 
-    @Shadow
-    protected abstract int getYWithOffset(int y);
+    @Shadow protected abstract int getYWithOffset(int y);
 
-    @Shadow
-    protected abstract int getZWithOffset(int x, int z);
+    @Shadow protected abstract int getZWithOffset(int x, int z);
 
     @SuppressWarnings("ConstantValue")
     @Inject(at = @At(value = "HEAD"), method = "setBlockState", cancellable = true)

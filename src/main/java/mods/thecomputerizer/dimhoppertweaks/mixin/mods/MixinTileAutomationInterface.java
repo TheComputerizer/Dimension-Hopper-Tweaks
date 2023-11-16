@@ -16,8 +16,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(value = TileAutomationInterface.class, remap = false)
 public class MixinTileAutomationInterface {
 
-    @Unique
-    private TileEntity dimhoppertweaks$cast() {
+    @Unique private TileEntity dimhoppertweaks$cast() {
         return (TileEntity)(Object)this;
     }
 

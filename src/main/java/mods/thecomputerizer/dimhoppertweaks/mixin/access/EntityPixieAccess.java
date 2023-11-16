@@ -2,5 +2,5 @@ package mods.thecomputerizer.dimhoppertweaks.mixin.access;
 
 public interface EntityPixieAccess {
 
-    void setBypassesTarget(boolean bypassesTarget);
+    void dimhoppertweaks$setBypassesTarget(boolean bypassesTarget);
 }

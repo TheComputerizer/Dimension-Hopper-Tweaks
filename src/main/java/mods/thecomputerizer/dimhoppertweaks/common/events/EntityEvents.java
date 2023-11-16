@@ -100,7 +100,7 @@ public class EntityEvents {
                     }
                     if(amount>=50f && player.getHeldItemMainhand().getItem() instanceof ItemElementiumSword) {
                         EntityPixie pixie = new EntityPixie(player.getServerWorld());
-                        ((EntityPixieAccess) pixie).setBypassesTarget(true);
+                        ((EntityPixieAccess)pixie).dimhoppertweaks$setBypassesTarget(true);
                         pixie.setPosition(player.posX,player.posY+2d,player.posZ);
                         pixie.onInitialSpawn(player.getServerWorld().getDifficultyForLocation(new BlockPos(pixie)),null);
                         player.getServerWorld().spawnEntity(pixie);

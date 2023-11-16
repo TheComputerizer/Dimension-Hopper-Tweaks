@@ -6,6 +6,7 @@ import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import vazkii.botania.common.Botania;
 import vazkii.botania.common.entity.EntityPixie;
 
@@ -16,15 +17,15 @@ public abstract class MixinEntityPixie extends EntityFlying implements EntityPix
 
     @Shadow public abstract int getType();
 
-    private boolean bypassesTarget = false;
+    @Unique private boolean dimhoppertweaks$bypassesTarget = false;
 
     public MixinEntityPixie(World world) {
         super(world);
     }
 
     @Override
-    public void setBypassesTarget(boolean bypassesTarget) {
-        this.bypassesTarget = bypassesTarget;
+    public void dimhoppertweaks$setBypassesTarget(boolean bypassesTarget) {
+        this.dimhoppertweaks$bypassesTarget = bypassesTarget;
     }
 
     /**
@@ -34,7 +35,7 @@ public abstract class MixinEntityPixie extends EntityFlying implements EntityPix
     @Overwrite
     public void onEntityUpdate() {
         super.onEntityUpdate();
-        if (!this.world.isRemote && ((Objects.isNull(this.getAttackTarget()) && !this.bypassesTarget) || this.ticksExisted > 200)) {
+        if (!this.world.isRemote && ((Objects.isNull(this.getAttackTarget()) && !this.dimhoppertweaks$bypassesTarget) || this.ticksExisted > 200)) {
             this.setDead();
         }
 

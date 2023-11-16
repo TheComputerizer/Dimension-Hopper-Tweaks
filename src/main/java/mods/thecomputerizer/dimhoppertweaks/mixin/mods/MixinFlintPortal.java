@@ -12,6 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.Unique;
 
 import static mod.mcreator.mcreator_dimensionflint.BlockTutorialPortal.AXIS;
 
@@ -33,10 +34,10 @@ public class MixinFlintPortal extends Block {
      */
     @Overwrite
     public boolean tryToCreatePortal(World world, int x, int y, int z) {
-        byte xByte = checkBlock(world, x, y, z, true, TechBlocks.flint_block) ? (byte) 1 : (byte) 0;
-        byte zByte = checkBlock(world, x, y, z, false, TechBlocks.flint_block) ? (byte) 1 : (byte) 0;
+        byte xByte = dimhoppertweaks$checkBlock(world, x, y, z, true, TechBlocks.flint_block) ? (byte) 1 : (byte) 0;
+        byte zByte = dimhoppertweaks$checkBlock(world, x, y, z, false, TechBlocks.flint_block) ? (byte) 1 : (byte) 0;
         if (xByte == zByte) return false;
-        if (getBlock(world, x - xByte, y, z - zByte) == Blocks.AIR) {
+        if (dimhoppertweaks$getBlock(world, x - xByte, y, z - zByte) == Blocks.AIR) {
             x -= xByte;
             z -= zByte;
         }
@@ -45,7 +46,7 @@ public class MixinFlintPortal extends Block {
         for (l = -1; l <= 2; ++l) {
             for (i1 = -1; i1 <= 3; ++i1) {
                 if (l != -1 && l != 2 || i1 != -1 && i1 != 3) {
-                    Block j1 = getBlock(world, x + xByte * l, y + i1, z + zByte * l);
+                    Block j1 = dimhoppertweaks$getBlock(world, x + xByte * l, y + i1, z + zByte * l);
                     if ((l == -1 || l == 2 || i1 == -1 || i1 == 3) && j1 != TechBlocks.flint_block)
                         return false;
                 }
@@ -72,33 +73,33 @@ public class MixinFlintPortal extends Block {
         int par4 = pos.getZ();
         byte b0 = 0;
         byte b1 = 1;
-        if (getBlock(world, par2 - 1, par3, par4) == this || getBlock(world, par2 + 1, par3, par4) == this) {
+        if (dimhoppertweaks$getBlock(world, par2 - 1, par3, par4) == this || dimhoppertweaks$getBlock(world, par2 + 1, par3, par4) == this) {
             b0 = 1;
             b1 = 0;
         }
 
         int i1;
-        for(i1 = par3; getBlock(world, par2, i1 - 1, par4) == this; --i1) {
+        for(i1 = par3; dimhoppertweaks$getBlock(world, par2, i1 - 1, par4) == this; --i1) {
         }
 
-        if (getBlock(world, par2, i1 - 1, par4) != TechBlocks.flint_block) {
+        if (dimhoppertweaks$getBlock(world, par2, i1 - 1, par4) != TechBlocks.flint_block) {
             world.setBlockToAir(new BlockPos(par2, par3, par4));
         } else {
             int j1;
-            for(j1 = 1; j1 < 4 && getBlock(world, par2, i1 + j1, par4) == this; ++j1) {
+            for(j1 = 1; j1 < 4 && dimhoppertweaks$getBlock(world, par2, i1 + j1, par4) == this; ++j1) {
             }
 
-            if (j1 == 3 && getBlock(world, par2, i1 + j1, par4) == TechBlocks.flint_block) {
-                boolean flag = getBlock(world, par2 - 1, par3, par4) == this || 
-                        getBlock(world, par2 + 1, par3, par4) == this;
-                boolean flag1 = getBlock(world, par2, par3, par4 - 1) == this || 
-                        getBlock(world, par2, par3, par4 + 1) == this;
+            if (j1 == 3 && dimhoppertweaks$getBlock(world, par2, i1 + j1, par4) == TechBlocks.flint_block) {
+                boolean flag = dimhoppertweaks$getBlock(world, par2 - 1, par3, par4) == this ||
+                        dimhoppertweaks$getBlock(world, par2 + 1, par3, par4) == this;
+                boolean flag1 = dimhoppertweaks$getBlock(world, par2, par3, par4 - 1) == this ||
+                        dimhoppertweaks$getBlock(world, par2, par3, par4 + 1) == this;
                 if (flag && flag1) {
                     world.setBlockToAir(new BlockPos(par2, par3, par4));
-                } else if ((getBlock(world, par2 + b0, par3, par4 + b1) != TechBlocks.flint_block || 
-                        getBlock(world, par2 - b0, par3, par4 - b1) != this) && 
-                        (getBlock(world, par2 - b0, par3, par4 - b1) != TechBlocks.flint_block || 
-                                getBlock(world, par2 + b0, par3, par4 + b1) != this)) {
+                } else if ((dimhoppertweaks$getBlock(world, par2 + b0, par3, par4 + b1) != TechBlocks.flint_block ||
+                        dimhoppertweaks$getBlock(world, par2 - b0, par3, par4 - b1) != this) &&
+                        (dimhoppertweaks$getBlock(world, par2 - b0, par3, par4 - b1) != TechBlocks.flint_block ||
+                                dimhoppertweaks$getBlock(world, par2 + b0, par3, par4 + b1) != this)) {
                     world.setBlockToAir(new BlockPos(par2, par3, par4));
                 }
             } else {
@@ -108,12 +109,12 @@ public class MixinFlintPortal extends Block {
 
     }
 
-    private Block getBlock(World world, int x, int y, int z) {
+    @Unique private Block dimhoppertweaks$getBlock(World world, int x, int y, int z) {
         return world.getBlockState(new BlockPos(x, y, z)).getBlock();
     }
 
-    private boolean checkBlock(World world, int x, int y, int z, boolean xChange, Block block) {
-        return xChange ? getBlock(world,x-1,y,z)==block || getBlock(world,x+1,y,z)==block :
-                getBlock(world,x,y,z-1)==block || getBlock(world,x,y,z+1)==block;
+    @Unique private boolean dimhoppertweaks$checkBlock(World world, int x, int y, int z, boolean xChange, Block block) {
+        return xChange ? dimhoppertweaks$getBlock(world,x-1,y,z)==block || dimhoppertweaks$getBlock(world,x+1,y,z)==block :
+                dimhoppertweaks$getBlock(world,x,y,z-1)==block || dimhoppertweaks$getBlock(world,x,y,z+1)==block;
     }
 }

@@ -12,8 +12,7 @@ import java.util.Set;
 @Mixin(value = RecipeInfoAdvanced.class, remap = false)
 public class MixinRecipeInfoAdvanced implements RecipeInfoTieredAccess {
 
-    @Unique
-    private final Set<String> dimhoppertweaks$stages = new HashSet<>();
+    @Unique private final Set<String> dimhoppertweaks$stages = new HashSet<>();
 
     @Override
     public void dimhoppertweaks$setStages(Collection<String> stages) {

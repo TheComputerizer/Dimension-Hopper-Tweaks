@@ -14,7 +14,7 @@ import zollerngalaxy.blocks.ZGBlockBase;
 public class MixinZGBlockBase {
 
     @Inject(at = @At(value = "HEAD"), method = "onEntityWalk", cancellable = true)
-    private void dimhoppertweaks_onEntityWalk(World world, BlockPos pos, Entity entity, CallbackInfo ci) {
+    private void dimhoppertweaks$onEntityWalk(World world, BlockPos pos, Entity entity, CallbackInfo ci) {
         if(!(entity instanceof EntityLivingBase)) ci.cancel();
     }
 }
