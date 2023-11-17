@@ -3,6 +3,7 @@ package mods.thecomputerizer.dimhoppertweaks.common.events;
 import codersafterdark.reskillable.api.data.PlayerData;
 import codersafterdark.reskillable.api.data.PlayerDataHandler;
 import com.google.common.collect.Iterables;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillCapabilityProvider;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
@@ -11,6 +12,7 @@ import mods.thecomputerizer.dimhoppertweaks.mixin.access.EntityPixieAccess;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.util.WorldUtil;
 import morph.avaritia.util.DamageSourceInfinitySword;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityTameable;
@@ -23,6 +25,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.ISpecialArmor;
+import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -36,6 +40,12 @@ import java.util.Objects;
 @SuppressWarnings("SpellCheckingInspection")
 @Mod.EventBusSubscriber(modid = Constants.MODID)
 public class EntityEvents {
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void attachEntityCapabilities(AttachCapabilitiesEvent<Entity> event) {
+        if(event.getObject() instanceof EntityPlayerMP && !(event.getObject() instanceof FakePlayer))
+            event.addCapability(SkillWrapper.SKILL_CAPABILITY,new SkillCapabilityProvider());
+    }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onLivingAttack(LivingAttackEvent event) {

@@ -3,21 +3,24 @@ package mods.thecomputerizer.dimhoppertweaks.common.events;
 import codersafterdark.reskillable.api.data.PlayerData;
 import codersafterdark.reskillable.api.data.PlayerDataHandler;
 import codersafterdark.reskillable.api.event.LevelUpEvent;
-import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
+import gcewing.sg.block.SGBlock;
+import mods.thecomputerizer.dimhoppertweaks.client.render.ClientEffects;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.ISkillCapability;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
 import net.darkhax.gamestages.GameStageHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.MobEffects;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemPotion;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.living.LootingLevelEvent;
 import net.minecraftforge.event.entity.player.AdvancementEvent;
+import net.minecraftforge.event.entity.player.BonemealEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
+import net.minecraftforge.event.entity.player.PlayerEvent.Clone;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteractSpecific;
@@ -27,38 +30,40 @@ import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.ItemPickupEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import org.apache.commons.lang3.mutable.MutableInt;
 
 import java.util.Objects;
 
 @Mod.EventBusSubscriber(modid = Constants.MODID)
 public class PlayerEvents {
 
-    private static final MutableInt TICK_DELAY = new MutableInt();
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void breakSpeed(BreakSpeed event) {
+        if(event.isCanceled()) return;
+        if(event.getState().getBlock() instanceof SGBlock<?>) event.setCanceled(true);
+        else if(Objects.nonNull(event.getEntityPlayer())) {
+            float speedFactor = 1;
+            if(event.getEntityPlayer() instanceof EntityPlayerMP) {
+                EntityPlayerMP player = (EntityPlayerMP)event.getEntityPlayer();
+                if (Objects.nonNull(player)) {
+                    ISkillCapability cap = SkillWrapper.getSkillCapability(player);
+                    if(Objects.nonNull(cap)) speedFactor = 1f+cap.getBreakSpeedMultiplier();
+                }
+            } else speedFactor = ClientEffects.MINING_SPEED;
+            event.setNewSpeed(event.getNewSpeed()*speedFactor);
+        }
+    }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void onChangedDimensions(PlayerChangedDimensionEvent event) {
+    public static void onPlayerClone(Clone event) {
         if(event.isCanceled()) return;
-        PlayerData data = PlayerDataHandler.get(event.player);
-        if(Objects.nonNull(data)) {
-            SkillWrapper.executeOnSkills(data, h -> {
-                if(h instanceof ExtendedEventsTrait) ((ExtendedEventsTrait)h).onChangeDimensions(event);
-            });
-        }
-        if(event.player instanceof EntityPlayerMP) {
-            EntityPlayerMP player = (EntityPlayerMP)event.player;
-            checkDimStage(player,false,true,"twilight",7);
-            checkDimStage(player,true,false,"nether",-1);
-            checkDimStage(player,true,false,"finalfrontier",-19);
-            SkillWrapper.addSP(player,"void",5f,false);
-            ISkillCapability cap = SkillWrapper.getSkillCapability(player);
-            if(Objects.nonNull(cap)) cap.resetDreamTimer();
+        if(event.getEntityPlayer() instanceof EntityPlayerMP) {
+            EntityPlayerMP to = (EntityPlayerMP)event.getEntityPlayer();
+            ISkillCapability capTo = SkillWrapper.getSkillCapability(to);
+            if(Objects.nonNull(capTo)) {
+                EntityPlayerMP from = (EntityPlayerMP)event.getOriginal();
+                ISkillCapability capFrom = SkillWrapper.getSkillCapability(from);
+                if(Objects.nonNull(capFrom)) capTo.of((SkillCapability)capFrom,to);
+            }
         }
     }
 
@@ -70,21 +75,11 @@ public class PlayerEvents {
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void playerJoin(PlayerLoggedInEvent event) {
-        if(event.isCanceled()) return;
-        if(event.player instanceof EntityPlayerMP) {
-            EntityPlayerMP player = (EntityPlayerMP)event.player;
-            checkDimStage(player,false,false,"bridgeone",7,20,684);
-            if(!GameStageHelper.hasStage(player,"bedrockFinal"))
-                player.inventory.clearMatchingItems(Item.getItemFromBlock(Blocks.BEDROCK),-1,0,null);
-            SkillWrapper.updateTokens(player);
+    public static void onBoneMeal(BonemealEvent event) {
+        if(!event.getWorld().isRemote) {
+            double prestigeFactor = (SkillWrapper.getPrestigeFactor(event.getEntityPlayer(),"farming")-1d)/32d;
+            if(event.getWorld().rand.nextDouble()<=prestigeFactor) event.getStack().grow(1);
         }
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void onPlayerRespawn(PlayerRespawnEvent event) {
-        if(event.isCanceled()) return;
-        if(event.player instanceof EntityPlayerMP) SkillWrapper.forceTwilightRespawn(event.player);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -119,65 +114,6 @@ public class PlayerEvents {
         if(event.getEntityPlayer() instanceof EntityPlayerMP)
             SkillWrapper.addSP((EntityPlayerMP)event.getEntityPlayer(),"research",5f,false);
     }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void playerTick(TickEvent.PlayerTickEvent event) {
-        if(event.isCanceled()) return;
-        if(event.phase==TickEvent.Phase.END) {
-            if(event.side== Side.SERVER) {
-                if(TICK_DELAY.addAndGet(1)>=20) {
-                    EntityPlayerMP player = (EntityPlayerMP) event.player;
-                    if(player.isSprinting()) {
-                        int speedFactor = player.isPotionActive(MobEffects.SPEED) ? Objects.requireNonNull(
-                                player.getActivePotionEffect(MobEffects.SPEED)).getAmplifier()+2 : 1;
-                        SkillWrapper.addSP(player,"agility",speedFactor, false);
-                    }
-                    ISkillCapability cap = SkillWrapper.getSkillCapability(player);
-                    if(Objects.nonNull(cap)) cap.decrementGatheringItems(20);
-                    TICK_DELAY.setValue(0);
-                }
-            }
-        }
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void pickUpItem(ItemPickupEvent event) {
-        if(event.isCanceled()) return;
-        if(event.player instanceof EntityPlayerMP) {
-            EntityPlayerMP player = (EntityPlayerMP)event.player;
-            ItemStack stack = event.getStack();
-            if(!GameStageHelper.hasStage(player,"bedrockFinal") &&
-                    stack.getItem()==Item.getItemFromBlock(Blocks.BEDROCK))
-                stack.setCount(0);
-            if(stack.getCount()>0) {
-                ISkillCapability cap = SkillWrapper.getSkillCapability(player);
-                if(Objects.nonNull(cap) && cap.checkGatheringItem(stack.getItem())) {
-                    int sizeFactor = stack.getCount()>1 ? (int)(Math.log(stack.getCount())/Math.log(2)) : 1;
-                    SkillWrapper.addSP(player,"gathering",sizeFactor,false);
-                }
-            }
-        }
-    }
-
-    private static void checkDimStage(EntityPlayer player, boolean goodDim, boolean goodStage, String stage,
-                                      int ... dimensions) {
-        boolean passedDimCheck = dimensions.length==0 || !goodDim;
-        for(int dim : dimensions) {
-            if(player.dimension==dim) {
-                if(!goodDim) return;
-                else {
-                    passedDimCheck = true;
-                    break;
-                }
-            }
-        }
-        if(passedDimCheck && goodStage==GameStageHelper.hasStage(player,stage)) {
-            if(!goodStage) GameStageHelper.addStage(player,stage);
-            else GameStageHelper.removeStage(player,stage);
-        }
-    }
-
-
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onFoodRightClick(PlayerInteractEvent event) {

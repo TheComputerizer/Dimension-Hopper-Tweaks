@@ -1,7 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.common.commands;
 
 import mcp.MethodsReturnNonnullByDefault;
-import mods.thecomputerizer.dimhoppertweaks.common.events.ServerEvents;
+import mods.thecomputerizer.dimhoppertweaks.common.events.TickEvents;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketRenderBossAttack;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -25,7 +25,7 @@ public class SummonBoss extends DHTCommand {
             try {
                 EntityPlayerMP player = (EntityPlayerMP)sender;
                 new PacketRenderBossAttack(new ArrayList<>(),-1,4,0,0).addPlayers(player).send();
-                ServerEvents.startSummonBoss(server.getWorld((player.dimension)),player.getPosition().add(2,0,0));
+                TickEvents.startSummonBoss(server.getWorld((player.dimension)),player.getPosition().add(2,0,0));
                 sendMessage(sender,false,null);
             } catch (Exception ex) {
                 sendMessage(sender,true,null);

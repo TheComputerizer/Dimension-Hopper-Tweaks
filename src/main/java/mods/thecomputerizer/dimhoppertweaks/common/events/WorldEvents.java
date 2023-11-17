@@ -2,14 +2,12 @@ package mods.thecomputerizer.dimhoppertweaks.common.events;
 
 import codersafterdark.reskillable.api.data.PlayerData;
 import codersafterdark.reskillable.api.data.PlayerDataHandler;
-import lumien.randomthings.item.ModItems;
+import gcewing.sg.block.SGBlock;
 import mekanism.common.security.ISecurityTile;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
-import mods.thecomputerizer.dimhoppertweaks.common.commands.DHDebugCommands;
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import mods.thecomputerizer.dimhoppertweaks.mixin.access.DelayedModAccess;
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.ItemTimeInABottleAccess;
 import mods.thecomputerizer.dimhoppertweaks.mixin.access.TileEntityAccess;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
 import mods.thecomputerizer.dimhoppertweaks.util.WorldUtil;
@@ -18,21 +16,17 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.event.world.ExplosionEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.event.world.BlockEvent.*;
+import net.minecraftforge.event.world.ExplosionEvent.Detonate;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 import slimeknights.tconstruct.library.tools.TinkerToolCore;
 
 import java.util.Collection;
@@ -43,9 +37,10 @@ import java.util.Set;
 public class WorldEvents {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void blockBreak(BlockEvent.BreakEvent event) {
+    public static void blockBreak(BreakEvent event) {
         if(event.isCanceled()) return;
-        if(event.getPlayer() instanceof EntityPlayerMP) {
+        if(event.getState().getBlock() instanceof SGBlock<?>) event.setCanceled(true);
+        else if(event.getPlayer() instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP) event.getPlayer();
             ISkillCapability cap = SkillWrapper.getSkillCapability(player);
             if(Objects.nonNull(cap)) {
@@ -67,7 +62,7 @@ public class WorldEvents {
 
     @SuppressWarnings("deprecation")
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void blockPlace(BlockEvent.PlaceEvent event) {
+    public static void blockPlace(PlaceEvent event) {
         if(event.isCanceled()) return;
         EntityPlayer player = event.getPlayer();
         if(player instanceof EntityPlayerMP) {
@@ -88,7 +83,7 @@ public class WorldEvents {
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void onExplosionDetonate(ExplosionEvent.Detonate event) {
+    public static void onExplosionDetonate(Detonate event) {
         if(event.isCanceled()) return;
         if(!event.getWorld().isRemote) {
             Vec3d center = event.getExplosion().getPosition();
@@ -120,45 +115,5 @@ public class WorldEvents {
             if(Objects.nonNull(tile)) return ((TileEntityAccess)tile).dimhoppertweaks$getStages();
         }
         return DelayedModAccess.getGameStages(player);
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void worldTick(TickEvent.WorldTickEvent event) {
-        if(event.isCanceled()) return;
-        if(event.phase==TickEvent.Phase.END) {
-            int dim = event.world.provider.getDimension();
-            if(dim==44 || dim==45) {
-                synchronized(event.world.playerEntities) {
-                    EntityPlayerMP wakingUp = null;
-                    for(EntityPlayer p : event.world.playerEntities) {
-                        EntityPlayerMP player = (EntityPlayerMP) p;
-                        int ticks = checkTime(player.getHeldItemOffhand()) || checkTime(player.getHeldItemMainhand()) ? -1 : 1;
-                        if(SkillWrapper.ticKDreamer(player, ticks)) {
-                            wakingUp = player;
-                            break;
-                        }
-                    }
-                    //This needs to be outside the loop to avoid a cmod error since teleporting removes the player from the list
-                    if(Objects.nonNull(wakingUp)) wakeUp(wakingUp);
-                }
-            }
-        }
-    }
-
-    private static boolean checkTime(ItemStack stack) {
-        return stack.getItem()==ModItems.timeInABottle &&
-                ((ItemTimeInABottleAccess)stack.getItem()).dimhoppertweaks$hasTime(stack);
-    }
-
-    @SuppressWarnings("ConstantValue")
-    private static void wakeUp(EntityPlayerMP player) {
-        ISkillCapability cap = SkillWrapper.getSkillCapability(player);
-        if(Objects.nonNull(cap)) cap.resetDreamTimer();
-        int respawnDim = player.getSpawnDimension();
-        BlockPos respawnPos = player.getBedLocation(respawnDim);
-        if(Objects.isNull(respawnPos)) respawnPos = player.getPosition();
-        MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-        server.getCommandManager().executeCommand(server,DHDebugCommands.buildRawCommand("tpx",player.getName(),
-                respawnPos.getX(),respawnPos.getY(),respawnPos.getZ(),respawnDim));
     }
 }

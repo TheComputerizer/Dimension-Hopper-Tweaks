@@ -17,16 +17,15 @@ import javax.annotation.Nonnull;
 @Mixin(value = ItemTreasureChest.class, remap = false)
 public class MixinItemTreasureChest {
 
-    @Shadow
-    private WeightedLootSet loot;
+    @Shadow private WeightedLootSet loot;
 
     @Inject(at = @At(value = "HEAD"), method = "onItemRightClick")
     private void dimhoppertweaks$onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player,
                                                          CallbackInfoReturnable<ItemStack> cir) {
         if(!world.isRemote) {
             this.loot = new WeightedLootSet();
-            this.loot.addLoot(Items.IRON_INGOT, 40);
-            this.loot.addLoot(Items.GOLD_INGOT, 30);
+            this.loot.addLoot(Items.IRON_INGOT,40);
+            this.loot.addLoot(Items.GOLD_INGOT,30);
         }
     }
 }
