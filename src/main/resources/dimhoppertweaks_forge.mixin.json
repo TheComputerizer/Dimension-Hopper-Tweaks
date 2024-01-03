@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "package": "mods.thecomputerizer.dimhoppertweaks.mixin.forge",
+  "refmap": "dimhoppertweaks.refmap.json",
+  "target": "@env(DEFAULT)",
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinArmorProperties",
+    "MixinCraftingHelper",
+    "MixinDimensionManager",
+    "MixinFakePlayer",
+    "MixinFMLModContainer",
+    "MixinForgeHooks",
+    "MixinForgeVersion",
+    "MixinOreDictionary"
+  ],
+  "client": [
+    "MixinModelLoader"
+  ]
+}

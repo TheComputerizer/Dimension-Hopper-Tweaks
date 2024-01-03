@@ -4,10 +4,9 @@ import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import zone.rong.mixinbooter.IEarlyMixinLoader;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class EarlyMixinPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
@@ -17,7 +16,7 @@ public class EarlyMixinPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
     @Override
     public List<String> getMixinConfigs() {
-        return Stream.of("dimhoppertweaks_vanilla.mixin.json").collect(Collectors.toList());
+        return Arrays.asList("dimhoppertweaks_vanilla.mixin.json","dimhoppertweaks_forge.mixin.json");
     }
 
     @Override
