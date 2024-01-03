@@ -1,7 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.registry.traits;
 
 import codersafterdark.reskillable.api.unlockable.Trait;
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemFood;
@@ -22,19 +22,19 @@ public abstract class ExtendedEventsTrait extends Trait {
     protected static final ResourceLocation GATHERING = new ResourceLocation("reskillable","gathering");
     protected static final ResourceLocation MAGIC = new ResourceLocation("reskillable","magic");
     protected static final ResourceLocation MINING = new ResourceLocation("reskillable","mining");
-    protected static final ResourceLocation RESEARCH = Constants.res("research");
-    protected static final ResourceLocation VOID = Constants.res("void");
+    protected static final ResourceLocation RESEARCH = DHTRef.res("research");
+    protected static final ResourceLocation VOID = DHTRef.res("void");
 
     private static String[] getReqs(String ... skills) {
         for(int i=0; i<skills.length; i++) {
             boolean isCustom = skills[i].startsWith("research") || skills[i].startsWith("void");
-            skills[i] = (isCustom ? Constants.MODID : "reskillable")+":"+skills[i];
+            skills[i] = (isCustom ? DHTRef.MODID : "reskillable")+":"+skills[i];
         }
         return skills;
     }
 
     public ExtendedEventsTrait(String name, int x, int y, ResourceLocation skillRes, int cost, String... requirements) {
-        super(Constants.res(name),x,y,skillRes,cost,getReqs(requirements));
+        super(DHTRef.res(name),x,y,skillRes,cost,getReqs(requirements));
     }
 
     public void onChangeDimensions(PlayerEvent.PlayerChangedDimensionEvent ev) {}

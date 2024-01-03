@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.registry;
 
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.registry.blocks.LightningEnhancer;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
@@ -20,8 +20,8 @@ public final class BlockRegistry {
     private static Block makeBlock(final String name, final Supplier<Block> constructor, final Consumer<Block> config) {
         final Block block = constructor.get();
         config.accept(block);
-        block.setRegistryName(Constants.MODID, name);
-        block.setTranslationKey(Constants.MODID+"."+name);
+        block.setRegistryName(DHTRef.MODID, name);
+        block.setTranslationKey(DHTRef.MODID+"."+name);
         ALL_BLOCKS.add(block);
         return block;
     }

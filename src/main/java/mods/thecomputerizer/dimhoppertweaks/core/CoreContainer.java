@@ -13,7 +13,7 @@ public class CoreContainer extends DummyModContainer {
         meta.modId = "dimhoppertweakscore";
         meta.name = "Dimension Hopper Twinkies";
         meta.description = "Loads Early Mixin Stuff for Dimension Hopper Tweaks";
-        meta.version = Constants.VERSION;
+        meta.version = DHTRef.VERSION;
         meta.authorList.add("The_Computerizer");
     }
 

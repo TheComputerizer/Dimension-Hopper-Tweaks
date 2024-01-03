@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.client.model;
 
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
 
 import net.minecraft.util.ResourceLocation;
@@ -11,16 +11,16 @@ public class ModelFinalBoss extends AnimatedGeoModel<EntityFinalBoss> {
 
     @Override
     public ResourceLocation getAnimationFileLocation(EntityFinalBoss entity) {
-        return Constants.res("animations/boss.animation.json");
+        return DHTRef.res("animations/boss.animation.json");
     }
 
     @Override
     public ResourceLocation getModelLocation(EntityFinalBoss entity) {
-        return Constants.res("geo/final_boss.geo.json");
+        return DHTRef.res("geo/final_boss.geo.json");
     }
 
     @Override
     public ResourceLocation getTextureLocation(EntityFinalBoss entity) {
-        return Constants.res("textures/entity/final_boss.png");
+        return DHTRef.res("textures/entity/final_boss.png");
     }
 }

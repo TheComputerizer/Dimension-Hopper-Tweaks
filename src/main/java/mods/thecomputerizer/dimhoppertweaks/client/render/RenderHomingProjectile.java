@@ -3,7 +3,7 @@ package mods.thecomputerizer.dimhoppertweaks.client.render;
 import codechicken.lib.colour.ColourRGBA;
 import codechicken.lib.texture.TextureUtils;
 import codechicken.lib.util.TransformUtils;
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.client.ClientRegistryHandler;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.HomingProjectile;
 import net.minecraft.client.Minecraft;
@@ -26,7 +26,7 @@ import java.util.List;
 @SuppressWarnings("ConstantConditions")
 public class RenderHomingProjectile extends Render<HomingProjectile> {
 
-    private final static ResourceLocation ATTACK = new ResourceLocation(Constants.MODID,"textures/models/attack.png");
+    private final static ResourceLocation ATTACK = new ResourceLocation(DHTRef.MODID,"textures/models/attack.png");
 
     public RenderHomingProjectile(RenderManager renderManager) {
         super(renderManager);

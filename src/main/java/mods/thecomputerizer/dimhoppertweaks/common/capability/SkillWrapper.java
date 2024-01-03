@@ -8,7 +8,7 @@ import codersafterdark.reskillable.api.event.LevelUpEvent;
 import codersafterdark.reskillable.api.skill.Skill;
 import codersafterdark.reskillable.api.toast.ToastHelper;
 import codersafterdark.reskillable.api.unlockable.IAbilityEventHandler;
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.registry.items.SkillToken;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -29,7 +29,7 @@ import java.util.function.Consumer;
 
 public class SkillWrapper {
 
-    public static final ResourceLocation SKILL_CAPABILITY = Constants.res("skills");
+    public static final ResourceLocation SKILL_CAPABILITY = DHTRef.res("skills");
 
     @SuppressWarnings("ConstantConditions")
     public static @Nullable ISkillCapability getSkillCapability(EntityPlayer player) {
@@ -88,7 +88,7 @@ public class SkillWrapper {
     }
 
     public static @Nullable Skill getSkill(String name) {
-        ResourceLocation skillRes =  name.matches("research") || name.matches("void") ? Constants.res(name) :
+        ResourceLocation skillRes =  name.matches("research") || name.matches("void") ? DHTRef.res(name) :
                 new ResourceLocation("reskillable",name);
         return ReskillableRegistries.SKILLS.containsKey(skillRes) ? ReskillableRegistries.SKILLS.getValue(skillRes) : null;
     }
@@ -119,7 +119,7 @@ public class SkillWrapper {
     private int prestigeLevel;
 
     public SkillWrapper(String name, int xp, int level, int prestigeLevel) {
-        this.modid = name.matches("research") || name.matches("void") ? Constants.MODID : "reskillable";
+        this.modid = name.matches("research") || name.matches("void") ? DHTRef.MODID : "reskillable";
         this.name = name;
         this.xp = xp;
         this.level = level;
@@ -129,7 +129,7 @@ public class SkillWrapper {
         if(skill!=null) cap = getSkill().getCap();
         this.maxLevel = cap;
         this.prestigeLevel = prestigeLevel;
-        Constants.LOGGER.debug("Registered skill {}:{} at level {} with xp {}/{}",modid,name,level,xp,levelXP);
+        DHTRef.LOGGER.debug("Registered skill {}:{} at level {} with xp {}/{}",modid,name,level,xp,levelXP);
     }
 
     public int getXP() {

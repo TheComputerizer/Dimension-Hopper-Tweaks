@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.vanilla;
 
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import net.minecraft.stats.StatBase;
 import net.minecraft.stats.StatisticsManager;
 import net.minecraft.util.TupleIntJsonSerializable;
@@ -28,8 +28,8 @@ public class MixinStatisticManager {
             cir.setReturnValue(tupleintjsonserializable == null ? 0 : tupleintjsonserializable.getIntegerValue());
         } catch (Exception e) {
             if(Objects.nonNull(stat))
-                Constants.LOGGER.error("Stat with ID {} errored",stat.statId,e);
-            else Constants.LOGGER.error("Stat was null and could not sync",e);
+                DHTRef.LOGGER.error("Stat with ID {} errored",stat.statId,e);
+            else DHTRef.LOGGER.error("Stat was null and could not sync",e);
             cir.setReturnValue(0);
         }
     }

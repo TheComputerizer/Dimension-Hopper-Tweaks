@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.client.gui;
 
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketSyncGuiData;
 import mods.thecomputerizer.dimhoppertweaks.util.TextUtil;
 import net.minecraft.client.Minecraft;
@@ -53,7 +53,7 @@ public class TokenExchangeGui extends GuiScreen {
     }
 
     private String getSkillTranslation(String skill) {
-        return TextUtil.getTranslated("skill."+Constants.MODID+"."+skill);
+        return TextUtil.getTranslated("skill."+ DHTRef.MODID+"."+skill);
     }
 
     private List<String> getListTranslation() {
@@ -70,7 +70,7 @@ public class TokenExchangeGui extends GuiScreen {
                 for (CircularScrollableElement circle : this.scrollables)
                     circle.render(Minecraft.getMinecraft(),mouseX,mouseY,0,0,0,64);
             }
-            this.drawCenteredString(this.fontRenderer,TextUtil.getTranslated("gui."+Constants.MODID+"."+"skill_drain"),
+            this.drawCenteredString(this.fontRenderer,TextUtil.getTranslated("gui."+ DHTRef.MODID+"."+"skill_drain"),
                     this.width/2,8,10526880);
             this.renderSmallCircleOnCursor(Minecraft.getMinecraft(),mouseX,mouseY);
             super.drawScreen(mouseX, mouseY, partialTicks);

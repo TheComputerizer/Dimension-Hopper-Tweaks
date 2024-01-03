@@ -7,7 +7,7 @@ import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillCapabilityPro
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.mixin.access.EntityPixieAccess;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.util.WorldUtil;
@@ -38,7 +38,7 @@ import vazkii.botania.common.item.equipment.tool.elementium.ItemElementiumSword;
 import java.util.Objects;
 
 @SuppressWarnings("SpellCheckingInspection")
-@Mod.EventBusSubscriber(modid = Constants.MODID)
+@Mod.EventBusSubscriber(modid = DHTRef.MODID)
 public class EntityEvents {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

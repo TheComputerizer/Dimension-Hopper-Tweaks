@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.registry;
 
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.registry.items.PrestigeToken;
 import mods.thecomputerizer.dimhoppertweaks.registry.items.RealitySlasher;
 import mods.thecomputerizer.dimhoppertweaks.registry.items.SkillToken;
@@ -97,8 +97,8 @@ public final class ItemRegistry {
     private static Item makeItem(final String name, final Supplier<Item> constructor, final Consumer<Item> config) {
         final Item item = constructor.get();
         config.accept(item);
-        item.setTranslationKey(Constants.MODID+"."+name);
-        item.setRegistryName(Constants.MODID, name);
+        item.setTranslationKey(DHTRef.MODID+"."+name);
+        item.setRegistryName(DHTRef.MODID, name);
         item.setMaxStackSize(1);
         ALL_ITEMS.add(item);
         return item;

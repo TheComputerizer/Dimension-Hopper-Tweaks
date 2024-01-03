@@ -4,7 +4,7 @@ import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class Constants {
+public class DHTRef {
 
     public static final String MODID = "dimhoppertweaks";
     public static final String NAME = "Dimension Hopper Tweaks";

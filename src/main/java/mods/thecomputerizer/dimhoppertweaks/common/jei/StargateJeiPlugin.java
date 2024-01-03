@@ -4,7 +4,7 @@ import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;
 import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.registry.ItemRegistry;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -54,7 +54,7 @@ public class StargateJeiPlugin implements IModPlugin {
 
     @Override
     public void register(IModRegistry registry) {
-        String id = Constants.MODID+".ancientStargate";
+        String id = DHTRef.MODID+".ancientStargate";
         registry.addRecipeCatalyst(new ItemStack(ItemRegistry.STARGATE_ADDRESSER),id);
         registry.handleRecipes(StargateRecipe.class,StargatePreviewWrapper::new,id);
         registry.addRecipes(getStargateRecipes(),id);

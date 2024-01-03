@@ -1,7 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.common.commands;
 
 import mcp.MethodsReturnNonnullByDefault;
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -74,7 +74,7 @@ public abstract class DHTCommand extends CommandBase {
     }
 
     private String buildLangKey(boolean isError, @Nullable String extraLang) {
-        String lang = "commands."+Constants.MODID+"."+this.commandName+"."+(isError ? "error" : "success");
+        String lang = "commands."+ DHTRef.MODID+"."+this.commandName+"."+(isError ? "error" : "success");
         return Objects.nonNull(extraLang) && !extraLang.isEmpty() ? lang+"."+extraLang : lang;
     }
 

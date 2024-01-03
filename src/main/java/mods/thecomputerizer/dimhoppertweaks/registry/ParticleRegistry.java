@@ -3,7 +3,7 @@ package mods.thecomputerizer.dimhoppertweaks.registry;
 import mods.thecomputerizer.dimhoppertweaks.client.particle.ParticleAscii;
 import mods.thecomputerizer.dimhoppertweaks.client.particle.ParticleBlightFire;
 import mods.thecomputerizer.dimhoppertweaks.client.render.BetterBlightFireRenderer;
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.theimpossiblelibrary.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleManager;
@@ -19,7 +19,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Objects;
 
-@Mod.EventBusSubscriber(modid = Constants.MODID)
+@Mod.EventBusSubscriber(modid = DHTRef.MODID)
 public final class ParticleRegistry {
 
     public static final ResourceLocation PARTICLE_TEXTURES = new ResourceLocation("textures/particle/particles.png");
@@ -34,12 +34,12 @@ public final class ParticleRegistry {
     private static EnumParticleTypes registerParticle(String name, boolean ignoreRange) {
         String camelName = TextUtil.makeCaseTypeFromSnake(name,TextUtil.TextCasing.CAMEL);
         int id = EnumParticleTypes.values().length;
-        Constants.LOGGER.info("Registrering particle with name {}",camelName);
+        DHTRef.LOGGER.info("Registrering particle with name {}",camelName);
         EnumParticleTypes ret = EnumHelper.addEnum(EnumParticleTypes.class,name,PARTICLE_INIT_CLASSES,camelName,id,ignoreRange);
         if(Objects.nonNull(ret)) {
             EnumParticleTypes.PARTICLES.put(ret.getParticleID(), ret);
             EnumParticleTypes.BY_NAME.put(ret.getParticleName(), ret);
-        } else Constants.LOGGER.error("Failed to register particle {}!",camelName);
+        } else DHTRef.LOGGER.error("Failed to register particle {}!",camelName);
         return ret;
     }
 

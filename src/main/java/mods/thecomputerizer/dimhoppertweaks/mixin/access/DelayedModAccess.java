@@ -8,7 +8,7 @@ import goblinbob.mobends.standard.client.model.armor.MalformedArmorModelExceptio
 import goblinbob.mobends.standard.client.renderer.entity.layers.LayerCustomBipedArmor;
 import goblinbob.mobends.standard.data.BipedEntityData;
 import mariot7.xlfoodmod.init.ItemListxlfoodmod;
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketSendKeyPressed;
 import morph.avaritia.client.render.entity.ModelArmorInfinity;
 import net.darkhax.gamestages.GameStageHelper;
@@ -108,12 +108,12 @@ public class DelayedModAccess {
                 Class<?> foundClass = Class.forName(className);
                 if(TileEntity.class.isAssignableFrom(foundClass)) {
                     classSet.add(foundClass);
-                    Constants.LOGGER.info("Registered tile entity class with name `{}` as an automatic {}",
+                    DHTRef.LOGGER.info("Registered tile entity class with name `{}` as an automatic {}",
                             className,type);
-                } else Constants.LOGGER.error("Tried to register non tile entity class with name {} as an " +
+                } else DHTRef.LOGGER.error("Tried to register non tile entity class with name {} as an " +
                         "automatic {}!",className,type);
             } catch (ClassNotFoundException ex) {
-                Constants.LOGGER.error("Could not locate class with name `{}`",className);
+                DHTRef.LOGGER.error("Could not locate class with name `{}`",className);
             }
         }
     }
@@ -159,7 +159,7 @@ public class DelayedModAccess {
         try {
             return ArmorModelFactory.getArmorModel(overlay,shouldBeMutated);
         } catch(MalformedArmorModelException ex) {
-            Constants.LOGGER.error("Could not transform infinity armor :(",ex);
+            DHTRef.LOGGER.error("Could not transform infinity armor :(",ex);
             return overlay;
         }
     }

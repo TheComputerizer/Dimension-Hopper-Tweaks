@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.vanilla;
 
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.mixin.access.SPacketEntityEffectAccess;
 import net.minecraft.entity.EntityTrackerEntry;
 import net.minecraft.network.NetHandlerPlayServer;
@@ -22,7 +22,7 @@ public class MixinEntityTrackerEntry {
         try {
             return new SPacketEntityEffect(entityIdIn,effect);
         } catch (NullPointerException ex) {
-            Constants.LOGGER.error("Could not create entity effect packet for effect {}!",
+            DHTRef.LOGGER.error("Could not create entity effect packet for effect {}!",
                     Objects.nonNull(effect) ? effect.getPotion().getRegistryName() : "NULL EFFECT");
             return new SPacketEntityEffect();
         }

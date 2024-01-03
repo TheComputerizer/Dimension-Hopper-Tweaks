@@ -3,7 +3,7 @@ package mods.thecomputerizer.dimhoppertweaks.registry.structures;
 import gcewing.sg.BaseOrientation;
 import gcewing.sg.SGCraft;
 import gcewing.sg.block.SGRingBlock;
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.util.Lazy;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
@@ -26,7 +26,7 @@ public class StargateStructure extends AbstractStructure {
     public static final Lazy<IBlockState> A = Lazy.of(Blocks.AIR::getDefaultState);
 
     public StargateStructure() {
-        setRegistryName(Constants.res("stargate"));
+        setRegistryName(DHTRef.res("stargate"));
     }
 
     @Override

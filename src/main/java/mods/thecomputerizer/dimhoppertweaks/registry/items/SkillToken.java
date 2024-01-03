@@ -4,7 +4,7 @@ import mcp.MethodsReturnNonnullByDefault;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillCapabilityStorage;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketOpenGui;
 import mods.thecomputerizer.dimhoppertweaks.util.TextUtil;
 import net.minecraft.client.util.ITooltipFlag;
@@ -156,6 +156,6 @@ public class SkillToken extends EpicItem {
     }
 
     private String translateSkill(String skillName) {
-        return TextUtil.getTranslated("skill."+Constants.MODID+"."+skillName);
+        return TextUtil.getTranslated("skill."+ DHTRef.MODID+"."+skillName);
     }
 }

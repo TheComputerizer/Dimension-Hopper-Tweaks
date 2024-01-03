@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 public class EarlyMixinPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
     static {
-        Constants.LOGGER.info("Initializing early mixin twinkies... I mean tweaks");
+        DHTRef.LOGGER.info("Initializing early mixin twinkies... I mean tweaks");
     }
 
     @Override

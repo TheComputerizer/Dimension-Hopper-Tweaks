@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.registry;
 
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 
@@ -16,7 +16,7 @@ public final class SoundRegistry {
     public static final SoundEvent MUSIC = makeSoundEvent("boss.music");
 
     private static SoundEvent makeSoundEvent(final String name) {
-        ResourceLocation id = Constants.res(name);
+        ResourceLocation id = DHTRef.res(name);
         SoundEvent sound = new SoundEvent(id).setRegistryName(name);
         ALL_SOUNDS.add(sound);
         return sound;

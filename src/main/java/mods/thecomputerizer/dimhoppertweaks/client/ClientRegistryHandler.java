@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.client;
 
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.client.render.RenderFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.client.render.RenderHomingProjectile;
 import mods.thecomputerizer.dimhoppertweaks.registry.ItemRegistry;
@@ -19,10 +19,10 @@ import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.Objects;
 
-@Mod.EventBusSubscriber(modid = Constants.MODID, value = { Side.CLIENT })
+@Mod.EventBusSubscriber(modid = DHTRef.MODID, value = { Side.CLIENT })
 public final class ClientRegistryHandler {
-    public final static ResourceLocation FORCEFIELD = new ResourceLocation(Constants.MODID,"textures/models/forcefield.png");
-    public final static ResourceLocation ATTACK = new ResourceLocation(Constants.MODID,"textures/models/attack.png");
+    public final static ResourceLocation FORCEFIELD = new ResourceLocation(DHTRef.MODID,"textures/models/forcefield.png");
+    public final static ResourceLocation ATTACK = new ResourceLocation(DHTRef.MODID,"textures/models/attack.png");
     public static OBJModel FORCEFIELD_MODEL;
     public static float FOG_DENSITY_OVERRIDE = -1f;
 

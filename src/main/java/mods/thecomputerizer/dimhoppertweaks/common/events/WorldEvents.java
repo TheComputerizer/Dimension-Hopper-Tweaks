@@ -6,7 +6,7 @@ import gcewing.sg.block.SGBlock;
 import mekanism.common.security.ISecurityTile;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.mixin.access.DelayedModAccess;
 import mods.thecomputerizer.dimhoppertweaks.mixin.access.TileEntityAccess;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
@@ -33,7 +33,7 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
 
-@Mod.EventBusSubscriber(modid = Constants.MODID)
+@Mod.EventBusSubscriber(modid = DHTRef.MODID)
 public class WorldEvents {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

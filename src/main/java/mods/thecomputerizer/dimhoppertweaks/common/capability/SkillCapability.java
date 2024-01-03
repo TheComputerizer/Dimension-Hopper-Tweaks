@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.common.capability;
 
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketGrayScaleTimer;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketSyncCapabilityData;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -39,12 +39,12 @@ public class SkillCapability implements ISkillCapability {
     private boolean pressedSkillKey = false;
 
     public SkillCapability() {
-        Constants.LOGGER.debug("Initializing skill capability");
+        DHTRef.LOGGER.debug("Initializing skill capability");
     }
 
     private void checkForExistingSkill(String name) {
         if(!this.skillMap.containsKey(name)) {
-            Constants.LOGGER.error("Could not find "+name+" skill! Substituting with a new level 1 "+name+" skill :)");
+            DHTRef.LOGGER.error("Could not find "+name+" skill! Substituting with a new level 1 "+name+" skill :)");
             this.skillMap.put(name.toLowerCase(),new SkillWrapper(name,0,100,0));
         }
     }

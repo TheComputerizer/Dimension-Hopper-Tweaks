@@ -1,7 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.client;
 
 import mods.thecomputerizer.dimhoppertweaks.client.render.ClientEffects;
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.registry.tiles.LightningEnhancerEntity;
 import mods.thecomputerizer.dimhoppertweaks.util.TextUtil;
 import net.minecraft.client.Minecraft;
@@ -30,7 +30,7 @@ import org.lwjgl.opengl.GL11;
 import javax.annotation.Nullable;
 import java.util.*;
 
-@Mod.EventBusSubscriber(modid = Constants.MODID, value = Side.CLIENT)
+@Mod.EventBusSubscriber(modid = DHTRef.MODID, value = Side.CLIENT)
 public class ClientEvents {
 
     public static Set<Item> autoFeedItems = new HashSet<>();

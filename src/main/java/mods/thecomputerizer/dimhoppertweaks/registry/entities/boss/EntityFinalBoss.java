@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.registry.entities.boss;
 
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.client.ClientRegistryHandler;
 import mods.thecomputerizer.dimhoppertweaks.registry.SoundRegistry;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.HomingProjectile;
@@ -332,7 +332,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
         double damageScale = Math.min(10d,Math.hypot(Math.hypot(this.motionX,this.motionY),this.motionZ)*10d);
         for(EntityPlayer player : this.players) {
             if(isEntityCloseEnough(player,this.getPositionVector(),1)) {
-                Constants.LOGGER.error("CHARGING ATTACK DID {}",damageScale);
+                DHTRef.LOGGER.error("CHARGING ATTACK DID {}",damageScale);
                 subtractPlayerHealth(player,damageScale);
             }
         }

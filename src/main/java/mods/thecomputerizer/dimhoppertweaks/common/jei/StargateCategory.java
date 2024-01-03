@@ -8,7 +8,7 @@ import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ITooltipCallback;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeCategory;
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
@@ -29,7 +29,7 @@ public class StargateCategory implements IRecipeCategory<StargatePreviewWrapper>
     }
     @Override
     public String getUid() {
-        return Constants.MODID+".ancientStargate";
+        return DHTRef.MODID+".ancientStargate";
     }
 
     @Override
@@ -39,7 +39,7 @@ public class StargateCategory implements IRecipeCategory<StargatePreviewWrapper>
 
     @Override
     public String getModName() {
-        return Constants.MODID;
+        return DHTRef.MODID;
     }
 
     @Override

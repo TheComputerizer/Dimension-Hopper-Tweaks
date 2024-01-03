@@ -7,7 +7,7 @@ import gcewing.sg.block.SGBlock;
 import gcewing.sg.tileentity.SGBaseTE;
 import gcewing.sg.util.SGState;
 import mcp.MethodsReturnNonnullByDefault;
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.mixin.access.SGBaseTEAccess;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -218,7 +218,7 @@ public class AncientStargateRenderer {
                 try {
                     renderer.render(tile,relativePos.getX(),relativePos.getY(),relativePos.getZ(),partialTick);
                 } catch (Exception ex) {
-                    Constants.LOGGER.error("Could not render ancient stargate tile entity {}!",tile.getClass(),ex);
+                    DHTRef.LOGGER.error("Could not render ancient stargate tile entity {}!",tile.getClass(),ex);
                 }
                 GlStateManager.popAttrib();
                 GlStateManager.popMatrix();
@@ -270,7 +270,7 @@ public class AncientStargateRenderer {
                 try {
                     dispatcher.renderBlock(state,relativePos,this.blockAccess,buffer);
                 } catch (Exception ex) {
-                    Constants.LOGGER.error("Caught unknown error while rendering ancient stargate preview!",ex);
+                    DHTRef.LOGGER.error("Caught unknown error while rendering ancient stargate preview!",ex);
                 }
                 ForgeHooksClient.setRenderLayer(null);
             }

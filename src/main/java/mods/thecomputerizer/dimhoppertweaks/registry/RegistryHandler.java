@@ -5,7 +5,7 @@ import codersafterdark.reskillable.api.unlockable.Unlockable;
 import mods.thecomputerizer.dimhoppertweaks.common.commands.DHDebugCommands;
 import mods.thecomputerizer.dimhoppertweaks.common.commands.RandomTP;
 import mods.thecomputerizer.dimhoppertweaks.common.commands.SummonBoss;
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.registry.structures.AbstractStructure;
 import mods.thecomputerizer.dimhoppertweaks.registry.tiles.LightningEnhancerEntity;
 import net.minecraft.block.Block;
@@ -26,10 +26,10 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
 
-@Mod.EventBusSubscriber(modid = Constants.MODID)
+@Mod.EventBusSubscriber(modid = DHTRef.MODID)
 public final class RegistryHandler {
 
-    public static final CreativeTabs DIM_HOPPER_TAB = new CreativeTabs(Constants.MODID) {
+    public static final CreativeTabs DIM_HOPPER_TAB = new CreativeTabs(DHTRef.MODID) {
         @SideOnly(Side.CLIENT)
         public @Nonnull ItemStack createIcon() {
             return new ItemStack(ItemRegistry.STARGATE_ADDRESSER);
@@ -43,7 +43,7 @@ public final class RegistryHandler {
     }
 
     public static void onServerStarting(FMLServerStartingEvent event) {
-        Constants.LOGGER.info("Registering commands");
+        DHTRef.LOGGER.info("Registering commands");
         event.registerServerCommand(new DHDebugCommands());
         event.registerServerCommand(new RandomTP());
         event.registerServerCommand(new SummonBoss());
@@ -51,7 +51,7 @@ public final class RegistryHandler {
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
         register(event,BlockRegistry.getBlocks());
-        GameRegistry.registerTileEntity(LightningEnhancerEntity.class,Constants.res("tile.lightning_enhancer"));
+        GameRegistry.registerTileEntity(LightningEnhancerEntity.class, DHTRef.res("tile.lightning_enhancer"));
     }
 
     @SubscribeEvent

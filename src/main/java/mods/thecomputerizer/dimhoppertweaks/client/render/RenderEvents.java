@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.client.render;
 
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -10,7 +10,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
-@Mod.EventBusSubscriber(modid = Constants.MODID, value = Side.CLIENT)
+@Mod.EventBusSubscriber(modid = DHTRef.MODID, value = Side.CLIENT)
 public class RenderEvents {
     public static final List<RenderDelayedAOE> ATTACKS = Collections.synchronizedList(new ArrayList<>());
 

@@ -5,7 +5,7 @@ import lumien.randomthings.item.ModItems;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.common.commands.DHDebugCommands;
-import mods.thecomputerizer.dimhoppertweaks.core.Constants;
+import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.mixin.access.ItemTimeInABottleAccess;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.util.ItemUtil;
@@ -29,7 +29,7 @@ import zollerngalaxy.core.dimensions.ZGDimensions;
 
 import java.util.Objects;
 
-@Mod.EventBusSubscriber(modid = Constants.MODID)
+@Mod.EventBusSubscriber(modid = DHTRef.MODID)
 public class TickEvents {
 
     private static final MutableInt TICK_DELAY = new MutableInt();
