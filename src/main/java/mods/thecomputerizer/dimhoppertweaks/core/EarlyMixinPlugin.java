@@ -26,12 +26,11 @@ public class EarlyMixinPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
     @Override
     public String getModContainerClass() {
-        return CoreContainer.class.getName();
+        return null;
     }
 
-    @Nullable
     @Override
-    public String getSetupClass() {
+    public @Nullable String getSetupClass() {
         return null;
     }
 

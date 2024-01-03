@@ -23,7 +23,7 @@ public class DHTRef {
             "required-after:extrautils2;"+
             "required-after:gamestages;"+
             "required-after:geckolib3;"+
-            "required-after:infernalmobs"+
+            "required-after:infernalmobs;"+
             "required-after:itemstages;"+
             "required-after:jaopca;"+
             "required-after:lightningcraft;"+
