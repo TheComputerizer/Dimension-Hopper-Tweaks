@@ -1,5 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.common.events;
 
+import bedrockcraft.ModWorlds;
 import lumien.randomthings.item.ModItems;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
@@ -7,6 +8,8 @@ import mods.thecomputerizer.dimhoppertweaks.common.commands.DHDebugCommands;
 import mods.thecomputerizer.dimhoppertweaks.core.Constants;
 import mods.thecomputerizer.dimhoppertweaks.mixin.access.ItemTimeInABottleAccess;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
+import mods.thecomputerizer.dimhoppertweaks.util.ItemUtil;
+import mods.thecomputerizer.dimhoppertweaks.util.WorldUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.MobEffects;
@@ -22,6 +25,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.*;
 import net.minecraftforge.fml.relauncher.Side;
 import org.apache.commons.lang3.mutable.MutableInt;
+import zollerngalaxy.core.dimensions.ZGDimensions;
 
 import java.util.Objects;
 
@@ -37,7 +41,7 @@ public class TickEvents {
     public static void playerTick(TickEvent.PlayerTickEvent event) {
         if(event.isCanceled()) return;
         if(event.phase==TickEvent.Phase.END) {
-            if(event.side== Side.SERVER) {
+            if(event.side==Side.SERVER) {
                 if(TICK_DELAY.getAndAdd(1)>=20) {
                     EntityPlayerMP player = (EntityPlayerMP) event.player;
                     if(player.isSprinting()) {
@@ -47,6 +51,9 @@ public class TickEvents {
                     }
                     ISkillCapability cap = SkillWrapper.getSkillCapability(player);
                     if(Objects.nonNull(cap)) cap.decrementGatheringItems(20);
+                    if(player.dimension==ZGDimensions.CALIGRO.getId() && player.posY<0 &&
+                            ItemUtil.isHolding(player,bedrockcraft.ModItems.blackTotem))
+                        WorldUtil.teleportDimY(player,ModWorlds.VOID_WORLD.getId(),256d);
                     TICK_DELAY.setValue(0);
                 }
             }

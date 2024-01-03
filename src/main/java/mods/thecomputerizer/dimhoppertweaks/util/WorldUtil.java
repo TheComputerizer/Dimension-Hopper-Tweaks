@@ -1,10 +1,12 @@
 package mods.thecomputerizer.dimhoppertweaks.util;
 
 import mods.thecomputerizer.dimhoppertweaks.client.particle.ParticleBlightFire;
+import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -14,18 +16,6 @@ import java.util.Collection;
 import java.util.Objects;
 
 public class WorldUtil {
-
-    public static @Nullable TileEntity getTileOrAdjacent(World world, BlockPos centerPos, boolean checkCenter,
-                                                         Collection<Class<?>> types) {
-        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(centerPos);
-        TileEntity tile = checkValidTile(world,pos,types);
-        if(Objects.nonNull(tile) && checkCenter) return tile;
-        tile = addCoordsAndCheck(world,pos,EnumFacing.EAST,types);
-        if(Objects.nonNull(tile)) return tile;
-        tile = addCoordsAndCheck(world,pos,EnumFacing.NORTH,types);
-        if(Objects.nonNull(tile)) return tile;
-        return addCoordsAndCheck(world,pos,EnumFacing.UP,types);
-    }
 
     private static @Nullable TileEntity addCoordsAndCheck(World world, BlockPos.MutableBlockPos pos, EnumFacing side,
                                                           Collection<Class<?>> types) {
@@ -48,6 +38,25 @@ public class WorldUtil {
         return null;
     }
 
+    public static @Nullable TileEntity getTileOrAdjacent(World world, BlockPos centerPos, boolean checkCenter,
+                                                         Collection<Class<?>> types) {
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(centerPos);
+        TileEntity tile = checkValidTile(world,pos,types);
+        if(Objects.nonNull(tile) && checkCenter) return tile;
+        tile = addCoordsAndCheck(world,pos,EnumFacing.EAST,types);
+        if(Objects.nonNull(tile)) return tile;
+        tile = addCoordsAndCheck(world,pos,EnumFacing.NORTH,types);
+        if(Objects.nonNull(tile)) return tile;
+        return addCoordsAndCheck(world,pos,EnumFacing.UP,types);
+    }
+
+    public static ITeleporter makeTeleporter(double posY) {
+        return (world,entity,yaw) -> {
+            float pitch = entity.rotationPitch;
+            entity.setLocationAndAngles(entity.posX,posY,entity.posZ,entity.rotationYaw,pitch);
+        };
+    }
+
     @SideOnly(Side.CLIENT)
     public static void spawnBlightParticle(World world, double x, double y, double z, double width, double height) {
         double speedX = (world.rand.nextDouble()*2d)-1d;
@@ -59,5 +68,12 @@ public class WorldUtil {
         ParticleBlightFire particle = new ParticleBlightFire(world,posX,posY,posZ,speedX,speedY,speedZ,100f,
                 32d,0.5f,true);
         FMLClientHandler.instance().getClient().effectRenderer.addEffect(particle);
+    }
+
+    /**
+     * Vanilla/Forge implementation so the height is probably clamped from 0-256
+     */
+    public static void teleportDimY(Entity entity, int dim, double posY) {
+        entity.changeDimension(dim,makeTeleporter(posY));
     }
 }
