@@ -111,7 +111,7 @@ dependencies {
     implementation(fg.deobf("curse.maven:glacidus-286530:${project.glacidus_version}"))
     implementation(fg.deobf("curse.maven:good-nights-sleep-61461:${project.gn_version}"))
     implementation(fg.deobf("curse.maven:had-enough-items-557549:${project.hei_version}"))
-    implementation(fg.deobf("curse.maven:unting-dimension-283235:${project.huntingdim_version}"))
+    implementation(fg.deobf("curse.maven:hunting-dimension-283235:${project.huntingdim_version}"))
     implementation(fg.deobf("curse.maven:immersive-engineering-231951:${project.ie_version}"))
     implementation(fg.deobf("curse.maven:item-stages-280316:${project.itemstages_version}"))
     implementation(fg.deobf("curse.maven:jaopca-266936:${project.jaopca_version}"))
