@@ -8,7 +8,12 @@ import goblinbob.mobends.standard.client.model.armor.MalformedArmorModelExceptio
 import goblinbob.mobends.standard.client.renderer.entity.layers.LayerCustomBipedArmor;
 import goblinbob.mobends.standard.data.BipedEntityData;
 import mariot7.xlfoodmod.init.ItemListxlfoodmod;
+import mezz.jei.api.ingredients.IIngredientHelper;
+import mezz.jei.gui.ingredients.IIngredientListElement;
+import mezz.jei.plugins.vanilla.ingredients.item.ItemStackHelper;
+import mezz.jei.startup.StackHelper;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
+import mods.thecomputerizer.dimhoppertweaks.mixin.mods.jei.MixinItemStackHelper;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketSendKeyPressed;
 import morph.avaritia.client.render.entity.ModelArmorInfinity;
 import net.darkhax.gamestages.GameStageHelper;
@@ -26,6 +31,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Tuple;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -73,10 +79,26 @@ public class DelayedModAccess {
         return entity instanceof EntityPlayer && GameStageHelper.hasStage((EntityPlayer)entity,stage);
     }
 
+    public static <V> String getIngredientUid(IIngredientListElement<V> element) {
+        return getIngredientUid(element.getIngredient(),element.getIngredientHelper());
+    }
+
+    public static <V> String getIngredientUid(V ingredient, IIngredientHelper<V> ingredientHelper) {
+        if(ingredient instanceof ItemStack && ingredientHelper instanceof ItemStackHelper) {
+            StackHelper helper = ((MixinItemStackHelper)ingredientHelper).getStackHelper();
+            ItemStack stack = (ItemStack)ingredient;
+            if(stack.hasTagCompound()) return helper.getUniqueIdentifierForStack(stack,StackHelper.UidMode.FULL);
+            if(stack.getMetadata()==OreDictionary.WILDCARD_VALUE)
+                return helper.getUniqueIdentifierForStack(stack,StackHelper.UidMode.WILDCARD);
+        }
+        return ingredientHelper.getUniqueId(ingredient);
+    }
+
     public static IBlockState getWithOreStage(@Nullable Entity entity, IBlockState original) {
         Tuple<String,IBlockState> stageInfo = OreTiersAPI.getStageInfo(original);
         return Objects.isNull(stageInfo) || hasGameStage(entity,stageInfo.getFirst()) ? original : stageInfo.getSecond();
     }
+
     public static ItemStack cheese() {
         return new ItemStack(ItemListxlfoodmod.cheese);
     }

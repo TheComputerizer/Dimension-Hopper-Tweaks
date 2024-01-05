@@ -52,6 +52,10 @@ repositories {
         url = uri('https://maven.blamejared.com')
     }
     maven {
+        name = 'CleanRoom'
+        url = uri('https://maven.cleanroommc.com')
+    }
+    maven {
         name = 'CurseForge'
         url = uri('https://www.cursemaven.com')
         content {
@@ -80,7 +84,15 @@ repositories {
 
 dependencies {
     minecraft("net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}")
-    annotationProcessor("org.spongepowered:mixin:${project.mixin_version}:processor")
+
+    //annotation processors
+    annotationProcessor("com.google.code.gson:gson:${project.gson_annotation}")
+    annotationProcessor("com.google.guava:guava:${project.guava_annotation}")
+    annotationProcessor("org.ow2.asm:asm-debug-all:${project.asm_debug_annotation}")
+    annotationProcessor("org.projectlombok:lombok:${project.lombok_version}")
+    annotationProcessor("zone.rong:mixinbooter:${project.mixinbooter_version}") {
+        transitive = false
+    }
 
     //implemented cf stuff
     implementation(fg.deobf("curse.maven:actually-additions-228404:${project.aa_version}"))
@@ -102,7 +114,7 @@ dependencies {
     implementation(fg.deobf("curse.maven:ctm-267602:${project.ctm_version}"))
     implementation(fg.deobf("curse.maven:dimensionaldoors-284876:${project.dimdoors_version}"))
     implementation(fg.deobf("curse.maven:draconic-evolution-223565:${project.de_version}"))
-    implementation(fg.deobf("curse.maven:extended-crafting-268387:${project.excrafting_version}"))
+    implementation(fg.deobf("curse.maven:extended-crafting-nomifactory-edition-398267:${project.excrafting_version}"))
     implementation(fg.deobf("curse.maven:extraplanets-241291:${project.extraplanets_version}"))
     implementation(fg.deobf("curse.maven:extra-utilities-225561:${project.xu2_version}"))
     implementation(fg.deobf("curse.maven:gaia-dimension-302529:${project.gaia_version}"))
@@ -122,7 +134,6 @@ dependencies {
     implementation(fg.deobf("curse.maven:loottweaker-255257:${project.lt_version}"))
     implementation(fg.deobf("curse.maven:mcjtylib-233105:${project.mcjl_version}"))
     implementation(fg.deobf("curse.maven:mekanism-ce-399904:${project.mce_version}"))
-    implementation(fg.deobf("curse.maven:mixin-booter-419286:${project.mixinbooter_version}"))
     implementation(fg.deobf("curse.maven:mo-bends-231347:${project.mobends_version}"))
     implementation(fg.deobf("curse.maven:multiblocked-604054:${project.mbd_version}"))
     implementation(fg.deobf("curse.maven:music-triggers-518410:${project.mt_version}"))
@@ -163,12 +174,16 @@ dependencies {
 
     //implemented other stuff
     implementation(fg.deobf("com.tiviacz.travelersbackpack:TravelersBackpack:${project.backpack_version}"))
-    implementation(fg.deobf("CraftTweaker2:CraftTweaker2-MC1120-Main:${project.ct_version}"))
-    implementation(fg.deobf("CraftTweaker2:CraftTweaker2-API:${project.ct_version}"))
-    implementation(fg.deobf("CraftTweaker2:ZenScript:${project.ct_version}"))
+    implementation("CraftTweaker2:CraftTweaker2-API:${project.ct_version}")
+    implementation("CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${project.ct_version}")
+    implementation("CraftTweaker2:CraftTweaker2-MC1120-Mod-JEI:1.12-${project.ct_version}") {
+        transitive = false
+    }
+    implementation("CraftTweaker2:ZenScript:${project.ct_version}")
     implementation(fg.deobf("dev.galacticraft:galacticraft-legacy:${project.galacticraft_version}"))
     implementation(fg.deobf("maven.modrinth:misty-world:${project.misty_version}"))
     implementation(fg.deobf("maven.modrinth:the-midnight:${project.midnight_version}"))
+    implementation("zone.rong:mixinbooter:${project.mixinbooter_version}")
 
     //runtime stuff and libraries
     runtimeOnly(fg.deobf("curse.maven:autoreglib-250363:${project.autoreglib_version}"))
@@ -186,6 +201,7 @@ dependencies {
 
     //stuff only needed to compile
     compileOnly(fg.deobf("curse.maven:industrial-craft-242638:${project.ic2_version}"))
+    compileOnly("org.projectlombok:lombok:${project.lombok_version}")
 }
 
 processResources {

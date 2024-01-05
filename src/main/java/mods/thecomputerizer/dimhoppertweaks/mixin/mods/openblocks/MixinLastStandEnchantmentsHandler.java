@@ -44,7 +44,7 @@ public abstract class MixinLastStandEnchantmentsHandler {
                     float playerHealth = player.getHealth();
                     float healthAvailable = playerHealth - e.getAmount();
                     if(this.dimhoppertweaks$playerTicker.get(player).intValue() <= 0 && healthAvailable < 1f) {
-                        int time = Math.max(2, 5 - enchantmentLevels);
+                        int time = Math.max(2,5-enchantmentLevels);
                         int xpAvailable = EnchantmentUtils.getPlayerXP(player);
                         float xpRequired = this.reductionCalculator.evaluate((env) -> {
                             env.setGlobalSymbol("ench", (double) enchantmentLevels);
@@ -74,9 +74,11 @@ public abstract class MixinLastStandEnchantmentsHandler {
     @Unique
     @SubscribeEvent
     public void dimhoppertweaks$onServerTick(TickEvent.ServerTickEvent e) {
-        synchronized (this.dimhoppertweaks$playerTicker) {
-            for(MutableInt timer : this.dimhoppertweaks$playerTicker.values())
-                if(timer.intValue() > 0) timer.decrement();
+        if(e.phase==TickEvent.Phase.END) {
+            synchronized(this.dimhoppertweaks$playerTicker) {
+                for(MutableInt timer : this.dimhoppertweaks$playerTicker.values())
+                    if(timer.intValue()>0) timer.decrement();
+            }
         }
     }
 }
