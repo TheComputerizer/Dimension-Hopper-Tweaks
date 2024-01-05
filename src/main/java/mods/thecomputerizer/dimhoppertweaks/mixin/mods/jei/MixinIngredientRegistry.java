@@ -20,4 +20,12 @@ public class MixinIngredientRegistry {
             IngredientFilter filter, IIngredientListElement<V> searchElementUid) {
         return filter.getMatches(searchElementUid,DelayedModAccess::getIngredientUid);
     }
+
+    @Redirect(at = @At(value = "INVOKE", target = "Lmezz/jei/ingredients/IngredientFilter;"+
+            "findMatchingElements(Lmezz/jei/gui/ingredients/IIngredientListElement;)Ljava/util/List;"),
+            method = "lambda$addIngredientsAtRuntime$1")
+    private <V> List<IIngredientListElement<V>> dimhoppertweaks$enableNBTAdditions(
+            IngredientFilter filter, IIngredientListElement<V> searchElementUid) {
+        return filter.getMatches(searchElementUid,DelayedModAccess::getIngredientUid);
+    }
 }

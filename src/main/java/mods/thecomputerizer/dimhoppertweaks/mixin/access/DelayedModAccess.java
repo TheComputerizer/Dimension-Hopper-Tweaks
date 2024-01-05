@@ -61,6 +61,8 @@ public class DelayedModAccess {
     private static boolean FOUND_BREAKER_CLASSES = false;
     private static boolean FOUND_PLACER_CLASSES = false;
 
+    public static final List<ItemStack> ADDED_ITEMS = new LinkedList<>();
+
     public static Collection<String> getGameStages(EntityPlayer player) {
         if(Objects.isNull(player)) return new ArrayList<>();
         IStageData data = GameStageHelper.getPlayerData(player);
