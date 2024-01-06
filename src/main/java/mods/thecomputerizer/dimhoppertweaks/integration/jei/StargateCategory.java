@@ -1,4 +1,4 @@
-package mods.thecomputerizer.dimhoppertweaks.common.jei;
+package mods.thecomputerizer.dimhoppertweaks.integration.jei;
 
 import mcp.MethodsReturnNonnullByDefault;
 import mezz.jei.api.IGuiHelper;

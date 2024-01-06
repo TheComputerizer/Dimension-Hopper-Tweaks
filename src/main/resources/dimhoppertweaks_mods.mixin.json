@@ -57,6 +57,7 @@
     "jei.MixinIngredientFilter",
     "jei.MixinIngredientRegistry",
     "jei.MixinItemStackHelper",
+    "jei.MixinJeiStarter",
     "lightningcraft.MixinBlockEnergyProvider",
     "lightningcraft.MixinBlockEnergyReceiver",
     "lightningcraft.MixinEnergyStorage",

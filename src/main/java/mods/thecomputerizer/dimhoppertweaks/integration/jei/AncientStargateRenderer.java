@@ -1,4 +1,4 @@
-package mods.thecomputerizer.dimhoppertweaks.common.jei;
+package mods.thecomputerizer.dimhoppertweaks.integration.jei;
 
 import gcewing.sg.BaseOrientation;
 import gcewing.sg.SGCraft;

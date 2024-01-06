@@ -1,4 +1,4 @@
-package mods.thecomputerizer.dimhoppertweaks.common.jei;
+package mods.thecomputerizer.dimhoppertweaks.integration.jei;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;
