@@ -41,7 +41,7 @@ import java.util.function.Supplier;
 @ZenClass("mods.dimhoppertweaks.CTPassthrough")
 public class CTPassthrough {
 
-    private static final Map<IToolPart,Material> SPECIALIZED_PARTS = createSpecialPartMap();
+    public static final Map<IToolPart,Material> SPECIALIZED_PARTS = createSpecialPartMap();
 
     private static Map<IToolPart,Material> createSpecialPartMap() {
         Map<IToolPart,Material> map = new HashMap<>();
@@ -96,7 +96,9 @@ public class CTPassthrough {
                         materials.appendTag(new NBTTagString("iron"));
                         materialTag.setTag("Materials",materials);
                         tag.setTag("TinkerData",materialTag);
-                        stacks.add(convertStack(new ItemStack(bolt,1,0,tag)));
+                        ItemStack stack = new ItemStack(bolt);
+                        stack.setTagCompound(tag);
+                        stacks.add(convertStack(stack));
                     }
                 }
             }

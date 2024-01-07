@@ -1,5 +1,11 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.access;
 
+import appeng.items.parts.ItemFacade;
+import c4.conarm.lib.tinkering.TinkersArmor;
+import cofh.thermalexpansion.item.ItemFlorb;
+import cofh.thermalexpansion.item.ItemMorb;
+import crazypants.enderio.base.item.soulvial.ItemSoulVial;
+import crazypants.enderio.base.item.spawner.ItemBrokenSpawner;
 import de.ellpeck.naturesaura.blocks.tiles.TileEntityAutoCrafter;
 import goblinbob.mobends.core.data.EntityData;
 import goblinbob.mobends.core.data.EntityDatabase;
@@ -7,13 +13,10 @@ import goblinbob.mobends.standard.client.model.armor.ArmorModelFactory;
 import goblinbob.mobends.standard.client.model.armor.MalformedArmorModelException;
 import goblinbob.mobends.standard.client.renderer.entity.layers.LayerCustomBipedArmor;
 import goblinbob.mobends.standard.data.BipedEntityData;
+import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
 import mariot7.xlfoodmod.init.ItemListxlfoodmod;
-import mezz.jei.api.ingredients.IIngredientHelper;
-import mezz.jei.gui.ingredients.IIngredientListElement;
-import mezz.jei.plugins.vanilla.ingredients.item.ItemStackHelper;
-import mezz.jei.startup.StackHelper;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
-import mods.thecomputerizer.dimhoppertweaks.mixin.mods.jei.MixinItemStackHelper;
+import mods.thecomputerizer.dimhoppertweaks.integration.crafttweaker.CTPassthrough;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketSendKeyPressed;
 import morph.avaritia.client.render.entity.ModelArmorInfinity;
 import net.darkhax.gamestages.GameStageHelper;
@@ -26,15 +29,28 @@ import net.minecraft.client.renderer.entity.layers.LayerArmorBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBucket;
+import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.oredict.OreDictionary;
+import openblocks.common.item.ItemTankBlock;
+import slimeknights.tconstruct.library.materials.Material;
+import slimeknights.tconstruct.library.tinkering.PartMaterialType;
+import slimeknights.tconstruct.library.tinkering.TinkersItem;
+import slimeknights.tconstruct.library.tools.IToolPart;
+import slimeknights.tconstruct.tools.common.item.ItemBlockTable;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Consumer;
 
 public class DelayedModAccess {
 
@@ -62,6 +78,103 @@ public class DelayedModAccess {
     private static boolean FOUND_PLACER_CLASSES = false;
 
     public static final List<ItemStack> ADDED_ITEMS = new LinkedList<>();
+    private static final Map<Item,Map<Integer,NBTTagCompound>> CACHED_ITEM_YEETS = new HashMap<>();
+
+    public static void checkYeet(ItemStack stack) {
+        Item item = stack.getItem();
+        if(CACHED_ITEM_YEETS.containsKey(item)) {
+            Map<Integer,NBTTagCompound> metaMap = CACHED_ITEM_YEETS.get(item);
+            if(metaMap.containsKey(stack.getMetadata())) stack.setTagCompound(metaMap.get(stack.getMetadata()));
+        }
+        ResourceLocation res = item.getRegistryName();
+        if(Objects.isNull(res)) return;
+        if(item instanceof ItemMonsterPlacer || item instanceof ItemBucket || item instanceof ItemTankBlock) {
+            stack.setTagCompound(null);
+        }
+        if(item instanceof ItemFacade) {
+            stack.setTagCompound(replaceYeetedTag(item,stack.getMetadata(),tag -> {
+                tag.setInteger("damage", 0);
+                tag.setString("item","minecraft:stone");
+            }));
+            return;
+        }
+        if(item instanceof IToolPart) {
+            stack.setTagCompound(replaceYeetedTag(item,stack.getMetadata(),tag -> {
+                Material mat = CTPassthrough.SPECIALIZED_PARTS.get((IToolPart)item);
+                tag.setString("Material",Objects.nonNull(mat) ? mat.identifier : "constantan");
+            }));
+        }
+        if(item instanceof TinkersItem)
+            stack.setTagCompound(getTinkerToolTag(item,stack.getMetadata(),((TinkersItem)item).getRequiredComponents()));
+        if(item instanceof TinkersArmor)
+            stack.setTagCompound(getTinkerToolTag(item,stack.getMetadata(),((TinkersArmor)item).getRequiredComponents()));
+        if(item instanceof ItemBlockTable) {
+            int meta = stack.getMetadata();
+            String block = meta==1 ? "minecraft:planks" : "minecraft:log";
+            replaceYeetedTag(item,meta,replaceYeetedTinkerTable(block,(short)0));
+            return;
+        }
+        String mod = res.getNamespace();
+        if(mod.matches("enderio")) {
+            if((item instanceof ItemSoulVial && stack.getMetadata()==1) || item instanceof ItemBrokenSpawner)
+                stack.setTagCompound(replaceYeetedTag(item,stack.getMetadata(),tag -> tag.setString("entityId","minecraft:enderman")));
+            return;
+        }
+        if(mod.startsWith("thermal")) {
+            if(item instanceof ItemMorb)
+                stack.setTagCompound(replaceYeetedTag(item,stack.getMetadata(),tag -> {
+                    tag.setByte("Generic",(byte)1);
+                    tag.setString("id","minecraft:enderman");
+                }));
+            else if(item instanceof ItemFlorb)
+                stack.setTagCompound(replaceYeetedTag(item,stack.getMetadata(),tag -> {
+                    tag.setString("FluidName","water");
+                    tag.setInteger("Amount",1000);
+                }));
+            return;
+        }
+        if(res.toString().matches("rftools:syringe")) stack.setTagCompound(null);
+    }
+
+    private static NBTTagCompound getTinkerToolTag(Item item, int meta, List<PartMaterialType> components) {
+        return replaceYeetedTag(item,meta,tag -> {
+            NBTTagCompound materialTag = new NBTTagCompound();
+            NBTTagList materials = new NBTTagList();
+            for(PartMaterialType type : components) {
+                IToolPart part = null;
+                for(IToolPart maybe : type.getPossibleParts()) {
+                    part = maybe;
+                    break;
+                }
+                if(Objects.isNull(part)) {
+                    materials.appendTag(new NBTTagString(Material.UNKNOWN.identifier));
+                    continue;
+                }
+                Material mat = CTPassthrough.SPECIALIZED_PARTS.get(part);
+                tag.setString("Material",Objects.nonNull(mat) ? mat.identifier : "constantan");
+            }
+            materialTag.setTag("Materials",materials);
+            tag.setTag("TinkerData",materialTag);
+        });
+    }
+
+    private static Consumer<NBTTagCompound> replaceYeetedTinkerTable(String block, short meta) {
+        return tag -> {
+            NBTTagCompound textureTag = new NBTTagCompound();
+            textureTag.setString("id",block);
+            textureTag.setInteger("Count",1);
+            textureTag.setShort("Damage",meta);
+            tag.setTag("textureBlock",textureTag);
+        };
+    }
+
+    private static NBTTagCompound replaceYeetedTag(Item item, int meta, Consumer<NBTTagCompound> tagSettings) {
+        NBTTagCompound tag = new NBTTagCompound();
+        tagSettings.accept(tag);
+        CACHED_ITEM_YEETS.putIfAbsent(item,new Int2ObjectLinkedOpenHashMap<>());
+        CACHED_ITEM_YEETS.get(item).put(meta,tag);
+        return tag;
+    }
 
     public static Collection<String> getGameStages(EntityPlayer player) {
         if(Objects.isNull(player)) return new ArrayList<>();
@@ -80,22 +193,6 @@ public class DelayedModAccess {
     public static boolean hasGameStage(Entity entity, String stage) {
         return entity instanceof EntityPlayer && GameStageHelper.hasStage((EntityPlayer)entity,stage);
     }
-
-    public static <V> String getIngredientUid(IIngredientListElement<V> element) {
-        return getIngredientUid(element.getIngredient(),element.getIngredientHelper());
-    }
-
-    public static <V> String getIngredientUid(V ingredient, IIngredientHelper<V> ingredientHelper) {
-        if(ingredient instanceof ItemStack && ingredientHelper instanceof ItemStackHelper) {
-            StackHelper helper = ((MixinItemStackHelper)ingredientHelper).getStackHelper();
-            ItemStack stack = (ItemStack)ingredient;
-            if(stack.hasTagCompound()) return helper.getUniqueIdentifierForStack(stack,StackHelper.UidMode.FULL);
-            if(stack.getMetadata()==OreDictionary.WILDCARD_VALUE)
-                return helper.getUniqueIdentifierForStack(stack,StackHelper.UidMode.WILDCARD);
-        }
-        return ingredientHelper.getUniqueId(ingredient);
-    }
-
     public static IBlockState getWithOreStage(@Nullable Entity entity, IBlockState original) {
         Tuple<String,IBlockState> stageInfo = OreTiersAPI.getStageInfo(original);
         return Objects.isNull(stageInfo) || hasGameStage(entity,stageInfo.getFirst()) ? original : stageInfo.getSecond();

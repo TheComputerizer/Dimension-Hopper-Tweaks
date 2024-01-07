@@ -5,7 +5,7 @@ import mezz.jei.startup.StackHelper;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(ItemStackHelper.class)
+@Mixin(value = ItemStackHelper.class, remap = false)
 public interface MixinItemStackHelper {
 
     @Accessor StackHelper getStackHelper();
