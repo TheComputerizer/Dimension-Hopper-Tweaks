@@ -21,6 +21,7 @@ import mods.thecomputerizer.dimhoppertweaks.network.PacketSendKeyPressed;
 import morph.avaritia.client.render.entity.ModelArmorInfinity;
 import net.darkhax.gamestages.GameStageHelper;
 import net.darkhax.gamestages.data.IStageData;
+import net.darkhax.huntingdim.item.ItemBiomeChanger;
 import net.darkhax.orestages.api.OreTiersAPI;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.model.ModelBase;
@@ -29,10 +30,7 @@ import net.minecraft.client.renderer.entity.layers.LayerArmorBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBucket;
-import net.minecraft.item.ItemMonsterPlacer;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
@@ -50,6 +48,7 @@ import slimeknights.tconstruct.tools.common.item.ItemBlockTable;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 public class DelayedModAccess {
@@ -76,20 +75,48 @@ public class DelayedModAccess {
     private static final Set<Class<?>> BLOCK_PLACER_CLASSES = new HashSet<>();
     private static boolean FOUND_BREAKER_CLASSES = false;
     private static boolean FOUND_PLACER_CLASSES = false;
-
     public static final List<ItemStack> ADDED_ITEMS = new LinkedList<>();
     private static final Map<Item,Map<Integer,NBTTagCompound>> CACHED_ITEM_YEETS = new HashMap<>();
+    private static  final List<Item> NULLED_ITEM_YEET_TAGS = new ArrayList<>();
+    public static final AtomicInteger YEET_COUNT = new AtomicInteger(0);
+
+    public static void finalizeYeeting() {
+        DHTRef.LOGGER.info("{} redundant JEI entries have been successfully trimmed!",DelayedModAccess.YEET_COUNT.get()/2);
+        NULLED_ITEM_YEET_TAGS.clear();
+        for(Map.Entry<Item,Map<Integer,NBTTagCompound>> entry : CACHED_ITEM_YEETS.entrySet()) {
+            entry.getValue().clear();
+            entry.setValue(null);
+        }
+        CACHED_ITEM_YEETS.clear();
+    }
 
     public static void checkYeet(ItemStack stack) {
         Item item = stack.getItem();
         if(CACHED_ITEM_YEETS.containsKey(item)) {
             Map<Integer,NBTTagCompound> metaMap = CACHED_ITEM_YEETS.get(item);
-            if(metaMap.containsKey(stack.getMetadata())) stack.setTagCompound(metaMap.get(stack.getMetadata()));
+            if(metaMap.containsKey(stack.getMetadata())) {
+                stack.setTagCompound(metaMap.get(stack.getMetadata()));
+                YEET_COUNT.incrementAndGet();
+                return;
+            }
         }
         ResourceLocation res = item.getRegistryName();
         if(Objects.isNull(res)) return;
-        if(item instanceof ItemMonsterPlacer || item instanceof ItemBucket || item instanceof ItemTankBlock) {
+        int meta = stack.getMetadata();
+        if(checkTagRemovals(item,meta,res)) {
             stack.setTagCompound(null);
+            if(NULLED_ITEM_YEET_TAGS.contains(item)) YEET_COUNT.incrementAndGet();
+            else NULLED_ITEM_YEET_TAGS.add(item);
+            return;
+        }
+        if(item instanceof ItemEnchantedBook) {
+            stack.setTagCompound(replaceYeetedTag(item,meta,tag -> {
+                NBTTagCompound enchTag = new NBTTagCompound();
+                enchTag.setShort("lvl",(short)1);
+                enchTag.setInteger("id",0);
+                tag.setTag("StoredEnchantments",enchTag);
+            }));
+            return;
         }
         if(item instanceof ItemFacade) {
             stack.setTagCompound(replaceYeetedTag(item,stack.getMetadata(),tag -> {
@@ -99,19 +126,30 @@ public class DelayedModAccess {
             return;
         }
         if(item instanceof IToolPart) {
-            stack.setTagCompound(replaceYeetedTag(item,stack.getMetadata(),tag -> {
+            stack.setTagCompound(replaceYeetedTag(item,meta,tag -> {
                 Material mat = CTPassthrough.SPECIALIZED_PARTS.get((IToolPart)item);
                 tag.setString("Material",Objects.nonNull(mat) ? mat.identifier : "constantan");
             }));
+            return;
         }
-        if(item instanceof TinkersItem)
-            stack.setTagCompound(getTinkerToolTag(item,stack.getMetadata(),((TinkersItem)item).getRequiredComponents()));
-        if(item instanceof TinkersArmor)
-            stack.setTagCompound(getTinkerToolTag(item,stack.getMetadata(),((TinkersArmor)item).getRequiredComponents()));
+        if(item instanceof TinkersItem) {
+            stack.setTagCompound(getTinkerToolTag(item, meta, ((TinkersItem) item).getRequiredComponents()));
+            return;
+        }
+        if(item instanceof TinkersArmor) {
+            stack.setTagCompound(getTinkerToolTag(item, meta, ((TinkersArmor) item).getRequiredComponents()));
+            return;
+        }
         if(item instanceof ItemBlockTable) {
-            int meta = stack.getMetadata();
-            String block = meta==1 ? "minecraft:planks" : "minecraft:log";
-            replaceYeetedTag(item,meta,replaceYeetedTinkerTable(block,(short)0));
+            if(meta==1 || meta==2 || res.getPath().endsWith("block")) {
+                String block = meta == 1 ? "minecraft:planks" : "minecraft:log";
+                if (res.getPath().endsWith("forge")) block = "minecraft:iron_block";
+                replaceYeetedTag(item, meta, replaceYeetedTinkerTable(block, (short) 0));
+            }
+            return;
+        }
+        if(item instanceof ItemBiomeChanger) {
+            stack.setTagCompound(replaceYeetedTag(item,meta,tag -> tag.setInteger("HeldBiome",0)));
             return;
         }
         String mod = res.getNamespace();
@@ -133,7 +171,36 @@ public class DelayedModAccess {
                 }));
             return;
         }
-        if(res.toString().matches("rftools:syringe")) stack.setTagCompound(null);
+        String name = res.toString();
+        if(name.matches("huntingdim:frame")) {
+            stack.setTagCompound(replaceYeetedTag(item,meta,tag -> {
+                NBTTagCompound blockTag = new NBTTagCompound();
+                blockTag.setString("id","minecraft:log");
+                blockTag.setInteger("Count",1);
+                blockTag.setShort("Damage",(short)0);
+                tag.setTag("BaseBlock",blockTag);
+            }));
+            return;
+        }
+        if(name.matches("aeadditions:pattern.fluid")) {
+            stack.setTagCompound(replaceYeetedTag(item,meta,tag -> {
+                NBTTagCompound fluidTag = new NBTTagCompound();
+                fluidTag.setString("FluidName","water");
+                fluidTag.setInteger("Amount",1000);
+                tag.setTag("Fluid",fluidTag);
+            }));
+        }
+    }
+
+    private static boolean checkTagRemovals(Item item, int meta, ResourceLocation res) {
+        if(item instanceof ItemMonsterPlacer || item instanceof ItemTankBlock) {
+            return true;
+        }
+        String name = res.toString();
+        String mod = res.getNamespace();
+        String path = res.getPath();
+        return name.matches("rftools:syringe") || path.contains("bucket") ||
+                (mod.matches("forestry") && !path.contains("queen") || mod.matches("gendustry"));
     }
 
     private static NBTTagCompound getTinkerToolTag(Item item, int meta, List<PartMaterialType> components) {
@@ -151,7 +218,7 @@ public class DelayedModAccess {
                     continue;
                 }
                 Material mat = CTPassthrough.SPECIALIZED_PARTS.get(part);
-                tag.setString("Material",Objects.nonNull(mat) ? mat.identifier : "constantan");
+                materials.appendTag(new NBTTagString(Objects.nonNull(mat) ? mat.identifier : "constantan"));
             }
             materialTag.setTag("Materials",materials);
             tag.setTag("TinkerData",materialTag);
