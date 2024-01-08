@@ -92,6 +92,7 @@
     "silentlib.MixinGuideBookUtils",
     "tconstruct.MixinExploder",
     "tconstruct.MixinExplosionEFLN",
+    "togetherforever.MixinAdvancementEventSyncAction",
     "toolprogression.MixinGSHelper",
     "vintagefix.MixinDynamicBakedModelProvider",
     "vintagefix.MixinDynamicModelProvider",

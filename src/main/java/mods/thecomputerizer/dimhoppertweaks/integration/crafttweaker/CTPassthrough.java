@@ -7,7 +7,6 @@ import crafttweaker.api.block.IBlockState;
 import crafttweaker.api.item.IItemDefinition;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
-import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.integration.jei.JeiActionSupplier;
 import mods.thecomputerizer.dimhoppertweaks.util.ItemUtil;
 import net.minecraft.block.Block;
@@ -181,13 +180,13 @@ public class CTPassthrough {
     }
 
     @ZenMethod
-    public static void queueJEIAdditions(ItemQueue queue) {
-        JeiActionSupplier.queueAdditions(queue::queue);
+    public static void queueJEIAdditions(IItemSupplier supplier) {
+        JeiActionSupplier.queueAdditions(supplier::get);
     }
 
     @ZenMethod
-    public static void queueJEIRemovals(ItemQueue queue) {
-        JeiActionSupplier.queueRemovals(queue::queue);
+    public static void queueJEIRemovals(IItemSupplier supplier) {
+        JeiActionSupplier.queueRemovals(supplier::get);
     }
 
     private static IItemStack convertStack(ItemStack stack) {

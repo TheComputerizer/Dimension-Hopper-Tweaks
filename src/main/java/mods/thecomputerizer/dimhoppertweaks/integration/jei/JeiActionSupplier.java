@@ -52,11 +52,11 @@ public class JeiActionSupplier implements IModPlugin {
         queuedRemovals.clear();
     }
 
-    public static void queueRemovals(Supplier<IItemStack[]> queued) {
-        queuedRemovals.add(queued);
+    public static void queueRemovals(Supplier<IItemStack[]> supplier) {
+        queuedRemovals.add(supplier);
     }
 
-    public static void queueAdditions(Supplier<IItemStack[]> queued) {
-        queuedAdditions.add(queued);
+    public static void queueAdditions(Supplier<IItemStack[]> supplier) {
+        queuedAdditions.add(supplier);
     }
 }
