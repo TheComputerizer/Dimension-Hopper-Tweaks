@@ -153,7 +153,7 @@ public class DelayedModAccess {
             return;
         }
         String mod = res.getNamespace();
-        if(mod.matches("enderio")) {
+        if(mod.equals("enderio")) {
             if((item instanceof ItemSoulVial && stack.getMetadata()==1) || item instanceof ItemBrokenSpawner)
                 stack.setTagCompound(replaceYeetedTag(item,stack.getMetadata(),tag -> tag.setString("entityId","minecraft:enderman")));
             return;
@@ -172,7 +172,7 @@ public class DelayedModAccess {
             return;
         }
         String name = res.toString();
-        if(name.matches("huntingdim:frame")) {
+        if(name.equals("huntingdim:frame")) {
             stack.setTagCompound(replaceYeetedTag(item,meta,tag -> {
                 NBTTagCompound blockTag = new NBTTagCompound();
                 blockTag.setString("id","minecraft:log");
@@ -182,7 +182,7 @@ public class DelayedModAccess {
             }));
             return;
         }
-        if(name.matches("aeadditions:pattern.fluid")) {
+        if(name.equals("aeadditions:pattern.fluid")) {
             stack.setTagCompound(replaceYeetedTag(item,meta,tag -> {
                 NBTTagCompound fluidTag = new NBTTagCompound();
                 fluidTag.setString("FluidName","water");
@@ -199,8 +199,8 @@ public class DelayedModAccess {
         String name = res.toString();
         String mod = res.getNamespace();
         String path = res.getPath();
-        return name.matches("rftools:syringe") || path.contains("bucket") ||
-                (mod.matches("forestry") && !path.contains("queen") || mod.matches("gendustry"));
+        return name.equals("rftools:syringe") || path.contains("bucket") ||
+                (mod.equals("forestry") && !path.contains("queen") || mod.equals("gendustry"));
     }
 
     private static NBTTagCompound getTinkerToolTag(Item item, int meta, List<PartMaterialType> components) {

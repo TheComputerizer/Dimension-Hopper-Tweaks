@@ -7,8 +7,12 @@ import crafttweaker.api.block.IBlockState;
 import crafttweaker.api.item.IItemDefinition;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
+import forestry.api.storage.BackpackManager;
+import forestry.storage.BackpackDefinition;
+import forestry.storage.BackpackFilter;
 import mods.thecomputerizer.dimhoppertweaks.integration.jei.JeiActionSupplier;
 import mods.thecomputerizer.dimhoppertweaks.util.ItemUtil;
+import mods.thecomputerizer.theimpossiblelibrary.util.TextUtil;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLiving;
@@ -29,6 +33,7 @@ import slimeknights.tconstruct.library.tools.IToolPart;
 import slimeknights.tconstruct.tools.ranged.item.BoltCore;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
+import stanhebben.zenscript.value.IntRange;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Array;
@@ -52,6 +57,11 @@ public class CTPassthrough {
         return map;
     }
 
+    private static IItemStack convertStack(ItemStack stack) {
+        IItemStack ctStack = CraftTweakerMC.getIItemStack(stack);
+        return stack.hasTagCompound() ? ctStack.withTag(CraftTweakerMC.getIData(stack.getTagCompound()),true) : ctStack;
+    }
+
     private static void createSpecialPartEntry(Map<IToolPart,Material> map, String partName, String matName) {
         IToolPart part = getToolPart(partName);
         if(Objects.isNull(part)) return;
@@ -59,9 +69,14 @@ public class CTPassthrough {
         if(mat!=Material.UNKNOWN) map.put(part,mat);
     }
 
-    private static @Nullable IToolPart getToolPart(String type) {
-        Item part = ItemUtil.getItem(type);
-        return part instanceof IToolPart ? (IToolPart)part : null;
+    @ZenMethod
+    public static String getAdventuringBackpackItems() {
+        Collection<String> items = Collections.emptyList();
+        BackpackDefinition def = (BackpackDefinition)BackpackManager.backpackInterface.getBackpackDefinition("forestry.adventurer");
+        if(Objects.nonNull(def) && def.getFilter() instanceof BackpackFilter)
+            items = ((BackpackFilter)def.getFilter()).getAcceptedItemStacks();
+        String ret = TextUtil.listToString(items,", ");
+        return Objects.nonNull(ret) ? ret : "";
     }
 
     @ZenMethod
@@ -78,6 +93,38 @@ public class CTPassthrough {
                 }
             }
         });
+    }
+
+    @ZenMethod
+    public static int[] getIntRangeArray(IntRange range) {
+        int[] aint = new int[range.getTo()-range.getFrom()];
+        int counter = range.getFrom(), index = 0;
+        while(counter<range.getFrom()) {
+            aint[index] = counter;
+            index++;
+        }
+        return aint;
+    }
+
+    @ZenMethod
+    public static String[] getLivingEntityIDs() {
+        return makeArray(String.class,HashSet::new,entities -> {
+            for(EntityEntry entry : ForgeRegistries.ENTITIES.getValuesCollection()) {
+                if(EntityLiving.class.isAssignableFrom(entry.getEntityClass())) {
+                    ResourceLocation res = entry.getRegistryName();
+                    if(Objects.nonNull(res)) entities.add(res.toString());
+                }
+            }
+        });
+    }
+
+    private static @Nullable String[] getMaterialArray(List<PartMaterialType> components, Material mat) {
+        List<String> materials = new ArrayList<>();
+        for(PartMaterialType type : components) {
+            Optional<IToolPart> part = type.getPossibleParts().stream().findFirst();
+            part.ifPresent(p -> materials.add(SPECIALIZED_PARTS.getOrDefault(p,mat).identifier));
+        }
+        return materials.size()==components.size() ? materials.toArray(new String[0]) : null;
     }
 
     @ZenMethod
@@ -116,6 +163,17 @@ public class CTPassthrough {
     }
 
     @ZenMethod
+    public static IItemStack[] getTinkerTableBlocks(IBlockState state) {
+        return makeArray(IItemStack.class,HashSet::new,tables -> {
+            Block block = CraftTweakerMC.getBlock(state.getBlock());
+            NonNullList<ItemStack> stacks = NonNullList.create();
+            block.getSubBlocks(CreativeTabs.MISC,stacks);
+            for(ItemStack stack : stacks)
+                if(!stack.isEmpty()) tables.add(convertStack(stack));
+        });
+    }
+
+    @ZenMethod
     public static String[][] getTinkerToolMaterials(IItemDefinition def) {
         return makeArray(String[].class,HashSet::new,materials -> {
             Item type = ItemUtil.getItem(def.getId());
@@ -134,36 +192,9 @@ public class CTPassthrough {
         });
     }
 
-    private static @Nullable String[] getMaterialArray(List<PartMaterialType> components, Material mat) {
-        List<String> materials = new ArrayList<>();
-        for(PartMaterialType type : components) {
-            Optional<IToolPart> part = type.getPossibleParts().stream().findFirst();
-            part.ifPresent(p -> materials.add(SPECIALIZED_PARTS.getOrDefault(p,mat).identifier));
-        }
-        return materials.size()==components.size() ? materials.toArray(new String[0]) : null;
-    }
-
-    @ZenMethod
-    public static IItemStack[] getTinkerTableBlocks(IBlockState state) {
-        return makeArray(IItemStack.class,HashSet::new,tables -> {
-            Block block = CraftTweakerMC.getBlock(state.getBlock());
-            NonNullList<ItemStack> stacks = NonNullList.create();
-            block.getSubBlocks(CreativeTabs.MISC,stacks);
-            for(ItemStack stack : stacks)
-                if(!stack.isEmpty()) tables.add(convertStack(stack));
-        });
-    }
-
-    @ZenMethod
-    public static String[] getLivingEntityIDs() {
-        return makeArray(String.class,HashSet::new,entities -> {
-            for(EntityEntry entry : ForgeRegistries.ENTITIES.getValuesCollection()) {
-                if(EntityLiving.class.isAssignableFrom(entry.getEntityClass())) {
-                    ResourceLocation res = entry.getRegistryName();
-                    if(Objects.nonNull(res)) entities.add(res.toString());
-                }
-            }
-        });
+    private static @Nullable IToolPart getToolPart(String type) {
+        Item part = ItemUtil.getItem(type);
+        return part instanceof IToolPart ? (IToolPart)part : null;
     }
 
     @SuppressWarnings("unchecked")
@@ -189,8 +220,8 @@ public class CTPassthrough {
         JeiActionSupplier.queueRemovals(supplier::get);
     }
 
-    private static IItemStack convertStack(ItemStack stack) {
-        IItemStack ctStack = CraftTweakerMC.getIItemStack(stack);
-        return stack.hasTagCompound() ? ctStack.withTag(CraftTweakerMC.getIData(stack.getTagCompound()),true) : ctStack;
+    @ZenMethod
+    public static void removeJEIDescriptions(IIngredientSupplier supplier) {
+        JeiActionSupplier.queueDescriptionRemovals(supplier::get);
     }
 }

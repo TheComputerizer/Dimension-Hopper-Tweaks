@@ -115,6 +115,7 @@ dependencies {
     implementation(fg.deobf("curse.maven:extended-crafting-nomifactory-edition-398267:${project.excrafting_version}"))
     implementation(fg.deobf("curse.maven:extraplanets-241291:${project.extraplanets_version}"))
     implementation(fg.deobf("curse.maven:extra-utilities-225561:${project.xu2_version}"))
+    implementation(fg.deobf("curse.maven:forestry-59751:${project.forestry_version}"))
     implementation(fg.deobf("curse.maven:gaia-dimension-302529:${project.gaia_version}"))
     implementation(fg.deobf("curse.maven:game-stages-268655:${project.gamestages_version}"))
     implementation(fg.deobf("curse.maven:geckolib-388172:${project.gecko_version}"))
@@ -171,6 +172,7 @@ dependencies {
     implementation(fg.deobf("curse.maven:tool-progression-266550:${project.toolprog_version}"))
     implementation(fg.deobf("curse.maven:unidict-244258:${project.unidict_version}"))
     implementation(fg.deobf("curse.maven:vintagefix-871198:${project.vf_version}"))
+    implementation(fg.deobf("curse.maven:wanionlib-253043:${project.wlib_version}"))
     implementation(fg.deobf("curse.maven:xl-food-mod-247217:${project.xlfood_version}"))
     implementation(fg.deobf("curse.maven:zollern-galaxy-241940:${project.zollern_version}"))
 

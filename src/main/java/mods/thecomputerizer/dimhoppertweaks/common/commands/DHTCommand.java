@@ -31,12 +31,10 @@ public abstract class DHTCommand extends CommandBase {
     }
 
     protected final String commandName;
-    protected final String initName;
     protected final Random rand;
 
-    protected DHTCommand(String commandName, String initName) {
+    protected DHTCommand(String commandName) {
         this.commandName = commandName;
-        this.initName = initName;
         this.rand = new Random();
     }
 
@@ -49,9 +47,10 @@ public abstract class DHTCommand extends CommandBase {
     public int getRequiredPermissionLevel() {
         return 2;
     }
+
     @Override
     public String getUsage(ICommandSender sender) {
-        return this.initName+" command initiated";
+        return "commands."+ DHTRef.MODID+"."+this.commandName+"."+"usage";
     }
 
     protected @Nullable String getOrNull(int index, String[] args) {
@@ -66,11 +65,15 @@ public abstract class DHTCommand extends CommandBase {
         return Collections.unmodifiableList(BIOME_TAB_NAMES);
     }
 
+    protected void sendBuiltMessage(ICommandSender sender, boolean isException, String lang, Object ... parameters) throws CommandException {
+        if(isException) throw new CommandException(lang,parameters);
+        else notifyCommandListener(sender,this,lang,parameters);
+    }
+
     protected void sendMessage(ICommandSender sender, boolean isException, @Nullable String extraLang,
                                Object ... parameters) throws CommandException {
         String lang = buildLangKey(isException,extraLang);
-        if(isException) throw new CommandException(lang,parameters);
-        else notifyCommandListener(sender,this,lang,parameters);
+        sendBuiltMessage(sender,isException,lang,parameters);
     }
 
     private String buildLangKey(boolean isError, @Nullable String extraLang) {

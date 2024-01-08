@@ -25,7 +25,7 @@ import java.util.Objects;
 public class RandomTP extends DHTCommand {
 
     public RandomTP() {
-        super("dimrandomtp","Random TP");
+        super("dimrandomtp");
     }
 
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {

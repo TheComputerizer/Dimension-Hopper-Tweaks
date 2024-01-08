@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class SummonBoss extends DHTCommand {
 
     public SummonBoss() {
-        super("summoncommandtest","Summon Test");
+        super("summoncommandtest");
     }
 
     @Override

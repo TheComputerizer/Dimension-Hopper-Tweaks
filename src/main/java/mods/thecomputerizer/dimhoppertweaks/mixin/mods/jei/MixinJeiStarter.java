@@ -16,6 +16,6 @@ public class MixinJeiStarter {
 
     @Inject(at = @At("HEAD"), method = "start")
     private void dimhoppertweaks$start(List<IModPlugin> plugins, Textures textures, CallbackInfo ci) {
-        JeiActionSupplier.injectQueues();
+        JeiActionSupplier.injectVisibilityQueues();
     }
 }

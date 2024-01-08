@@ -22,7 +22,7 @@ import java.util.Objects;
 public class DHDebugCommands extends DHTCommand {
 
     public DHDebugCommands() {
-        super("dhd","Dimension Hopper Debug");
+        super("dhd");
     }
 
     @Override

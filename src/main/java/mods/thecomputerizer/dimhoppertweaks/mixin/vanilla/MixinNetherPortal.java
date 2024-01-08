@@ -83,6 +83,6 @@ public abstract class MixinNetherPortal {
     }
 
     @Unique private boolean dimhoppertweaks$isCompressedObsidian(Block block) {
-        return Objects.nonNull(block.getRegistryName()) && block.getRegistryName().toString().matches("overloaded:compressed_obsidian");
+        return Objects.nonNull(block.getRegistryName()) && block.getRegistryName().toString().equals("overloaded:compressed_obsidian");
     }
 }
