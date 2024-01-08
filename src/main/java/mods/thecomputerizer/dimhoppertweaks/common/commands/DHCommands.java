@@ -68,9 +68,11 @@ public class DHCommands extends DHTCommand {
         private DHSubCmd(String name) {
             this.name = name;
             this.execute = (server,sender,args) -> {
+                if(this.name.equals("help")) this.executeHelp(args.length>0 ? args[0] : null);
                 return null;
             };
             this.tabCompletions = (server,sender,args) -> {
+                if(this.name.equals("help")) return Collections.singletonList("botany");
                 return Collections.emptyList();
             };
         }
@@ -78,6 +80,10 @@ public class DHCommands extends DHTCommand {
         private void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
             CommandException ex = this.execute.apply(server,sender,args);
             if(Objects.nonNull(ex)) throw ex;
+        }
+
+        private void executeHelp(@Nullable String type) {
+
         }
 
         private List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args) {

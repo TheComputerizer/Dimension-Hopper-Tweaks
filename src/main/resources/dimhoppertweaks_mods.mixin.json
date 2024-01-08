@@ -48,6 +48,7 @@
     "dimdoors.MixinGatewayGenerator",
     "extendedcrafting.MixinTileAutomationInterface",
     "extrautils2.MixinTileMine",
+    "gaiadimension.MixinTeleporterGaia",
     "geckolib3.MixinAnimationFileLoader",
     "geckolib3.MixinGeckoLibCache",
     "infernalmobs.MixinMM_Choke",
@@ -97,6 +98,7 @@
     "tconstruct.MixinExplosionEFLN",
     "togetherforever.MixinAdvancementEventSyncAction",
     "toolprogression.MixinGSHelper",
+    "unidict.MixinCraftingIntegration",
     "vintagefix.MixinDynamicBakedModelProvider",
     "vintagefix.MixinDynamicModelProvider",
     "zollerngalaxy.MixinZGBlockBase"
