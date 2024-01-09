@@ -48,6 +48,7 @@
     "dimdoors.MixinGatewayGenerator",
     "extendedcrafting.MixinTileAutomationInterface",
     "extrautils2.MixinTileMine",
+    "gaiadimension.MixinGDGaiaPortal",
     "gaiadimension.MixinTeleporterGaia",
     "geckolib3.MixinAnimationFileLoader",
     "geckolib3.MixinGeckoLibCache",

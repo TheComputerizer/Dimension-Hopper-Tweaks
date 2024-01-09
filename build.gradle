@@ -1,6 +1,7 @@
 //file:noinspection GroovyAssignabilityCheck
 plugins {
     id 'net.minecraftforge.gradle' version '6.0.+'
+    id 'org.jetbrains.gradle.plugin.idea-ext' version '1.1.7'
     id 'wtf.gofancy.fancygradle' version '1.1.+'
     id 'org.spongepowered.mixin' version '0.7.+'
 }
@@ -37,7 +38,6 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
             jvmArgs args
         }
-
         server {
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
@@ -67,15 +67,15 @@ repositories {
         url = uri('https://maven.galacticraft.net/repository/legacy/')
     }
     maven {
+        name = 'GitHub'
+        url = uri('https://jitpack.io')
+    }
+    maven {
         name = 'Modrinth'
         url = uri('https://api.modrinth.com/maven')
         content {
             includeGroup 'maven.modrinth'
         }
-    }
-    maven {
-        name = 'SpongePowered'
-        url = uri('https://repo.spongepowered.org/maven')
     }
     flatDir {
         dirs 'build/libs'
@@ -86,8 +86,19 @@ dependencies {
     minecraft("net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}")
 
     //annotation processors
-    annotationProcessor("org.projectlombok:lombok:${project.lombok_version}")
-    annotationProcessor("org.spongepowered:mixin:${project.mixin_version}:processor")
+    annotationProcessor("com.google.code.gson:gson:${project.gson_annotation}")
+    annotationProcessor("com.google.guava:guava:${project.guava_annotation}")
+    annotationProcessor("org.ow2.asm:asm-debug-all:${project.asm_debug_annotation}")
+    annotationProcessor("zone.rong:mixinbooter:${project.mixinbooter_version}") {
+        transitive = false
+    }
+
+    implementation("zone.rong:mixinbooter:${project.mixinbooter_version}") {
+        transitive = false
+    }
+
+    //stuff only needed to compile
+    compileOnly(fg.deobf("curse.maven:industrial-craft-242638:${project.ic2_version}"))
 
     //implemented cf stuff
     implementation(fg.deobf("curse.maven:actually-additions-228404:${project.aa_version}"))
@@ -108,6 +119,7 @@ dependencies {
     implementation(fg.deobf("curse.maven:compact-machines-224218:${project.cm3_version}"))
     implementation(fg.deobf("curse.maven:cofh-core-69162:${project.cofhcore_version}"))
     implementation(fg.deobf("curse.maven:constructs-armory-287683:${project.conarm_version}"))
+    implementation(fg.deobf("curse.maven:corail-tombstone-243707:${project.ctombstone_version}"))
     implementation(fg.deobf("curse.maven:ctm-267602:${project.ctm_version}"))
     implementation(fg.deobf("curse.maven:dimensionaldoors-284876:${project.dimdoors_version}"))
     implementation(fg.deobf("curse.maven:draconic-evolution-223565:${project.de_version}"))
@@ -177,17 +189,16 @@ dependencies {
     implementation(fg.deobf("curse.maven:zollern-galaxy-241940:${project.zollern_version}"))
 
     //implemented other stuff
-    implementation(fg.deobf("com.tiviacz.travelersbackpack:TravelersBackpack:${project.backpack_version}"))
+    implementation(fg.deobf("dev.galacticraft:galacticraft-legacy:${project.galacticraft_version}"))
+    implementation(fg.deobf("maven.modrinth:misty-world:${project.misty_version}"))
+    implementation(fg.deobf("maven.modrinth:the-midnight:${project.midnight_version}"))
+    implementation("com.github.tiviacz1337:Travelers-Backpack:${project.backpack_version}")
     implementation("CraftTweaker2:CraftTweaker2-API:${project.ct_version}")
     implementation("CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${project.ct_version}")
     implementation("CraftTweaker2:CraftTweaker2-MC1120-Mod-JEI:1.12-${project.ct_version}") {
         transitive = false
     }
     implementation("CraftTweaker2:ZenScript:${project.ct_version}")
-    implementation(fg.deobf("dev.galacticraft:galacticraft-legacy:${project.galacticraft_version}"))
-    implementation(fg.deobf("maven.modrinth:misty-world:${project.misty_version}"))
-    implementation(fg.deobf("maven.modrinth:the-midnight:${project.midnight_version}"))
-    implementation("zone.rong:mixinbooter:${project.mixinbooter_version}")
 
     //runtime stuff and libraries
     runtimeOnly(fg.deobf("curse.maven:autoreglib-250363:${project.autoreglib_version}"))
@@ -199,10 +210,6 @@ dependencies {
     runtimeOnly(fg.deobf("curse.maven:reid-629017:${project.reid_version}"))
     runtimeOnly(fg.deobf("curse.maven:the-one-probe-245211:${project.top_version}"))
     runtimeOnly(fg.deobf("curse.maven:thermal-foundation-222880:${project.thermalfoundation_version}"))
-
-    //stuff only needed to compile
-    compileOnly(fg.deobf("curse.maven:industrial-craft-242638:${project.ic2_version}"))
-    compileOnly("org.projectlombok:lombok:${project.lombok_version}")
 }
 
 processResources {
@@ -228,7 +235,7 @@ jar {
                 'FMLCorePlugin': 'mods.thecomputerizer.dimhoppertweaks.core.EarlyMixinPlugin',
                 'FMLCorePluginContainsFMLMod': true,
                 'ForceLoadAsMod': true,
-                'FMLAT': 'dimhoppertweaks_at.cfg',
+                'FMLAT': 'dimhoppertweaks_at.cfg'
         ])
     }
 }

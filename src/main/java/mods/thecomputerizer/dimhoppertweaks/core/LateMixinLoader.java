@@ -10,6 +10,6 @@ public class LateMixinLoader implements ILateMixinLoader {
 
     @Override
     public List<String> getMixinConfigs() {
-        return Collections.singletonList("dimhoppertweaks_mods.mixin.json");
+        return Collections.singletonList(DHTRef.modID("mixins.%s_mods.json"));
     }
 }

@@ -57,6 +57,16 @@ public class DHTRef {
             "required-after:zollerngalaxy;";
     public static final Logger LOGGER = LogManager.getLogger("Dimension Hopper Twinkies");
 
+    public static String modID(String str) {
+        return String.format(str,MODID);
+    }
+
+    public static String[] modIDs(String ... strs) {
+        for(int i=0; i<strs.length; i++)
+            strs[i] = modID(strs[i]);
+        return strs;
+    }
+
     public static ResourceLocation res(String path) {
         return new ResourceLocation(MODID,path);
     }

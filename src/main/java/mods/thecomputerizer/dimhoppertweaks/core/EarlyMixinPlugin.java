@@ -16,7 +16,7 @@ public class EarlyMixinPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
     @Override
     public List<String> getMixinConfigs() {
-        return Arrays.asList("dimhoppertweaks_vanilla.mixin.json","dimhoppertweaks_forge.mixin.json");
+        return Arrays.asList(DHTRef.modIDs("mixins.%s_vanilla.json","mixins.%s_forge.json"));
     }
 
     @Override
@@ -35,9 +35,7 @@ public class EarlyMixinPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
     }
 
     @Override
-    public void injectData(Map<String, Object> data) {
-
-    }
+    public void injectData(Map<String, Object> data) {}
 
     @Override
     public String getAccessTransformerClass() {
