@@ -41,6 +41,8 @@ public interface ISkillCapability {
     void resetDreamTimer();
     boolean pressedSkillKey();
     void markSkillKeyPressed();
+    int getFanUsage();
+    void resetFanUsage();
     NBTTagCompound writeToNBT();
     void readFromNBT(NBTTagCompound tag);
 }

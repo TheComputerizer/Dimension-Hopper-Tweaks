@@ -65,6 +65,11 @@ public final class RegistryHandler {
     }
 
     @SubscribeEvent
+    public static void updateMappings(RegistryEvent.MissingMappings<Item> event) {
+        //register(event,ItemRegistry.getItems());
+    }
+
+    @SubscribeEvent
     public static void registerSkills(RegistryEvent.Register<Skill> event) {
         register(event,SkillRegistry.getSkills());
     }

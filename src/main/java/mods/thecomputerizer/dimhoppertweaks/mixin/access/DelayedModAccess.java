@@ -1,5 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.access;
 
+import androsa.gaiadimension.registry.GDBlocks;
+import androsa.gaiadimension.world.TeleporterGaia;
 import appeng.items.parts.ItemFacade;
 import c4.conarm.lib.tinkering.TinkersArmor;
 import cofh.thermalexpansion.item.ItemFlorb;
@@ -23,6 +25,7 @@ import net.darkhax.gamestages.GameStageHelper;
 import net.darkhax.gamestages.data.IStageData;
 import net.darkhax.huntingdim.item.ItemBiomeChanger;
 import net.darkhax.orestages.api.OreTiersAPI;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
@@ -37,6 +40,9 @@ import net.minecraft.nbt.NBTTagString;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.util.ITeleporter;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import openblocks.common.item.ItemTankBlock;
@@ -328,6 +334,19 @@ public class DelayedModAccess {
 
     public static boolean isFakeEntity(Entity entity) {
         return entity.getEntityData().getBoolean("isFakeEntityForMoBends");
+    }
+
+    public static Block getGDKeystoneBlock() {
+        return GDBlocks.keystone_block;
+    }
+
+    public static Block getGDPortalBlock() {
+        return GDBlocks.gaia_portal;
+    }
+
+    public static ITeleporter makeGaiaTeleporter(int dim) {
+        WorldServer world = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(dim);
+        return new TeleporterGaia(world,getGDPortalBlock(),getGDKeystoneBlock().getDefaultState());
     }
 
     @SideOnly(Side.CLIENT)

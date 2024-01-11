@@ -10,6 +10,7 @@ import codersafterdark.reskillable.api.toast.ToastHelper;
 import codersafterdark.reskillable.api.unlockable.IAbilityEventHandler;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.registry.items.SkillToken;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
@@ -108,6 +109,18 @@ public class SkillWrapper {
 
     public static void executeOnSkill(@Nonnull PlayerData data, @Nullable Skill skill, Consumer<IAbilityEventHandler> consumer) {
         if(Objects.nonNull(skill)) data.getSkillInfo(skill).forEachEventHandler(consumer);
+    }
+
+    public static int getFanUsage(EntityPlayer player) {
+        ISkillCapability cap = getSkillCapability(player);
+        return Objects.nonNull(cap) ? cap.getFanUsage() : 0;
+    }
+
+    public static void resetFanUsage(Entity entity) {
+        if(entity instanceof EntityPlayer) {
+            ISkillCapability cap = getSkillCapability((EntityPlayer)entity);
+            if (Objects.nonNull(cap)) cap.resetFanUsage();
+        }
     }
 
     private final String modid;

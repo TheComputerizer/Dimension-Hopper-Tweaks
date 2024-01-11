@@ -1,7 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.vanilla;
 
-import androsa.gaiadimension.registry.GDBlocks;
-import androsa.gaiadimension.world.TeleporterGaia;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
+import mods.thecomputerizer.dimhoppertweaks.mixin.access.DelayedModAccess;
 import mods.thecomputerizer.dimhoppertweaks.mixin.access.EntityAccess;
 import net.minecraft.block.BlockPortal;
 import net.minecraft.block.state.pattern.BlockPattern;
@@ -13,12 +13,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import javax.annotation.Nullable;
 
@@ -52,11 +53,17 @@ public abstract class MixinEntity implements EntityAccess {
 
     @Shadow @Nullable public abstract MinecraftServer getServer();
 
+    @Shadow public boolean onGround;
     @Unique private boolean dimhoppertweaks$inGaiaPortal;
     @Unique private int dimhoppertweaks$gaiaPortalCounter;
     @Unique private int dimhoppertweaks$gaiaTimeUntilPortal;
 
     @Unique private int dimhoppertweaks$dimFrom;
+
+    @Unique
+    private Entity dimhoppertweaks$cast() {
+        return (Entity)(Object)this;
+    }
 
     /**
      * Uses the same logic as the vanilla Entity#setPortal but without the Blocks#PORTAL hardcoding
@@ -102,9 +109,7 @@ public abstract class MixinEntity implements EntityAccess {
                         dim = -2;
                     }
                     if(!this.world.isRemote && !this.isDead)
-                        ((Entity)(Object)this).changeDimension(dim,new TeleporterGaia(FMLCommonHandler.instance()
-                                .getMinecraftServerInstance().getWorld(dim), GDBlocks.gaia_portal,
-                                GDBlocks.keystone_block.getDefaultState()));
+                        dimhoppertweaks$cast().changeDimension(dim,DelayedModAccess.makeGaiaTeleporter(dim));
                 }
             }
             this.dimhoppertweaks$inGaiaPortal = false;
@@ -114,5 +119,10 @@ public abstract class MixinEntity implements EntityAccess {
             if(this.dimhoppertweaks$gaiaPortalCounter<0) this.dimhoppertweaks$gaiaPortalCounter = 0;
         }
         if(this.dimhoppertweaks$gaiaTimeUntilPortal>0) this.dimhoppertweaks$gaiaTimeUntilPortal--;
+    }
+
+    @Inject(at = @At("RETURN"), method = "onEntityUpdate")
+    private void setDimhoppertweaks$onEntityUpdate(CallbackInfo ci) {
+        if(!this.world.isRemote && this.onGround) SkillWrapper.resetFanUsage(dimhoppertweaks$cast());
     }
 }

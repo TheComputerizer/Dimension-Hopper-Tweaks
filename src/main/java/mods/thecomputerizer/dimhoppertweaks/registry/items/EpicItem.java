@@ -14,6 +14,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class EpicItem extends Item {
+
     @Override
     public @Nonnull IRarity getForgeRarity(@Nonnull ItemStack stack) {
         return EnumRarity.EPIC;

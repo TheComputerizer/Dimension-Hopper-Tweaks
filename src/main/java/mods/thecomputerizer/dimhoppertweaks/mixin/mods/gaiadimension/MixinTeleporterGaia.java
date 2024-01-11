@@ -106,8 +106,8 @@ public abstract class MixinTeleporterGaia extends Teleporter {
             entityIn.rotationYaw = rotationYaw - (float)(entityIn.getTeleportDirection().getOpposite().getHorizontalIndex()*90)+
                     (float)(blockpattern$patternhelper.getForwards().getHorizontalIndex()*90);
             if(entityIn instanceof EntityPlayerMP)
-                ((EntityPlayerMP)entityIn).connection.setPlayerLocation(d5, d6, d7, entityIn.rotationYaw, entityIn.rotationPitch);
-            else entityIn.setLocationAndAngles(d5, d6, d7, entityIn.rotationYaw, entityIn.rotationPitch);
+                ((EntityPlayerMP)entityIn).connection.setPlayerLocation(d5,d6+1d,d7,entityIn.rotationYaw,entityIn.rotationPitch);
+            else entityIn.setLocationAndAngles(d5,d6+1d,d7,entityIn.rotationYaw,entityIn.rotationPitch);
             return true;
         }
         else return false;

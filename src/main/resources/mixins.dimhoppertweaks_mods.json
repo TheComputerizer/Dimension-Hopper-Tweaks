@@ -99,6 +99,7 @@
     "tconstruct.MixinExplosionEFLN",
     "togetherforever.MixinAdvancementEventSyncAction",
     "toolprogression.MixinGSHelper",
+    "twilightforest.MixinItemTFPeacockFan",
     "unidict.MixinCraftingIntegration",
     "vintagefix.MixinDynamicBakedModelProvider",
     "vintagefix.MixinDynamicModelProvider",

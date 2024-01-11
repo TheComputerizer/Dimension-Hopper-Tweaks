@@ -37,6 +37,7 @@ public class SkillCapability implements ISkillCapability {
     private float shieldDamage = 1f;
     private BlockPos twilightRespawn;
     private boolean pressedSkillKey = false;
+    private int fanUsage = 0;
 
     public SkillCapability() {
         DHTRef.LOGGER.debug("Initializing skill capability");
@@ -263,6 +264,18 @@ public class SkillCapability implements ISkillCapability {
     }
 
     @Override
+    public int getFanUsage() {
+        int ret = this.fanUsage;
+        this.fanUsage++;
+        return ret;
+    }
+
+    @Override
+    public void resetFanUsage() {
+        this.fanUsage = 0;
+    }
+
+    @Override
     public NBTTagCompound writeToNBT() {
         NBTTagCompound tag = new NBTTagCompound();
         tag.setTag("skills",writeSkills());
@@ -274,6 +287,7 @@ public class SkillCapability implements ISkillCapability {
         if(Objects.nonNull(this.twilightRespawn)) tag.setLong("twilightRespawn",this.twilightRespawn.toLong());
         tag.setInteger("dreamTimer",this.dreamTimer.getValue());
         tag.setBoolean("pressedSkillKey",this.pressedSkillKey);
+        tag.setInteger("fanUsage",this.fanUsage);
         return tag;
     }
 
@@ -352,6 +366,7 @@ public class SkillCapability implements ISkillCapability {
         if(tag.hasKey("twilightRespawn")) this.setTwilightRespawn(BlockPos.fromLong(tag.getLong("twilightRespawn")));
         this.dreamTimer.setValue(tag.getInteger("dreamTimer"));
         this.pressedSkillKey = tag.getBoolean("pressedSkillKey");
+        this.fanUsage = tag.getInteger("fanUsage");
     }
 
     private void readSkills(NBTBase tag) {

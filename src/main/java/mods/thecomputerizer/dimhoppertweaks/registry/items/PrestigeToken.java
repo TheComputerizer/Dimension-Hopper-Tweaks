@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -17,21 +18,17 @@ import java.util.Objects;
 @MethodsReturnNonnullByDefault
 public class PrestigeToken extends EpicItem {
 
-    private final int level;
-    public PrestigeToken(int level) {
-        this.level = level;
-    }
-
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer p, EnumHand hand) {
-        ItemStack stack = p.getHeldItemMainhand();
-        if(p instanceof EntityPlayerMP) {
+        ItemStack stack = p.getHeldItem(hand);
+        if(p instanceof EntityPlayerMP && stack.getItem() instanceof PrestigeToken) {
             EntityPlayerMP player = (EntityPlayerMP)p;
             ISkillCapability cap = SkillWrapper.getSkillCapability(player);
             if(Objects.nonNull(cap)) {
                 String skill = cap.getDrainSelection();
-                if(cap.getPrestigeLevel(skill)<this.level && hand==EnumHand.MAIN_HAND) {
-                    cap.setPrestigeLevel(skill,this.level);
+                int level = getPrestigeLevel(stack);
+                if(cap.getPrestigeLevel(skill)<level) {
+                    cap.setPrestigeLevel(skill,level);
                     SkillWrapper.updateTokens(player);
                     world.playSound(null,player.posX,player.posY,player.posZ,SoundEvents.ENTITY_PLAYER_LEVELUP,
                             SoundCategory.MASTER, 1f,1f);
@@ -42,5 +39,15 @@ public class PrestigeToken extends EpicItem {
                 }
             }
         } return ActionResult.newResult(EnumActionResult.PASS,stack);
+    }
+
+    @Override
+    public String getHighlightTip(ItemStack stack, String name) {
+        int level = getPrestigeLevel(stack);
+        return String.format(name+" %d [%d]",level,(level+1)*32);
+    }
+
+    public int getPrestigeLevel(ItemStack stack) {
+        return MathHelper.clamp(getTag(stack).getInteger("prestigeLevel"),0,31);
     }
 }

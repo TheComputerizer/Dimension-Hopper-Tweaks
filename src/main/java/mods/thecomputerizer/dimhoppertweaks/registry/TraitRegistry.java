@@ -11,6 +11,7 @@ import mods.thecomputerizer.dimhoppertweaks.registry.traits.farming.HungryFarmer
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.farming.PotionMaster;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.gathering.ExplosiveAura;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.gathering.LuckyAura;
+import mods.thecomputerizer.dimhoppertweaks.registry.traits.gathering.LuckyFisherman;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.magic.LivingBattery;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.magic.NaturesAura;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.mining.ExpertMiner;
@@ -44,6 +45,7 @@ public final class TraitRegistry {
     public static final Trait LIVING_BATTERY = makeTrait(new LivingBattery());
     public static final Trait LOOK_AT_ME = makeTrait(new LookAtMe());
     public static final Trait LUCKY_AURA = makeTrait(new LuckyAura());
+    public static final Trait LUCKY_FISHERMAN = makeTrait(new LuckyFisherman());
     public static final Trait NATURES_AURA = makeTrait(new NaturesAura());
     public static final Trait NO_COOLDOWNS = makeTrait(new NoCooldowns());
     public static final Trait OIL_MK_ONE = makeTrait(new TieredResearchTrait("oil",1,0,0));
