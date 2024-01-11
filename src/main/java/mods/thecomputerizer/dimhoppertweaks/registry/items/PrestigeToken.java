@@ -9,11 +9,13 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Objects;
 
+@SuppressWarnings("deprecation")
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class PrestigeToken extends EpicItem {
@@ -42,9 +44,10 @@ public class PrestigeToken extends EpicItem {
     }
 
     @Override
-    public String getHighlightTip(ItemStack stack, String name) {
+    public String getItemStackDisplayName(ItemStack stack) {
         int level = getPrestigeLevel(stack);
-        return String.format(name+" %d [%d]",level,(level+1)*32);
+        String baseName = I18n.translateToLocal(this.getUnlocalizedNameInefficiently(stack)+".name").trim();
+        return String.format(baseName+" %d [%d]",level,(level+1)*32);
     }
 
     public int getPrestigeLevel(ItemStack stack) {
