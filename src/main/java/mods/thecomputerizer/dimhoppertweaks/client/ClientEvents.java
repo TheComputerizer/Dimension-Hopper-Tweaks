@@ -40,8 +40,6 @@ public class ClientEvents {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onFogDensity(EntityViewRenderEvent.FogDensity event) {
-        //if(ClientHandler.FOG_DENSITY_OVERRIDE>=0)
-            //event.setDensity(ClientHandler.FOG_DENSITY_OVERRIDE);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

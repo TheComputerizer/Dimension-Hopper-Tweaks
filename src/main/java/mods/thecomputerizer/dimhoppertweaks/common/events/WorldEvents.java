@@ -11,6 +11,7 @@ import mods.thecomputerizer.dimhoppertweaks.mixin.access.DelayedModAccess;
 import mods.thecomputerizer.dimhoppertweaks.mixin.access.TileEntityAccess;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
 import mods.thecomputerizer.dimhoppertweaks.util.WorldUtil;
+import net.minecraft.block.BlockFarmland;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -72,7 +73,7 @@ public class WorldEvents {
                     if(h instanceof ExtendedEventsTrait) ((ExtendedEventsTrait)h).onBlockPlaced(event);
                 });
             }
-            if(event.getState().getBlock()!=Blocks.FARMLAND)
+            if(!(event.getState().getBlock() instanceof BlockFarmland))
                 SkillWrapper.addSP((EntityPlayerMP)event.getPlayer(),"building",1f,false);
         }
         if(Objects.nonNull(player)) {

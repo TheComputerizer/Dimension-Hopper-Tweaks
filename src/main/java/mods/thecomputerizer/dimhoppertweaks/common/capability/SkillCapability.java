@@ -373,6 +373,9 @@ public class SkillCapability implements ISkillCapability {
         if(!(tag instanceof NBTTagList)) return;
         NBTTagList tagList = (NBTTagList)tag;
         for(NBTBase elementTag : tagList) readSkill(elementTag);
+        for(String skill : SkillCapabilityStorage.SKILLS)
+            if(!this.skillMap.containsKey(skill))
+                this.skillMap.put(skill,new SkillWrapper(skill,0,1,0));
     }
 
     private void readSkill(NBTBase tag) {
