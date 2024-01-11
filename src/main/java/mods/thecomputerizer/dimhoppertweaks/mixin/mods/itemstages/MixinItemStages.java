@@ -6,15 +6,18 @@ import mods.thecomputerizer.dimhoppertweaks.util.WorldUtil;
 import net.darkhax.gamestages.GameStageHelper;
 import net.darkhax.itemstages.ConfigurationHandler;
 import net.darkhax.itemstages.ItemStages;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -94,7 +97,7 @@ public abstract class MixinItemStages {
 
     /**
      * @author The_Computerizer
-     * @reason Hook for fixing fake players using staged items
+     * @reason Hook for fixing fake players using staged items and storage drawer insertion
      */
     @SubscribeEvent
     @Overwrite
@@ -102,8 +105,14 @@ public abstract class MixinItemStages {
         EntityPlayer player = event.getEntityPlayer();
         if(event.isCancelable() && !ConfigurationHandler.allowInteractRestricted && !player.isCreative()) {
             String stage = getStage(event.getItemStack());
-            if(Objects.nonNull(stage) && dimhoppertweaks$verifyStage(player.getEntityWorld(),player,event.getPos(),stage))
+            if(Objects.nonNull(stage) && dimhoppertweaks$verifyStage(player.getEntityWorld(),player,event.getPos(),stage)) {
+                if(event instanceof RightClickBlock) {
+                    IBlockState state = player.getEntityWorld().getBlockState(event.getPos());
+                    ResourceLocation res = state.getBlock().getRegistryName();
+                    if(Objects.nonNull(res) && res.getNamespace().matches("storagedrawers")) return;
+                }
                 event.setCanceled(true);
+            }
         }
 
     }

@@ -89,6 +89,7 @@
     "psi.MixinPieceTrickCollapseBlock",
     "randomthings.MixinItemTimeInABottle",
     "recipestages.MixinRecipeStage",
+    "reskillable.MixinLevelLockHandler",
     "scalinghealth.MixinBlightHandler",
     "scalinghealth.MixinDifficultyHandler",
     "scalinghealth.MixinEntityBlightFire",
