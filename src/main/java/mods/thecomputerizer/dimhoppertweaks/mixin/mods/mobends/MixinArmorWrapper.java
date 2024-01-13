@@ -60,18 +60,22 @@ public abstract class MixinArmorWrapper implements ArmorWrapperAccess {
                     this.partWrappers.forEach(group -> group.syncUp(dataBiped));
                     this.apply();
                     this.original.setModelAttributes((ArmorWrapper)(Object)this);
-                    ArmorWrapperAccess overlay = this.original instanceof ModelArmorInfinity ?
-                            (ArmorWrapperAccess)ArmorModelFactory.getArmorModel(((ModelArmorInfinityAccess)this.original)
+                    ArmorWrapper overlay = this.original instanceof ModelArmorInfinity ?
+                            (ArmorWrapper)ArmorModelFactory.getArmorModel(((ModelArmorInfinityAccess)this.original)
                                     .dimhoppertweaks$getOverlay(),true) : null;
-                    ArmorWrapperAccess invulOverlay = this.original instanceof ModelArmorInfinity ?
-                            (ArmorWrapperAccess)ArmorModelFactory.getArmorModel(((ModelArmorInfinityAccess)this.original)
+                    ArmorWrapper invulOverlay = this.original instanceof ModelArmorInfinity ?
+                            (ArmorWrapper)ArmorModelFactory.getArmorModel(((ModelArmorInfinityAccess)this.original)
                                     .dimhoppertweaks$getInvulOverlay(),true) : null;
-                    if(Objects.nonNull(overlay)) overlay.dimhoppertweaks$preRenderSplit(entity);
-                    if(Objects.nonNull(invulOverlay)) invulOverlay.dimhoppertweaks$preRenderSplit(entity);
+                    if(Objects.nonNull(overlay))
+                        ((ArmorWrapperAccess)overlay).dimhoppertweaks$preRenderSplit(entity);
+                    if(Objects.nonNull(invulOverlay))
+                        ((ArmorWrapperAccess)invulOverlay).dimhoppertweaks$preRenderSplit(entity);
                     this.original.render(entity,limbSwing,limbSwingAmount,ageInTicks,netHeadYaw,headPitch,scale);
                     this.deapply();
-                    if(Objects.nonNull(overlay)) overlay.dimhoppertweaks$postRenderSplit();
-                    if(Objects.nonNull(invulOverlay)) invulOverlay.dimhoppertweaks$postRenderSplit();
+                    if(Objects.nonNull(overlay))
+                        ((ArmorWrapperAccess)overlay).dimhoppertweaks$postRenderSplit();
+                    if(Objects.nonNull(invulOverlay))
+                        ((ArmorWrapperAccess)invulOverlay).dimhoppertweaks$postRenderSplit();
                 }
             }
         }
@@ -79,7 +83,7 @@ public abstract class MixinArmorWrapper implements ArmorWrapperAccess {
 
     public void dimhoppertweaks$preRenderSplit(Entity entity) {
         if(!this.mutated) throw new MalformedArmorModelException("Operating on a demutated armor wrapper.");
-        else if (entity instanceof EntityLivingBase) {
+        else if(entity instanceof EntityLivingBase) {
             EntityLivingBase living = (EntityLivingBase)entity;
             EntityBender<EntityLivingBase> bender = EntityBenderRegistry.instance.getForEntity(living);
             if(Objects.nonNull(bender)) {
@@ -92,6 +96,7 @@ public abstract class MixinArmorWrapper implements ArmorWrapperAccess {
                     this.partWrappers.forEach(group -> group.syncUp(dataBiped));
                     this.apply();
                     this.original.setModelAttributes((ArmorWrapper)(Object)this);
+                    this.original.isChild = living.isChild();
                 }
             }
         }

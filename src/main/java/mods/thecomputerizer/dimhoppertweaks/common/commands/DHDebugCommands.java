@@ -1,6 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.common.commands;
 
 import mcp.MethodsReturnNonnullByDefault;
+import mods.thecomputerizer.dimhoppertweaks.network.PacketQueryGenericClient;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketTileEntityClassQuery;
 import net.darkhax.gamestages.GameStageHelper;
 import net.darkhax.gamestages.data.GameStageSaveHandler;
@@ -55,6 +56,10 @@ public class DHDebugCommands extends DHTCommand {
         }
         if(option==4) {
             executeGive(server,sender,getOrNull(1,args),getOrNull(2,args));
+            return;
+        }
+        if(option==5) {
+            executeQuery(server,sender,getOrNull(1,args));
             return;
         }
         sendMessage(sender,true,"options."+(sender instanceof Entity ? "entity" : "server"));
@@ -155,5 +160,14 @@ public class DHDebugCommands extends DHTCommand {
         ItemStack stack = new ItemStack(Items.SPAWN_EGG);
         ItemMonsterPlacer.applyEntityIdToItemStack(stack,new ResourceLocation(mob));
         itemEntityCreator.accept(stack);
+    }
+
+    private void executeQuery(MinecraftServer server, ICommandSender sender, @Nullable String type) throws CommandException {
+        if(Objects.isNull(type)) {
+            sendMessage(sender,true,"query");
+            return;
+        }
+        if(sender instanceof EntityPlayerMP)
+            new PacketQueryGenericClient(type).addPlayers((EntityPlayerMP)sender).send();
     }
 }

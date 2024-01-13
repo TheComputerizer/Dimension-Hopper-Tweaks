@@ -16,14 +16,16 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
+@SuppressWarnings("unused")
 @Mod(modid = DHTRef.MODID, name = DHTRef.NAME, version = DHTRef.VERSION, dependencies = DHTRef.DEPENDENCIES)
 public class DimHopperTweaks {
 
     public DimHopperTweaks() {
         NetworkHandler.queueServerPacketRegistries(PacketSendKeyPressed.class,PacketSyncGuiData.class);
         NetworkHandler.queueClientPacketRegistries(PacketBossClientEffects.class,PacketGrayScaleTimer.class,
-                PacketOpenGui.class,PacketRenderBossAttack.class,PacketSyncCapabilityData.class,
-                PacketSyncPlayerHealth.class,PacketTileEntityClassQuery.class,PacketUpdateBossRender.class);
+                PacketOpenGui.class, PacketQueryGenericClient.class,PacketRenderBossAttack.class,
+                PacketSyncCapabilityData.class,PacketSyncPlayerHealth.class,PacketTileEntityClassQuery.class,
+                PacketUpdateBossRender.class);
     }
 
     @Mod.EventHandler

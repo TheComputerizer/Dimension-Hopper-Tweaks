@@ -125,4 +125,16 @@ public class ClientEvents {
                     return validPotion;
         return null;
     }
+
+    public static void queryFogRender() {
+        Minecraft mc = Minecraft.getMinecraft();
+        int fogMode = GL11.glGetInteger(GL11.GL_FOG_MODE);
+        int fogStart = GL11.glGetInteger(GL11.GL_FOG_START);
+        int fogEnd = GL11.glGetInteger(GL11.GL_FOG_END);
+        int fogDensity = GL11.glGetInteger(GL11.GL_FOG_DENSITY);
+        int fogColor = GL11.glGetInteger(GL11.GL_FOG_COLOR);
+        boolean fog = GL11.glIsEnabled(GL11.GL_FOG);
+        DHTRef.LOGGER.error("FOG ENABLED {} | MODE {} | START {} | END {} | DENSITY {} | COLOR {}",fog,fogMode,
+                fogStart,fogEnd,fogDensity,fogColor);
+    }
 }

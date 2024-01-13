@@ -93,4 +93,9 @@ public class ClientPacketHandlers {
             }
         }
     }
+
+    @SideOnly(Side.CLIENT)
+    public static void handleGenericClientQuery(String type) {
+        if(type.equals("fog")) ClientEvents.queryFogRender();
+    }
 }
