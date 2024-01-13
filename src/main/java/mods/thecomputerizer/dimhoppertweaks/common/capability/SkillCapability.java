@@ -151,10 +151,10 @@ public class SkillCapability implements ISkillCapability {
     }
 
     @Override
-    public void togglePassiveFood(EntityPlayerMP player, Item item) {
+    public void togglePassiveFood(EntityPlayerMP player, Item item, boolean isEnable) {
         if(item instanceof ItemFood) {
-            if(this.autoFeedWhitelist.contains(item)) this.autoFeedWhitelist.remove(item);
-            else this.autoFeedWhitelist.add(item);
+            if(isEnable) this.autoFeedWhitelist.add(item);
+            else this.autoFeedWhitelist.remove(item);
             syncClientData(player);
         } else this.autoFeedWhitelist.remove(item);
     }
@@ -165,13 +165,14 @@ public class SkillCapability implements ISkillCapability {
     }
 
     @Override
-    public void togglePassivePotion(EntityPlayerMP player, ItemStack stack) {
+    public void togglePassivePotion(EntityPlayerMP player, ItemStack stack, boolean isEnable) {
         if(stack.getItem() instanceof ItemPotion) {
             for(PotionEffect effect : PotionUtils.getEffectsFromStack(stack)) {
                 Potion potion = effect.getPotion();
                 int amplifier = effect.getAmplifier();
-                if(containsPotion(potion,amplifier)) removePotion(potion,amplifier);
-                else this.autoPotionWhitelist.add(new Tuple<>(potion,amplifier));
+                if(containsPotion(potion,amplifier) && !isEnable) removePotion(potion,amplifier);
+                else if(isEnable && effect.getDuration()>20 && !potion.isInstant())
+                    this.autoPotionWhitelist.add(new Tuple<>(potion,amplifier));
             }
             syncClientData(player);
         }
@@ -187,7 +188,7 @@ public class SkillCapability implements ISkillCapability {
         if(stack.getItem() instanceof ItemPotion) {
             for(PotionEffect effect : PotionUtils.getEffectsFromStack(stack)) {
                 Potion potion = effect.getPotion();
-                if(containsPotion(potion,effect.getAmplifier())) {
+                if(containsPotion(potion,effect.getAmplifier()) && effect.getDuration()>20 && !potion.isInstant()) {
                     PotionEffect playerEffect = player.getActivePotionEffect(effect.getPotion());
                     if(Objects.isNull(playerEffect) || playerEffect.getAmplifier()<effect.getAmplifier())
                         return true;

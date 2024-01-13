@@ -103,6 +103,7 @@ dependencies {
     //implemented cf stuff
     implementation(fg.deobf("curse.maven:actually-additions-228404:${project.aa_version}"))
     implementation(fg.deobf("curse.maven:ae2-extended-life-570458:${project.ae2_verion}"))
+    implementation(fg.deobf("curse.maven:angry-pixel-the-betweenlands-mod-243363:${project.betweenlands_version}"))
     implementation(fg.deobf("curse.maven:aoa-311054:${project.aoa_version}"))
     implementation(fg.deobf("curse.maven:aquaculture-60028:${project.aquaculture_version}"))
     implementation(fg.deobf("curse.maven:atomicstrykers-infernal-mobs-227875:${project.aim_version}"))
@@ -175,6 +176,7 @@ dependencies {
     implementation(fg.deobf("curse.maven:silent-gems-220311:${project.sgems_version}"))
     implementation(fg.deobf("curse.maven:silent-lib-242998:${project.slib_version}"))
     implementation(fg.deobf("curse.maven:tesla-244651:${project.tesla_version}"))
+    implementation(fg.deobf("curse.maven:the-aether-ii-phosphor-not-included-917199:${project.aether_version}"))
     implementation(fg.deobf("curse.maven:the-impossible-library-661115:${project.til_version}"))
     implementation(fg.deobf("curse.maven:the-twilight-forest-227639:${project.tf_version}"))
     implementation(fg.deobf("curse.maven:thermal-cultivation-271835:${project.thermalcultivation_version}"))

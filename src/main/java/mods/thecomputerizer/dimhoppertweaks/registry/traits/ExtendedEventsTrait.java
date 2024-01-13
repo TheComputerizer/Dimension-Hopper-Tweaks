@@ -61,4 +61,6 @@ public abstract class ExtendedEventsTrait extends Trait {
     public void onShiftRightClickPotion(EntityPlayer player, ItemStack potionStack) {}
 
     public void onSetTargetToTamed(EntityPlayer player, EntityLiving attacker) {}
+
+    public void onFinishUsingItem(EntityPlayer player, ItemStack stack) {}
 }

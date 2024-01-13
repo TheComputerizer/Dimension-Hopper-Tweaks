@@ -12,6 +12,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
+import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -24,6 +25,14 @@ public class HungryFarmer extends ExtendedEventsTrait {
     public HungryFarmer() {
         super("hungry_farmer",2,3,FARMING,20,"farming|64");
         setIcon(new ResourceLocation("reskillable","textures/unlockables/hungry_farmer.png"));
+    }
+
+    @Override
+    public void onFinishUsingItem(EntityPlayer player, ItemStack stack) {
+        if(player.isSneaking() && stack.getItem() instanceof ItemFood) {
+            ISkillCapability cap = SkillWrapper.getSkillCapability(player);
+            if(Objects.nonNull(cap)) cap.togglePassiveFood((EntityPlayerMP)player,stack.getItem(),true);
+        }
     }
 
     @Override
@@ -63,6 +72,6 @@ public class HungryFarmer extends ExtendedEventsTrait {
     @Override
     public void onShiftRightClickFood(EntityPlayer player, ItemFood food) {
         ISkillCapability cap = SkillWrapper.getSkillCapability(player);
-        if(Objects.nonNull(cap)) cap.togglePassiveFood((EntityPlayerMP)player,food);
+        if(Objects.nonNull(cap)) cap.togglePassiveFood((EntityPlayerMP)player,food,false);
     }
 }

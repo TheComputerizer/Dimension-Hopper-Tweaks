@@ -194,4 +194,17 @@ public class EntityEvents {
             }
         }
     }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onFinishUsingItem(LivingEntityUseItemEvent.Finish event) {
+        if(event.getEntity() instanceof EntityPlayer) {
+            EntityPlayer player = (EntityPlayer)event.getEntity();
+            PlayerData data = PlayerDataHandler.get(player);
+            if(Objects.nonNull(data)) {
+                SkillWrapper.executeOnSkills(data, h -> {
+                    if(h instanceof ExtendedEventsTrait) ((ExtendedEventsTrait) h).onFinishUsingItem(player,event.getItem());
+                });
+            }
+        }
+    }
 }

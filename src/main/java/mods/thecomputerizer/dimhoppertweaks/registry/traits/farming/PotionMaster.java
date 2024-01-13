@@ -24,6 +24,14 @@ public class PotionMaster extends ExtendedEventsTrait {
     }
 
     @Override
+    public void onFinishUsingItem(EntityPlayer player, ItemStack stack) {
+        if(player.isSneaking() && stack.getItem() instanceof ItemPotion) {
+            ISkillCapability cap = SkillWrapper.getSkillCapability(player);
+            if(Objects.nonNull(cap)) cap.togglePassivePotion((EntityPlayerMP)player,stack,true);
+        }
+    }
+
+    @Override
     public void onPlayerTick(TickEvent.PlayerTickEvent event) {
         EntityPlayer player = event.player;
         if(Objects.nonNull(player) && !player.isCreative() && !player.isSpectator()) {
@@ -57,6 +65,6 @@ public class PotionMaster extends ExtendedEventsTrait {
     @Override
     public void onShiftRightClickPotion(EntityPlayer player, ItemStack potionStack) {
         ISkillCapability cap = SkillWrapper.getSkillCapability(player);
-        if(Objects.nonNull(cap)) cap.togglePassivePotion((EntityPlayerMP)player,potionStack);
+        if(Objects.nonNull(cap)) cap.togglePassivePotion((EntityPlayerMP)player,potionStack,false);
     }
 }

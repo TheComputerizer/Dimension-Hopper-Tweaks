@@ -26,9 +26,9 @@ public interface ISkillCapability {
     int getSkillXpMultiplier(float initialAmount);
     void decrementGatheringItems(int amount);
     boolean checkGatheringItem(Item item);
-    void togglePassiveFood(EntityPlayerMP player, Item item);
+    void togglePassiveFood(EntityPlayerMP player, Item item, boolean isEnable);
     boolean canAutoFeed(Item item);
-    void togglePassivePotion(EntityPlayerMP player, ItemStack stack);
+    void togglePassivePotion(EntityPlayerMP player, ItemStack stack, boolean isEnable);
     boolean canAutoDrink(EntityPlayerMP player, ItemStack stack);
     Set<Map.Entry<String, SkillWrapper>> getCurrentValues();
     void syncSkills(EntityPlayerMP player);

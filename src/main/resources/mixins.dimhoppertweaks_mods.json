@@ -98,6 +98,7 @@
     "silentlib.MixinGuideBookUtils",
     "tconstruct.MixinExploder",
     "tconstruct.MixinExplosionEFLN",
+    "thebetweenlands.MixinBLMaterialRegistry",
     "togetherforever.MixinAdvancementEventSyncAction",
     "toolprogression.MixinGSHelper",
     "twilightforest.MixinItemTFPeacockFan",
