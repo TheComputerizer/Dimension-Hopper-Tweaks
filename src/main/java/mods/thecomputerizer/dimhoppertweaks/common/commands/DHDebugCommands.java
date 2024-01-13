@@ -10,12 +10,20 @@ import net.minecraft.command.EntityNotFoundException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemMonsterPlacer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -43,6 +51,10 @@ public class DHDebugCommands extends DHTCommand {
         }
         if(option==3) {
             executeGamestage(server,sender,getOrNull(1,args));
+            return;
+        }
+        if(option==4) {
+            executeGive(server,sender,getOrNull(1,args),getOrNull(2,args));
             return;
         }
         sendMessage(sender,true,"options."+(sender instanceof Entity ? "entity" : "server"));
@@ -112,5 +124,36 @@ public class DHDebugCommands extends DHTCommand {
         String type = data.hasStage(stage) ? "remove" : "add";
         buildAndExecuteCommand(server,sender,"gamestage",type,"@s",stage);
         sendMessage(sender,false,"gamestage",type,stage);
+    }
+
+    private void executeGive(MinecraftServer server, ICommandSender sender, @Nullable String type,
+                             @Nullable String qualifier) throws CommandException {
+        if(Objects.isNull(type)) {
+            sendMessage(sender,true,"give");
+            return;
+        }
+        if(type.equals("mob")) {
+            if(Objects.isNull(qualifier)) {
+                sendMessage(sender,true,"give.mob");
+                return;
+            }
+            giveMob(stack -> {
+                World world = sender.getEntityWorld();
+                if(!world.isRemote) {
+                    Vec3d posVec = sender.getPositionVector();
+                    EntityItem item = new EntityItem(sender.getEntityWorld(), posVec.x, posVec.y, posVec.z, stack);
+                    item.setNoPickupDelay();
+                    item.setOwner(sender.getName());
+                    world.spawnEntity(item);
+                }
+            },qualifier);
+        }
+    }
+
+    private void giveMob(Consumer<ItemStack> itemEntityCreator, String mob) {
+        if(!mob.contains(":")) mob = "minecraft:"+mob;
+        ItemStack stack = new ItemStack(Items.SPAWN_EGG);
+        ItemMonsterPlacer.applyEntityIdToItemStack(stack,new ResourceLocation(mob));
+        itemEntityCreator.accept(stack);
     }
 }

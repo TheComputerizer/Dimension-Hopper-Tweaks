@@ -2,7 +2,7 @@ package mods.thecomputerizer.dimhoppertweaks.mixin.mods.jei;
 
 import mezz.jei.plugins.jei.info.IngredientInfoRecipe;
 import mods.thecomputerizer.dimhoppertweaks.mixin.access.IngredientInfoRecipeAccess;
-import mods.thecomputerizer.dimhoppertweaks.util.ItemUtil;
+import mods.thecomputerizer.dimhoppertweaks.util.TagUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import org.spongepowered.asm.mixin.Final;
@@ -30,7 +30,7 @@ public class MixinIngredientInfoRecipe implements IngredientInfoRecipeAccess {
         if(!(obj instanceof ItemStack)) return false;
         ItemStack toMatch = (ItemStack)obj;
         if(stack.getItem()==toMatch.getItem() && stack.getMetadata()==toMatch.getMetadata())
-            return ItemUtil.tagsMatch(stack.getTagCompound(),toMatch.getTagCompound(),true);
+            return TagUtil.tagsMatch(stack.getTagCompound(),toMatch.getTagCompound(),true);
         return false;
     }
 

@@ -66,7 +66,7 @@ public class SkillCapability implements ISkillCapability {
     public void addSkillXP(String skill, int amount, EntityPlayerMP player, boolean fromXP) {
         if(amount>0) {
             checkForExistingSkill(skill);
-            this.skillMap.get(skill).addXP(amount, player, fromXP);
+            this.skillMap.get(skill).addXP(amount,player,fromXP);
             SkillWrapper.updateTokens(player);
         }
     }

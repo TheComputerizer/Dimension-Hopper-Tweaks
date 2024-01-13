@@ -20,8 +20,10 @@ public abstract class MixinEntityWolf extends EntityTameable {
         return (float)this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).getAttributeValue();
     }
 
+    /*
     @ModifyConstant(constant = @Constant(floatValue = 20f, ordinal = 1), method = "processInteract")
     private float dimhoppertweaks$uncapTamedHealth(float constant) {
         return (float)this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).getAttributeValue();
     }
+     */
 }

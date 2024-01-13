@@ -8,6 +8,9 @@ category.dimhoppertweaks.ancient_stargate.unknown_dimension=Unknown dimension ID
 commands.dimhoppertweaks.dimensionhopper.usage=Usage: `/dimensionhopper %1$s`
 commands.dimhoppertweaks.dhd.error.blockdata=Usages: `/dhd 1` | `/dhd 1 ?` | `/dhd 1 ? entity`
 commands.dimhoppertweaks.dhd.error.entity=Failed to get entity for dhd command!
+commands.dimhoppertweaks.dhd.error.give=Usage: `/dhd 4 type qualifier`
+commands.dimhoppertweaks.dhd.error.give.mob=Usage: `/dhd 4 mob id`
+commands.dimhoppertweaks.dhd.error.give.type=Unknown give type `%1$s`
 commands.dimhoppertweaks.dhd.error.number=Error parsing number from argument `%1$s` for dhd command
 commands.dimhoppertweaks.dhd.error.gamestage=Usage: `/dhd 2 gamestage`
 commands.dimhoppertweaks.dhd.error.options.entity=Options for /dhd command: `/dhd 1 ?` = `/blockdata ~ ~? ~ {}`

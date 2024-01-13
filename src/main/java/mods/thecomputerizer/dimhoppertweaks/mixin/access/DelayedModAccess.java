@@ -3,6 +3,7 @@ package mods.thecomputerizer.dimhoppertweaks.mixin.access;
 import androsa.gaiadimension.registry.GDBlocks;
 import androsa.gaiadimension.world.TeleporterGaia;
 import appeng.items.parts.ItemFacade;
+import c4.conarm.client.gui.PreviewPlayer;
 import c4.conarm.lib.tinkering.TinkersArmor;
 import cofh.thermalexpansion.item.ItemFlorb;
 import cofh.thermalexpansion.item.ItemMorb;
@@ -333,7 +334,7 @@ public class DelayedModAccess {
     }
 
     public static boolean isFakeEntity(Entity entity) {
-        return entity.getEntityData().getBoolean("isFakeEntityForMoBends");
+        return entity instanceof PreviewPlayer || entity.getEntityData().getBoolean("isFakeEntityForMoBends");
     }
 
     public static Block getGDKeystoneBlock() {

@@ -10,7 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
-import java.util.function.BiFunction;
 
 public class ItemUtil {
 
@@ -39,27 +38,5 @@ public class ItemUtil {
 
     public static boolean isHolding(EntityPlayer player, Item item) {
         return player.getHeldItemMainhand().getItem()==item || player.getHeldItemOffhand().getItem()==item;
-    }
-
-    public static boolean tagsMatch(@Nullable NBTTagCompound tag, @Nullable NBTTagCompound toMatch, boolean nullMatchesAny) {
-        if(Objects.isNull(toMatch)) return nullMatchesAny || Objects.isNull(tag);
-        if(Objects.isNull(tag)) return false;
-        for(String key : toMatch.getKeySet()) {
-            if(!tag.hasKey(key) || !innerMatch(tag.getTag(key),toMatch.getTag(key),nullMatchesAny)) return false;
-        }
-        return true;
-    }
-
-    private static boolean innerMatch(NBTBase tag, NBTBase toMatch, boolean nullMatchesAny) {
-        if(toMatch.toString().equals(tag.toString())) return true;
-        if(toMatch instanceof NBTPrimitive) {
-            if(!(tag instanceof NBTPrimitive)) return false;
-            return ((NBTPrimitive)toMatch).getDouble()==((NBTPrimitive)tag).getDouble();
-        }
-        if(toMatch instanceof NBTTagCompound) {
-            if(!(tag instanceof NBTTagCompound)) return false;
-            return tagsMatch((NBTTagCompound)tag,(NBTTagCompound)toMatch,nullMatchesAny);
-        }
-        return tag.equals(toMatch);
     }
 }

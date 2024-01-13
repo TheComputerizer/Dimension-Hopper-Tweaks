@@ -165,6 +165,7 @@ dependencies {
     implementation(fg.deobf("curse.maven:psi-241665:${project.psi_version}"))
     implementation(fg.deobf("curse.maven:psio-339394:${project.psio_version}"))
     implementation(fg.deobf("curse.maven:quality-tools-264756:${project.qt_version}"))
+    implementation(fg.deobf("curse.maven:quark-243121:${project.quark_version}"))
     implementation(fg.deobf("curse.maven:random-things-59816:${project.randomthings_version}"))
     implementation(fg.deobf("curse.maven:recipe-stages-280554:${project.recipestages_version}"))
     implementation(fg.deobf("curse.maven:redstone-flux-270789:${project.rf_version}"))

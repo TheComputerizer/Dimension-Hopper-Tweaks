@@ -23,13 +23,28 @@ public class LivingBattery extends ExtendedEventsTrait {
     @Override
     public void onPlayerTick(TickEvent.PlayerTickEvent ev) {
         EntityPlayer player = ev.player;
-        int amount = player.isSneaking() ? 100 : 10;
-        if(!player.world.isRemote && player.experienceTotal>=amount) {
-            ItemStack mainStack = player.getHeldItemMainhand();
-            if(!tryFillingPSI(mainStack,player,amount)) tryFillingMana(mainStack,player,amount);
-            ItemStack offStack = player.getHeldItemOffhand();
-            if(!tryFillingPSI(offStack,player,amount)) tryFillingMana(offStack,player,amount);
+        if(!player.world.isRemote) {
+            int amount = player.isSneaking() ? 100 : 10;
+            if(hasEnoughXP(player,amount)) {
+                ItemStack mainStack = player.getHeldItemMainhand();
+                if(!tryFillingPSI(mainStack,player,amount)) tryFillingMana(mainStack,player,amount);
+                ItemStack offStack = player.getHeldItemOffhand();
+                if(!tryFillingPSI(offStack,player,amount)) tryFillingMana(offStack,player,amount);
+            }
         }
+    }
+
+    private boolean hasEnoughXP(EntityPlayer player, int drainAmount) {
+        int totalXP = 0;
+        for(int l=1; l<player.experienceLevel; l++) {
+            totalXP+=getXPBarCap(l);
+            if(totalXP>=drainAmount) return true;
+        }
+        return (totalXP+(int)(player.experience*(float)getXPBarCap(player.experienceLevel)))>=drainAmount;
+    }
+    
+    private int getXPBarCap(int level) {
+        return level>=30 ? 112+(level-30)*9 : (level>=15 ? 37+(level-15)*5 : 7+level*2);
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")

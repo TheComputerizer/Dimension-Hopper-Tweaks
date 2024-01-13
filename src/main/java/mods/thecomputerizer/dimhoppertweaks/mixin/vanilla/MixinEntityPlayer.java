@@ -1,14 +1,20 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.vanilla;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(EntityPlayer.class)
 public abstract class MixinEntityPlayer extends EntityLivingBase {
@@ -66,5 +72,19 @@ public abstract class MixinEntityPlayer extends EntityLivingBase {
     @Overwrite
     public void addScore(int score) {
         this.dataManager.set(PLAYER_SCORE,MathHelper.clamp(this.getScore()+score,0,Integer.MAX_VALUE));
+    }
+
+    @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;processInitialInteract("+
+            "Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;)Z"), method = "interactOn")
+    private boolean dimhoppertweaks$fixTamedHealth(Entity entity, EntityPlayer player, EnumHand hand) {
+        if(entity instanceof EntityTameable) {
+            EntityTameable tameable = (EntityTameable)entity;
+            boolean wasTamed = tameable.isTamed();
+            boolean ret = entity.processInitialInteract(player,hand);
+            if(!wasTamed && tameable.isTamed())
+                tameable.setHealth((float)this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).getAttributeValue());
+            return ret;
+        }
+        return entity.processInitialInteract(player, hand);
     }
 }
