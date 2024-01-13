@@ -116,7 +116,7 @@
   "client": [
     "aoa3.MixinKeyBinder",
     "avaritia.MixinModelArmorInfinity",
-    "mobends.MixinLayerCustomBipedArmor",
+    "mobends.MixinArmorWrapper",
     "reskillable.MixinGuiSkills",
     "silentgems.MixinItemEnchantmentToken"
   ]

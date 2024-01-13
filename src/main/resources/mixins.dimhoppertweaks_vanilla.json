@@ -25,7 +25,6 @@
     "MixinWorldServer"
   ],
   "client": [
-    "MixinLayerArmorBase",
     "MixinParticle",
     "MixinRenderManager",
     "MixinShaderGroup"
