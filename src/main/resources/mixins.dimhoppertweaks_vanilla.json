@@ -21,6 +21,7 @@
     "MixinStructureComponent",
     "MixinTileEntity",
     "MixinTileEntityFurnace",
+    "MixinWorld",
     "MixinWorldServer"
   ],
   "client": [

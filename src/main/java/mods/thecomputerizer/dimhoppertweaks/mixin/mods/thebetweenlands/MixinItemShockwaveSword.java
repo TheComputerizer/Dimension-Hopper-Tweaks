@@ -20,6 +20,6 @@ public abstract class MixinItemShockwaveSword extends ItemBLSword {
      */
     @Overwrite
     public void setDamage(@Nonnull ItemStack stack, int damage) {
-        super.setDamage(stack,stack.getMaxDamage());
+        super.setDamage(stack,0);
     }
 }
