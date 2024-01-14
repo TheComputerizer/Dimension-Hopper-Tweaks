@@ -83,6 +83,7 @@
     "mobends.MixinEntityRenderHandler",
     "mobends.MixinHumanoidLimbWrapper",
     "mobends.MixinHumanoidPartWrapper",
+    "mobends.MixinPartContainer",
     "nodami.MixinEntityHandler",
     "openblocks.MixinLastStandEnchantmentsHandler",
     "openblocks.MixinTrophy",

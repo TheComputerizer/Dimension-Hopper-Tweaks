@@ -1,30 +1,29 @@
 package mods.thecomputerizer.dimhoppertweaks.client;
 
-import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.client.render.RenderFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.client.render.RenderHomingProjectile;
+import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.registry.ItemRegistry;
-import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.HomingProjectile;
+import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraft.world.WorldProvider;
+import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
+import java.util.function.Function;
 
-@SuppressWarnings("SameParameterValue")
-@Mod.EventBusSubscriber(modid = DHTRef.MODID, value = Side.CLIENT)
-public final class ClientRegistryHandler {
+public final class DHTClient {
     public final static ResourceLocation FORCEFIELD = new ResourceLocation(DHTRef.MODID,"textures/models/forcefield.png");
     public final static ResourceLocation ATTACK = new ResourceLocation(DHTRef.MODID,"textures/models/attack.png");
     public static OBJModel FORCEFIELD_MODEL;
@@ -34,12 +33,7 @@ public final class ClientRegistryHandler {
         registerEntityRenderers();
     }
 
-    @SubscribeEvent
-    public static void onModelRegister(ModelRegistryEvent event) {
-        registerBasicItemModels();
-    }
-
-    private static void registerBasicItemModels() {
+    public static void registerBasicItemModels() {
         registerItemModels();
     }
 
@@ -66,6 +60,7 @@ public final class ClientRegistryHandler {
         return getModelRes(item.getRegistryName(),"inventory");
     }
 
+    @SuppressWarnings("SameParameterValue")
     private static ModelResourceLocation getModelRes(String path) {
         return getModelRes(DHTRef.res(path),"");
     }
@@ -74,5 +69,30 @@ public final class ClientRegistryHandler {
         if(Objects.isNull(res)) res = DHTRef.res("null_model");
         if(StringUtils.isBlank(variant)) variant = "normal";
         return new ModelResourceLocation(res,variant);
+    }
+
+    public static void queryFogRender() {
+        Minecraft mc = Minecraft.getMinecraft();
+        WorldClient world = mc.world;
+        WorldProvider provider = getOrNull(world,wc -> wc.provider);
+        int dimension = getOrDef(provider,WorldProvider::getDimension,Integer.MAX_VALUE);
+        IRenderHandler cloudRender = getOrNull(provider,WorldProvider::getCloudRenderer);
+        IRenderHandler skyRender = getOrNull(provider,WorldProvider::getSkyRenderer);
+        IRenderHandler weatherRender = getOrNull(provider,WorldProvider::getWeatherRenderer);
+        DHTRef.LOGGER.error("WORLD INFO: `PROVIDER {} | DIMENSION {} | CLOUD RENDER {} | SKY RENDER {} | "+
+                "WEATHER RENDER {}`",getClassName(provider),dimension,getClassName(cloudRender),getClassName(skyRender),
+                getClassName(weatherRender));
+    }
+
+    public static <T> @Nullable String getClassName(@Nullable T obj) {
+        return getOrNull(obj,o -> o.getClass().getName());
+    }
+
+    public static <T,V> @Nullable V getOrNull(@Nullable T obj, Function<T,V> converter) {
+        return getOrDef(obj,converter,null);
+    }
+
+    public static <T,V> V getOrDef(@Nullable T obj, Function<T,V> converter, V defVal) {
+        return Objects.nonNull(obj) ? converter.apply(obj) : defVal;
     }
 }

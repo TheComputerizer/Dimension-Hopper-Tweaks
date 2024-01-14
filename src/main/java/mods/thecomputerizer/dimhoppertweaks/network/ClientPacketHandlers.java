@@ -1,6 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.network;
 
 import mods.thecomputerizer.dimhoppertweaks.client.ClientEvents;
+import mods.thecomputerizer.dimhoppertweaks.client.DHTClient;
 import mods.thecomputerizer.dimhoppertweaks.client.render.ClientEffects;
 import mods.thecomputerizer.dimhoppertweaks.client.render.RenderDelayedAOE;
 import mods.thecomputerizer.dimhoppertweaks.client.render.RenderEvents;
@@ -96,6 +97,6 @@ public class ClientPacketHandlers {
 
     @SideOnly(Side.CLIENT)
     public static void handleGenericClientQuery(String type) {
-        if(type.equals("fog")) ClientEvents.queryFogRender();
+        if(type.equals("fog")) DHTClient.queryFogRender();
     }
 }

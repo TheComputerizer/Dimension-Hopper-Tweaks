@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks;
 
-import mods.thecomputerizer.dimhoppertweaks.client.ClientRegistryHandler;
+import mods.thecomputerizer.dimhoppertweaks.client.DHTClient;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillCapabilityStorage;
@@ -34,7 +34,7 @@ public class DimHopperTweaks {
         CapabilityManager.INSTANCE.register(ISkillCapability.class,new SkillCapabilityStorage(),SkillCapability::new);
         if (FMLCommonHandler.instance().getSide().isClient()) {
             OBJLoader.INSTANCE.addDomain(DHTRef.MODID);
-            ClientRegistryHandler.registerRenderers();
+            DHTClient.registerRenderers();
         }
         DHTRef.LOGGER.info("Completed pre-init");
     }

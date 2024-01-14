@@ -5,23 +5,24 @@ import mods.thecomputerizer.dimhoppertweaks.mixin.access.IngredientInfoRecipeAcc
 import mods.thecomputerizer.dimhoppertweaks.util.TagUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Mixin(value = IngredientInfoRecipe.class, remap = false)
 public class MixinIngredientInfoRecipe implements IngredientInfoRecipeAccess {
 
-    @Shadow @Final private List<Object> ingredients;
+    @Shadow @Final @Mutable private List<? super Object> ingredients;
 
     @Override
     public boolean dimhoppertweaks$removeIngredient(Object obj) {
-        this.ingredients.removeIf(element -> (element instanceof ItemStack &&
+        List<? super Object> updatedIngredients = new ArrayList<>(this.ingredients);
+        updatedIngredients.removeIf(element -> (element instanceof ItemStack &&
                 dimhoppertweaks$matchesItemStack((ItemStack) element, obj)) || (element instanceof FluidStack &&
                 dimhoppertweaks$matchesFluidStack((FluidStack) element, obj)));
+        this.ingredients = Collections.unmodifiableList(updatedIngredients);
         return this.ingredients.isEmpty();
     }
 

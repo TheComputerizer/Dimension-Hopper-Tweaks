@@ -6,14 +6,12 @@ import goblinbob.mobends.core.bender.EntityBenderRegistry;
 import goblinbob.mobends.core.client.model.ModelPartTransform;
 import goblinbob.mobends.core.data.EntityData;
 import goblinbob.mobends.core.data.EntityDatabase;
-import goblinbob.mobends.standard.client.model.armor.HumanoidLimbWrapper;
-import goblinbob.mobends.standard.client.model.armor.HumanoidPartWrapper;
-import goblinbob.mobends.standard.client.model.armor.IPartWrapper;
-import goblinbob.mobends.standard.client.model.armor.MalformedArmorModelException;
+import goblinbob.mobends.standard.client.model.armor.*;
 import goblinbob.mobends.standard.data.BipedEntityData;
 import goblinbob.mobends.standard.data.PlayerData;
 import goblinbob.mobends.standard.previewer.PlayerPreviewer;
 import mods.thecomputerizer.dimhoppertweaks.mixin.access.HumanoidPartAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.access.ModelConstructsArmorAccess;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
@@ -22,11 +20,18 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
+import java.util.function.Supplier;
 
 @ParametersAreNonnullByDefault
 public class ModelConstructsArmorWrapper extends ModelBiped {
 
     private static final Map<EntityEquipmentSlot,Map<ModelConstructsArmor,ModelConstructsArmorWrapper>> INSTANCE_MAP = new EnumMap<>(EntityEquipmentSlot.class);
+    private static final IPartWrapper.ModelPartSetter headSetter = (model,part) -> model.bipedHead = part;
+    private static final IPartWrapper.ModelPartSetter bodySetter = (model,part) -> model.bipedBody = part;
+    private static final IPartWrapper.ModelPartSetter leftArmSetter = (model,part) -> model.bipedLeftArm = part;
+    private static final IPartWrapper.ModelPartSetter rightArmSetter = (model,part) -> model.bipedRightArm = part;
+    private static final IPartWrapper.ModelPartSetter leftLegSetter = (model,part) -> model.bipedLeftLeg = part;
+    private static final IPartWrapper.ModelPartSetter rightLegSetter = (model,part) -> model.bipedRightLeg = part;
 
     public static ModelConstructsArmorWrapper getInstance(ModelConstructsArmor original, EntityEquipmentSlot slot) {
         Map<ModelConstructsArmor,ModelConstructsArmorWrapper> modelMap = INSTANCE_MAP.get(slot);
@@ -42,82 +47,92 @@ public class ModelConstructsArmorWrapper extends ModelBiped {
         return instance;
     }
 
-    protected ModelConstructsArmor original;
-    protected boolean mutated = true;
-    protected EntityEquipmentSlot slot;
-    protected boolean isActive = false;
+    private final Map<String,Supplier<ModelRenderer>> partSuppliers;
+    private final List<String> visibleParts;
     private final List<IPartWrapper> wrappers;
+    protected ModelConstructsArmor original;
+    protected EntityEquipmentSlot slot;
+    protected boolean mutated = true;
+    protected boolean isActive = false;
     protected ModelPartTransform bodyTransform;
-    public ModelRenderer bipedPants;
-    public ModelRenderer bipedLeftBoot;
-    public ModelRenderer bipedRightBoot;
-    private static final IPartWrapper.ModelPartSetter headSetter = (model,part) -> model.bipedHead = part;
-    private static final IPartWrapper.ModelPartSetter headwearSetter = (model,part) -> model.bipedHeadwear = part;
-    private static final IPartWrapper.ModelPartSetter bodySetter = (model,part) -> model.bipedBody = part;
-    private static final IPartWrapper.ModelPartSetter leftArmSetter = (model,part) -> model.bipedLeftArm = part;
-    private static final IPartWrapper.ModelPartSetter rightArmSetter = (model,part) -> model.bipedRightArm = part;
-    private static final IPartWrapper.ModelPartSetter leftLegSetter = (model, part) -> model.bipedLeftLeg = part;
-    private static final IPartWrapper.ModelPartSetter rightLegSetter = (model, part) -> model.bipedRightLeg = part;
 
     private ModelConstructsArmorWrapper(ModelConstructsArmor original, EntityEquipmentSlot slot) {
         this.original = original;
         this.slot = slot;
-        this.bipedHead = original.headAnchor;
-        this.bipedHeadwear = original.headAnchor;
-        this.bipedBody = original.chestAnchor;
-        this.bipedLeftArm = original.armLeftAnchor;
-        this.bipedRightArm = original.armRightAnchor;
-        this.bipedPants = original.pantsAnchor;
-        this.bipedLeftLeg = original.legLeftAnchor;
-        this.bipedRightLeg = original.legRightAnchor;
-        this.bipedLeftBoot = original.bootLeftAnchor;
-        this.bipedRightBoot= original.bootRightAnchor;
+        this.partSuppliers = new HashMap<>();
+        this.bipedHead = initPart("head",original.headAnchor,() -> this.bipedHead);
+        this.bipedHeadwear = initPart("headwear",original.bipedHeadwear,() -> this.bipedHeadwear);
+        this.bipedBody = initPart("body",slot==EntityEquipmentSlot.LEGS ? original.pantsAnchor :
+                original.chestAnchor,() -> this.bipedBody);
+        this.bipedLeftArm = initPart("leftarm",original.armLeftAnchor,() -> this.bipedLeftArm);
+        this.bipedRightArm = initPart("rightarm",original.armRightAnchor,() -> this.bipedRightArm);
+        this.bipedLeftLeg = initPart("leftleg",slot==EntityEquipmentSlot.FEET ? original.bootLeftAnchor :
+                original.legLeftAnchor,() -> this.bipedLeftLeg);
+        this.bipedRightLeg = initPart("rightleg",slot==EntityEquipmentSlot.FEET ? original.bootRightAnchor :
+                original.legRightAnchor,() -> this.bipedRightLeg);
         this.bodyTransform = new ModelPartTransform();
+        this.visibleParts = new ArrayList<>();
         this.wrappers = new ArrayList<>();
-        this.registerWrapper(original,this.bipedHead,headSetter,data -> data.head)
-                .setParent(this.bodyTransform);
-        this.registerWrapper(original,this.bipedHeadwear,headwearSetter,data -> data.head)
-                .setParent(this.bodyTransform);
-        this.registerWrapper(original,this.bipedLeftArm,leftArmSetter,data -> data.leftArm,data -> data.leftForeArm,
-                4f,0.001f).offsetLower(0f,-4f,-2f).setParent(this.bodyTransform);
-        this.registerWrapper(original,this.bipedRightArm, rightArmSetter,data -> data.rightArm, data -> data.rightForeArm,
-                4f,0.001f).offsetLower(0f,-4f,-2f).setParent(this.bodyTransform);
-        if(slot==EntityEquipmentSlot.LEGS) {
-            this.registerWrapper(original, this.bipedPants, bodySetter, data -> data.body).offsetInner(0f,-12f,0f);
-            this.registerWrapper(original,this.bipedLeftLeg,leftLegSetter,data -> data.leftLeg, data -> data.leftForeLeg,
-                    6f,0f).offsetLower(0.75f,-6f,2f).offsetInner(0.75f,0f,0f);
-            this.registerWrapper(original,this.bipedRightLeg,rightLegSetter,data -> data.rightLeg, data -> data.rightForeLeg,
-                    6f,0f).offsetLower(-0.75f,-6f,2f).offsetInner(-0.75f,0f,0f);
+        registerSlotBasedWrappers();
+    }
+
+    private ModelRenderer initPart(String name, ModelRenderer ref, Supplier<ModelRenderer> supplier) {
+        this.partSuppliers.put(name,supplier);
+        return ref;
+    }
+
+    private void registerSlotBasedWrappers() {
+        boolean isHead = this.slot==EntityEquipmentSlot.HEAD;
+        boolean isChest = this.slot==EntityEquipmentSlot.CHEST;
+        boolean isLegs = this.slot==EntityEquipmentSlot.LEGS;
+        boolean isFeet = this.slot==EntityEquipmentSlot.FEET;
+        if(isHead)
+            this.registerWrapper(this.original,this.bipedHead,headSetter,data -> data.head,"head")
+                    .setParent(this.bodyTransform);
+        if(isChest || isLegs)
+            this.registerWrapper(this.original,this.bipedBody,bodySetter,data -> data.body,"body")
+                    .offsetInner(0f,-12f,0f);
+        if(isChest) {
+            this.registerWrapper(this.original,this.bipedLeftArm,leftArmSetter,data -> data.leftArm,
+                            data -> data.leftForeArm,4f,0.001f,"leftarm")
+                    .offsetLower(0f,-4f,-2f).setParent(this.bodyTransform);
+            this.registerWrapper(this.original,this.bipedRightArm, rightArmSetter,data -> data.rightArm,
+                            data -> data.rightForeArm,4f,0.001f,"rightarm")
+                    .offsetLower(0f,-4f,-2f).setParent(this.bodyTransform);
         }
-        else {
-            this.registerWrapper(original,this.bipedBody,bodySetter,data -> data.body).offsetInner(0f,-12f,0f);
-            this.registerWrapper(original,this.bipedLeftLeg,leftLegSetter,data -> data.leftLeg, data -> data.leftForeLeg,
-                    6f,0f).offsetLower(0.75f,-6f,2f).offsetInner(0.75f,0f,0f);
-            this.registerWrapper(original,this.bipedRightLeg,rightLegSetter,data -> data.rightLeg, data -> data.rightForeLeg,
-                    6f,0f).offsetLower(-0.75f,-6f,2f).offsetInner(-0.75f,0f,0f);
+        if(isLegs || isFeet) {
+            this.registerWrapper(this.original,this.bipedLeftLeg,leftLegSetter,data -> data.leftLeg,
+                            data -> data.leftForeLeg,6f,0f,"leftleg")
+                    .offsetLower(0.75f,-6f,2f).offsetInner(0.75f,0f,0f);
+            this.registerWrapper(this.original,this.bipedRightLeg,rightLegSetter,data -> data.rightLeg,
+                            data -> data.rightForeLeg,6f,0f,"rightleg")
+                    .offsetLower(-0.75f,-6f,2f).offsetInner(-0.75f,0f,0f);
         }
     }
 
     private HumanoidPartWrapper registerWrapper(
-            ModelBiped vanillaModel, ModelRenderer vanillaPart, IPartWrapper.ModelPartSetter setter,
-            IPartWrapper.DataPartSelector dataSelector) {
-        HumanoidPartWrapper wrapper = new HumanoidPartWrapper(vanillaModel, vanillaPart, setter, dataSelector);
+            ModelBiped model, ModelRenderer part, IPartWrapper.ModelPartSetter setter,
+            IPartWrapper.DataPartSelector data, String partName) {
+        HumanoidPartWrapper wrapper = new HumanoidPartWrapper(model,part,setter,data);
+        this.visibleParts.add(partName);
         this.wrappers.add(wrapper);
         return wrapper;
     }
 
     private HumanoidLimbWrapper registerWrapper(
-            ModelBiped vanillaModel, ModelRenderer vanillaPart, IPartWrapper.ModelPartSetter setter,
+            ModelBiped model, ModelRenderer part, IPartWrapper.ModelPartSetter setter,
             IPartWrapper.DataPartSelector data, IPartWrapper.DataPartSelector lowerData, float cutPlane,
-            float inflation) {
-        HumanoidLimbWrapper wrapper = new HumanoidLimbWrapper(vanillaModel,vanillaPart,setter,data,lowerData,cutPlane,inflation);
+            float inflation, String partName) {
+        HumanoidLimbWrapper wrapper = new HumanoidLimbWrapper(model,part,setter,data,lowerData,cutPlane,inflation);
+        this.visibleParts.add(partName);
         this.wrappers.add(wrapper);
         return wrapper;
     }
 
-    public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+    public void render(Entity entity, float limbSwing, float swingAmount, float ageInTicks, float headYaw,
+                       float headPitch, float scale) {
         if(!this.mutated) throw new MalformedArmorModelException("Operating on a demutated armor wrapper.");
-        else if (entity instanceof EntityLivingBase) {
+        else if(entity instanceof EntityLivingBase) {
             EntityLivingBase entityLiving = (EntityLivingBase)entity;
             EntityBender<EntityLivingBase> bender = EntityBenderRegistry.instance.getForEntity(entityLiving);
             if(Objects.nonNull(bender)) {
@@ -129,9 +144,10 @@ public class ModelConstructsArmorWrapper extends ModelBiped {
                     this.bodyTransform.syncUp(dataBiped.body);
                     this.wrappers.forEach(group -> group.syncUp(dataBiped));
                     this.apply();
-                    this.original.setModelAttributes(this);
                     setParts();
-                    this.original.render(entity,limbSwing,limbSwingAmount,ageInTicks,netHeadYaw,headPitch,scale);
+                    this.original.setModelAttributes(this);
+                    ((ModelConstructsArmorAccess)this.original).dimhoppertweaks$render(
+                            entity,limbSwing,swingAmount,ageInTicks,headYaw,headPitch,scale);
                     this.deapply();
                 }
             }
@@ -139,24 +155,22 @@ public class ModelConstructsArmorWrapper extends ModelBiped {
     }
 
     private void setParts() {
-        this.bipedHead.showModel = this.slot == EntityEquipmentSlot.HEAD;
-        this.bipedBody.showModel = this.slot == EntityEquipmentSlot.CHEST || this.slot == EntityEquipmentSlot.LEGS;
-        this.bipedRightArm.showModel = this.slot == EntityEquipmentSlot.CHEST;
-        this.bipedLeftArm.showModel = this.slot == EntityEquipmentSlot.CHEST;
-        this.bipedLeftLeg.showModel = this.slot == EntityEquipmentSlot.LEGS || this.slot == EntityEquipmentSlot.FEET;
-        this.bipedRightLeg.showModel = this.slot == EntityEquipmentSlot.LEGS || this.slot == EntityEquipmentSlot.FEET;
-        this.bipedHeadwear.showModel = false;
+        for(ModelRenderer part : this.original.boxList) part.showModel = false;
+        for(Map.Entry<String,Supplier<ModelRenderer>> entry : this.partSuppliers.entrySet())
+            if(this.visibleParts.contains(entry.getKey())) showChildren(entry.getValue().get());
+    }
+
+    private void showChildren(ModelRenderer parent) {
+        parent.showModel = true;
+        if(Objects.nonNull(parent.childModels))
+            for(ModelRenderer child : parent.childModels)
+                showChildren(child);
+        if(parent instanceof PartContainer) showChildren(((PartContainer)parent).getModel());
     }
 
     @Override
-    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw,
-                                  float headPitch, float scaleFactor, Entity entity) {}
-
-    public void demutate() {
-        this.deapply();
-        this.wrappers.clear();
-        this.mutated = false;
-    }
+    public void setRotationAngles(float limbSwing, float swingAmount, float ageInTicks, float headYaw, float headPitch,
+                                  float scale, Entity entity) {}
 
     public void apply() {
         if(!this.isActive) {

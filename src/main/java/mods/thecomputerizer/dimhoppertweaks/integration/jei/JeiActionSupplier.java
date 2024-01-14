@@ -9,7 +9,6 @@ import mezz.jei.api.IJeiRuntime;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;
 import mezz.jei.api.JEIPlugin;
-import mezz.jei.startup.ModRegistry;
 import mods.thecomputerizer.dimhoppertweaks.mixin.access.DelayedModAccess;
 import mods.thecomputerizer.dimhoppertweaks.mixin.access.ModRegistryAccess;
 import net.minecraft.item.ItemStack;

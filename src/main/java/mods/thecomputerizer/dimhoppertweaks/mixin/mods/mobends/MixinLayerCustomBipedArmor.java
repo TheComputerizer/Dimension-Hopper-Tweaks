@@ -31,9 +31,9 @@ public class MixinLayerCustomBipedArmor {
         ModelBiped suggestedModel = ForgeHooksClient.getArmorModel(entity,stack,slot,model);
         boolean shouldBeMutated = !ModConfig.shouldKeepArmorAsVanilla(stack.getItem()) && data instanceof BipedEntityData;
         try {
-            if(suggestedModel instanceof ModelConstructsArmor)
-                return ModelConstructsArmorWrapper.getInstance((ModelConstructsArmor)suggestedModel,slot);
-            return ArmorModelFactory.getArmorModel(suggestedModel, shouldBeMutated);
+            return suggestedModel instanceof ModelConstructsArmor ?
+                    ModelConstructsArmorWrapper.getInstance((ModelConstructsArmor)suggestedModel,slot) :
+                    ArmorModelFactory.getArmorModel(suggestedModel,shouldBeMutated);
         } catch (MalformedArmorModelException ex) {
             DHTRef.LOGGER.error("Malformed armor model or something",ex);
             return suggestedModel;

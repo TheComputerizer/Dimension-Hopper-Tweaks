@@ -1,7 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.registry.entities.boss;
 
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
-import mods.thecomputerizer.dimhoppertweaks.client.ClientRegistryHandler;
+import mods.thecomputerizer.dimhoppertweaks.client.DHTClient;
 import mods.thecomputerizer.dimhoppertweaks.registry.SoundRegistry;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.HomingProjectile;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.phase.*;
@@ -145,14 +145,14 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
     @Override
     public void setDead() {
         super.setDead();
-        ClientRegistryHandler.FOG_DENSITY_OVERRIDE = -1f;
+        DHTClient.FOG_DENSITY_OVERRIDE = -1f;
         this.onAddedToWorld();
     }
 
     @Override
     public void onAddedToWorld() {
         super.onAddedToWorld();
-        ClientRegistryHandler.FOG_DENSITY_OVERRIDE = 0f;
+        DHTClient.FOG_DENSITY_OVERRIDE = 0f;
     }
 
     @Override

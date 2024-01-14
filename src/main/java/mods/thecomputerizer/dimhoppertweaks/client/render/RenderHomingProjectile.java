@@ -4,7 +4,7 @@ import codechicken.lib.colour.ColourRGBA;
 import codechicken.lib.texture.TextureUtils;
 import codechicken.lib.util.TransformUtils;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
-import mods.thecomputerizer.dimhoppertweaks.client.ClientRegistryHandler;
+import mods.thecomputerizer.dimhoppertweaks.client.DHTClient;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.HomingProjectile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -34,7 +34,7 @@ public class RenderHomingProjectile extends Render<HomingProjectile> {
 
     @Override
     public void doRender(HomingProjectile entity, double x, double y, double z, float entityYaw, float partialTicks) {
-        OBJModel.OBJBakedModel bakedForceField = (OBJModel.OBJBakedModel) ClientRegistryHandler.FORCEFIELD_MODEL.bake(TransformUtils.DEFAULT_BLOCK, DefaultVertexFormats.BLOCK, TextureUtils.bakedTextureGetter);
+        OBJModel.OBJBakedModel bakedForceField = (OBJModel.OBJBakedModel) DHTClient.FORCEFIELD_MODEL.bake(TransformUtils.DEFAULT_BLOCK, DefaultVertexFormats.BLOCK, TextureUtils.bakedTextureGetter);
         GlStateManager.disableCull();
         GlStateManager.disableAlpha();
         GlStateManager.enableBlend();

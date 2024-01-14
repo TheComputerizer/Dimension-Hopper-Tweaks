@@ -18,6 +18,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -37,6 +38,11 @@ public class ClientEvents {
     public static List<Tuple<Potion,Integer>> autoPotionItems = new ArrayList<>();
     private static boolean shaderLoaded = false;
     private static boolean screenShakePositive = true;
+
+    @SubscribeEvent
+    public static void onModelRegister(ModelRegistryEvent event) {
+        DHTClient.registerBasicItemModels();
+    }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onFogDensity(EntityViewRenderEvent.FogDensity event) {
@@ -124,17 +130,5 @@ public class ClientEvents {
                 if(effect.getPotion()==validPotion.getFirst() && effect.getAmplifier()==validPotion.getSecond())
                     return validPotion;
         return null;
-    }
-
-    public static void queryFogRender() {
-        Minecraft mc = Minecraft.getMinecraft();
-        int fogMode = GL11.glGetInteger(GL11.GL_FOG_MODE);
-        int fogStart = GL11.glGetInteger(GL11.GL_FOG_START);
-        int fogEnd = GL11.glGetInteger(GL11.GL_FOG_END);
-        int fogDensity = GL11.glGetInteger(GL11.GL_FOG_DENSITY);
-        int fogColor = GL11.glGetInteger(GL11.GL_FOG_COLOR);
-        boolean fog = GL11.glIsEnabled(GL11.GL_FOG);
-        DHTRef.LOGGER.error("FOG ENABLED {} | MODE {} | START {} | END {} | DENSITY {} | COLOR {}",fog,fogMode,
-                fogStart,fogEnd,fogDensity,fogColor);
     }
 }
