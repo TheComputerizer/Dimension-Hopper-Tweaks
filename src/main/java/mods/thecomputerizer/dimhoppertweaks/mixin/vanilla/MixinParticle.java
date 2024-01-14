@@ -24,6 +24,6 @@ public class MixinParticle {
      */
     @Overwrite
     public int getBrightnessForRender(float partialTick) {
-        return 15;
+        return 15 << 20 | 15 << 4;
     }
 }
