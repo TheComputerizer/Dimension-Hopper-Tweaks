@@ -10,31 +10,25 @@ import cofh.thermalexpansion.item.ItemMorb;
 import crazypants.enderio.base.item.soulvial.ItemSoulVial;
 import crazypants.enderio.base.item.spawner.ItemBrokenSpawner;
 import de.ellpeck.naturesaura.blocks.tiles.TileEntityAutoCrafter;
-import goblinbob.mobends.core.data.EntityData;
-import goblinbob.mobends.core.data.EntityDatabase;
-import goblinbob.mobends.standard.client.model.armor.ArmorModelFactory;
-import goblinbob.mobends.standard.client.model.armor.MalformedArmorModelException;
 import goblinbob.mobends.standard.client.renderer.entity.layers.LayerCustomBipedArmor;
-import goblinbob.mobends.standard.data.BipedEntityData;
 import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
 import mariot7.xlfoodmod.init.ItemListxlfoodmod;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.integration.crafttweaker.CTPassthrough;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketSendKeyPressed;
-import morph.avaritia.client.render.entity.ModelArmorInfinity;
 import net.darkhax.gamestages.GameStageHelper;
 import net.darkhax.gamestages.data.IStageData;
 import net.darkhax.huntingdim.item.ItemBiomeChanger;
 import net.darkhax.orestages.api.OreTiersAPI;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.entity.layers.LayerArmorBase;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemEnchantedBook;
+import net.minecraft.item.ItemMonsterPlacer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
@@ -351,25 +345,8 @@ public class DelayedModAccess {
     }
 
     @SideOnly(Side.CLIENT)
-    public static <M extends ModelBase> boolean isInfinityArmorModel(M model) {
-        return model instanceof ModelArmorInfinity;
-    }
-
-    @SideOnly(Side.CLIENT)
     public static boolean isMoBendsArmorLayer(LayerArmorBase<?> layer) {
         return layer instanceof LayerCustomBipedArmor;
-    }
-
-    @SideOnly(Side.CLIENT)
-    public static ModelBiped fixOverlay(EntityLivingBase entity, ModelBiped overlay) {
-        EntityData<?> entityData = EntityDatabase.instance.get(entity);
-        boolean shouldBeMutated = Objects.nonNull(entityData) && entityData instanceof BipedEntityData;
-        try {
-            return ArmorModelFactory.getArmorModel(overlay,shouldBeMutated);
-        } catch(MalformedArmorModelException ex) {
-            DHTRef.LOGGER.error("Could not transform infinity armor :(",ex);
-            return overlay;
-        }
     }
 
     @SideOnly(Side.CLIENT)

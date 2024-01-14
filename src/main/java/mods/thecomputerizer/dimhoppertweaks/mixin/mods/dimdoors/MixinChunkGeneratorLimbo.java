@@ -4,24 +4,22 @@ import net.minecraft.world.chunk.ChunkPrimer;
 import net.tslat.aoa3.common.registration.BlockRegister;
 import org.dimdev.dimdoors.shared.world.limbo.ChunkGeneratorLimbo;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = ChunkGeneratorLimbo.class, remap = false)
 public class MixinChunkGeneratorLimbo {
 
-    @Redirect(at = @At(value = "INVOKE", target = "Lorg/dimdev/dimdoors/shared/world/limbo/ChunkGeneratorLimbo;"+
-            "setBlocksInChunk(IILnet/minecraft/world/chunk/ChunkPrimer;)V"), method = "generateChunk")
-    private void dimhoppertweaks$setExtraBlocks(ChunkGeneratorLimbo chunkGen, int chunkX, int chunkZ, ChunkPrimer primer) {
-        chunkGen.setBlocksInChunk(chunkX,chunkZ,primer);
-        dimhoppertweaks$replaceFloor(chunkX,chunkZ,primer);
-    }
-
-    @Unique
-    private void dimhoppertweaks$replaceFloor(int chunkX, int chunkZ, ChunkPrimer primer) {
-        for(int x=0; x<16; x++)
-            for(int z=0; z<16; z++)
-                primer.setBlockState(chunkX*16+x,1,chunkZ*16+z,BlockRegister.DIMENSIONAL_FABRIC.getDefaultState());
+    @Inject(at = @At("RETURN"), method = "setBlocksInChunk")
+    public void dimhoppertweaks$setBlocksInChunk(int chunkX, int chunkZ, ChunkPrimer primer, CallbackInfo ci) {
+        for(int x=0; x<16; x++) {
+            for(int z=0; z<16; z++) {
+                int actualX = (chunkZ*16+z) & 15;
+                int actualZ = (chunkX*16+x) & 15;
+                primer.setBlockState(actualX,0,actualZ,BlockRegister.DIMENSIONAL_FABRIC.getDefaultState());
+                primer.setBlockState(actualX,1,actualZ,BlockRegister.DIMENSIONAL_FABRIC.getDefaultState());
+            }
+        }
     }
 }

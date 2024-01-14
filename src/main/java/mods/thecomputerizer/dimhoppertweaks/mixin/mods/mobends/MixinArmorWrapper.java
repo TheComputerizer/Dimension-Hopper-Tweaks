@@ -1,5 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.mods.mobends;
 
+import c4.conarm.client.models.ModelConstructsArmor;
 import goblinbob.mobends.core.bender.EntityBender;
 import goblinbob.mobends.core.bender.EntityBenderRegistry;
 import goblinbob.mobends.core.client.model.ModelPartTransform;
@@ -14,6 +15,7 @@ import goblinbob.mobends.standard.data.PlayerData;
 import goblinbob.mobends.standard.previewer.PlayerPreviewer;
 import mods.thecomputerizer.dimhoppertweaks.mixin.access.ArmorWrapperAccess;
 import mods.thecomputerizer.dimhoppertweaks.mixin.access.ModelArmorInfinityAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.access.ModelConstructsArmorAccess;
 import morph.avaritia.client.render.entity.ModelArmorInfinity;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.Entity;
@@ -60,6 +62,8 @@ public abstract class MixinArmorWrapper implements ArmorWrapperAccess {
                     this.partWrappers.forEach(group -> group.syncUp(dataBiped));
                     this.apply();
                     this.original.setModelAttributes((ArmorWrapper)(Object)this);
+                    if(this.original instanceof ModelConstructsArmor)
+                        ((ModelConstructsArmorAccess)this.original).dimhoppertweaks$assignRenders();
                     ArmorWrapper overlay = this.original instanceof ModelArmorInfinity ?
                             (ArmorWrapper)ArmorModelFactory.getArmorModel(((ModelArmorInfinityAccess)this.original)
                                     .dimhoppertweaks$getOverlay(),true) : null;
@@ -70,7 +74,9 @@ public abstract class MixinArmorWrapper implements ArmorWrapperAccess {
                         ((ArmorWrapperAccess)overlay).dimhoppertweaks$preRenderSplit(entity);
                     if(Objects.nonNull(invulOverlay))
                         ((ArmorWrapperAccess)invulOverlay).dimhoppertweaks$preRenderSplit(entity);
-                    this.original.render(entity,limbSwing,limbSwingAmount,ageInTicks,netHeadYaw,headPitch,scale);
+                    if(this.original instanceof ModelConstructsArmor)
+                        ((ModelConstructsArmorAccess)this.original).dimhoppertweaks$render(entity,limbSwing,limbSwingAmount,ageInTicks,netHeadYaw,headPitch,scale);
+                    else this.original.render(entity,limbSwing,limbSwingAmount,ageInTicks,netHeadYaw,headPitch,scale);
                     this.deapply();
                     if(Objects.nonNull(overlay))
                         ((ArmorWrapperAccess)overlay).dimhoppertweaks$postRenderSplit();
