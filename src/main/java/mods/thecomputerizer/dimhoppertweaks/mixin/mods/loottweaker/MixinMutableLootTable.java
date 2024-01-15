@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(value = MutableLootTable.class, remap = false)
-public class MixinMutableLootTable {
+public abstract class MixinMutableLootTable {
 
     @Redirect(at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;error(Ljava/lang/String;" +
             "Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)V"),

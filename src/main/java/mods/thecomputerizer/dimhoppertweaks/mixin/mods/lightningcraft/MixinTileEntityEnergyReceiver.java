@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.mods.lightningcraft;
 
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.EnergyStorageAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.IEnergyStorage;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.At;
@@ -16,7 +16,8 @@ public abstract class MixinTileEntityEnergyReceiver extends TileEntityEnergy {
 
     @Inject(at = @At("RETURN"), method = "<init>")
     private void dimhoppertweaks$init(CallbackInfo ci) {
-        ((EnergyStorageAccess)this.storage).dimhoppertweaks$setReceive(Math.min((int)this.storage.getCapacity(),LCConfig.RFtoLEConversion));
+        ((IEnergyStorage)this.storage).dimhoppertweaks$setReceive(
+                Math.min((int)this.storage.getCapacity(),LCConfig.RFtoLEConversion));
     }
 
     /**
@@ -28,10 +29,10 @@ public abstract class MixinTileEntityEnergyReceiver extends TileEntityEnergy {
         super.update();
         if (!this.world.isRemote && this.hasLPCell() && !this.isRemotelyPowered() &&
                 !this.world.isBlockPowered(this.pos) &&
-                this.storage.getEnergyStored() >= LCConfig.RFtoLEConversion * 10 &&
-                this.cellPower < this.maxPower - 100.0 * this.tileCell.efficiency) {
-            Effect.lightningGen(this.world, this.tileCell.getPos().up());
-            this.storage.modifyEnergyStored(-LCConfig.RFtoLEConversion * 10);
+                this.storage.getEnergyStored()>=LCConfig.RFtoLEConversion*10 &&
+                this.cellPower<this.maxPower-100d*this.tileCell.efficiency) {
+            Effect.lightningGen(this.world,this.tileCell.getPos().up());
+            this.storage.modifyEnergyStored(-LCConfig.RFtoLEConversion*10);
             this.markDirty();
         }
 

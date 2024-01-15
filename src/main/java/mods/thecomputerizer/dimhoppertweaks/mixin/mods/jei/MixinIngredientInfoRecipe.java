@@ -1,7 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.mods.jei;
 
 import mezz.jei.plugins.jei.info.IngredientInfoRecipe;
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.IngredientInfoRecipeAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.IIngredientInfoRecipe;
 import mods.thecomputerizer.dimhoppertweaks.util.TagUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Mixin(value = IngredientInfoRecipe.class, remap = false)
-public class MixinIngredientInfoRecipe implements IngredientInfoRecipeAccess {
+public abstract class MixinIngredientInfoRecipe implements IIngredientInfoRecipe {
 
     @Shadow @Final @Mutable private List<? super Object> ingredients;
 
@@ -20,8 +20,8 @@ public class MixinIngredientInfoRecipe implements IngredientInfoRecipeAccess {
     public boolean dimhoppertweaks$removeIngredient(Object obj) {
         List<? super Object> updatedIngredients = new ArrayList<>(this.ingredients);
         updatedIngredients.removeIf(element -> (element instanceof ItemStack &&
-                dimhoppertweaks$matchesItemStack((ItemStack) element, obj)) || (element instanceof FluidStack &&
-                dimhoppertweaks$matchesFluidStack((FluidStack) element, obj)));
+                dimhoppertweaks$matchesItemStack((ItemStack)element,obj)) || (element instanceof FluidStack &&
+                dimhoppertweaks$matchesFluidStack((FluidStack)element,obj)));
         this.ingredients = Collections.unmodifiableList(updatedIngredients);
         return this.ingredients.isEmpty();
     }

@@ -5,7 +5,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 
 @Mixin(value = FirestormStaff.class, remap = false)
-public class MixinFirestormStaff {
+public abstract class MixinFirestormStaff {
 
     /**
      * @author The_Computerizer

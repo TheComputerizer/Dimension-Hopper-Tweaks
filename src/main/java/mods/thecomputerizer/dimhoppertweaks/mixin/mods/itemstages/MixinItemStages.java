@@ -1,7 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.mods.itemstages;
 
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.DelayedModAccess;
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.TileEntityAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.DelayedModAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.ITileEntity;
 import mods.thecomputerizer.dimhoppertweaks.util.WorldUtil;
 import net.darkhax.gamestages.GameStageHelper;
 import net.darkhax.itemstages.ConfigurationHandler;
@@ -30,30 +30,35 @@ import java.util.Objects;
 @Mixin(value = ItemStages.class, remap = false)
 public abstract class MixinItemStages {
 
-    @Unique private boolean dimhoppertweaks$verifyHooks(World world, @Nullable EntityPlayer player, BlockPos pos, String stage) {
+    @Shadow
+    public static String getStage(ItemStack stack) {
+        return null;
+    }
+
+    @Shadow
+    public static String getEnchantStage(ItemStack stack) {
+        return null;
+    }
+
+    @Shadow
+    private static void sendAttackFailMessage(EntityPlayer player, ItemStack stack) {}
+
+    @Unique
+    private boolean dimhoppertweaks$verifyHooks(World world, @Nullable EntityPlayer player, BlockPos pos, String stage) {
         TileEntity tile = WorldUtil.getTileOrAdjacent(world,pos,true, DelayedModAccess.getPlacerTileClasses());
-        if(Objects.nonNull(tile)) return !((TileEntityAccess)tile).dimhoppertweaks$hasStage(stage);
+        if(Objects.nonNull(tile)) return !((ITileEntity)tile).dimhoppertweaks$hasStage(stage);
         else if(Objects.nonNull(player) && !player.getPosition().equals(pos)) {
-            tile = WorldUtil.getTileOrAdjacent(world,player.getPosition(),true, DelayedModAccess.getPlacerTileClasses());
-            if(Objects.nonNull(tile)) return !((TileEntityAccess)tile).dimhoppertweaks$hasStage(stage);
+            tile = WorldUtil.getTileOrAdjacent(world,player.getPosition(),true,DelayedModAccess.getPlacerTileClasses());
+            if(Objects.nonNull(tile)) return !((ITileEntity)tile).dimhoppertweaks$hasStage(stage);
         }
         return Objects.nonNull(player) && !GameStageHelper.hasStage(player,stage);
     }
 
-    @Unique private boolean dimhoppertweaks$verifyStage(World world, EntityPlayer player, BlockPos pos, String stage) {
+    @Unique
+    private boolean dimhoppertweaks$verifyStage(World world, EntityPlayer player, BlockPos pos, String stage) {
         return Objects.isNull(player) || player instanceof FakePlayer ?
                 dimhoppertweaks$verifyHooks(world,player,pos,stage) : !GameStageHelper.hasStage(player,stage);
     }
-
-    @Shadow public static String getStage(ItemStack stack) {
-        return null;
-    }
-
-    @Shadow public static String getEnchantStage(ItemStack stack) {
-        return null;
-    }
-
-    @Shadow private static void sendAttackFailMessage(EntityPlayer player, ItemStack stack) {}
 
     /**
      * @author The_Computerizer
@@ -67,13 +72,14 @@ public abstract class MixinItemStages {
             ItemStack heldItem = player.getHeldItemMainhand();
             String stage = getStage(heldItem);
             String enchantStage = getEnchantStage(heldItem);
-            if((Objects.nonNull(stage) && dimhoppertweaks$verifyStage(player.getEntityWorld(),player,player.getPosition(),stage)) ||
-                    (Objects.nonNull(enchantStage) && dimhoppertweaks$verifyStage(player.getEntityWorld(),player,player.getPosition(),enchantStage))) {
+            World world = player.getEntityWorld();
+            BlockPos pos = player.getPosition();
+            if((Objects.nonNull(stage) && dimhoppertweaks$verifyStage(world,player,pos,stage)) ||
+                    (Objects.nonNull(enchantStage) && dimhoppertweaks$verifyStage(world,player,pos,enchantStage))) {
                 event.setNewSpeed(-1f);
                 event.setCanceled(true);
             }
         }
-
     }
 
     /**
@@ -87,12 +93,11 @@ public abstract class MixinItemStages {
         if(!ConfigurationHandler.allowInteractRestricted && !player.isCreative()) {
             String stage = getEnchantStage(player.getHeldItemMainhand());
             if(Objects.nonNull(stage) && dimhoppertweaks$verifyStage(player.getEntityWorld(),player,player.getPosition(),stage)) {
-                if (event.getEntityPlayer().world.getTotalWorldTime() % 2L == 0L)
+                if (event.getEntityPlayer().world.getTotalWorldTime() % 2L==0L)
                     sendAttackFailMessage(player,player.getHeldItemMainhand());
                 event.setCanceled(true);
             }
         }
-
     }
 
     /**
@@ -105,15 +110,16 @@ public abstract class MixinItemStages {
         EntityPlayer player = event.getEntityPlayer();
         if(event.isCancelable() && !ConfigurationHandler.allowInteractRestricted && !player.isCreative()) {
             String stage = getStage(event.getItemStack());
-            if(Objects.nonNull(stage) && dimhoppertweaks$verifyStage(player.getEntityWorld(),player,event.getPos(),stage)) {
+            World world = player.getEntityWorld();
+            BlockPos pos = event.getPos();
+            if(Objects.nonNull(stage) && dimhoppertweaks$verifyStage(world,player,pos,stage)) {
                 if(event instanceof RightClickBlock) {
-                    IBlockState state = player.getEntityWorld().getBlockState(event.getPos());
+                    IBlockState state = world.getBlockState(pos);
                     ResourceLocation res = state.getBlock().getRegistryName();
                     if(Objects.nonNull(res) && res.getNamespace().matches("storagedrawers")) return;
                 }
                 event.setCanceled(true);
             }
         }
-
     }
 }

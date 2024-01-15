@@ -12,10 +12,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Objects;
 
 @Mixin(value = GuideBookUtils.class, remap = false)
-public class MixinGuideBookUtils {
+public abstract class MixinGuideBookUtils {
 
     @Inject(at = @At("HEAD"), method = "findFirstPageForStack", cancellable = true)
-    private static void dimhoppertweaks$findFirstPageForStack(GuideBook book, ItemStack stack, CallbackInfoReturnable<IGuidePage> cir) {
+    private static void dimhoppertweaks$findFirstPageForStack(
+            GuideBook book, ItemStack stack, CallbackInfoReturnable<IGuidePage> cir) {
         if(Objects.isNull(stack)) cir.setReturnValue(null);
     }
 }

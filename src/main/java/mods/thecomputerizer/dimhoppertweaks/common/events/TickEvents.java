@@ -6,7 +6,7 @@ import mods.thecomputerizer.dimhoppertweaks.common.capability.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.common.commands.DHDebugCommands;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.ItemTimeInABottleAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.IItemTimeInABottle;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.util.ItemUtil;
 import mods.thecomputerizer.dimhoppertweaks.util.WorldUtil;
@@ -105,7 +105,7 @@ public class TickEvents {
 
     private static boolean checkTime(ItemStack stack) {
         return stack.getItem()== ModItems.timeInABottle &&
-                ((ItemTimeInABottleAccess)stack.getItem()).dimhoppertweaks$hasTime(stack);
+                ((IItemTimeInABottle)stack.getItem()).dimhoppertweaks$hasTime(stack);
     }
 
     @SuppressWarnings("ConstantValue")

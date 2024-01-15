@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import wanion.unidict.integration.CraftingIntegration;
 
 @Mixin(value = CraftingIntegration.class, remap = false)
-public class MixinCraftingIntegration {
+public abstract class MixinCraftingIntegration {
 
     @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraftforge/registries/IForgeRegistry;"+
             "register(Lnet/minecraftforge/registries/IForgeRegistryEntry;)V"), method = "lambda$null$3")
@@ -20,9 +20,9 @@ public class MixinCraftingIntegration {
         boolean register = true;
         hey: {
             if(entry instanceof IRecipe) {
-                for (Ingredient ingr : ((IRecipe)entry).getIngredients()) {
-                    for (ItemStack stack : ingr.getMatchingStacks()) {
-                        if (stack.getItem() instanceof ItemIETool && stack.getMetadata() == 0) {
+                for(Ingredient ingr : ((IRecipe)entry).getIngredients()) {
+                    for(ItemStack stack : ingr.getMatchingStacks()) {
+                        if(stack.getItem() instanceof ItemIETool && stack.getMetadata()==0) {
                             register = false;
                             break hey;
                         }

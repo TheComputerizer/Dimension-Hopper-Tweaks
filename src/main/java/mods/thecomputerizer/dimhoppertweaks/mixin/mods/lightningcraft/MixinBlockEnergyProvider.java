@@ -6,7 +6,7 @@ import sblectric.lightningcraft.blocks.BlockEnergyProvider;
 import sblectric.lightningcraft.config.LCConfig;
 
 @Mixin(value = BlockEnergyProvider.class, remap = false)
-public class MixinBlockEnergyProvider {
+public abstract class MixinBlockEnergyProvider {
 
     /**
      * @author The_Computerizer

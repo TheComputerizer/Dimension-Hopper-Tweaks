@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(targets = "net.minecraftforge.common.ForgeVersion$1")
-public class MixinForgeVersion {
+public abstract class MixinForgeVersion {
 
     @Redirect(at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;debug(Ljava/lang/String;" +
             "Ljava/lang/Throwable;)V"), method = "process", remap = false)

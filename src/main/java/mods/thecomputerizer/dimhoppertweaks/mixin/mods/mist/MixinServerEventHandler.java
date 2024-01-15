@@ -13,6 +13,7 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 import org.spongepowered.asm.mixin.*;
 import ru.liahim.mist.api.item.IMask;
@@ -38,22 +39,21 @@ import java.util.UUID;
 @Mixin(value = ServerEventHandler.class, remap = false)
 public abstract class MixinServerEventHandler {
 
-    @Shadow @Final private static HashMap<UUID, ItemStack> maskSync;
-
-    @Shadow @Final private static HashMap<UUID, Integer> portDelay;
-
+    @Shadow @Final private static HashMap<UUID,ItemStack> maskSync;
+    @Shadow @Final private static HashMap<UUID,Integer> portDelay;
+    @Shadow @Final private static HashMap<UUID,Integer> mulchDelay;
     @Shadow protected abstract boolean isAllPlayersAsleep(World world);
 
-    @Shadow @Final private static HashMap<UUID, Integer> mulchDelay;
-
-    @Unique private IMistCapaHandler dimhoppertweaks$getMistHandler(EntityPlayer player) {
+    @Unique
+    private IMistCapaHandler dimhoppertweaks$getMistHandler(EntityPlayer player) {
         if(Objects.isNull(player) || Objects.isNull(MistCapability.CAPABILITY_MIST)) return null;
         IMistCapaHandler handler = player.getCapability(MistCapability.CAPABILITY_MIST,null);
         if(Objects.nonNull(handler)) handler.setPlayer(player);
         return handler;
     }
 
-    @Unique private ISkillCapaHandler dimhoppertweaks$getSkillHandler(EntityPlayer player) {
+    @Unique
+    private ISkillCapaHandler dimhoppertweaks$getSkillHandler(EntityPlayer player) {
         if(Objects.isNull(player) || Objects.isNull(SkillCapability.CAPABILITY_SKILL)) return null;
         ISkillCapaHandler handler = player.getCapability(SkillCapability.CAPABILITY_SKILL,null);
         if(Objects.nonNull(handler)) handler.setPlayer(player);
@@ -64,19 +64,19 @@ public abstract class MixinServerEventHandler {
      * @author The_Computerizer
      * @reason Fix null capability stuff in dev environment
      */
-    @SubscribeEvent@Overwrite
+    @SubscribeEvent
+    @Overwrite
     public void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        if(event.phase == TickEvent.Phase.START && event.side == Side.SERVER) {
+        if(event.phase==TickEvent.Phase.START && event.side==Side.SERVER) {
             EntityPlayer player = event.player;
             if(Objects.nonNull(player)) {
                 World world = player.world;
                 UUID uuid = player.getUniqueID();
                 if(!portDelay.isEmpty() && portDelay.containsKey(uuid)) {
                     int i = portDelay.get(uuid);
-                    if (i > 0) portDelay.replace(uuid, i - 1);
+                    if(i>0) portDelay.replace(uuid,i-1);
                     else {
-                        if(player instanceof EntityPlayerMP)
-                            ((EntityPlayerMP)player).clearInvulnerableDimensionChange();
+                        if(player instanceof EntityPlayerMP) ((EntityPlayerMP)player).clearInvulnerableDimensionChange();
                         portDelay.remove(uuid);
                     }
                 }
@@ -98,7 +98,7 @@ public abstract class MixinServerEventHandler {
                             else if(player instanceof EntityPlayerMP)
                                 PacketHandler.INSTANCE.sendTo(new PacketMaskSync(player,stack),(EntityPlayerMP)player);
                             maskHandler.setMaskChanged(false,false);
-                        } catch (Exception ignored) {}
+                        } catch(Exception ignored) {}
                         maskSync.put(uuid,stack);
                     }
                 }
@@ -141,44 +141,50 @@ public abstract class MixinServerEventHandler {
     @SubscribeEvent
     @Overwrite
     public void joinEntity(EntityJoinWorldEvent event) {
-        if(!event.getWorld().isRemote) {
+        World world = event.getWorld();
+        if(!world.isRemote) {
+            int dimension = world.provider.getDimension();
             if(event.getEntity() instanceof EntityPlayerMP) {
                 EntityPlayerMP player = (EntityPlayerMP)event.getEntity();
-                if(event.getWorld().provider.getDimension()==Mist.getID())
-                    PacketHandler.INSTANCE.sendTo(new PacketSeedSync(event.getWorld().getSeed()), player);
-                PacketHandler.INSTANCE.sendTo(new PacketTimeSync(MistTime.getDay(), MistTime.getMonth(), MistTime.getYear(), MistTime.getTimeOffset()), player);
+                if(dimension==Mist.getID())
+                    PacketHandler.INSTANCE.sendTo(new PacketSeedSync(world.getSeed()),player);
+                PacketHandler.INSTANCE.sendTo(new PacketTimeSync(MistTime.getDay(),MistTime.getMonth(),
+                        MistTime.getYear(),MistTime.getTimeOffset()),player);
                 IMistCapaHandler maskHandler = dimhoppertweaks$getMistHandler(player);
-                if(Objects.nonNull(maskHandler)) maskHandler.setMaskChanged(true, false);
-
+                if(Objects.nonNull(maskHandler)) maskHandler.setMaskChanged(true,false);
                 for(EntityPlayer player1 : player.getEntityWorld().playerEntities) {
-                    if(player1.getEntityId() != player1.getEntityId()) {
-                        IMistCapaHandler playerMasks = dimhoppertweaks$getMistHandler(player);
-                        if(Objects.nonNull(playerMasks)) playerMasks.setMaskChanged(true, true);
+                    if(player.getEntityId()!=player1.getEntityId()) {
+                        IMistCapaHandler playerMasks = dimhoppertweaks$getMistHandler(player1);
+                        if(Objects.nonNull(playerMasks)) playerMasks.setMaskChanged(true,true);
                     }
                 }
-                maskSync.put(player.getUniqueID(), ItemStack.EMPTY);
+                maskSync.put(player.getUniqueID(),ItemStack.EMPTY);
+                SimpleNetworkWrapper network = PacketHandler.INSTANCE;
                 ISkillCapaHandler skillHandler = dimhoppertweaks$getSkillHandler(player);
-                if(Objects.nonNull(skillHandler))
-                    PacketHandler.INSTANCE.sendTo(new PacketSkillSync(skillHandler.getSkillsArray()), player);
-                IFoodHandler foodHandler = Objects.nonNull(FoodCapability.CAPABILITY_FOOD) ? IFoodHandler.getHandler(player) : null;
+                if(Objects.nonNull(skillHandler))network.sendTo(new PacketSkillSync(
+                        skillHandler.getSkillsArray()),player);
+                IFoodHandler foodHandler = Objects.nonNull(FoodCapability.CAPABILITY_FOOD) ?
+                        IFoodHandler.getHandler(player) : null;
                 if(Objects.nonNull(foodHandler)) {
-                    PacketHandler.INSTANCE.sendTo(new PacketMushroomSync(foodHandler.getMushroomList(false), false), player);
-                    PacketHandler.INSTANCE.sendTo(new PacketMushroomSync(foodHandler.getMushroomList(true), true), player);
-                    PacketHandler.INSTANCE.sendTo(new PacketToxicFoodSync(foodHandler.getFoodStudyList()), player);
+                    network.sendTo(new PacketMushroomSync(foodHandler.getMushroomList(false),false),player);
+                    network.sendTo(new PacketMushroomSync(foodHandler.getMushroomList(true),true),player);
+                    network.sendTo(new PacketToxicFoodSync(foodHandler.getFoodStudyList()), player);
                 }
                 if(Objects.nonNull(maskHandler)) {
-                    PacketHandler.INSTANCE.sendTo(new PacketToxicSync(maskHandler.getPollution(),MistCapaHandler.HurtType.POLLUTION.getID()), player);
-                    PacketHandler.INSTANCE.sendTo(new PacketToxicSync(maskHandler.getToxic(),MistCapaHandler.HurtType.TOXIC.getID()), player);
+                    network.sendTo(new PacketToxicSync(maskHandler.getPollution(),
+                            MistCapaHandler.HurtType.POLLUTION.getID()),player);
+                    network.sendTo(new PacketToxicSync(maskHandler.getToxic(),
+                            MistCapaHandler.HurtType.TOXIC.getID()),player);
                 }
             } else if(event.getEntity() instanceof EntityLiving) {
-                if(event.getWorld().provider.getDimension() == Mist.getID()) {
+                if(dimension==Mist.getID()) {
                     ResourceLocation res = EntityList.getKey(event.getEntity());
-                    if(Objects.nonNull(res) && MistRegistry.mobsDimsBlackList.contains(res.getNamespace()) || MistRegistry.mobsBlackList.contains(res))
-                        event.setCanceled(true);
+                    if(Objects.nonNull(res) && MistRegistry.mobsDimsBlackList.contains(res.getNamespace()) ||
+                            MistRegistry.mobsBlackList.contains(res)) event.setCanceled(true);
                 }
                 if(event.getEntity() instanceof EntitySheep) {
                     EntitySheep sheep = (EntitySheep)event.getEntity();
-                    sheep.tasks.addTask(5, new EntityAIEatMistGrass(sheep, false));
+                    sheep.tasks.addTask(5,new EntityAIEatMistGrass(sheep,false));
                 }
             }
         }

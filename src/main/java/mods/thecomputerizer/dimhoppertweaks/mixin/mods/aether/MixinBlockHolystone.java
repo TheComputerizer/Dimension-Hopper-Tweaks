@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 
 @Mixin(value = BlockHolystone.class, remap = false)
-public class MixinBlockHolystone {
+public abstract class MixinBlockHolystone {
 
     /**
      * @author The_Computerizer

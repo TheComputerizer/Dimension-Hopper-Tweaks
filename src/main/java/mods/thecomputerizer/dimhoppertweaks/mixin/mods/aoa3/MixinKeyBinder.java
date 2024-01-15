@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.mods.aoa3;
 
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.DelayedModAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.DelayedModAccess;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -14,24 +14,16 @@ import org.spongepowered.asm.mixin.Shadow;
 import java.util.Objects;
 
 @Mixin(value = KeyBinder.class, remap = false)
-public class MixinKeyBinder {
+public abstract class MixinKeyBinder {
 
     @Shadow public static KeyBinding keyCreatureStats;
-
     @Shadow public static boolean statusCreatureStats;
-
     @Shadow public static KeyBinding keyResourceGui;
-
     @Shadow public static boolean statusResourceGui;
-
     @Shadow public static boolean statusResourceGuiMessage;
-
     @Shadow public static KeyBinding keySkillGui;
-
     @Shadow public static boolean statusSkillGui;
-
     @Shadow public static boolean statusSkillGuiMessage;
-
     @Shadow public static KeyBinding keyAdventGui;
 
     /**

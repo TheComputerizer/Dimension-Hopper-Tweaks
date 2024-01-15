@@ -12,7 +12,7 @@ import java.util.Comparator;
 import java.util.List;
 
 @Mixin(value = GuiSkills.class, remap = false)
-public class MixinGuiSkills {
+public abstract class MixinGuiSkills {
 
     @Shadow private List<Skill> enabledSkills;
 

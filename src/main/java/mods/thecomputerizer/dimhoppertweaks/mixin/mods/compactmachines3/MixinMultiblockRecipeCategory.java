@@ -62,12 +62,14 @@ public abstract class MixinMultiblockRecipeCategory<W extends IRecipeWrapper> im
         recipeLayout.getItemStacks().set(ingredients);
     }
 
-    @ModifyConstant(constant = @Constant(intValue = 5), method = "onTooltip(IZLnet/minecraft/item/ItemStack;Ljava/util/List;)V")
+    @ModifyConstant(constant = @Constant(intValue = 5), method = "onTooltip(IZLnet/minecraft/item/ItemStack;"+
+            "Ljava/util/List;)V")
     private int dimhoppertweaks$modifyTooltipSlots1(int constant) {
         return 11;
     }
 
-    @ModifyConstant(constant = @Constant(intValue = 6), method = "onTooltip(IZLnet/minecraft/item/ItemStack;Ljava/util/List;)V")
+    @ModifyConstant(constant = @Constant(intValue = 6), method = "onTooltip(IZLnet/minecraft/item/ItemStack;"+
+            "Ljava/util/List;)V")
     private int dimhoppertweaks$modifyTooltipSlots2(int constant) {
         return 12;
     }

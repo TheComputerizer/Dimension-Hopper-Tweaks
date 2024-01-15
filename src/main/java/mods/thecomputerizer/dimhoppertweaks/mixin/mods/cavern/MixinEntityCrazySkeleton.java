@@ -21,7 +21,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinEntityCrazySkeleton extends EntityCavenicSkeleton {
 
     @Shadow @Final private BossInfoServer bossInfo;
-
     @Unique private boolean dimhoppertweaks$inCavenia = true;
 
     public MixinEntityCrazySkeleton(World world) {

@@ -8,7 +8,7 @@ import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.EntityPixieAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.IEntityPixie;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.util.WorldUtil;
 import morph.avaritia.util.DamageSourceInfinitySword;
@@ -110,7 +110,7 @@ public class EntityEvents {
                     }
                     if(amount>=50f && player.getHeldItemMainhand().getItem() instanceof ItemElementiumSword) {
                         EntityPixie pixie = new EntityPixie(player.getServerWorld());
-                        ((EntityPixieAccess)pixie).dimhoppertweaks$setBypassesTarget(true);
+                        ((IEntityPixie)pixie).dimhoppertweaks$setBypassesTarget(true);
                         pixie.setPosition(player.posX,player.posY+2d,player.posZ);
                         pixie.onInitialSpawn(player.getServerWorld().getDifficultyForLocation(new BlockPos(pixie)),null);
                         player.getServerWorld().spawnEntity(pixie);

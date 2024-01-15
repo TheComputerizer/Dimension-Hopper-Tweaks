@@ -1,8 +1,8 @@
-package mods.thecomputerizer.dimhoppertweaks.mixin.access;
+package mods.thecomputerizer.dimhoppertweaks.mixin.api;
 
 import java.util.Collection;
 
-public interface InventoryCraftingAccess {
+public interface IRecipeInfoTiered {
 
     void dimhoppertweaks$setStages(Collection<String> stages);
     Collection<String> dimhoppertweaks$getStages();

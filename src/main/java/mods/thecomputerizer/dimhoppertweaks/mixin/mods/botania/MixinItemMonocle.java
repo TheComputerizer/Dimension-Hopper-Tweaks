@@ -10,7 +10,7 @@ import vazkii.botania.common.item.equipment.bauble.ItemMonocle;
 import java.util.Objects;
 
 @Mixin(value = ItemMonocle.class, remap = false)
-public class MixinItemMonocle {
+public abstract class MixinItemMonocle {
 
     @Redirect(at = @At(value = "INVOKE", target = "Lbaubles/api/cap/IBaublesItemHandler;" +
             "getStackInSlot(I)Lnet/minecraft/item/ItemStack;"), method = "hasMonocle")

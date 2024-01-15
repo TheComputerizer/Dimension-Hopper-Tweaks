@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.mods.scalinghealth;
 
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.EntityLivinBaseAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.IEntityLivinBase;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -20,7 +20,8 @@ import java.util.Objects;
 @Mixin(value = BlightHandler.class, remap = false)
 public abstract class MixinBlightHandler {
 
-    @Shadow static void applyBlightPotionEffects(EntityLivingBase entity) {}
+    @Shadow
+    static void applyBlightPotionEffects(EntityLivingBase entity) {}
 
     /**
      * @author The_Computerizer
@@ -28,7 +29,7 @@ public abstract class MixinBlightHandler {
      */
     @Overwrite
     public static boolean isBlight(EntityLivingBase entity) {
-        return Objects.nonNull(entity) && ((EntityLivinBaseAccess)entity).dimhoppertweaks$isBlighted();
+        return Objects.nonNull(entity) && ((IEntityLivinBase)entity).dimhoppertweaks$isBlighted();
     }
 
     /**
@@ -37,9 +38,9 @@ public abstract class MixinBlightHandler {
      */
     @Overwrite
     public static void markBlight(EntityLivingBase entity, boolean isBlight) {
-        if (Objects.nonNull(entity)) {
+        if(Objects.nonNull(entity)) {
             entity.getEntityData().setBoolean("ScalingHealth.IsBlight",isBlight);
-            ((EntityLivinBaseAccess)entity).dimhoppertweaks$setBlight(isBlight);
+            ((IEntityLivinBase)entity).dimhoppertweaks$setBlight(isBlight);
         }
     }
 
@@ -67,15 +68,14 @@ public abstract class MixinBlightHandler {
     @SubscribeEvent
     public void onBlightUpdate(LivingEvent.LivingUpdateEvent event) {
         EntityLivingBase entity = event.getEntityLiving();
-        if (Objects.nonNull(entity) && !entity.world.isRemote && isBlight(entity)) {
+        if(Objects.nonNull(entity) && !entity.world.isRemote && isBlight(entity)) {
             World world = entity.world;
-            if ((world.getTotalWorldTime() + (long)entity.getEntityId()) % 200L == 0L) {
-                MessageMarkBlight message = new MessageMarkBlight(entity, true);
-                NetworkHandler.INSTANCE.sendToAllAround(message, new NetworkRegistry.TargetPoint(entity.dimension,
-                        entity.posX, entity.posY, entity.posZ, 128.0));
+            if((world.getTotalWorldTime()+(long)entity.getEntityId())%200L==0L) {
+                MessageMarkBlight message = new MessageMarkBlight(entity,true);
+                NetworkHandler.INSTANCE.sendToAllAround(message,new NetworkRegistry.TargetPoint(entity.dimension,
+                        entity.posX,entity.posY,entity.posZ,128d));
                 applyBlightPotionEffects(entity);
             }
         }
-
     }
 }

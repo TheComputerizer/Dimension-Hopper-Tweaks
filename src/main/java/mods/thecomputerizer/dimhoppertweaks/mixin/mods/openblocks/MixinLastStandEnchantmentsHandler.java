@@ -35,32 +35,32 @@ public abstract class MixinLastStandEnchantmentsHandler {
     @Overwrite
     @SubscribeEvent
     public void onHurt(LivingHurtEvent e) {
-        if (e.getEntityLiving() instanceof EntityPlayer) {
+        if(e.getEntityLiving() instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer)e.getEntityLiving();
             int enchantmentLevels = countLastStandEnchantmentLevels(player);
-            if (enchantmentLevels > 0) {
-                synchronized (this.dimhoppertweaks$playerTicker) {
+            if(enchantmentLevels>0) {
+                synchronized(this.dimhoppertweaks$playerTicker) {
                     this.dimhoppertweaks$playerTicker.putIfAbsent(player, new MutableInt());
                     float playerHealth = player.getHealth();
                     float healthAvailable = playerHealth - e.getAmount();
-                    if(this.dimhoppertweaks$playerTicker.get(player).intValue() <= 0 && healthAvailable < 1f) {
+                    if(this.dimhoppertweaks$playerTicker.get(player).intValue()<=0 && healthAvailable<1f) {
                         int time = Math.max(2,5-enchantmentLevels);
                         int xpAvailable = EnchantmentUtils.getPlayerXP(player);
-                        float xpRequired = this.reductionCalculator.evaluate((env) -> {
+                        float xpRequired = this.reductionCalculator.evaluate(env -> {
                             env.setGlobalSymbol("ench", (double) enchantmentLevels);
                             env.setGlobalSymbol("xp", (double) xpAvailable);
                             env.setGlobalSymbol("hp", (double) playerHealth);
                             env.setGlobalSymbol("dmg", (double) e.getAmount());
-                        }, () -> {
-                            float xp = 1f - healthAvailable;
+                        },() -> {
+                            float xp = 1f-healthAvailable;
                             xp *= 200f;
-                            xp /= (float) enchantmentLevels;
-                            xp = Math.max(1f, xp);
-                            return (double) xp;
+                            xp /= (float)enchantmentLevels;
+                            xp = Math.max(1f,xp);
+                            return (double)xp;
                         }).floatValue();
-                        if((float) xpAvailable >= xpRequired) {
+                        if((float)xpAvailable>=xpRequired) {
                             player.setHealth(1f);
-                            EnchantmentUtils.addPlayerXP(player, -((int) xpRequired));
+                            EnchantmentUtils.addPlayerXP(player,-((int)xpRequired));
                             e.setAmount(0);
                             this.dimhoppertweaks$playerTicker.get(player).setValue(time);
                             e.setCanceled(true);

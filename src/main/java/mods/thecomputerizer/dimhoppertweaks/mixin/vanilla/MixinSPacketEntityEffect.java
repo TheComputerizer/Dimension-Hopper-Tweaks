@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.vanilla;
 
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.SPacketEntityEffectAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.ISPacketEntityEffect;
 import net.minecraft.network.play.server.SPacketEntityEffect;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(SPacketEntityEffect.class)
-public class MixinSPacketEntityEffect implements SPacketEntityEffectAccess {
+public abstract class MixinSPacketEntityEffect implements ISPacketEntityEffect {
 
     @Unique private boolean dimhoppertweaks$isServerErrored;
 

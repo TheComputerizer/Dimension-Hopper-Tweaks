@@ -19,11 +19,11 @@ import java.util.List;
 public abstract class MixinShaderGroup {
 
     @Shadow @Final private IResourceManager resourceManager;
-
     @Shadow @Final private List<Shader> listShaders;
 
     @Inject(at = @At("HEAD"), method = "addShader", cancellable = true)
-    private void dimhoppertweaks$addShader(String name, Framebuffer bufferIn, Framebuffer bufferOut, CallbackInfoReturnable<Shader> cir) throws IOException {
+    private void dimhoppertweaks$addShader(String name, Framebuffer bufferIn, Framebuffer bufferOut,
+                                           CallbackInfoReturnable<Shader> cir) throws IOException {
         if(name.matches("dimhoppertweaks:dynamic_color_overlay")) {
             DynamicColorShader shader = new DynamicColorShader(this.resourceManager,name,bufferIn,bufferOut);
             this.listShaders.add(this.listShaders.size(),shader);

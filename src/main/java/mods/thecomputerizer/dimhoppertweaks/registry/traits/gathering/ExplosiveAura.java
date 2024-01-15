@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.registry.traits.gathering;
 
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.DelayedModAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.DelayedModAccess;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;

@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.mods.scalinghealth;
 
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.DelayedModAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.DelayedModAccess;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.Overwrite;
 import java.util.Objects;
 
 @Mixin(value = ScalingHealthCommonEvents.class, remap = false)
-public class MixinScalingHealthCommonEvents {
+public abstract class MixinScalingHealthCommonEvents {
 
     /**
      * @author The_Computerizer
@@ -44,6 +44,5 @@ public class MixinScalingHealthCommonEvents {
             if(Objects.nonNull(data))
                 data.incrementDifficulty(DelayedModAccess.incrementDifficultyWithStageFactor(player,Difficulty.forSleeping),false);
         }
-
     }
 }

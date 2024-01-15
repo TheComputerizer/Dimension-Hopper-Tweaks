@@ -6,10 +6,12 @@ import org.spongepowered.asm.mixin.Overwrite;
 import thebetweenlands.common.item.tools.ItemBLSword;
 import thebetweenlands.common.item.tools.ItemShockwaveSword;
 
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 @Mixin(value = ItemShockwaveSword.class, remap = false)
 public abstract class MixinItemShockwaveSword extends ItemBLSword {
+
     public MixinItemShockwaveSword(ToolMaterial material) {
         super(material);
     }
@@ -19,7 +21,7 @@ public abstract class MixinItemShockwaveSword extends ItemBLSword {
      * @reason No more damaged shockwave swords
      */
     @Overwrite
-    public void setDamage(@Nonnull ItemStack stack, int damage) {
+    public void setDamage(ItemStack stack, int damage) {
         super.setDamage(stack,0);
     }
 }

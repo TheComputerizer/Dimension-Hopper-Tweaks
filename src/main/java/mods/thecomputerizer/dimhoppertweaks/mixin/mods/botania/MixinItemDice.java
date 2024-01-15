@@ -18,9 +18,11 @@ import vazkii.botania.common.item.relic.ItemDice;
 import vazkii.botania.common.item.relic.ItemRelic;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.List;
 
+@ParametersAreNonnullByDefault
 @Mixin(value = ItemDice.class, remap = false)
 public abstract class MixinItemDice extends ItemRelic {
 
@@ -35,18 +37,19 @@ public abstract class MixinItemDice extends ItemRelic {
      * @reason Allow for relic dupicates
      */
     @Overwrite
-    public @Nonnull ActionResult<ItemStack> onItemRightClick(@Nonnull World world, EntityPlayer player, @Nonnull EnumHand hand) {
+    public @Nonnull ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
         ItemStack stack = player.getHeldItem(hand);
-        if (this.isRightPlayer(player, stack)) {
-            if (world.isRemote) {
-                return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
-            } else {
-                world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.PLAYERS, 0.5F, 0.4F / (world.rand.nextFloat() * 0.4F + 0.8F));
+        if(this.isRightPlayer(player,stack)) {
+            if(world.isRemote) return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+            else {
+                world.playSound(null,player.posX,player.posY,player.posZ,SoundEvents.ENTITY_ARROW_SHOOT,
+                        SoundCategory.PLAYERS,0.5f,0.4f/(world.rand.nextFloat()*0.4f+0.8f));
                 List<Integer> possible = Arrays.asList(0,1,2,3,4,5);
                 int relic = possible.get(world.rand.nextInt(possible.size()));
-                player.sendMessage((new TextComponentTranslation("botaniamisc.diceRoll", relic + 1)).setStyle((new Style()).setColor(TextFormatting.DARK_GREEN)));
-                return ActionResult.newResult(EnumActionResult.SUCCESS, relicStacks[relic].copy());
+                player.sendMessage((new TextComponentTranslation("botaniamisc.diceRoll",relic+1))
+                        .setStyle((new Style()).setColor(TextFormatting.DARK_GREEN)));
+                return ActionResult.newResult(EnumActionResult.SUCCESS,relicStacks[relic].copy());
             }
-        } else return ActionResult.newResult(EnumActionResult.PASS, stack);
+        } else return ActionResult.newResult(EnumActionResult.PASS,stack);
     }
 }

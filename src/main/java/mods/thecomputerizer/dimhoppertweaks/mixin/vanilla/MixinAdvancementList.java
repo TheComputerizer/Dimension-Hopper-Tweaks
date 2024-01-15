@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(AdvancementList.class)
-public class MixinAdvancementList {
+public abstract class MixinAdvancementList {
 
     @Redirect(at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;error(Ljava/lang/String;)V",
             remap = false), method = "loadAdvancements")

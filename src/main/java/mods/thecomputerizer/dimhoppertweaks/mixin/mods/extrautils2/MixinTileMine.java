@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(value = TileMine.class, remap = false)
-public class MixinTileMine {
+public abstract class MixinTileMine {
 
     @Redirect(at = @At(value = "NEW", target = "(Lnet/minecraft/item/Item;I)Lnet/minecraft/item/ItemStack;"),
             method = "<clinit>")

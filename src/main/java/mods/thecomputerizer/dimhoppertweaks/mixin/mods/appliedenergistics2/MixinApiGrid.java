@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 
 @Mixin(value = ApiGrid.class, remap = false)
-public class MixinApiGrid {
+public abstract class MixinApiGrid {
 
     /**
      * @author The_Computerizer

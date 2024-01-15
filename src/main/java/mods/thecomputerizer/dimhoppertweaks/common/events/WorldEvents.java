@@ -7,8 +7,8 @@ import mekanism.common.security.ISecurityTile;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.DelayedModAccess;
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.TileEntityAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.DelayedModAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.ITileEntity;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
 import mods.thecomputerizer.dimhoppertweaks.util.WorldUtil;
 import net.minecraft.block.BlockFarmland;
@@ -79,7 +79,7 @@ public class WorldEvents {
         if(Objects.nonNull(player)) {
             TileEntity tile = event.getWorld().getTileEntity(event.getPos());
             if(Objects.nonNull(tile) && !(tile instanceof ISecurityTile))
-                ((TileEntityAccess)tile).dimhoppertweaks$setStages(getPotentialFakePlayerStages(player,event.getPos()));
+                ((ITileEntity)tile).dimhoppertweaks$setStages(getPotentialFakePlayerStages(player,event.getPos()));
         }
     }
 
@@ -111,9 +111,9 @@ public class WorldEvents {
             Set<Class<?>> placerClasses = DelayedModAccess.getPlacerTileClasses();
             World world = player.getEntityWorld();
             TileEntity tile = WorldUtil.checkValidTile(world,player.getPosition(),placerClasses);
-            if(Objects.nonNull(tile)) return ((TileEntityAccess)tile).dimhoppertweaks$getStages();
+            if(Objects.nonNull(tile)) return ((ITileEntity)tile).dimhoppertweaks$getStages();
             tile = WorldUtil.getTileOrAdjacent(world,pos,false,placerClasses);
-            if(Objects.nonNull(tile)) return ((TileEntityAccess)tile).dimhoppertweaks$getStages();
+            if(Objects.nonNull(tile)) return ((ITileEntity)tile).dimhoppertweaks$getStages();
         }
         return DelayedModAccess.getGameStages(player);
     }

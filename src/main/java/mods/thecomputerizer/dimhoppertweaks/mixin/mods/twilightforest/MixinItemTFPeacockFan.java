@@ -32,7 +32,6 @@ import java.util.Random;
 public abstract class MixinItemTFPeacockFan extends Item {
 
     @Shadow protected abstract int doFan(World world, EntityPlayer player);
-
     @Shadow protected abstract AxisAlignedBB getEffectAABB(EntityPlayer player);
 
     /**

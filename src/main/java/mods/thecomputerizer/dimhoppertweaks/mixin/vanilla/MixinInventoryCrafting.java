@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.vanilla;
 
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.InventoryCraftingAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.IInventoryCrafting;
 import net.minecraft.inventory.InventoryCrafting;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Mixin(value = InventoryCrafting.class)
-public class MixinInventoryCrafting implements InventoryCraftingAccess {
+public abstract class MixinInventoryCrafting implements IInventoryCrafting {
 
     @Unique private final Set<String> dimhoppertweaks$stages = new HashSet<>();
 

@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.List;
 
 @Mixin(value = JeiStarter.class, remap = false)
-public class MixinJeiStarter {
+public abstract class MixinJeiStarter {
 
     @Inject(at = @At("HEAD"), method = "start")
     private void dimhoppertweaks$start(List<IModPlugin> plugins, Textures textures, CallbackInfo ci) {

@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.mods.packagedexcrafting;
 
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.RecipeInfoTieredAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.IRecipeInfoTiered;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import thelm.packagedexcrafting.recipe.RecipeInfoElite;
@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Mixin(value = RecipeInfoElite.class, remap = false)
-public class MixinRecipeInfoElite implements RecipeInfoTieredAccess {
+public abstract class MixinRecipeInfoElite implements IRecipeInfoTiered {
 
     @Unique private final Set<String> dimhoppertweaks$stages = new HashSet<>();
 

@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 
 @Mixin(value = BlockIrradiatedDust.class, remap = false)
-public class MixinBlockIrradiatedDust {
+public abstract class MixinBlockIrradiatedDust {
 
     /**
      * @author The_Computerizer

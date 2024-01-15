@@ -1,7 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.mods.packagedauto;
 
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.RecipeInfoTieredAccess;
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.TileEntityAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.IRecipeInfoTiered;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.ITileEntity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import org.spongepowered.asm.mixin.Final;
@@ -13,10 +13,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import thelm.packagedauto.inventory.InventoryEncoderPattern;
 import thelm.packagedauto.tile.TileEncoder;
-import thelm.packagedexcrafting.recipe.IRecipeInfoTiered;
 
 @Mixin(value = TileEncoder.class, remap = false)
-public class MixinTileEncoder {
+public abstract class MixinTileEncoder {
 
     @Shadow @Final public InventoryEncoderPattern[] patternInventories;
 
@@ -24,11 +23,12 @@ public class MixinTileEncoder {
         return (TileEntity)(Object)this;
     }
 
-    @Unique private void dimhoppertweaks$updateStagedRecipeInfo() {
+    @Unique
+    private void dimhoppertweaks$updateStagedRecipeInfo() {
         for(InventoryEncoderPattern pattern : this.patternInventories)
-            if(pattern.recipeInfo instanceof IRecipeInfoTiered)
-                ((RecipeInfoTieredAccess)pattern.recipeInfo).dimhoppertweaks$setStages(
-                        ((TileEntityAccess)dimhoppertweaks$cast()).dimhoppertweaks$getStages());
+            if(pattern.recipeInfo instanceof thelm.packagedexcrafting.recipe.IRecipeInfoTiered)
+                ((IRecipeInfoTiered)pattern.recipeInfo).dimhoppertweaks$setStages(
+                        ((ITileEntity)dimhoppertweaks$cast()).dimhoppertweaks$getStages());
     }
 
     @Inject(at = @At("RETURN"), method = "readSyncNBT")

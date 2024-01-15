@@ -1,4 +1,4 @@
-package mods.thecomputerizer.dimhoppertweaks.mixin.access;
+package mods.thecomputerizer.dimhoppertweaks.mixin;
 
 import androsa.gaiadimension.registry.GDBlocks;
 import androsa.gaiadimension.world.TeleporterGaia;
@@ -10,11 +10,11 @@ import cofh.thermalexpansion.item.ItemMorb;
 import crazypants.enderio.base.item.soulvial.ItemSoulVial;
 import crazypants.enderio.base.item.spawner.ItemBrokenSpawner;
 import de.ellpeck.naturesaura.blocks.tiles.TileEntityAutoCrafter;
-import goblinbob.mobends.standard.client.renderer.entity.layers.LayerCustomBipedArmor;
 import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
 import mariot7.xlfoodmod.init.ItemListxlfoodmod;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.integration.crafttweaker.CTPassthrough;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.IInventoryCrafting;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketSendKeyPressed;
 import net.darkhax.gamestages.GameStageHelper;
 import net.darkhax.gamestages.data.IStageData;
@@ -22,7 +22,6 @@ import net.darkhax.huntingdim.item.ItemBiomeChanger;
 import net.darkhax.orestages.api.OreTiersAPI;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.entity.layers.LayerArmorBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -104,7 +103,7 @@ public class DelayedModAccess {
         ResourceLocation res = item.getRegistryName();
         if(Objects.isNull(res)) return;
         int meta = stack.getMetadata();
-        if(checkTagRemovals(item,meta,res)) {
+        if(checkTagRemovals(item,res)) {
             stack.setTagCompound(null);
             if(NULLED_ITEM_YEET_TAGS.contains(item)) YEET_COUNT.incrementAndGet();
             else NULLED_ITEM_YEET_TAGS.add(item);
@@ -145,7 +144,7 @@ public class DelayedModAccess {
             if(meta==1 || meta==2 || res.getPath().endsWith("block")) {
                 String block = meta == 1 ? "minecraft:planks" : "minecraft:log";
                 if (res.getPath().endsWith("forge")) block = "minecraft:iron_block";
-                replaceYeetedTag(item, meta, replaceYeetedTinkerTable(block, (short) 0));
+                replaceYeetedTag(item, meta, replaceYeetedTinkerTable(block));
             }
             return;
         }
@@ -193,7 +192,7 @@ public class DelayedModAccess {
         }
     }
 
-    private static boolean checkTagRemovals(Item item, int meta, ResourceLocation res) {
+    private static boolean checkTagRemovals(Item item, ResourceLocation res) {
         if(item instanceof ItemMonsterPlacer || item instanceof ItemTankBlock) {
             return true;
         }
@@ -226,12 +225,12 @@ public class DelayedModAccess {
         });
     }
 
-    private static Consumer<NBTTagCompound> replaceYeetedTinkerTable(String block, short meta) {
+    private static Consumer<NBTTagCompound> replaceYeetedTinkerTable(String block) {
         return tag -> {
             NBTTagCompound textureTag = new NBTTagCompound();
             textureTag.setString("id",block);
             textureTag.setInteger("Count",1);
-            textureTag.setShort("Damage",meta);
+            textureTag.setShort("Damage",(short)0);
             tag.setTag("textureBlock",textureTag);
         };
     }
@@ -272,7 +271,7 @@ public class DelayedModAccess {
 
     public static void checkForAutoCrafter(TileEntity tile, Collection<String> stages) {
         if(tile instanceof TileEntityAutoCrafter)
-            ((InventoryCraftingAccess)((TileEntityAutoCrafter)tile).crafting).dimhoppertweaks$setStages(stages);
+            ((IInventoryCrafting)((TileEntityAutoCrafter)tile).crafting).dimhoppertweaks$setStages(stages);
     }
 
     public static Set<Class<?>> getBreakerTileClasses() {
@@ -342,11 +341,6 @@ public class DelayedModAccess {
     public static ITeleporter makeGaiaTeleporter(int dim) {
         WorldServer world = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(dim);
         return new TeleporterGaia(world,getGDPortalBlock(),getGDKeystoneBlock().getDefaultState());
-    }
-
-    @SideOnly(Side.CLIENT)
-    public static boolean isMoBendsArmorLayer(LayerArmorBase<?> layer) {
-        return layer instanceof LayerCustomBipedArmor;
     }
 
     @SideOnly(Side.CLIENT)

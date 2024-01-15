@@ -19,14 +19,15 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 
 @Mixin(value = LayerCustomBipedArmor.class, remap = false)
-public class MixinLayerCustomBipedArmor {
+public abstract class MixinLayerCustomBipedArmor {
 
     /**
      * @author The_Computerizer
      * @reason Tinkers armor
      */
     @Overwrite
-    protected ModelBiped getArmorModelHook(EntityLivingBase entity, ItemStack stack, EntityEquipmentSlot slot, ModelBiped model) {
+    protected ModelBiped getArmorModelHook(
+            EntityLivingBase entity, ItemStack stack, EntityEquipmentSlot slot, ModelBiped model) {
         EntityData<?> data = EntityDatabase.instance.get(entity);
         ModelBiped suggestedModel = ForgeHooksClient.getArmorModel(entity,stack,slot,model);
         boolean shouldBeMutated = !ModConfig.shouldKeepArmorAsVanilla(stack.getItem()) && data instanceof BipedEntityData;

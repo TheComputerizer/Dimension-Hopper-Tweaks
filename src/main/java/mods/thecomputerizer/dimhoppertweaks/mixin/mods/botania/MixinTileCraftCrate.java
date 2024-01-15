@@ -1,7 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.mods.botania;
 
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.InventoryCraftingAccess;
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.TileEntityAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.IInventoryCrafting;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.ITileEntity;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.tileentity.TileEntity;
@@ -12,9 +12,10 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import vazkii.botania.common.block.tile.TileCraftCrate;
 
 @Mixin(value = TileCraftCrate.class, remap = false)
-public class MixinTileCraftCrate {
+public abstract class MixinTileCraftCrate {
 
-    @Unique private TileEntity dimhoppertweaks$cast() {
+    @Unique
+    private TileEntity dimhoppertweaks$cast() {
         return (TileEntity)(Object)this;
     }
 
@@ -22,7 +23,7 @@ public class MixinTileCraftCrate {
             "Lnet/minecraft/inventory/InventoryCrafting;"), method = "craft")
     private InventoryCrafting dimhoppertweaks$attachCraftingStages(Container container, int width, int height) {
         InventoryCrafting inv = new InventoryCrafting(container,width,height);
-        ((InventoryCraftingAccess)inv).dimhoppertweaks$setStages(((TileEntityAccess)dimhoppertweaks$cast()).dimhoppertweaks$getStages());
+        ((IInventoryCrafting)inv).dimhoppertweaks$setStages(((ITileEntity)dimhoppertweaks$cast()).dimhoppertweaks$getStages());
         return null;
     }
 }

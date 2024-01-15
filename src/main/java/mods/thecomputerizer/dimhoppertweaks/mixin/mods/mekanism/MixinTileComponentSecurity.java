@@ -2,8 +2,8 @@ package mods.thecomputerizer.dimhoppertweaks.mixin.mods.mekanism;
 
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.DelayedModAccess;
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.TileEntityAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.DelayedModAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.ITileEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -15,16 +15,16 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Mixin(value = TileComponentSecurity.class, remap = false)
-public class MixinTileComponentSecurity {
+public abstract class MixinTileComponentSecurity {
 
     @Shadow public TileEntityContainerBlock tileEntity;
 
     @Inject(at = @At("RETURN"), method = "setOwnerUUID")
     private void dimhoppertweaks$afterSetOwnerUUID(UUID uuid, CallbackInfo ci) {
-        if(this.tileEntity instanceof TileEntityAccess && Objects.nonNull(uuid)) {
+        if(this.tileEntity instanceof ITileEntity && Objects.nonNull(uuid)) {
             EntityPlayer player = this.tileEntity.getWorld().getPlayerEntityByUUID(uuid);
             if(Objects.nonNull(player))
-                ((TileEntityAccess) this.tileEntity).dimhoppertweaks$setStages(DelayedModAccess.getGameStages(player));
+                ((ITileEntity) this.tileEntity).dimhoppertweaks$setStages(DelayedModAccess.getGameStages(player));
         }
     }
 }

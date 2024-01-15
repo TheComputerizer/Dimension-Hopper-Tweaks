@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Particle.class)
-public class MixinParticle {
+public abstract class MixinParticle {
 
     @Shadow protected boolean canCollide;
 

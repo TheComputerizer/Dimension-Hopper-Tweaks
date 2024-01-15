@@ -12,16 +12,17 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 @Mixin(value = ItemTreasureChest.class, remap = false)
-public class MixinItemTreasureChest {
+public abstract class MixinItemTreasureChest {
 
     @Shadow private WeightedLootSet loot;
 
     @Inject(at = @At(value = "HEAD"), method = "onItemRightClick")
-    private void dimhoppertweaks$onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player,
-                                                         CallbackInfoReturnable<ItemStack> cir) {
+    private void dimhoppertweaks$onItemRightClick(
+            ItemStack stack, World world, EntityPlayer player, CallbackInfoReturnable<ItemStack> cir) {
         if(!world.isRemote) {
             this.loot = new WeightedLootSet();
             this.loot.addLoot(Items.IRON_INGOT,40);

@@ -7,10 +7,9 @@ import crafttweaker.api.minecraft.CraftTweakerMC;
 import crafttweaker.mods.jei.JEI;
 import mezz.jei.api.IJeiRuntime;
 import mezz.jei.api.IModPlugin;
-import mezz.jei.api.IModRegistry;
 import mezz.jei.api.JEIPlugin;
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.DelayedModAccess;
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.ModRegistryAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.DelayedModAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.IModRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -28,7 +27,7 @@ public class JeiActionSupplier implements IModPlugin {
     private static final List<Supplier<IIngredient[]>> queuedDescriptionRemovals = new ArrayList<>();
     private static final List<Supplier<IItemStack[]>> queuedRemovals = new ArrayList<>();
 
-    public static void injectDescriptionQueues(ModRegistryAccess access) {
+    public static void injectDescriptionQueues(IModRegistry access) {
         if(queuedDescriptionRemovals.isEmpty()) return;
         List<Object> removals = new ArrayList<>();
         for(Supplier<IIngredient[]> queue : queuedDescriptionRemovals) {
@@ -80,7 +79,7 @@ public class JeiActionSupplier implements IModPlugin {
     }
 
     @Override
-    public void register(IModRegistry registry) {
+    public void register(mezz.jei.api.IModRegistry registry) {
 
     }
 }

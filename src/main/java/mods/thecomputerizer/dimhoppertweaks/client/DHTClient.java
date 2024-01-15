@@ -3,7 +3,7 @@ package mods.thecomputerizer.dimhoppertweaks.client;
 import mods.thecomputerizer.dimhoppertweaks.client.render.RenderFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.client.render.RenderHomingProjectile;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
-import mods.thecomputerizer.dimhoppertweaks.mixin.vanilla.MixinEntityRenderer;
+import mods.thecomputerizer.dimhoppertweaks.mixin.vanilla.access.EntityRendererAccess;
 import mods.thecomputerizer.dimhoppertweaks.registry.ItemRegistry;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.HomingProjectile;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
@@ -83,7 +83,7 @@ public final class DHTClient {
         mc.addScheduledTask(() -> {
             float density = tryOrDef(() -> GL11.glGetFloat(GL11.GL_FOG_DENSITY), Float.MAX_VALUE, "Unable to query fog density");
             if(density>=0 && density<Float.MAX_VALUE) {
-                float farplane = ((MixinEntityRenderer)mc.entityRenderer).getFarPlaneDistance();
+                float farplane = ((EntityRendererAccess)mc.entityRenderer).getFarPlaneDistance();
                 GlStateManager.setFogStart(farplane*0.75f);
                 GlStateManager.setFogEnd(farplane);
                 if(GLContext.getCapabilities().GL_NV_fog_distance) GlStateManager.glFogi(34138, 34139);
@@ -106,7 +106,7 @@ public final class DHTClient {
         mc.addScheduledTask(() -> {
             GameSettings settings = mc.gameSettings;
             int renderDist = getOrDef(settings, s -> s.renderDistanceChunks, Integer.MAX_VALUE);
-            float farPlaneDist = getOrDef(mc.entityRenderer,r -> ((MixinEntityRenderer)r).getFarPlaneDistance(),Float.MAX_VALUE);
+            float farPlaneDist = getOrDef(mc.entityRenderer,r -> ((EntityRendererAccess)r).getFarPlaneDistance(),Float.MAX_VALUE);
             PotionEffect blindness = mc.player.getActivePotionEffect(MobEffects.BLINDNESS);
             boolean isBlind = Objects.nonNull(blindness);
             int blindLevel = isBlind ? blindness.getAmplifier() : Integer.MAX_VALUE;

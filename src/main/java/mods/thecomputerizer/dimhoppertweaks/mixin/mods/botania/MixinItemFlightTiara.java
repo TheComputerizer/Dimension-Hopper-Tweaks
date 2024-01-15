@@ -23,12 +23,12 @@ public abstract class MixinItemFlightTiara {
 
     @Shadow @Final public static List<String> playersWithFlight;
 
-    @Shadow public static String playerStr(EntityPlayer player) {
+    @Shadow
+    public static String playerStr(EntityPlayer player) {
         return null;
     }
 
     @Shadow protected abstract boolean shouldPlayerHaveFlight(EntityPlayer player);
-
     @Shadow public abstract int getCost(ItemStack stack, int timeLeft);
 
     /**
@@ -42,24 +42,24 @@ public abstract class MixinItemFlightTiara {
         if(event.getEntityLiving() instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) event.getEntityLiving();
             IBaublesItemHandler handler = BaublesApi.getBaublesHandler(player);
-            if (Objects.nonNull(handler)) {
+            if(Objects.nonNull(handler)) {
                 ItemStack tiara = handler.getStackInSlot(4);
                 int left = ItemNBTHelper.getInt(tiara,"timeLeft",1200);
-                if (playersWithFlight.contains(playerStr(player))) {
-                    if (this.shouldPlayerHaveFlight(player)) {
+                if(playersWithFlight.contains(playerStr(player))) {
+                    if(this.shouldPlayerHaveFlight(player)) {
                         player.capabilities.allowFlying = true;
-                        if (player.capabilities.isFlying) {
-                            if (!player.world.isRemote) {
+                        if(player.capabilities.isFlying) {
+                            if(!player.world.isRemote)
                                 ManaItemHandler.requestManaExact(tiara,player,this.getCost(tiara,left),true);
-                            } else if (Math.abs(player.motionX) > 0.1 || Math.abs(player.motionZ) > 0.1) {
-                                double x = event.getEntityLiving().posX - 0.5;
-                                double y = event.getEntityLiving().posY - 0.5;
-                                double z = event.getEntityLiving().posZ - 0.5;
+                            else if(Math.abs(player.motionX)>0.1d || Math.abs(player.motionZ)>0.1d) {
+                                double x = event.getEntityLiving().posX-0.5d;
+                                double y = event.getEntityLiving().posY-0.5d;
+                                double z = event.getEntityLiving().posZ-0.5d;
                                 player.getGameProfile().getName();
                                 float r = 1f;
                                 float g = 1f;
                                 float b = 1f;
-                                switch (tiara.getItemDamage()) {
+                                switch(tiara.getItemDamage()) {
                                     case 2:
                                         r = 0.1f;
                                         g = 0.1f;
@@ -97,11 +97,11 @@ public abstract class MixinItemFlightTiara {
                                         r = 0f;
                                         b = 0f;
                                 }
-
                                 for (int i = 0; i < 2; ++i)
                                     Botania.proxy.sparkleFX(x+Math.random()*(double)event.getEntityLiving().width,
-                                            y+Math.random()*0.4,z+Math.random()*(double)event.getEntityLiving().width,
-                                            r,g,b,2f*(float)Math.random(),20);
+                                            y+Math.random()*0.4,
+                                            z+Math.random()*(double)event.getEntityLiving().width,r,g,b,
+                                            2f*(float)Math.random(),20);
                             }
                         }
                     } else {

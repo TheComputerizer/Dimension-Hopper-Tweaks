@@ -10,8 +10,8 @@ import goblinbob.mobends.standard.client.model.armor.*;
 import goblinbob.mobends.standard.data.BipedEntityData;
 import goblinbob.mobends.standard.data.PlayerData;
 import goblinbob.mobends.standard.previewer.PlayerPreviewer;
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.HumanoidPartAccess;
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.ModelConstructsArmorAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.IHumanoidPart;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.IModelConstructsArmor;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
@@ -146,7 +146,7 @@ public class ModelConstructsArmorWrapper extends ModelBiped {
                     this.apply();
                     setParts();
                     this.original.setModelAttributes(this);
-                    ((ModelConstructsArmorAccess)this.original).dimhoppertweaks$render(
+                    ((IModelConstructsArmor)this.original).dimhoppertweaks$render(
                             entity,limbSwing,swingAmount,ageInTicks,headYaw,headPitch,scale);
                     this.deapply();
                 }
@@ -175,7 +175,7 @@ public class ModelConstructsArmorWrapper extends ModelBiped {
     public void apply() {
         if(!this.isActive) {
             for(IPartWrapper wrapper : this.wrappers)
-                ((HumanoidPartAccess)wrapper).dimhoppertweaks$apply(this);
+                ((IHumanoidPart)wrapper).dimhoppertweaks$apply(this);
             this.isActive = true;
         }
     }
@@ -183,7 +183,7 @@ public class ModelConstructsArmorWrapper extends ModelBiped {
     public void deapply() {
         if(this.isActive) {
             for(IPartWrapper wrapper : this.wrappers)
-                ((HumanoidPartAccess)wrapper).dimhoppertweaks$deapply(this);
+                ((IHumanoidPart)wrapper).dimhoppertweaks$deapply(this);
             this.isActive = false;
         }
     }

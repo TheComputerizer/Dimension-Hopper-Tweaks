@@ -7,17 +7,20 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(value = ForgeHooks.class, remap = false)
-public class MixinForgeHooks {
+public abstract class MixinForgeHooks {
 
     @Redirect(at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;" +
             "error(Ljava/lang/String;Ljava/lang/Throwable;)V", ordinal = 0), method = "lambda$loadAdvancements$0")
     private static void dimhoppertweaks$stopSpammingAdvancementErrors1(Logger logger, String s, Throwable throwable) {
-        logger.debug("Ingoring errored advacncement from {}",s.replaceAll("Ingoring errored advacncement from ",""));
+        logger.debug("Ingoring errored advacncement from {}",
+                s.replaceAll("Ingoring errored advacncement from ",""));
     }
 
     @Redirect(at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;" +
-            "error(Ljava/lang/String;Ljava/lang/Throwable;)V", ordinal = 1), method = "lambda$loadAdvancements$0")
+            "error(Ljava/lang/String;Ljava/lang/Throwable;)V", ordinal = 1),
+            method = "lambda$loadAdvancements$0")
     private static void dimhoppertweaks$stopSpammingAdvancementErrors2(Logger logger, String s, Throwable throwable) {
-        logger.debug("Ingoring unreadable advacncement {}",s.replaceAll("Couldn't read advancement ",""));
+        logger.debug("Ingoring unreadable advacncement {}",
+                s.replaceAll("Couldn't read advancement ",""));
     }
 }

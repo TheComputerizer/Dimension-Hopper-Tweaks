@@ -5,7 +5,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 
 @Mixin(value = TangleStaff.class, remap = false)
-public class MixinTangleStaff {
+public abstract class MixinTangleStaff {
 
     /**
      * @author The_Computerizer

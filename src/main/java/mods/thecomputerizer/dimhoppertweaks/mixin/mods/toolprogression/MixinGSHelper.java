@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import tyra314.toolprogression.compat.gamestages.GSHelper;
 
 @Mixin(value = GSHelper.class, remap = false)
-public class MixinGSHelper {
+public abstract class MixinGSHelper {
 
     /**
      * @author The_Computerizer
@@ -19,6 +19,7 @@ public class MixinGSHelper {
         return true;
     }
 
-    @Redirect(at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;info(Ljava/lang/String;)V"), method = "<clinit>")
+    @Redirect(at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;info(Ljava/lang/String;)V"),
+            method = "<clinit>")
     static void dimhoppertweaks$redirectLog(Logger logger, String s) {}
 }

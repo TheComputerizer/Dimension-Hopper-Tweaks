@@ -32,82 +32,86 @@ public abstract class MixinTeleporterGaia extends Teleporter {
      * @reason Fix incorrect teleporter position spawning players underground
      */
     @Overwrite
-    public boolean placeInExistingPortal(Entity entityIn, float rotationYaw) {
+    public boolean placeInExistingPortal(Entity entity, float yaw) {
         double d0 = -1.0D;
-        int j = MathHelper.floor(entityIn.posX);
-        int k = MathHelper.floor(entityIn.posZ);
+        int j = MathHelper.floor(entity.posX);
+        int k = MathHelper.floor(entity.posZ);
         boolean flag = true;
-        BlockPos blockpos = BlockPos.ORIGIN;
-        long l = ChunkPos.asLong(j, k);
+        BlockPos pos = BlockPos.ORIGIN;
+        long l = ChunkPos.asLong(j,k);
         if (this.destinationCoordinateCache.containsKey(l)) {
-            Teleporter.PortalPosition teleporter$portalposition = this.destinationCoordinateCache.get(l);
+            Teleporter.PortalPosition portalPos = this.destinationCoordinateCache.get(l);
             d0 = 0.0D;
-            blockpos = teleporter$portalposition;
-            teleporter$portalposition.lastUpdateTime = this.world.getTotalWorldTime();
+            pos = portalPos;
+            portalPos.lastUpdateTime = this.world.getTotalWorldTime();
             flag = false;
         }
         else {
-            BlockPos blockpos3 = new BlockPos(entityIn);
-            for (int i1 = -128; i1 <= 128; ++i1) {
-                BlockPos blockpos2;
-                for (int j1 = -128; j1 <= 128; ++j1) {
-                    for (BlockPos blockpos1 = blockpos3.add(i1, this.world.getActualHeight() - 1 - blockpos3.getY(), j1); blockpos1.getY() >= 0; blockpos1 = blockpos2) {
-                        blockpos2 = blockpos1.down();
-                        if (this.world.getBlockState(blockpos1).getBlock()==GDBlocks.gaia_portal) {
-                            for (blockpos2 = blockpos1.down(); this.world.getBlockState(blockpos2).getBlock()==GDBlocks.gaia_portal; blockpos2 = blockpos2.down())
-                                blockpos1 = blockpos2;
-                            double d1 = blockpos1.distanceSq(blockpos3);
-                            if (d0 < 0.0D || d1 < d0) {
+            BlockPos pos3 = new BlockPos(entity);
+            for(int i1=-128; i1<=128; i1++) {
+                BlockPos pos2;
+                for(int j1=-128; j1<=128; j1++) {
+                    for(BlockPos pos1 = pos3.add(i1,this.world.getActualHeight()-1-pos3.getY(),j1); 
+                         pos1.getY()>=0; pos1 = pos2) {
+                        pos2 = pos1.down();
+                        if(this.world.getBlockState(pos1).getBlock()==GDBlocks.gaia_portal) {
+                            for(pos2 = pos1.down(); this.world.getBlockState(pos2).getBlock()==GDBlocks.gaia_portal; 
+                                pos2 = pos2.down()) pos1 = pos2;
+                            double d1 = pos1.distanceSq(pos3);
+                            if(d0<0d || d1<d0) {
                                 d0 = d1;
-                                blockpos = blockpos1;
+                                pos = pos1;
                             }
                         }
                     }
                 }
             }
         }
-        if (d0 >= 0.0D) {
-            if (flag)
-                this.destinationCoordinateCache.put(l,new Teleporter.PortalPosition(blockpos, this.world.getTotalWorldTime()));
-            double d5 = (double)blockpos.getX() + 0.5D;
-            double d7 = (double)blockpos.getZ() + 0.5D;
-            BlockPattern.PatternHelper blockpattern$patternhelper = Blocks.PORTAL.createPatternHelper(this.world, blockpos);
-            boolean flag1 = blockpattern$patternhelper.getForwards().rotateY().getAxisDirection() == EnumFacing.AxisDirection.NEGATIVE;
-            double d2 = blockpattern$patternhelper.getForwards().getAxis() == EnumFacing.Axis.X ? (double)blockpattern$patternhelper.getFrontTopLeft().getZ() : (double)blockpattern$patternhelper.getFrontTopLeft().getX();
-            double d6 = (double)(blockpattern$patternhelper.getFrontTopLeft().getY() + 1) - entityIn.getLastPortalVec().y * (double)blockpattern$patternhelper.getHeight();
-            if(flag1) ++d2;
-            if (blockpattern$patternhelper.getForwards().getAxis() == EnumFacing.Axis.X)
-                d7 = d2 + (1.0D - entityIn.getLastPortalVec().x) * (double)blockpattern$patternhelper.getWidth() * (double)blockpattern$patternhelper.getForwards().rotateY().getAxisDirection().getOffset();
-            else d5 = d2 + (1.0D - entityIn.getLastPortalVec().x) * (double)blockpattern$patternhelper.getWidth() * (double)blockpattern$patternhelper.getForwards().rotateY().getAxisDirection().getOffset();
-            float f = 0.0F;
-            float f1 = 0.0F;
-            float f2 = 0.0F;
-            float f3 = 0.0F;
-            if(blockpattern$patternhelper.getForwards().getOpposite() == entityIn.getTeleportDirection()) {
-                f = 1.0F;
-                f1 = 1.0F;
+        if(d0>=0d) {
+            if(flag)
+                this.destinationCoordinateCache.put(l,new Teleporter.PortalPosition(pos,this.world.getTotalWorldTime()));
+            double d5 = (double)pos.getX()+0.5d;
+            double d7 = (double)pos.getZ()+0.5d;
+            BlockPattern.PatternHelper pattern = Blocks.PORTAL.createPatternHelper(this.world,pos);
+            boolean flag1 = pattern.getForwards().rotateY().getAxisDirection()==EnumFacing.AxisDirection.NEGATIVE;
+            double d2 = pattern.getForwards().getAxis() == EnumFacing.Axis.X ? 
+                    (double)pattern.getFrontTopLeft().getZ() : (double)pattern.getFrontTopLeft().getX();
+            double d6 = (double)(pattern.getFrontTopLeft().getY()+1)-entity.getLastPortalVec().y*(double)pattern.getHeight();
+            if(flag1) d2++;
+            if(pattern.getForwards().getAxis()==EnumFacing.Axis.X)
+                 d7 = d2+(1d-entity.getLastPortalVec().x)*(double)pattern.getWidth()*
+                         (double)pattern.getForwards().rotateY().getAxisDirection().getOffset();
+            else d5 = d2+(1d-entity.getLastPortalVec().x)*(double)pattern.getWidth()*
+                    (double)pattern.getForwards().rotateY().getAxisDirection().getOffset();
+            float f = 0f;
+            float f1 = 0f;
+            float f2 = 0f;
+            float f3 = 0f;
+            if(pattern.getForwards().getOpposite()==entity.getTeleportDirection()) {
+                f = 1f;
+                f1 = 1f;
             }
-            else if(blockpattern$patternhelper.getForwards().getOpposite() == entityIn.getTeleportDirection().getOpposite()) {
-                f = -1.0F;
-                f1 = -1.0F;
+            else if(pattern.getForwards().getOpposite()==entity.getTeleportDirection().getOpposite()) {
+                f = -1f;
+                f1 = -1f;
             }
-            else if (blockpattern$patternhelper.getForwards().getOpposite() == entityIn.getTeleportDirection().rotateY()) {
-                f2 = 1.0F;
-                f3 = -1.0F;
+            else if (pattern.getForwards().getOpposite()==entity.getTeleportDirection().rotateY()) {
+                f2 = 1f;
+                f3 = -1f;
             }
             else {
-                f2 = -1.0F;
-                f3 = 1.0F;
+                f2 = -1f;
+                f3 = 1f;
             }
-            double d3 = entityIn.motionX;
-            double d4 = entityIn.motionZ;
-            entityIn.motionX = d3 * (double)f + d4 * (double)f3;
-            entityIn.motionZ = d3 * (double)f2 + d4 * (double)f1;
-            entityIn.rotationYaw = rotationYaw - (float)(entityIn.getTeleportDirection().getOpposite().getHorizontalIndex()*90)+
-                    (float)(blockpattern$patternhelper.getForwards().getHorizontalIndex()*90);
-            if(entityIn instanceof EntityPlayerMP)
-                ((EntityPlayerMP)entityIn).connection.setPlayerLocation(d5,d6+1d,d7,entityIn.rotationYaw,entityIn.rotationPitch);
-            else entityIn.setLocationAndAngles(d5,d6+1d,d7,entityIn.rotationYaw,entityIn.rotationPitch);
+            double d3 = entity.motionX;
+            double d4 = entity.motionZ;
+            entity.motionX = d3*(double)f+d4*(double)f3;
+            entity.motionZ = d3*(double)f2+d4 *(double)f1;
+            entity.rotationYaw = yaw-(float)(entity.getTeleportDirection().getOpposite().getHorizontalIndex()*90)+
+                    (float)(pattern.getForwards().getHorizontalIndex()*90);
+            if(entity instanceof EntityPlayerMP)
+                ((EntityPlayerMP)entity).connection.setPlayerLocation(d5,d6+1d,d7,entity.rotationYaw,entity.rotationPitch);
+            else entity.setLocationAndAngles(d5,d6+1d,d7,entity.rotationYaw,entity.rotationPitch);
             return true;
         }
         else return false;

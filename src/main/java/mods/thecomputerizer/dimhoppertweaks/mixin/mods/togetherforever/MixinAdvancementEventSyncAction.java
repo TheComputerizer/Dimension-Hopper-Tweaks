@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = AdvancementEventSyncAction.class, remap = false)
-public class MixinAdvancementEventSyncAction {
+public abstract class MixinAdvancementEventSyncAction {
 
     @Inject(at = @At("HEAD"), method = "grantAllParentAchievements", cancellable = true)
     private static void dimhoppertweaks$applyBlacklist(EntityPlayerMP player, Advancement advancement, CallbackInfo ci) {

@@ -5,7 +5,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 
 @Mixin(value = LunarStaff.class, remap = false)
-public class MixinLunarStaff {
+public abstract class MixinLunarStaff {
 
     /**
      * @author The_Computerizer

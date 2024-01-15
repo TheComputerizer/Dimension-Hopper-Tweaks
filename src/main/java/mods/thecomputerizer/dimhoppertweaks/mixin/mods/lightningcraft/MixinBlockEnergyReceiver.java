@@ -6,7 +6,7 @@ import sblectric.lightningcraft.blocks.BlockEnergyReceiver;
 import sblectric.lightningcraft.config.LCConfig;
 
 @Mixin(value = BlockEnergyReceiver.class, remap = false)
-public class MixinBlockEnergyReceiver {
+public abstract class MixinBlockEnergyReceiver {
 
     /**
      * @author The_Computerizer

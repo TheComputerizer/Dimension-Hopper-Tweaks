@@ -17,7 +17,7 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Mixin(value = EntityHandler.class, remap = false)
-public class MixinEntityHandler {
+public abstract class MixinEntityHandler {
 
     /**
      * @author The_Computerizer

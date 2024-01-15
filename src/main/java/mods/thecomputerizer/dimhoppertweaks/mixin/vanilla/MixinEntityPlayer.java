@@ -6,7 +6,6 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.potion.Potion;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -20,21 +19,16 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(EntityPlayer.class)
 public abstract class MixinEntityPlayer extends EntityLivingBase {
 
+    @Shadow @Final private static DataParameter<Integer> PLAYER_SCORE;
+    @Shadow public int experienceTotal;
+    @Shadow public float experience;
+    @Shadow public abstract int getScore();
+    @Shadow public abstract int xpBarCap();
+    @Shadow public abstract void addExperienceLevel(int levels);
+
     public MixinEntityPlayer(World world) {
         super(world);
     }
-
-    @Shadow public abstract int getScore();
-
-    @Shadow @Final private static DataParameter<Integer> PLAYER_SCORE;
-
-    @Shadow public int experienceTotal;
-
-    @Shadow public float experience;
-
-    @Shadow public abstract int xpBarCap();
-
-    @Shadow public abstract void addExperienceLevel(int levels);
 
     /**
      * @author The_Computerizer
@@ -75,8 +69,9 @@ public abstract class MixinEntityPlayer extends EntityLivingBase {
         this.dataManager.set(PLAYER_SCORE,MathHelper.clamp(this.getScore()+score,0,Integer.MAX_VALUE));
     }
 
-    @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;processInitialInteract("+
-            "Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;)Z"), method = "interactOn")
+    @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;"+
+            "processInitialInteract(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;)Z"),
+            method = "interactOn")
     private boolean dimhoppertweaks$fixTamedHealth(Entity entity, EntityPlayer player, EnumHand hand) {
         if(entity instanceof EntityTameable) {
             EntityTameable tameable = (EntityTameable)entity;

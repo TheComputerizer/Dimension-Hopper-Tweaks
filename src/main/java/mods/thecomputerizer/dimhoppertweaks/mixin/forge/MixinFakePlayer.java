@@ -1,7 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.forge;
 
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.DelayedModAccess;
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.FakePlayerAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.DelayedModAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.IFakePlayer;
 import net.minecraftforge.common.util.FakePlayer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -9,10 +9,10 @@ import org.spongepowered.asm.mixin.Unique;
 import java.util.Collection;
 
 @Mixin(value = FakePlayer.class, remap = false)
-public class MixinFakePlayer implements FakePlayerAccess {
+public abstract class MixinFakePlayer implements IFakePlayer {
 
-
-    @Unique FakePlayer dimhoppertweaks$cast() {
+    @Unique
+    private FakePlayer dimhoppertweaks$cast() {
         return (FakePlayer)(Object)this;
     }
 

@@ -5,7 +5,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 
 @Mixin(value = MeteorStaff.class, remap = false)
-public class MixinMeteorStaff {
+public abstract class MixinMeteorStaff {
 
     /**
      * @author The_Computerizer

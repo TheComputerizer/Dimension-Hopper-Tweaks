@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(value = DimensionManager.class, remap = false)
-public class MixinDimensionManager {
+public abstract class MixinDimensionManager {
 
     @Redirect(at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;" +
             "error(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V"), method = "initDimension")

@@ -1,8 +1,8 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.mods.orestages;
 
 import mekanism.common.security.ISecurityTile;
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.DelayedModAccess;
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.TileEntityAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.DelayedModAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.ITileEntity;
 import mods.thecomputerizer.dimhoppertweaks.util.WorldUtil;
 import net.darkhax.bookshelf.util.BlockUtils;
 import net.darkhax.gamestages.GameStageHelper;
@@ -35,16 +35,17 @@ import java.util.List;
 import java.util.Objects;
 
 @Mixin(value = OreTiersEventHandler.class, remap = false)
-public class MixinOreTiersEventHandler {
+public abstract class MixinOreTiersEventHandler {
 
-    @Unique private boolean dimhoppertweaks$verifyHooks(World world, @Nullable EntityPlayer player, BlockPos pos, String stage) {
+    @Unique
+    private boolean dimhoppertweaks$verifyHooks(World world, @Nullable EntityPlayer player, BlockPos pos, String stage) {
         TileEntity tile;
         if(player instanceof FakePlayer) {
             tile = world.getTileEntity(player.getPosition());
-            if(tile instanceof ISecurityTile) return !((TileEntityAccess)tile).dimhoppertweaks$hasStage(stage);
+            if(tile instanceof ISecurityTile) return !((ITileEntity)tile).dimhoppertweaks$hasStage(stage);
         }
         tile = WorldUtil.getTileOrAdjacent(world,pos,true,DelayedModAccess.getBreakerTileClasses());
-        if(Objects.nonNull(tile)) return !((TileEntityAccess)tile).dimhoppertweaks$hasStage(stage);
+        if(Objects.nonNull(tile)) return !((ITileEntity)tile).dimhoppertweaks$hasStage(stage);
         return Objects.isNull(player) || !GameStageHelper.hasStage(player,stage);
     }
 

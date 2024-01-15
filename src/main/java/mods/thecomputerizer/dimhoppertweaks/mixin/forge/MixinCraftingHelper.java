@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(value = CraftingHelper.class, remap = false)
-public class MixinCraftingHelper {
+public abstract class MixinCraftingHelper {
 
     @Redirect(at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;" +
             "error(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V"), method = "lambda$loadRecipes$22")

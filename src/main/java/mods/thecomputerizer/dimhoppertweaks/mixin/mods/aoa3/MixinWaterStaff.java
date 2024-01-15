@@ -5,7 +5,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 
 @Mixin(value = WaterStaff.class, remap = false)
-public class MixinWaterStaff {
+public abstract class MixinWaterStaff {
 
     /**
      * @author The_Computerizer

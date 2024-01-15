@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Objects;
 
 @Mixin(value = PanelEntityPreview.class, remap = false)
-public class MixinPanelEntityPreview {
+public abstract class MixinPanelEntityPreview {
 
     @Inject(at = @At("RETURN"), method = "<init>")
     private void dimhoppertweaks$afterInit(IGuiRect rect, Entity entity, CallbackInfo ci) {

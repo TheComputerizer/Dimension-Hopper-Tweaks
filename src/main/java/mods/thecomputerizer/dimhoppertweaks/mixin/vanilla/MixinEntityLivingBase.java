@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.vanilla;
 
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.EntityLivinBaseAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.IEntityLivinBase;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import org.spongepowered.asm.mixin.Mixin;
@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(EntityLivingBase.class)
-public class MixinEntityLivingBase implements EntityLivinBaseAccess {
+public abstract class MixinEntityLivingBase implements IEntityLivinBase {
 
     @Unique private boolean dimhoppertweaks$isBlighted;
 

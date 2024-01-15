@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Objects;
 
 @Mixin(value = LevelLockHandler.class, remap = false)
-public class MixinLevelLockHandler {
+public abstract class MixinLevelLockHandler {
 
     @Inject(at = @At("HEAD"), method = "rightClickBlock", cancellable = true)
     private static void dimhoppertweaks$rightClickBlock(RightClickBlock event, CallbackInfo ci) {

@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import software.bernie.geckolib3.file.AnimationFileLoader;
 
 @Mixin(value = AnimationFileLoader.class, remap = false)
-public class MixinAnimationFileLoader {
+public abstract class MixinAnimationFileLoader {
 
     @Redirect(at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;" +
             "error(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V"), method = "loadAllAnimations")

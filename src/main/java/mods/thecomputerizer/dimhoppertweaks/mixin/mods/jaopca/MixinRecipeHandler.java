@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import thelm.jaopca.recipes.RecipeHandler;
 
 @Mixin(value = RecipeHandler.class, remap = false)
-public class MixinRecipeHandler {
+public abstract class MixinRecipeHandler {
 
     @Redirect(at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;error(Ljava/lang/String;" +
             "Ljava/lang/Object;Ljava/lang/Object;)V"), method = "lambda$registerEarlyRecipes$0")

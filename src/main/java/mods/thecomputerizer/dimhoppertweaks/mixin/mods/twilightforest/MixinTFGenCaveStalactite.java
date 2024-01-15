@@ -8,7 +8,7 @@ import twilightforest.world.feature.TFGenCaveStalactite;
 import static twilightforest.world.feature.TFGenCaveStalactite.addStalactite;
 
 @Mixin(value = TFGenCaveStalactite.class, remap = false)
-public class MixinTFGenCaveStalactite {
+public abstract class MixinTFGenCaveStalactite {
 
     /**
      * @author The_Computerizer
@@ -16,8 +16,8 @@ public class MixinTFGenCaveStalactite {
      */
     @Overwrite
     private static void addDefaultStalactites() {
-        addStalactite(2, Blocks.REDSTONE_ORE.getDefaultState(),0.8f,8,1,40);
-        addStalactite(1, Blocks.COAL_ORE.getDefaultState(),0.8f,12,1,24);
-        addStalactite(1, Blocks.GLOWSTONE.getDefaultState(),0.5f,8,1,12);
+        addStalactite(2,Blocks.REDSTONE_ORE.getDefaultState(),0.8f,8,1,40);
+        addStalactite(1,Blocks.COAL_ORE.getDefaultState(),0.8f,12,1,24);
+        addStalactite(1,Blocks.GLOWSTONE.getDefaultState(),0.5f,8,1,12);
     }
 }

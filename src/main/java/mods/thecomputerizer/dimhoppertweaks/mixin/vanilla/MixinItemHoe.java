@@ -15,11 +15,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ItemHoe.class)
-public class MixinItemHoe {
+public abstract class MixinItemHoe {
 
     @Inject(at = @At(value = "HEAD"), method = "setBlock")
-    private void dimhoppertweaks$setBlock(ItemStack stack, EntityPlayer player, World worldIn, BlockPos pos,
-                                          IBlockState state, CallbackInfo info) {
+    private void dimhoppertweaks$setBlock(
+            ItemStack stack, EntityPlayer player, World world, BlockPos pos, IBlockState state, CallbackInfo info) {
         if(player instanceof EntityPlayerMP && state.getBlock() instanceof BlockFarmland)
             SkillWrapper.addSP((EntityPlayerMP) player,"farming",3f,false);
     }

@@ -1,8 +1,8 @@
-package mods.thecomputerizer.dimhoppertweaks.mixin.access;
+package mods.thecomputerizer.dimhoppertweaks.mixin.api;
 
 import net.minecraft.block.state.IBlockState;
 
-public interface BlockFlintOreAccess {
+public interface IBlockFlintOre {
 
     IBlockState dimhoppertweaks$getDefaultState();
 }

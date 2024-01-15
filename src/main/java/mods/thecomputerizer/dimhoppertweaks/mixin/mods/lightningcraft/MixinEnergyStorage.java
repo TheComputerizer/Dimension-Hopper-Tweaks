@@ -1,15 +1,14 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.mods.lightningcraft;
 
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.EnergyStorageAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.IEnergyStorage;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import sblectric.lightningcraft.util.EnergyStorage;
 
 @Mixin(value = EnergyStorage.class, remap = false)
-public abstract class MixinEnergyStorage implements EnergyStorageAccess {
+public abstract class MixinEnergyStorage implements IEnergyStorage {
 
     @Shadow protected int maxReceive;
-
     @Shadow protected int maxExtract;
 
     @Override

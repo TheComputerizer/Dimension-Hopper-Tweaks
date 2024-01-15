@@ -1,9 +1,9 @@
-package mods.thecomputerizer.dimhoppertweaks.mixin.access;
+package mods.thecomputerizer.dimhoppertweaks.mixin.api;
 
 import java.util.Collection;
 
 @SuppressWarnings({"BooleanMethodIsAlwaysInverted", "unused"})
-public interface TileEntityAccess {
+public interface ITileEntity {
 
     void dimhoppertweaks$setStages(String ... stages);
     void dimhoppertweaks$setStages(Collection<String> stages);

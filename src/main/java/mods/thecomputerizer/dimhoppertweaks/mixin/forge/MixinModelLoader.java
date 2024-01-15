@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(value = ModelLoader.class, remap = false)
-public class MixinModelLoader {
+public abstract class MixinModelLoader {
 
     @Redirect(at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;error(Ljava/lang/String;" +
             "Ljava/lang/Throwable;)V"), method = "onPostBakeEvent")
@@ -36,17 +36,21 @@ public class MixinModelLoader {
     @Redirect(at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;error(Ljava/lang/String;" +
             "Ljava/lang/Object;Ljava/lang/Object;)V", ordinal = 2), method = "onPostBakeEvent")
     private void dimhoppertweaks$stopSpammingResourceErrors4(Logger logger, String s, Object o, Object o1) {
-        if(o instanceof ResourceLocation && ((ResourceLocation)o).getNamespace().matches(DHTRef.MODID)) logger.error(s);
+        if(o instanceof ResourceLocation && ((ResourceLocation)o).getNamespace().matches(DHTRef.MODID))
+            logger.error(s);
         else logger.debug("Ignored model and/or texture error");
     }
 
-    @Redirect(at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;fatal(Ljava/lang/String;Ljava/lang/Object;)V"), method = "onPostBakeEvent")
+    @Redirect(at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;fatal(Ljava/lang/String;"+
+            "Ljava/lang/Object;)V"), method = "onPostBakeEvent")
     private void dimhoppertweaks$stopSpammingResourceErrors5(Logger logger, String s, Object o) {
-        if(o instanceof ModelResourceLocation && ((ModelResourceLocation)o).getNamespace().matches(DHTRef.MODID)) logger.fatal(s);
+        if(o instanceof ModelResourceLocation && ((ModelResourceLocation)o).getNamespace().matches(DHTRef.MODID))
+            logger.fatal(s);
         else logger.debug("Ignored model and/or texture error");
     }
 
-    @Redirect(at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;fatal(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V"), method = "onPostBakeEvent")
+    @Redirect(at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;fatal(Ljava/lang/String;"+
+            "Ljava/lang/Object;Ljava/lang/Object;)V"), method = "onPostBakeEvent")
     private void dimhoppertweaks$stopSpammingResourceErrors6(Logger logger, String s, Object o, Object o1) {
         if(o instanceof String && ((String)o).contains(DHTRef.MODID)) logger.error(s);
         else logger.debug("Ignored model and/or texture error");

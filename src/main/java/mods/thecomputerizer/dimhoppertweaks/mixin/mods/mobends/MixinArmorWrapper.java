@@ -12,8 +12,8 @@ import goblinbob.mobends.standard.client.model.armor.MalformedArmorModelExceptio
 import goblinbob.mobends.standard.data.BipedEntityData;
 import goblinbob.mobends.standard.data.PlayerData;
 import goblinbob.mobends.standard.previewer.PlayerPreviewer;
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.ArmorWrapperAccess;
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.ModelArmorInfinityAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.IArmorWrapper;
+import mods.thecomputerizer.dimhoppertweaks.mixin.mods.access.ModelArmorInfinityAccess;
 import morph.avaritia.client.render.entity.ModelArmorInfinity;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.Entity;
@@ -26,26 +26,22 @@ import java.util.List;
 import java.util.Objects;
 
 @Mixin(value = ArmorWrapper.class, remap = false)
-public abstract class MixinArmorWrapper implements ArmorWrapperAccess {
-
-    @Shadow public abstract void deapply();
+public abstract class MixinArmorWrapper implements IArmorWrapper {
 
     @Shadow protected ModelBiped original;
-
-    @Shadow public abstract void apply();
-
     @Shadow protected boolean mutated;
-
     @Shadow protected ModelPartTransform bodyTransform;
-
     @Shadow protected List<IPartWrapper> partWrappers;
+    @Shadow public abstract void apply();
+    @Shadow public abstract void deapply();
 
     /**
      * @author The_Computerizer
      * @reason Account for armor sets like infinity armor that have sub renders
      */
     @Overwrite(remap = true)
-    public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+    public void render(Entity entity, float limbSwing, float swingAmount, float ageInTicks, float headYaw,
+                       float headPitch, float scale) {
         if(!this.mutated) throw new MalformedArmorModelException("Operating on a demutated armor wrapper.");
         else if(entity instanceof EntityLivingBase) {
             EntityLivingBase living = (EntityLivingBase)entity;
@@ -62,20 +58,20 @@ public abstract class MixinArmorWrapper implements ArmorWrapperAccess {
                     this.original.setModelAttributes((ArmorWrapper)(Object)this);
                     ArmorWrapper overlay = this.original instanceof ModelArmorInfinity ?
                             (ArmorWrapper)ArmorModelFactory.getArmorModel(((ModelArmorInfinityAccess)this.original)
-                                    .dimhoppertweaks$getOverlay(),true) : null;
+                                    .getOverlay(),true) : null;
                     ArmorWrapper invulOverlay = this.original instanceof ModelArmorInfinity ?
                             (ArmorWrapper)ArmorModelFactory.getArmorModel(((ModelArmorInfinityAccess)this.original)
-                                    .dimhoppertweaks$getInvulOverlay(),true) : null;
+                                    .getInvulnOverlay(),true) : null;
                     if(Objects.nonNull(overlay))
-                        ((ArmorWrapperAccess)overlay).dimhoppertweaks$preRenderSplit(entity);
+                        ((IArmorWrapper)overlay).dimhoppertweaks$preRenderSplit(entity);
                     if(Objects.nonNull(invulOverlay))
-                        ((ArmorWrapperAccess)invulOverlay).dimhoppertweaks$preRenderSplit(entity);
-                    this.original.render(entity,limbSwing,limbSwingAmount,ageInTicks,netHeadYaw,headPitch,scale);
+                        ((IArmorWrapper)invulOverlay).dimhoppertweaks$preRenderSplit(entity);
+                    this.original.render(entity,limbSwing,swingAmount,ageInTicks,headYaw,headPitch,scale);
                     this.deapply();
                     if(Objects.nonNull(overlay))
-                        ((ArmorWrapperAccess)overlay).dimhoppertweaks$postRenderSplit();
+                        ((IArmorWrapper)overlay).dimhoppertweaks$postRenderSplit();
                     if(Objects.nonNull(invulOverlay))
-                        ((ArmorWrapperAccess)invulOverlay).dimhoppertweaks$postRenderSplit();
+                        ((IArmorWrapper)invulOverlay).dimhoppertweaks$postRenderSplit();
                 }
             }
         }

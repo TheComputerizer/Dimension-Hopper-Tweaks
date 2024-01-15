@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.mods.tconstruct;
 
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.DelayedModAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.DelayedModAccess;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -11,9 +11,10 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import slimeknights.tconstruct.gadgets.entity.ExplosionEFLN;
 
 @Mixin(value = ExplosionEFLN.class, remap = false)
-public class MixinExplosionEFLN {
+public abstract class MixinExplosionEFLN {
 
-    @Unique ExplosionEFLN dimhoppertweaks$cast() {
+    @Unique
+    ExplosionEFLN dimhoppertweaks$cast() {
         return (ExplosionEFLN)(Object)this;
     }
 

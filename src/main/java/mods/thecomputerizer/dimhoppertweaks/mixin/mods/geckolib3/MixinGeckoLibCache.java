@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import software.bernie.geckolib3.resource.GeckoLibCache;
 
 @Mixin(value = GeckoLibCache.class, remap = false)
-public class MixinGeckoLibCache {
+public abstract class MixinGeckoLibCache {
 
     @Redirect(at = @At(value = "INVOKE", target = "Ljava/lang/Exception;printStackTrace()V", ordinal = 0),
             method = "onResourceManagerReload")

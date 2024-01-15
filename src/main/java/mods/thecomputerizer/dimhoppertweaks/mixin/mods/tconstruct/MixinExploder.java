@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.mods.tconstruct;
 
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.DelayedModAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.DelayedModAccess;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,7 +19,7 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 
 @Mixin(value = Exploder.class, remap = false)
-public class MixinExploder {
+public abstract class MixinExploder {
 
     @Shadow @Final public Entity exploder;
 
@@ -37,7 +37,8 @@ public class MixinExploder {
 
     @ModifyArg(at = @At(value = "INVOKE", target = "Lnet/minecraftforge/event/ForgeEventFactory;"+
             "fireBlockHarvesting(Ljava/util/List;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;"+
-            "Lnet/minecraft/block/state/IBlockState;IFZLnet/minecraft/entity/player/EntityPlayer;)F"), method = "explodeBlock")
+            "Lnet/minecraft/block/state/IBlockState;IFZLnet/minecraft/entity/player/EntityPlayer;)F"),
+            method = "explodeBlock")
     private EntityPlayer dimhoppertweaks$addStagingPlayer(@Nullable EntityPlayer original) {
         EntityThrowball ball = this.exploder instanceof EntityThrowball ? (EntityThrowball)this.exploder : null;
         Entity actualExploder = Objects.nonNull(ball) ? ball.getThrower() : this.exploder;

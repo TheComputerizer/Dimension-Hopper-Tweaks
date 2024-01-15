@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(value = ArmorProperties.class, remap = false)
-public class MixinArmorProperties {
+public abstract class MixinArmorProperties {
 
     @Unique private static double dimhoppertweaks$prestigeFactor = 0d;
 

@@ -1,8 +1,8 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.vanilla;
 
 import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.DelayedModAccess;
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.EntityAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.DelayedModAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.IEntity;
 import net.minecraft.block.BlockPortal;
 import net.minecraft.block.state.pattern.BlockPattern;
 import net.minecraft.entity.Entity;
@@ -24,41 +24,26 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import javax.annotation.Nullable;
 
 @Mixin(Entity.class)
-public abstract class MixinEntity implements EntityAccess {
-
-    @Shadow public abstract int getPortalCooldown();
+public abstract class MixinEntity implements IEntity {
 
     @Shadow public World world;
-
     @Shadow protected BlockPos lastPortalPos;
-
     @Shadow protected Vec3d lastPortalVec;
-
     @Shadow protected EnumFacing teleportDirection;
-
-
     @Shadow public double posZ;
-
     @Shadow public double posX;
-
     @Shadow public double posY;
-
-    @Shadow public abstract boolean isRiding();
-
-    @Shadow public abstract int getMaxInPortalTime();
-
-    @Shadow @Nullable public abstract Entity changeDimension(int dimensionIn);
-
     @Shadow public boolean isDead;
-
-    @Shadow @Nullable public abstract MinecraftServer getServer();
-
     @Shadow public boolean onGround;
     @Unique private boolean dimhoppertweaks$inGaiaPortal;
     @Unique private int dimhoppertweaks$gaiaPortalCounter;
     @Unique private int dimhoppertweaks$gaiaTimeUntilPortal;
-
     @Unique private int dimhoppertweaks$dimFrom;
+    @Shadow public abstract int getPortalCooldown();
+    @Shadow public abstract boolean isRiding();
+    @Shadow public abstract int getMaxInPortalTime();
+    @Shadow @Nullable public abstract Entity changeDimension(int dimension);
+    @Shadow @Nullable public abstract MinecraftServer getServer();
 
     @Unique
     private Entity dimhoppertweaks$cast() {
@@ -70,22 +55,24 @@ public abstract class MixinEntity implements EntityAccess {
      */
     @Override
     public void dimhoppertweaks$setPortalOther(BlockPortal block, BlockPos pos) {
-        if(this.dimhoppertweaks$gaiaTimeUntilPortal>0) this.dimhoppertweaks$gaiaTimeUntilPortal = this.getPortalCooldown();
+        if(this.dimhoppertweaks$gaiaTimeUntilPortal>0)
+            this.dimhoppertweaks$gaiaTimeUntilPortal = this.getPortalCooldown();
         else {
             if(!this.world.isRemote && !pos.equals(this.lastPortalPos)) {
                 this.lastPortalPos = new BlockPos(pos);
-                BlockPattern.PatternHelper blockpattern$patternhelper = block.createPatternHelper(this.world,this.lastPortalPos);
-                double d0 = blockpattern$patternhelper.getForwards().getAxis() == EnumFacing.Axis.X ?
-                        (double)blockpattern$patternhelper.getFrontTopLeft().getZ() :
-                        (double)blockpattern$patternhelper.getFrontTopLeft().getX();
-                double d1 = blockpattern$patternhelper.getForwards().getAxis() == EnumFacing.Axis.X ? this.posZ : this.posX;
-                d1 = Math.abs(MathHelper.pct(d1 -
-                        (double)(blockpattern$patternhelper.getForwards().rotateY().getAxisDirection() == EnumFacing.AxisDirection.NEGATIVE ? 1 : 0),
-                        d0, d0 - (double)blockpattern$patternhelper.getWidth()));
-                double d2 = MathHelper.pct(this.posY-1d, blockpattern$patternhelper.getFrontTopLeft().getY(),
-                        blockpattern$patternhelper.getFrontTopLeft().getY()-blockpattern$patternhelper.getHeight());
-                this.lastPortalVec = new Vec3d(d1,d2,0d);
-                this.teleportDirection = blockpattern$patternhelper.getForwards();
+                BlockPattern.PatternHelper pattern = block.createPatternHelper(this.world,this.lastPortalPos);
+                EnumFacing forwards = pattern.getForwards();
+                BlockPos frontTopLeft = pattern.getFrontTopLeft();
+                double cornerCoord = forwards.getAxis() == EnumFacing.Axis.X ?
+                        (double)frontTopLeft.getZ() : (double)frontTopLeft.getX();
+                double entityCoord = forwards.getAxis()==EnumFacing.Axis.X ? this.posZ : this.posX;
+                entityCoord = Math.abs(MathHelper.pct(entityCoord-
+                        (double)(forwards.rotateY().getAxisDirection()==EnumFacing.AxisDirection.NEGATIVE ? 1 : 0),
+                        cornerCoord,cornerCoord-(double)pattern.getWidth()));
+                double d2 = MathHelper.pct(this.posY-1d,frontTopLeft.getY(),
+                        frontTopLeft.getY()-pattern.getHeight());
+                this.lastPortalVec = new Vec3d(entityCoord,d2,0d);
+                this.teleportDirection = forwards;
             }
             this.dimhoppertweaks$inGaiaPortal = true;
         }
@@ -98,12 +85,11 @@ public abstract class MixinEntity implements EntityAccess {
         if(this.dimhoppertweaks$inGaiaPortal) {
             if(!this.isRiding()) {
                 int i = this.getMaxInPortalTime();
-                if(this.dimhoppertweaks$gaiaPortalCounter++ >= i) {
+                if(this.dimhoppertweaks$gaiaPortalCounter++>=i) {
                     this.dimhoppertweaks$gaiaPortalCounter = i;
                     this.dimhoppertweaks$gaiaTimeUntilPortal = this.getPortalCooldown();
                     int dim;
-                    if(this.world.provider.getDimensionType().getId()==-2)
-                        dim = this.dimhoppertweaks$dimFrom;
+                    if(this.world.provider.getDimensionType().getId()==-2) dim = this.dimhoppertweaks$dimFrom;
                     else {
                         this.dimhoppertweaks$dimFrom = this.world.provider.getDimension();
                         dim = -2;

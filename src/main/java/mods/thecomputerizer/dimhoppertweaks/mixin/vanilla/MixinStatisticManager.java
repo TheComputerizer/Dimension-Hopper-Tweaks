@@ -15,20 +15,17 @@ import java.util.Map;
 import java.util.Objects;
 
 @Mixin(StatisticsManager.class)
-public class MixinStatisticManager {
+public abstract class MixinStatisticManager {
 
-    @Final
-    @Shadow
-    protected Map<StatBase, TupleIntJsonSerializable> statsData;
+    @Final @Shadow protected Map<StatBase,TupleIntJsonSerializable> statsData;
 
     @Inject(at = @At(value = "HEAD"), method = "readStat", cancellable = true)
-    private void dimhoppertweaks_readStat(StatBase stat, CallbackInfoReturnable<Integer> cir) {
+    private void dimhoppertweaks$readStat(StatBase stat, CallbackInfoReturnable<Integer> cir) {
         try {
-            TupleIntJsonSerializable tupleintjsonserializable = statsData.get(stat);
-            cir.setReturnValue(tupleintjsonserializable == null ? 0 : tupleintjsonserializable.getIntegerValue());
+            TupleIntJsonSerializable tuple = statsData.get(stat);
+            cir.setReturnValue(Objects.isNull(tuple) ? 0 : tuple.getIntegerValue());
         } catch (Exception e) {
-            if(Objects.nonNull(stat))
-                DHTRef.LOGGER.error("Stat with ID {} errored",stat.statId,e);
+            if(Objects.nonNull(stat)) DHTRef.LOGGER.error("Stat with ID {} errored",stat.statId,e);
             else DHTRef.LOGGER.error("Stat was null and could not sync",e);
             cir.setReturnValue(0);
         }

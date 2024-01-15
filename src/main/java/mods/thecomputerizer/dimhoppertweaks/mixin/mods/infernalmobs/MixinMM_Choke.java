@@ -10,10 +10,9 @@ import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(value = MM_Choke.class, remap = false)
-public class MixinMM_Choke {
+public abstract class MixinMM_Choke {
 
     @Shadow private EntityLivingBase lastTarget;
-
     @Shadow private int lastAir;
 
     /**

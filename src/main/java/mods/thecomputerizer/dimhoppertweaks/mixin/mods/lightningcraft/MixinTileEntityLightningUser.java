@@ -9,13 +9,10 @@ import sblectric.lightningcraft.tiles.TileEntityLightningUser;
 @Mixin(value = TileEntityLightningUser.class, remap = false)
 public abstract class MixinTileEntityLightningUser {
 
-    @Shadow public abstract double getEfficiency();
-
     @Shadow public double cellPower;
-
     @Shadow public double maxPower;
-
     @Shadow public TileEntityLightningCell tileCell;
+    @Shadow public abstract double getEfficiency();
 
     /**
      * @author The_Computerizer

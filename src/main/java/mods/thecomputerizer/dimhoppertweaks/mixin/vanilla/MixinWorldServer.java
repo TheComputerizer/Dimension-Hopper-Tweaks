@@ -10,11 +10,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(WorldServer.class)
-public class MixinWorldServer {
+public abstract class MixinWorldServer {
 
     @Inject(at = @At(value = "HEAD"), method = "setEntityState")
-    private void dimhoppertweaks$setEntityState(Entity entityIn, byte state, CallbackInfo info) {
-        if(entityIn instanceof EntityPlayerMP)
-            SkillWrapper.shieldHook((EntityPlayerMP)entityIn,state);
+    private void dimhoppertweaks$setEntityState(Entity entity, byte state, CallbackInfo info) {
+        if(entity instanceof EntityPlayerMP)
+            SkillWrapper.shieldHook((EntityPlayerMP)entity,state);
     }
 }

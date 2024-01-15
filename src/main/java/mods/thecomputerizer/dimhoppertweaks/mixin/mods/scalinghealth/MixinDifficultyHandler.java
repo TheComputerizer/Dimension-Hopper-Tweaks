@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.mods.scalinghealth;
 
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.DelayedModAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.DelayedModAccess;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.DamageSource;
@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.Overwrite;
 import java.util.Objects;
 
 @Mixin(value = DifficultyHandler.class, remap = false)
-public class MixinDifficultyHandler {
+public abstract class MixinDifficultyHandler {
 
     /**
      * @author The_Computerizer
@@ -39,7 +39,6 @@ public class MixinDifficultyHandler {
                 if(Config.Debug.debugMode)
                     ScalingHealth.LOGGER.debug("Killed "+(isBlight ? "Blight " : "")+killed.getName()+
                             ": difficulty"+(amount>0f ? "+" : "")+amount);
-
                 data.incrementDifficulty(DelayedModAccess.incrementDifficultyWithStageFactor(player,amount),true);
             }
         }

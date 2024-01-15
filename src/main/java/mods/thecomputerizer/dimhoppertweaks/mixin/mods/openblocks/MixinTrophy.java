@@ -11,7 +11,7 @@ import java.util.Objects;
 
 
 @Mixin(value = Trophy.class, remap = false)
-public class MixinTrophy {
+public abstract class MixinTrophy {
 
     @Inject(at = @At("RETURN"), method = "createEntity")
     private void dimhoppertweaks$createEntity(CallbackInfoReturnable<Entity> cir) {

@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = ChunkGeneratorLimbo.class, remap = false)
-public class MixinChunkGeneratorLimbo {
+public abstract class MixinChunkGeneratorLimbo {
 
     @Inject(at = @At("RETURN"), method = "setBlocksInChunk")
     public void dimhoppertweaks$setBlocksInChunk(int chunkX, int chunkZ, ChunkPrimer primer, CallbackInfo ci) {

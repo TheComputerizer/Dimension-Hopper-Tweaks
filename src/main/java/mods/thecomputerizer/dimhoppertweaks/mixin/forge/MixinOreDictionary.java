@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(value = OreDictionary.class, remap = false)
-public class MixinOreDictionary {
+public abstract class MixinOreDictionary {
 
     @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraftforge/fml/common/FMLLog;" +
             "bigWarning(Ljava/lang/String;[Ljava/lang/Object;)V"), method = "registerOreImpl")

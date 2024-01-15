@@ -8,7 +8,7 @@ import gcewing.sg.tileentity.SGBaseTE;
 import gcewing.sg.util.SGState;
 import mcp.MethodsReturnNonnullByDefault;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
-import mods.thecomputerizer.dimhoppertweaks.mixin.access.SGBaseTEAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.ISGBaseTE;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -39,7 +39,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "deprecation"})
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class AncientStargateRenderer {
@@ -230,7 +230,7 @@ public class AncientStargateRenderer {
     private void updateSGBaseTile(TileEntity tile) {
         if(tile instanceof SGBaseTE) {
             SGBaseTE sgTile = (SGBaseTE)tile;
-            ((SGBaseTEAccess)sgTile).dimhoppertweaks$mergeWithoutAddressing();
+            ((ISGBaseTE)sgTile).dimhoppertweaks$mergeWithoutAddressing();
             if(!sgTile.hasChevronUpgrade) sgTile.applyChevronUpgrade(new ItemStack(SGCraft.sgChevronUpgrade),null);
             sgTile.state = SGState.Connected;
         }

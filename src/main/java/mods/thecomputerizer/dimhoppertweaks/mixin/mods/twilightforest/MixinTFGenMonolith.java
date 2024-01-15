@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import twilightforest.world.feature.TFGenMonolith;
 
 @Mixin(value = TFGenMonolith.class, remap = false)
-public class MixinTFGenMonolith {
+public abstract class MixinTFGenMonolith {
 
     @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;"+
             "getDefaultState()Lnet/minecraft/block/state/IBlockState;", ordinal = 0), method = "generate")

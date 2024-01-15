@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(value = DynamicBakedModelProvider.class, remap = false)
-public class MixinDynamicBakedModelProvider {
+public abstract class MixinDynamicBakedModelProvider {
 
     @Redirect(at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;" +
             "error(Ljava/lang/String;Ljava/lang/Object;)V", ordinal = 0), method = "loadBakedModel")

@@ -3,6 +3,8 @@ package mods.thecomputerizer.dimhoppertweaks.mixin.mods.dimdoors;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldProvider;
 import org.dimdev.ddutils.Location;
 import org.dimdev.ddutils.TeleportUtils;
 import org.dimdev.dimdoors.DimDoors;
@@ -20,7 +22,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Mixin(value = EscapeTarget.class, remap = false)
-public class MixinEscapeTarget {
+public abstract class MixinEscapeTarget {
 
     @Shadow protected boolean canEscapeLimbo;
 
@@ -31,10 +33,12 @@ public class MixinEscapeTarget {
     @SuppressWarnings("ConstantValue")
     @Overwrite
     public boolean receiveEntity(Entity entity, float relativeYaw, float relativePitch) {
-        if (!ModDimensions.isDimDoorsPocketDimension(entity.world) && !(entity.world.provider instanceof WorldProviderLimbo)) {
+        World world = entity.getEntityWorld();
+        WorldProvider provider = world.provider;
+        if (!ModDimensions.isDimDoorsPocketDimension(world) && !(provider instanceof WorldProviderLimbo)) {
             DimDoors.sendTranslatedMessage(entity, "rifts.destinations.escape.not_in_pocket_dim");
             return false;
-        } else if (entity.world.provider instanceof WorldProviderLimbo && !this.canEscapeLimbo) {
+        } else if (provider instanceof WorldProviderLimbo && !this.canEscapeLimbo) {
             DimDoors.sendTranslatedMessage(entity, "rifts.destinations.escape.cannot_escape_limbo");
             return false;
         } else {
@@ -42,8 +46,8 @@ public class MixinEscapeTarget {
             if (Objects.isNull(uuid)) return false;
             else {
                 Location destLoc = RiftRegistry.instance().getOverworldRift(uuid);
-                if ((Objects.isNull(destLoc) || !(destLoc.getTileEntity() instanceof TileEntityRift)) && !this.canEscapeLimbo) {
-                    if (Objects.isNull(destLoc))
+                if((Objects.isNull(destLoc) || !(destLoc.getTileEntity() instanceof TileEntityRift)) && !this.canEscapeLimbo) {
+                    if(Objects.isNull(destLoc))
                         DimDoors.sendTranslatedMessage(entity, "rifts.destinations.escape.did_not_use_rift");
                     else DimDoors.sendTranslatedMessage(entity, "rifts.destinations.escape.rift_has_closed");
                     TeleportUtils.teleport(entity, WorldProviderLimbo.getLimboSkySpawn(entity));
@@ -55,8 +59,11 @@ public class MixinEscapeTarget {
                         dim = player.getSpawnDimension();
                         pos = player.getBedLocation(dim);
                     }
-                    if(Objects.isNull(pos)) TeleportUtils.teleport(entity, VirtualLocation.fromLocation(new Location(entity.world, entity.getPosition())).projectToWorld(false));
-                    else TeleportUtils.teleport(entity,dim,pos.getX(),pos.getY(),pos.getZ(),entity.rotationYaw,entity.rotationPitch);
+                    if(Objects.isNull(pos))
+                        TeleportUtils.teleport(entity,VirtualLocation.fromLocation(new Location(world,
+                                entity.getPosition())).projectToWorld(false));
+                    else TeleportUtils.teleport(entity,dim,pos.getX(),pos.getY(),pos.getZ(),entity.rotationYaw,
+                            entity.rotationPitch);
                 }
                 return true;
             }
