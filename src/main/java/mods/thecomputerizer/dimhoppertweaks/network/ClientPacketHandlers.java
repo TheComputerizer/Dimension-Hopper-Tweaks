@@ -97,6 +97,23 @@ public class ClientPacketHandlers {
 
     @SideOnly(Side.CLIENT)
     public static void handleGenericClientQuery(String type) {
-        if(type.equals("fog")) DHTClient.queryFogRender();
+        Minecraft mc = Minecraft.getMinecraft();
+        switch(type) {
+            case "fix":
+                DHTClient.fixFog(mc);
+                break;
+            case "fog":
+                DHTClient.queryFog(mc);
+                break;
+            case "game":
+                DHTClient.queryGame(mc);
+                break;
+            case "shader":
+                DHTClient.queryShader(mc);
+                break;
+            case "world":
+                DHTClient.queryWorld(mc);
+                break;
+        }
     }
 }

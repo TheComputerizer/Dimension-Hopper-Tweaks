@@ -5,6 +5,7 @@ import codersafterdark.reskillable.api.data.PlayerDataHandler;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
+import mods.thecomputerizer.dimhoppertweaks.network.PacketQueryGenericClient;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
 import net.darkhax.gamestages.GameStageHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -42,6 +43,7 @@ public class GameEvents {
                 if(player.dimension==7 && Objects.isNull(player.getBedLocation(7)) && Objects.nonNull(pos))
                     player.setSpawnPoint(pos, true);
             }
+            new PacketQueryGenericClient("fix").addPlayers(player).send();
         }
     }
 

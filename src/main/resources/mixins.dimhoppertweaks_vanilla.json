@@ -25,6 +25,7 @@
     "MixinWorldServer"
   ],
   "client": [
+    "MixinEntityRenderer",
     "MixinParticle",
     "MixinRenderManager",
     "MixinShaderGroup"

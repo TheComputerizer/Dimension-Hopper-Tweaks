@@ -56,6 +56,11 @@ public class ClientEvents {
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onFogRender(EntityViewRenderEvent.RenderFogEvent event) {
+        DHTRef.LOGGER.error("EVENT INFO `FARPLANE {} | MODE {}",event.getFarPlaneDistance(),event.getFogMode());
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void screenShakeUpdate(TickEvent.PlayerTickEvent event) {
         if(event.isCanceled()) return;
         Minecraft mc = Minecraft.getMinecraft();
@@ -109,8 +114,6 @@ public class ClientEvents {
             GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);
         }
     }
-
-
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onGetTooltip(ItemTooltipEvent event) {
