@@ -18,7 +18,6 @@ import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemPotion;
 import net.minecraftforge.event.entity.living.LootingLevelEvent;
 import net.minecraftforge.event.entity.player.AdvancementEvent;
-import net.minecraftforge.event.entity.player.BonemealEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
 import net.minecraftforge.event.entity.player.PlayerEvent.Clone;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -72,14 +71,6 @@ public class PlayerEvents {
         if(event.isCanceled()) return;
         if(event.getEntityPlayer() instanceof EntityPlayerMP)
             SkillWrapper.updateTokens((EntityPlayerMP)event.getEntityPlayer());
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void onBoneMeal(BonemealEvent event) {
-        if(!event.getWorld().isRemote) {
-            double prestigeFactor = (SkillWrapper.getPrestigeFactor(event.getEntityPlayer(),"farming")-1d)/32d;
-            if(event.getWorld().rand.nextDouble()<=prestigeFactor) event.getStack().grow(1);
-        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

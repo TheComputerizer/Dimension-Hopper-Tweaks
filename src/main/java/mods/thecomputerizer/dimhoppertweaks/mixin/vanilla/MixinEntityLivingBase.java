@@ -14,6 +14,11 @@ public abstract class MixinEntityLivingBase implements IEntityLivinBase {
 
     @Unique private boolean dimhoppertweaks$isBlighted;
 
+    @Unique
+    private EntityLivingBase dimhoppertweaks$cast() {
+        return (EntityLivingBase)(Object)this;
+    }
+
     @Override
     public void dimhoppertweaks$setBlight(boolean isBlighted) {
         this.dimhoppertweaks$isBlighted = isBlighted;
@@ -25,8 +30,8 @@ public abstract class MixinEntityLivingBase implements IEntityLivinBase {
     }
 
     @Inject(at = @At("RETURN"), method = "readEntityFromNBT")
-    private void readEntityFromNBT(NBTTagCompound compound, CallbackInfo ci) {
-        if(((EntityLivingBase)(Object)this).getEntityData().getBoolean("ScalingHealth.IsBlight"))
+    private void dimhoppertweaks$readEntityFromNBT(NBTTagCompound compound, CallbackInfo ci) {
+        if(dimhoppertweaks$cast().getEntityData().getBoolean("ScalingHealth.IsBlight"))
             dimhoppertweaks$setBlight(true);
     }
 }

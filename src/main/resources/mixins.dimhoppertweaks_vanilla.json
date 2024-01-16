@@ -15,6 +15,7 @@
     "MixinEntityWolf",
     "MixinExplosion",
     "MixinInventoryCrafting",
+    "MixinItemDye",
     "MixinItemHoe",
     "MixinNetherPortal",
     "MixinSPacketEntityEffect",
