@@ -18,21 +18,24 @@ public class PacketSyncCapabilityData extends MessageImpl {
 
     private float miningSpeed;
     private boolean skillKey;
+    private boolean resourcesKey;
     private Set<Item> autoFeedItems;
     private List<Tuple<Potion,Integer>> autoPotionItems;
     public PacketSyncCapabilityData() {}
 
-    public PacketSyncCapabilityData(float miningSpeed, boolean skillKey, Set<Item> autoFeedItems,
+    public PacketSyncCapabilityData(float miningSpeed, boolean skillKey, boolean resourcesKey, Set<Item> autoFeedItems,
                                     List<Tuple<Potion,Integer>> autoPotionItems) {
         this.miningSpeed = miningSpeed;
         this.skillKey = skillKey;
+        this.resourcesKey = resourcesKey;
         this.autoFeedItems = autoFeedItems;
         this.autoPotionItems = autoPotionItems;
     }
 
     @Override
     public IMessage handle(MessageContext ctx) {
-        ClientPacketHandlers.handleCapData(this.miningSpeed,this.skillKey,this.autoFeedItems,this.autoPotionItems);
+        ClientPacketHandlers.handleCapData(this.miningSpeed,this.skillKey,this.resourcesKey,this.autoFeedItems,
+                this.autoPotionItems);
         return null;
     }
 
@@ -45,6 +48,7 @@ public class PacketSyncCapabilityData extends MessageImpl {
     public void fromBytes(ByteBuf buf) {
         this.miningSpeed = buf.readFloat();
         this.skillKey = buf.readBoolean();
+        this.resourcesKey = buf.readBoolean();
         this.autoFeedItems = readItems(buf);
         this.autoPotionItems = readPotions(buf);
     }
@@ -79,6 +83,7 @@ public class PacketSyncCapabilityData extends MessageImpl {
     public void toBytes(ByteBuf buf) {
         buf.writeFloat(this.miningSpeed);
         buf.writeBoolean(this.skillKey);
+        buf.writeBoolean(this.resourcesKey);
         writeItems(buf,this.autoFeedItems);
         writePotions(buf,this.autoPotionItems);
     }

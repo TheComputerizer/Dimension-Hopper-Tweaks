@@ -6,9 +6,7 @@ import org.apache.logging.log4j.Logger;
 
 public class DHTRef {
 
-    public static final String MODID = "dimhoppertweaks";
-    public static final String NAME = "Dimension Hopper Tweaks";
-    public static final String VERSION = "1.12.2-2.7.0";
+    public static final float CHEST_REPLACEMENT_CHANCE = 1f;
     public static final String DEPENDENCIES = "required-after:forge@[14.23.5.2860,);"+
             "required-after:actuallyadditions;"+
             "required-after:aoa3;"+
@@ -44,6 +42,7 @@ public class DHTRef {
             "required-after:reskillable;"+
             "required-after:scalinghealth;"+
             "required-after:sgcraft;"+
+            "required-after:silentgems;"+
             "required-after:silentlib;"+
             "required-after:scalinghealth;"+
             "required-after:tconstruct;"+
@@ -56,6 +55,9 @@ public class DHTRef {
             "required-after:xlfoodmod;"+
             "required-after:zollerngalaxy;";
     public static final Logger LOGGER = LogManager.getLogger("Dimension Hopper Twinkies");
+    public static final String MODID = "dimhoppertweaks";
+    public static final String NAME = "Dimension Hopper Tweaks";
+    public static final String VERSION = "1.12.2-2.7.0";
 
     public static String modID(String str) {
         return String.format(str,MODID);

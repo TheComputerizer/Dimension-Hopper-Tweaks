@@ -37,6 +37,7 @@ public abstract class MixinKeyBinder {
         if(keyResourceGui.isPressed()) {
             statusResourceGui = !statusResourceGui;
             statusResourceGuiMessage = false;
+            DelayedModAccess.sendKeyPress(2);
         }
         if(keySkillGui.isPressed()) {
             statusSkillGui = !statusSkillGui;

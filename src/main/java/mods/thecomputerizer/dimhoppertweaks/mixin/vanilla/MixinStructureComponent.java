@@ -1,6 +1,8 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.vanilla;
 
-import de.ellpeck.actuallyadditions.mod.blocks.InitBlocks;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockAnvil;
+import net.minecraft.block.BlockSoulSand;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
@@ -14,8 +16,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import twilightforest.structures.StructureTFComponent;
-
-import java.util.Random;
 
 @Mixin(StructureComponent.class)
 public abstract class MixinStructureComponent {
@@ -34,18 +34,10 @@ public abstract class MixinStructureComponent {
             World world, IBlockState state, int x, int y, int z, StructureBoundingBox box, CallbackInfo ci) {
         BlockPos pos = new BlockPos(this.getXWithOffset(x,z),this.getYWithOffset(y),this.getZWithOffset(x,z));
         if(box.isVecInside(pos)) {
-            if(dimhoppertweaks$cast() instanceof StructureTFComponent && state.getBlock()==Blocks.IRON_BLOCK) {
-                world.setBlockState(pos,Blocks.AIR.getDefaultState(),2);
-                ci.cancel();
-            }
-            else if(state.getBlock()==Blocks.FURNACE || state.getBlock()==Blocks.ANVIL ||
-                    state.getBlock()==Blocks.ENCHANTING_TABLE || state.getBlock()==Blocks.BREWING_STAND) {
-                world.setBlockState(pos,Blocks.AIR.getDefaultState(),2);
-                ci.cancel();
-            }
-            if(state.getBlock()==Blocks.CHEST)
-                if(new Random().nextFloat()<=0.02f)
-                    world.setBlockState(pos,InitBlocks.blockGiantChest.getDefaultState(),2);
+            Block block = state.getBlock();
+            StructureComponent instance = dimhoppertweaks$cast();
+            if(block instanceof BlockAnvil || (instance instanceof StructureTFComponent &&
+                    (block==Blocks.IRON_BLOCK || block instanceof BlockSoulSand))) ci.cancel();
         }
     }
 }

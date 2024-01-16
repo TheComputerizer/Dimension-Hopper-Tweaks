@@ -74,10 +74,11 @@ public class ClientPacketHandlers {
     }
 
     @SideOnly(Side.CLIENT)
-    public static void handleCapData(float miningSpeed, boolean skillKey, Set<Item> autoFeedItems,
+    public static void handleCapData(float miningSpeed, boolean skillKey, boolean resourcesKey, Set<Item> autoFeedItems,
                                      List<Tuple<Potion,Integer>> autoPotionItems) {
         ClientEffects.MINING_SPEED = miningSpeed;
         KeyBinder.statusSkillGuiMessage = !skillKey;
+        KeyBinder.statusResourceGuiMessage = !resourcesKey;
         ClientEvents.autoFeedItems = autoFeedItems;
         ClientEvents.autoPotionItems = autoPotionItems;
     }

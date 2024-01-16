@@ -45,19 +45,10 @@ public class ClientEvents {
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void onFogDensity(EntityViewRenderEvent.FogDensity event) {
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onFogColors(EntityViewRenderEvent.FogColors event) {
         //event.setRed(0.5f);
         //event.setGreen(0.5f);
         //event.setBlue(1f);
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void onFogRender(EntityViewRenderEvent.RenderFogEvent event) {
-        DHTRef.LOGGER.error("EVENT INFO `FARPLANE {} | MODE {}",event.getFarPlaneDistance(),event.getFogMode());
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

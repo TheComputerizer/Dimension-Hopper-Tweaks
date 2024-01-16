@@ -37,6 +37,7 @@ public class SkillCapability implements ISkillCapability {
     private float shieldDamage = 1f;
     private BlockPos twilightRespawn;
     private boolean pressedSkillKey = false;
+    private boolean pressedResourcesKey = false;
     private int fanUsage = 0;
 
     public SkillCapability() {
@@ -110,8 +111,8 @@ public class SkillCapability implements ISkillCapability {
     private void syncClientData(EntityPlayerMP player) {
         float breakSpeed = 1f+getBreakSpeedMultiplier();
         if(Objects.nonNull(player.connection))
-            new PacketSyncCapabilityData(breakSpeed,this.pressedSkillKey,this.autoFeedWhitelist,this.autoPotionWhitelist)
-                    .addPlayers(player).send();
+            new PacketSyncCapabilityData(breakSpeed,this.pressedSkillKey,this.pressedResourcesKey,
+                    this.autoFeedWhitelist,this.autoPotionWhitelist).addPlayers(player).send();
     }
 
     @Override
@@ -255,13 +256,13 @@ public class SkillCapability implements ISkillCapability {
     }
 
     @Override
-    public boolean pressedSkillKey() {
-        return this.pressedSkillKey;
+    public void markSkillKeyPressed() {
+        this.pressedSkillKey = true;
     }
 
     @Override
-    public void markSkillKeyPressed() {
-        this.pressedSkillKey = true;
+    public void markResourcesKeyPressed() {
+        this.pressedResourcesKey = true;
     }
 
     @Override
@@ -288,6 +289,7 @@ public class SkillCapability implements ISkillCapability {
         if(Objects.nonNull(this.twilightRespawn)) tag.setLong("twilightRespawn",this.twilightRespawn.toLong());
         tag.setInteger("dreamTimer",this.dreamTimer.getValue());
         tag.setBoolean("pressedSkillKey",this.pressedSkillKey);
+        tag.setBoolean("pressedResourcesKey",this.pressedResourcesKey);
         tag.setInteger("fanUsage",this.fanUsage);
         return tag;
     }
@@ -367,6 +369,7 @@ public class SkillCapability implements ISkillCapability {
         if(tag.hasKey("twilightRespawn")) this.setTwilightRespawn(BlockPos.fromLong(tag.getLong("twilightRespawn")));
         this.dreamTimer.setValue(tag.getInteger("dreamTimer"));
         this.pressedSkillKey = tag.getBoolean("pressedSkillKey");
+        this.pressedResourcesKey = tag.getBoolean("pressedResourcesKey");
         this.fanUsage = tag.getInteger("fanUsage");
     }
 

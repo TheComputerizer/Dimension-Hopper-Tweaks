@@ -9,21 +9,26 @@ import cofh.thermalexpansion.item.ItemFlorb;
 import cofh.thermalexpansion.item.ItemMorb;
 import crazypants.enderio.base.item.soulvial.ItemSoulVial;
 import crazypants.enderio.base.item.spawner.ItemBrokenSpawner;
+import de.ellpeck.actuallyadditions.mod.blocks.InitBlocks;
+import de.ellpeck.actuallyadditions.mod.tile.TileEntityGiantChest;
 import de.ellpeck.naturesaura.blocks.tiles.TileEntityAutoCrafter;
 import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
 import mariot7.xlfoodmod.init.ItemListxlfoodmod;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.integration.crafttweaker.CTPassthrough;
 import mods.thecomputerizer.dimhoppertweaks.mixin.api.IInventoryCrafting;
+import mods.thecomputerizer.dimhoppertweaks.mixin.vanilla.access.TileEntityLockableLootAccess;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketSendKeyPressed;
 import net.darkhax.gamestages.GameStageHelper;
 import net.darkhax.gamestages.data.IStageData;
 import net.darkhax.huntingdim.item.ItemBiomeChanger;
 import net.darkhax.orestages.api.OreTiersAPI;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockChest;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemEnchantedBook;
 import net.minecraft.item.ItemMonsterPlacer;
@@ -31,15 +36,19 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.*;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import openblocks.common.item.ItemTankBlock;
+import org.apache.logging.log4j.util.TriConsumer;
 import slimeknights.tconstruct.library.materials.Material;
 import slimeknights.tconstruct.library.tinkering.PartMaterialType;
 import slimeknights.tconstruct.library.tinkering.TinkersItem;
@@ -51,6 +60,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
+@SuppressWarnings({"unused", "SameParameterValue"})
 public class DelayedModAccess {
 
     private static final Collection<String> BLOCK_BREAKER_CLASS_NAMES = Arrays.asList(
@@ -338,9 +348,62 @@ public class DelayedModAccess {
         return GDBlocks.gaia_portal;
     }
 
+    public static Block getCrateBlock() {
+        return InitBlocks.blockGiantChest;
+    }
+
     public static ITeleporter makeGaiaTeleporter(int dim) {
         WorldServer world = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(dim);
         return new TeleporterGaia(world,getGDPortalBlock(),getGDKeystoneBlock().getDefaultState());
+    }
+
+    private static boolean randDouble(Random rand, double d) {
+        return rand.nextDouble()<=d;
+    }
+
+    private static boolean randFloat(Random rand, float f) {
+        return rand.nextFloat()<=f;
+    }
+
+    public static void replaceAfterStructureGeneration(Chunk chunk) {
+        World world = chunk.getWorld();
+        replaceBlocksInDimension(world,chunk);
+        replaceTiles(world,chunk);
+    }
+
+    public static void replaceBlocksInDimension(World world, Chunk chunk) {
+        int dimension = world.provider.getDimension();
+    }
+
+    public static void replaceChest(Random rand, TileEntityChest tile, IBlockState state) {
+        if(state.getBlock() instanceof BlockChest && randFloat(rand,DHTRef.CHEST_REPLACEMENT_CHANCE))
+            replaceContainer(tile.getWorld(),tile.getPos(),tile.getLootTable(),
+                    ((TileEntityLockableLootAccess)tile).getLootTableSeed(),getCrateBlock().getDefaultState(),
+                    (te,res,seed) -> ((TileEntityGiantChest)te).lootTable = res);
+    }
+
+    public static void replaceContainer(
+            World world, BlockPos pos, ResourceLocation lootRes, long lootSeed, IBlockState state,
+            @Nullable TriConsumer<TileEntity,ResourceLocation,Long> lootTableHandler) {
+        world.setBlockState(pos,state);
+        if(state.getBlock().hasTileEntity(state) && Objects.nonNull(lootTableHandler))
+            lootTableHandler.accept(world.getTileEntity(pos),lootRes,lootSeed);
+    }
+
+    public static void replaceTiles(World world, Chunk chunk) {
+        for(Map.Entry<BlockPos,TileEntity> tileEntry : chunk.getTileEntityMap().entrySet()) {
+            BlockPos pos = tileEntry.getKey();
+            IBlockState state = chunk.getBlockState(pos);
+            TileEntity tile = tileEntry.getValue();
+            if(tile instanceof TileEntityChest) replaceChest(world.rand,(TileEntityChest)tile,state);
+            else if(tile instanceof TileEntityFurnace || tile instanceof TileEntityEnchantmentTable ||
+                    tile instanceof TileEntityBrewingStand)
+                replaceWithAir(world,pos);
+        }
+    }
+
+    public static void replaceWithAir(World world, BlockPos pos) {
+        world.setBlockState(pos,Blocks.AIR.getDefaultState());
     }
 
     @SideOnly(Side.CLIENT)

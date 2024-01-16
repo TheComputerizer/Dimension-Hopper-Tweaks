@@ -7,6 +7,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinAdvancementList",
+    "MixinChunk",
     "MixinEntity",
     "MixinEntityLivingBase",
     "MixinEntityPlayer",
@@ -21,13 +22,13 @@
     "MixinStructureComponent",
     "MixinTileEntity",
     "MixinTileEntityFurnace",
-    "MixinWorld",
-    "MixinWorldServer"
+    "MixinWorldServer",
+    "access.TileEntityLockableLootAccess"
   ],
   "client": [
-    "access.EntityRendererAccess",
     "MixinParticle",
     "MixinRenderManager",
-    "MixinShaderGroup"
+    "MixinShaderGroup",
+    "access.EntityRendererAccess"
   ]
 }

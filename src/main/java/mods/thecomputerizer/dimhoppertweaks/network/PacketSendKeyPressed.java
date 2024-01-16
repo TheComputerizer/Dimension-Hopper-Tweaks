@@ -24,6 +24,7 @@ public class PacketSendKeyPressed extends MessageImpl {
         ISkillCapability cap = SkillWrapper.getSkillCapability(ctx.getServerHandler().player);
         if(Objects.nonNull(cap)) {
             if(this.keyType==1) cap.markSkillKeyPressed();
+            else if(this.keyType==2) cap.markResourcesKeyPressed();
         }
         return null;
     }

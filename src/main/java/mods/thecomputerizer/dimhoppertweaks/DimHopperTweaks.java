@@ -12,6 +12,7 @@ import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
@@ -28,7 +29,7 @@ public class DimHopperTweaks {
                 PacketUpdateBossRender.class);
     }
 
-    @Mod.EventHandler
+    @EventHandler
     public static void preInit(FMLPreInitializationEvent event) {
         DHTRef.LOGGER.info("Starting pre-init");
         CapabilityManager.INSTANCE.register(ISkillCapability.class,new SkillCapabilityStorage(),SkillCapability::new);
@@ -39,12 +40,12 @@ public class DimHopperTweaks {
         DHTRef.LOGGER.info("Completed pre-init");
     }
 
-    @Mod.EventHandler
+    @EventHandler
     public static void postInit(FMLPostInitializationEvent event) {
         if(FMLCommonHandler.instance().getSide().isClient()) RegistryHandler.onPostInit(event);
     }
 
-    @Mod.EventHandler
+    @EventHandler
     public void start(FMLServerStartingEvent event) {
         RegistryHandler.onServerStarting(event);
     }
