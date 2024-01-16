@@ -17,7 +17,6 @@ import mariot7.xlfoodmod.init.ItemListxlfoodmod;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.integration.crafttweaker.CTPassthrough;
 import mods.thecomputerizer.dimhoppertweaks.mixin.api.IInventoryCrafting;
-import mods.thecomputerizer.dimhoppertweaks.mixin.vanilla.access.TileEntityLockableLootAccess;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketSendKeyPressed;
 import net.darkhax.gamestages.GameStageHelper;
 import net.darkhax.gamestages.data.IStageData;
@@ -47,8 +46,8 @@ import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.IItemHandler;
 import openblocks.common.item.ItemTankBlock;
-import org.apache.logging.log4j.util.TriConsumer;
 import slimeknights.tconstruct.library.materials.Material;
 import slimeknights.tconstruct.library.tinkering.PartMaterialType;
 import slimeknights.tconstruct.library.tinkering.TinkersItem;
@@ -58,6 +57,7 @@ import slimeknights.tconstruct.tools.common.item.ItemBlockTable;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 @SuppressWarnings({"unused", "SameParameterValue"})
@@ -377,17 +377,28 @@ public class DelayedModAccess {
 
     public static void replaceChest(Random rand, TileEntityChest tile, IBlockState state) {
         if(state.getBlock() instanceof BlockChest && randFloat(rand,DHTRef.CHEST_REPLACEMENT_CHANCE))
-            replaceContainer(tile.getWorld(),tile.getPos(),tile.getLootTable(),
-                    ((TileEntityLockableLootAccess)tile).getLootTableSeed(),getCrateBlock().getDefaultState(),
-                    (te,res,seed) -> ((TileEntityGiantChest)te).lootTable = res);
+            replaceContainer(tile.getWorld(),tile.getPos(),tile,getCrateBlock().getDefaultState(),(previous,current) -> {
+                TileEntityChest chest = (TileEntityChest)previous;
+                TileEntityGiantChest crate = (TileEntityGiantChest)current;
+                if(chest.isEmpty()) {
+                    crate.lootTable = chest.getLootTable();
+                    return;
+                }
+                IItemHandler handler = crate.getItemHandler(null);
+                double ratio = ((double)handler.getSlots())/27d;
+                for(int slot=0; slot<27; slot++) {
+                    int crateSlot = Math.min((int)(((double)slot)*ratio),handler.getSlots()-1);
+                    handler.insertItem(crateSlot,chest.getStackInSlot(slot),false);
+                }
+            });
     }
 
     public static void replaceContainer(
-            World world, BlockPos pos, ResourceLocation lootRes, long lootSeed, IBlockState state,
-            @Nullable TriConsumer<TileEntity,ResourceLocation,Long> lootTableHandler) {
+            World world, BlockPos pos, TileEntity previousTile, IBlockState state,
+            @Nullable BiConsumer<TileEntity,TileEntity> lootTableHandler) {
         world.setBlockState(pos,state);
         if(state.getBlock().hasTileEntity(state) && Objects.nonNull(lootTableHandler))
-            lootTableHandler.accept(world.getTileEntity(pos),lootRes,lootSeed);
+            lootTableHandler.accept(previousTile,world.getTileEntity(pos));
     }
 
     public static void replaceTiles(World world, Chunk chunk) {

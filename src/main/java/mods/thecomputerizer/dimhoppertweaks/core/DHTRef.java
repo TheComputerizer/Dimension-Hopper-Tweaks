@@ -6,7 +6,7 @@ import org.apache.logging.log4j.Logger;
 
 public class DHTRef {
 
-    public static final float CHEST_REPLACEMENT_CHANCE = 1f;
+    public static final float CHEST_REPLACEMENT_CHANCE = 0.02f;
     public static final String DEPENDENCIES = "required-after:forge@[14.23.5.2860,);"+
             "required-after:actuallyadditions;"+
             "required-after:aoa3;"+
