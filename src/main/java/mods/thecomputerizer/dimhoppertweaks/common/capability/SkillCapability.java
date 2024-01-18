@@ -23,6 +23,7 @@ import org.apache.commons.lang3.mutable.MutableInt;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class SkillCapability implements ISkillCapability {
@@ -41,14 +42,31 @@ public class SkillCapability implements ISkillCapability {
     private int fanUsage = 0;
 
     public SkillCapability() {
-        DHTRef.LOGGER.debug("Initializing skill capability");
+        for(String skill : SkillCapabilityStorage.SKILLS)
+            this.skillMap.put(skill,new SkillWrapper(skill,0,1,0));
+        DHTRef.LOGGER.debug("Initializing skill capability with skills {}",this.skillMap.keySet());
     }
 
-    private void checkForExistingSkill(String name) {
-        if(!this.skillMap.containsKey(name)) {
+    private void checkAndApply(String skill, Consumer<SkillWrapper> applier) {
+        String name = skill.toLowerCase();
+        SkillWrapper wrapper = this.skillMap.get(skill);
+        if(Objects.isNull(wrapper)) {
             DHTRef.LOGGER.error("Could not find "+name+" skill! Substituting with a new level 1 "+name+" skill :)");
-            this.skillMap.put(name.toLowerCase(),new SkillWrapper(name,0,100,0));
+            wrapper = new SkillWrapper(name,0,1,0);
+            this.skillMap.put(name,wrapper);
         }
+        applier.accept(wrapper);
+    }
+
+    private <T> T checkAndReturn(String skill, Function<SkillWrapper,T> getter) {
+        String name = skill.toLowerCase();
+        SkillWrapper wrapper = this.skillMap.get(skill);
+        if(Objects.isNull(wrapper)) {
+            DHTRef.LOGGER.error("Could not find "+name+" skill! Substituting with a new level 1 "+name+" skill :)");
+            wrapper = new SkillWrapper(name,0,1,0);
+            this.skillMap.put(name,wrapper);
+        }
+        return getter.apply(wrapper);
     }
 
     @Override
@@ -66,46 +84,39 @@ public class SkillCapability implements ISkillCapability {
     @Override
     public void addSkillXP(String skill, int amount, EntityPlayerMP player, boolean fromXP) {
         if(amount>0) {
-            checkForExistingSkill(skill);
-            this.skillMap.get(skill).addXP(amount,player,fromXP);
+            checkAndApply(skill,wrapper -> wrapper.addXP(amount,player,fromXP));
             SkillWrapper.updateTokens(player);
         }
     }
 
     @Override
     public int getSkillXP(String skill) {
-        checkForExistingSkill(skill);
-        return this.skillMap.get(skill).getXP();
+        return checkAndReturn(skill,SkillWrapper::getXP);
     }
 
     @Override
     public int getSkillLevel(String skill) {
-        checkForExistingSkill(skill);
-        return this.skillMap.get(skill).getLevel();
+        return checkAndReturn(skill,SkillWrapper::getLevel);
     }
 
     @Override
     public int getSkillLevelXP(String skill) {
-        checkForExistingSkill(skill);
-        return this.skillMap.get(skill).getLevelXP();
+        return checkAndReturn(skill,SkillWrapper::getLevelXP);
     }
 
     @Override
     public void setPrestigeLevel(String skill, int level) {
-        checkForExistingSkill(skill);
-        this.skillMap.get(skill).setPrestigeLevel(level);
+        checkAndApply(skill,wrapper -> wrapper.setPrestigeLevel(level));
     }
 
     @Override
     public int getPrestigeLevel(String skill) {
-        checkForExistingSkill(skill);
-        return this.skillMap.get(skill).getPrestigeLevel();
+        return checkAndReturn(skill,SkillWrapper::getPrestigeLevel);
     }
 
     @Override
     public float getBreakSpeedMultiplier() {
-        checkForExistingSkill("mining");
-        return 0.2f*(((float)this.skillMap.get("mining").getLevel())/32f);
+        return checkAndReturn("mining",wrapper -> 0.2f*(((float)wrapper.getLevel())/32f));
     }
 
     private void syncClientData(EntityPlayerMP player) {
@@ -129,14 +140,12 @@ public class SkillCapability implements ISkillCapability {
 
     @Override
     public float getXPDumpMultiplier() {
-        checkForExistingSkill("magic");
-        return Math.max(1f,2f*(((float)this.skillMap.get("magic").getLevel())/32f));
+        return checkAndReturn("mining",wrapper -> Math.max(1f,0.2f*(((float)wrapper.getLevel())/32f)));
     }
 
     @Override
     public int getSkillXpMultiplier(float initialAmount) {
-        checkForExistingSkill("research");
-        return (int)(initialAmount*Math.max(1f,2f*(((float)this.skillMap.get("research").getLevel())/32f)));
+        return checkAndReturn("mining",wrapper -> (int)(initialAmount*Math.max(1f,0.2f*(((float)wrapper.getLevel())/32f))));
     }
 
     @Override
@@ -377,9 +386,6 @@ public class SkillCapability implements ISkillCapability {
         if(!(tag instanceof NBTTagList)) return;
         NBTTagList tagList = (NBTTagList)tag;
         for(NBTBase elementTag : tagList) readSkill(elementTag);
-        for(String skill : SkillCapabilityStorage.SKILLS)
-            if(!this.skillMap.containsKey(skill))
-                this.skillMap.put(skill,new SkillWrapper(skill,0,1,0));
     }
 
     private void readSkill(NBTBase tag) {

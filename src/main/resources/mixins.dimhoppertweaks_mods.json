@@ -89,6 +89,8 @@
     "mobends.MixinEntityRenderHandler",
     "mobends.MixinHumanoidLimbWrapper",
     "mobends.MixinHumanoidPartWrapper",
+    "naturesaura.MixinDrainSpotEffects",
+    "naturesaura.MixinTileEntityNatureAltar",
     "netherex.MixinNetherExBiomes",
     "nodami.MixinEntityHandler",
     "openblocks.MixinLastStandEnchantmentsHandler",

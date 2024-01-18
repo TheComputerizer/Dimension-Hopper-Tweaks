@@ -3,13 +3,15 @@ package mods.thecomputerizer.dimhoppertweaks.common.events;
 import codersafterdark.reskillable.api.data.PlayerData;
 import codersafterdark.reskillable.api.data.PlayerDataHandler;
 import com.google.common.collect.Iterables;
-import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillCapabilityProvider;
-import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.ISkillCapability;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillCapabilityProvider;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.IChunk;
 import mods.thecomputerizer.dimhoppertweaks.mixin.api.IEntityPixie;
+import mods.thecomputerizer.dimhoppertweaks.registry.TraitRegistry;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
+import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
 import mods.thecomputerizer.dimhoppertweaks.util.WorldUtil;
 import morph.avaritia.util.DamageSourceInfinitySword;
 import net.minecraft.entity.Entity;
@@ -24,9 +26,12 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.ISpecialArmor;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.entity.EntityEvent.EnteringChunk;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -35,6 +40,8 @@ import net.silentchaos512.scalinghealth.event.BlightHandler;
 import vazkii.botania.common.entity.EntityPixie;
 import vazkii.botania.common.item.equipment.tool.elementium.ItemElementiumSword;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @SuppressWarnings("SpellCheckingInspection")
@@ -206,5 +213,49 @@ public class EntityEvents {
                 });
             }
         }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onEnteringChunk(EnteringChunk event) {
+        Entity entity = event.getEntity();
+        if(isIncorrectEntityForChunk(entity)) return;
+        int newX = event.getNewChunkX();
+        int newZ = event.getNewChunkZ();
+        World world = entity.getEntityWorld();
+        List<Chunk> queuedRemovals = new ArrayList<>();
+        for(int x=newX-2; x<=newX+2; x++) {
+            for(int z=newX-2; z<=newX+2; z++) {
+                if(world.isChunkGeneratedAt(x,z)) {
+                    Chunk chunk = world.getChunk(x,z);
+                    if(chunk.isLoaded()) {
+                        if(x>=newX-1 && x<=newX+1 && z>=newZ-1 && z<=newZ+1)
+                            ((IChunk)chunk).dimhoppertweaks$setFast(true);
+                        else queuedRemovals.add(chunk);
+                    }
+                }
+            }
+        }
+        if(queuedRemovals.isEmpty()) return;
+        List<EntityPlayer> players = world.playerEntities;
+        for(Chunk chunk : queuedRemovals) {
+            if(players.size()<=1) {
+                ((IChunk)chunk).dimhoppertweaks$setFast(false);
+                continue;
+            }
+            boolean remove = true;
+            for(EntityPlayer player : players) {
+                if(player==entity) continue;
+                if(Math.abs(chunk.x-player.chunkCoordX)<=1 && Math.abs(chunk.z-player.chunkCoordZ)<=1) {
+                    remove = false;
+                    break;
+                }
+            }
+            if(remove) ((IChunk)chunk).dimhoppertweaks$setFast(false);
+        }
+    }
+
+    private static boolean isIncorrectEntityForChunk(Entity entity) {
+        return !(entity instanceof EntityPlayer) || !SkillWrapper.hasTrait(PlayerDataHandler.get((EntityPlayer)entity),
+                "magic",TraitRegistry.NATURES_AURA);
     }
 }

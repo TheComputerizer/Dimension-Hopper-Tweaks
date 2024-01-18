@@ -16,7 +16,6 @@
     "MixinExplosion",
     "MixinInventoryCrafting",
     "MixinItemDye",
-    "MixinItemHoe",
     "MixinNetherPortal",
     "MixinSPacketEntityEffect",
     "MixinStatisticManager",
