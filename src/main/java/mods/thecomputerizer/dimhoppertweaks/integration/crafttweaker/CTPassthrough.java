@@ -15,6 +15,7 @@ import mods.thecomputerizer.dimhoppertweaks.util.ItemUtil;
 import mods.thecomputerizer.theimpossiblelibrary.util.TextUtil;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -223,5 +224,11 @@ public class CTPassthrough {
     @ZenMethod
     public static void removeJEIDescriptions(IIngredientSupplier supplier) {
         JeiActionSupplier.queueDescriptionRemovals(supplier::get);
+    }
+
+    @ZenMethod
+    public static int getActualEnchantmentID(String registryName) {
+        Enchantment ench = ForgeRegistries.ENCHANTMENTS.getValue(new ResourceLocation(registryName));
+        return Objects.nonNull(ench) ? Enchantment.getEnchantmentID(ench) : 0;
     }
 }

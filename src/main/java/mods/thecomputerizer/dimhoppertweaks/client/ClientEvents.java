@@ -41,7 +41,7 @@ public class ClientEvents {
 
     @SubscribeEvent
     public static void onModelRegister(ModelRegistryEvent event) {
-        DHTClient.registerBasicItemModels();
+        DHTClient.registerItemModels();
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

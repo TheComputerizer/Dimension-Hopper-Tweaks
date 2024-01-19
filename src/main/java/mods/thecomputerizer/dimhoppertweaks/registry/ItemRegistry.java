@@ -1,10 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.registry;
 
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
-import mods.thecomputerizer.dimhoppertweaks.registry.items.PrestigeToken;
-import mods.thecomputerizer.dimhoppertweaks.registry.items.RealitySlasher;
-import mods.thecomputerizer.dimhoppertweaks.registry.items.SkillToken;
-import mods.thecomputerizer.dimhoppertweaks.registry.items.StargateAddresser;
+import mods.thecomputerizer.dimhoppertweaks.registry.items.*;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -26,18 +23,19 @@ public final class ItemRegistry {
     private static final List<Item> ALL_ITEMS = new ArrayList<>();
     public static final Item STARGATE_ADDRESSER = makeItem("stargate_addresser",StargateAddresser::new);
     public static final Item REALITY_SLASHER = makeItem("reality_slasher",RealitySlasher::new);
+    public static final RecipeFunctionItem RECIPE_FUNCTION = makeItem("recipe_function",RecipeFunctionItem::new);
     public static final Item SKILL_TOKEN = makeItem("skill_token",SkillToken::new);
     public static final Item PRESTIGE_TOKEN = makeItem("prestige_token",PrestigeToken::new,
             item -> item.setMaxStackSize(10));
     public static final Item LIGHTNING_ENHANCER = makeEpicItemBlock(BlockRegistry.LIGHTNING_ENHANCER);
 
-    private static Item makeItem(final String name, final Supplier<Item> constructor) {
+    private static <I extends Item> I makeItem(final String name, final Supplier<I> constructor) {
         return makeItem(name,constructor,null);
     }
 
-    private static Item makeItem(final String name, final Supplier<Item> constructor,
-                                 final @Nullable Consumer<Item> config) {
-        final Item item = constructor.get();
+    private static <I extends Item> I makeItem(final String name, final Supplier<I> constructor,
+                                 final @Nullable Consumer<I> config) {
+        final I item = constructor.get();
         item.setCreativeTab(DIM_HOPPER_TAB);
         item.setMaxStackSize(1);
         item.setTranslationKey(DHTRef.MODID+"."+name);

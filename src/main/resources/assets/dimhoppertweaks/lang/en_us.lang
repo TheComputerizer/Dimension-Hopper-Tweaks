@@ -53,6 +53,7 @@ gui.dimhoppertweaks.current_skill=The skill that XP will drain into
 item.dimhoppertweaks.stargate_addresser.name=Stargate Addresser
 item.dimhoppertweaks.stargate_addresser.success=Gate successfully located with address: §5%1$s
 item.dimhoppertweaks.reality_slasher.name=Reality Slasher
+item.dimhoppertweaks.recipe_function.name=Recipe Output Information
 item.dimhoppertweaks.skill_token.name=Skill Token
 item.dimhoppertweaks.skill_token.not_synced=§o§lSkill info for the %1$s skill has not yet been synced to this token
 item.dimhoppertweaks.skill_token.skill_maxed=§r§6%1$s%2$s[1024]

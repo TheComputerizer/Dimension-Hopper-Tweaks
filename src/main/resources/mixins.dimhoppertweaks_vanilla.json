@@ -26,6 +26,7 @@
     "access.TileEntityLockableLootAccess"
   ],
   "client": [
+    "MixinItemRenderer",
     "MixinParticle",
     "MixinRenderManager",
     "MixinShaderGroup",

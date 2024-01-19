@@ -41,17 +41,19 @@ public final class DHTClient {
         registerEntityRenderers();
     }
 
-    public static void registerBasicItemModels() {
-        registerItemModels();
-    }
-
-    private static void registerItemModels() {
-        ModelLoader.setCustomModelResourceLocation(ItemRegistry.STARGATE_ADDRESSER,0,
-                getModelRes(ItemRegistry.STARGATE_ADDRESSER));
-        ModelLoader.setCustomModelResourceLocation(ItemRegistry.SKILL_TOKEN,0,
-                getModelRes(ItemRegistry.SKILL_TOKEN));
+    public static void registerItemModels() {
         ModelLoader.setCustomModelResourceLocation(ItemRegistry.PRESTIGE_TOKEN,0,
                 getModelRes(ItemRegistry.STARGATE_ADDRESSER));
+        //ModelLoader.setCustomModelResourceLocation(ItemRegistry.RECIPE_FUNCTION,0,
+                //getModelRes(ItemRegistry.STARGATE_ADDRESSER));
+        ModelLoader.setCustomModelResourceLocation(ItemRegistry.SKILL_TOKEN,0,
+                getModelRes(ItemRegistry.SKILL_TOKEN));
+        ModelLoader.setCustomModelResourceLocation(ItemRegistry.STARGATE_ADDRESSER,0,
+                getModelRes(ItemRegistry.STARGATE_ADDRESSER));
+        //ModelLoader.setCustomMeshDefinition(ItemRegistry.RECIPE_FUNCTION,RecipeFunctionItem::getModelLocation);
+        ModelLoader.setCustomMeshDefinition(ItemRegistry.RECIPE_FUNCTION,
+                stack -> getModelRes(ItemRegistry.STARGATE_ADDRESSER));
+        ModelLoader.registerItemVariants(ItemRegistry.RECIPE_FUNCTION,ItemRegistry.STARGATE_ADDRESSER.getRegistryName());
     }
 
     private static void registerEntityRenderers() {

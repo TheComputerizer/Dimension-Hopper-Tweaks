@@ -40,6 +40,7 @@
     "botania.MixinItemFlightTiara",
     "botania.MixinItemMonocle",
     "botania.MixinTileCraftCrate",
+    "botania.MixinTileRuneAltar",
     "cavern.MixinEntityCrazyCreeper",
     "cavern.MixinEntityCrazySkeleton",
     "cavern.MixinEntityCrazySpider",
