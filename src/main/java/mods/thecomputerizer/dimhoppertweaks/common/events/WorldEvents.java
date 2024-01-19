@@ -54,7 +54,7 @@ public class WorldEvents {
                     if(harvestLevel>0) {
                         int hardness = (int) state.getBlockHardness(event.getWorld(),event.getPos());
                         int hardnessPower = Math.min(hardness > 1 ? (int)(Math.log(hardness)/Math.log(2)) : 0, 10);
-                        SkillWrapper.addSP(player,"mining",Math.max(1,(hardnessPower+harvestLevel)/2),false);
+                        SkillWrapper.addActionSP(player,"mining",Math.max(1,(hardnessPower+harvestLevel)/2));
                     }
                 }
             }
@@ -74,7 +74,7 @@ public class WorldEvents {
                 });
             }
             if(!(event.getState().getBlock() instanceof BlockFarmland))
-                SkillWrapper.addSP((EntityPlayerMP)event.getPlayer(),"building",1f,false);
+                SkillWrapper.addActionSP((EntityPlayerMP)event.getPlayer(),"building",1f);
         }
         if(Objects.nonNull(player)) {
             TileEntity tile = event.getWorld().getTileEntity(event.getPos());

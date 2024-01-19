@@ -79,7 +79,7 @@ public class PlayerEvents {
         if(event.isCanceled()) return;
         if(event.getEntityPlayer() instanceof EntityPlayerMP) {
             int factor = (event.getOrb().xpValue>1 ? (int)(Math.log(event.getOrb().xpValue)/Math.log(2)) : 1)*2;
-            SkillWrapper.addSP((EntityPlayerMP)event.getEntityPlayer(),"magic",factor,false);
+            SkillWrapper.addActionSP((EntityPlayerMP)event.getEntityPlayer(),"magic",factor);
         }
     }
 
@@ -104,7 +104,7 @@ public class PlayerEvents {
     public static void onAdvancement(AdvancementEvent event) {
         if(event.isCanceled()) return;
         if(event.getEntityPlayer() instanceof EntityPlayerMP)
-            SkillWrapper.addSP((EntityPlayerMP)event.getEntityPlayer(),"research",5f,false);
+            SkillWrapper.addActionSP((EntityPlayerMP)event.getEntityPlayer(),"research",5f);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

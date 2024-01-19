@@ -2,7 +2,6 @@ package mods.thecomputerizer.dimhoppertweaks.registry.items;
 
 import mcp.MethodsReturnNonnullByDefault;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.ISkillCapability;
-import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillCapabilityStorage;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketOpenGui;
@@ -43,9 +42,9 @@ public class SkillToken extends EpicItem {
     private NBTTagCompound updateSkill(String skill, SkillWrapper wrapper) {
         NBTTagCompound tag = new NBTTagCompound();
         tag.setString("name",skill);
-        tag.setInteger("xp",wrapper.getXP());
+        tag.setInteger("xp",wrapper.getSP());
         tag.setInteger("level",wrapper.getLevel());
-        tag.setInteger("levelXP",wrapper.getLevelXP());
+        tag.setInteger("levelXP",wrapper.getLevelSP());
         tag.setInteger("prestige",wrapper.getPrestigeLevel());
         return tag;
     }
@@ -60,7 +59,7 @@ public class SkillToken extends EpicItem {
             String skill = tag.getString("skillToDrain");
             int amount = tag.getInteger("drainLevels");
             if(player.isSneaking()) {
-                new PacketOpenGui(SkillCapabilityStorage.SKILLS,skill,amount).addPlayers(player).send();
+                new PacketOpenGui(SkillWrapper.SKILLS,skill,amount).addPlayers(player).send();
                 return new ActionResult<>(EnumActionResult.SUCCESS,stack);
             } else if(player.experienceLevel>=amount) {
                 ISkillCapability cap = SkillWrapper.getSkillCapability(player);
@@ -73,7 +72,7 @@ public class SkillToken extends EpicItem {
                         int currLevel = cap.getSkillLevel(skill);
                         boolean isWithinPrestigeRange = ((double)currLevel/32d)<prestige;
                         if(currSP+SP<levelSP || (currSP+SP>=levelSP && isWithinPrestigeRange)) {
-                            cap.addSkillXP(skill,SP,player,true);
+                            cap.addSkillSP(skill,SP,player,true);
                             player.addExperienceLevel(-1);
                         }
                     }
@@ -112,7 +111,7 @@ public class SkillToken extends EpicItem {
                         formattedSkillData.put(skillLine.getFirst(),skillLine.getSecond());
                 }
             }
-            for(String skill : SkillCapabilityStorage.SKILLS) {
+            for(String skill : SkillWrapper.SKILLS) {
                 String line = formattedSkillData.get(skill);
                 if(Objects.nonNull(line)) tooltip.add(line);
             }
@@ -145,7 +144,7 @@ public class SkillToken extends EpicItem {
     }
 
     private void addNotSyncedLines(List<String> tooltipLines) {
-        for(String skill : SkillCapabilityStorage.SKILLS)
+        for(String skill : SkillWrapper.SKILLS)
             tooltipLines.add(TextUtil.getTranslated("item.dimhoppertweaks.skill_token.not_synced",
                     translateSkill(skill)));
     }

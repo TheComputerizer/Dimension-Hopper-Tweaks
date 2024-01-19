@@ -58,7 +58,7 @@ public class ClientPacketHandlers {
                 for (Vec3d posVec : vecList)
                     RenderEvents.ATTACKS.add(new RenderDelayedAOE(posVec,start,size,boss,phase));
             }
-        } else mc.getSoundHandler().playSound(PositionedSoundRecord.getMusicRecord(SoundRegistry.MUSIC));
+        } else mc.getSoundHandler().playSound(PositionedSoundRecord.getMusicRecord(SoundRegistry.BOSS_MUSIC));
     }
 
     @SideOnly(Side.CLIENT)

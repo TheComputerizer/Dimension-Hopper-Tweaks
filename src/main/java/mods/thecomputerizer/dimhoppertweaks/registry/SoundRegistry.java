@@ -11,9 +11,11 @@ import java.util.List;
 public final class SoundRegistry {
 
     private static final List<SoundEvent> ALL_SOUNDS = new ArrayList<>();
-    public static final SoundEvent SHORT_STATIC = makeSoundEvent("boss.static");
-    public static final SoundEvent SPAWN = makeSoundEvent("boss.spawn");
-    public static final SoundEvent MUSIC = makeSoundEvent("boss.music");
+    public static final SoundEvent BELL = makeSoundEvent("bell");
+    public static final SoundEvent BOSS_HURT = makeSoundEvent("boss.static");
+    public static final SoundEvent BOSS_SPAWN = makeSoundEvent("boss.spawn");
+    public static final SoundEvent BOSS_MUSIC = makeSoundEvent("boss.music");
+    public static final SoundEvent REVERSE_BELL = makeSoundEvent("reversebell");
 
     private static SoundEvent makeSoundEvent(final String name) {
         ResourceLocation id = DHTRef.res(name);

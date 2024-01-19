@@ -12,7 +12,6 @@ public final class SkillRegistry {
 
     private static final List<Skill> ALL_SKILLS = new ArrayList<>();
     public static final Skill RESEARCH = makeSkill(new ResearchSkill());
-
     private static final Skill VOID = makeSkill(new VoidSkill());
 
     private static <S extends Skill> S makeSkill(S skill) {

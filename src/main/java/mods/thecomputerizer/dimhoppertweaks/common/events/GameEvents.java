@@ -13,7 +13,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -24,7 +23,6 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 
 import java.util.Objects;
 
-@SuppressWarnings("ConstantValue")
 @Mod.EventBusSubscriber(modid = DHTRef.MODID)
 public class GameEvents {
 
@@ -36,13 +34,7 @@ public class GameEvents {
             checkDimStage(player,false,false,"bridgeone",7,20,684);
             if(!GameStageHelper.hasStage(player,"bedrockFinal"))
                 player.inventory.clearMatchingItems(Item.getItemFromBlock(Blocks.BEDROCK),-1,0,null);
-            SkillWrapper.updateTokens(player);
-            ISkillCapability cap = SkillWrapper.getSkillCapability(player);
-            if(Objects.nonNull(cap)) {
-                BlockPos pos = cap.getTwilightRespawn();
-                if(player.dimension==7 && Objects.isNull(player.getBedLocation(7)) && Objects.nonNull(pos))
-                    player.setSpawnPoint(pos, true);
-            }
+            SkillWrapper.onPlayerJoin(player);
             new PacketQueryGenericClient("fix").addPlayers(player).send();
         }
     }
@@ -66,7 +58,7 @@ public class GameEvents {
                 ISkillCapability cap = SkillWrapper.getSkillCapability(player);
                 if(Objects.nonNull(cap) && cap.checkGatheringItem(stack.getItem())) {
                     int sizeFactor = stack.getCount()>1 ? (int)(Math.log(stack.getCount())/Math.log(2)) : 1;
-                    SkillWrapper.addSP(player,"gathering",sizeFactor,false);
+                    SkillWrapper.addActionSP(player,"gathering",sizeFactor);
                 }
             }
         }
@@ -86,7 +78,7 @@ public class GameEvents {
             checkDimStage(player,false,true,"twilight",7);
             checkDimStage(player,true,false,"nether",-1);
             checkDimStage(player,true,false,"finalfrontier",-19);
-            SkillWrapper.addSP(player,"void",5f,false);
+            SkillWrapper.addActionSP(player,"void",5f);
             ISkillCapability cap = SkillWrapper.getSkillCapability(player);
             if(Objects.nonNull(cap)) cap.resetDreamTimer();
         }

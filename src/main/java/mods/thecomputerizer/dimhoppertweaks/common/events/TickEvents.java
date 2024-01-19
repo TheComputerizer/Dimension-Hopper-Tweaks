@@ -47,7 +47,7 @@ public class TickEvents {
                     if(player.isSprinting()) {
                         int speedFactor = player.isPotionActive(MobEffects.SPEED) ? Objects.requireNonNull(
                                 player.getActivePotionEffect(MobEffects.SPEED)).getAmplifier()+2 : 1;
-                        SkillWrapper.addSP(player,"agility",speedFactor, false);
+                        SkillWrapper.addActionSP(player,"agility",speedFactor);
                     }
                     ISkillCapability cap = SkillWrapper.getSkillCapability(player);
                     if(Objects.nonNull(cap)) cap.decrementGatheringItems(20);

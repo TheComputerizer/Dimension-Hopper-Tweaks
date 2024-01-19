@@ -121,7 +121,7 @@ public abstract class MixinForgeHooks {
             float amount = 0f;
             if(updatedBlock instanceof BlockFarmland || updatedBlock instanceof BlockFarmlandMP) amount = 3f;
             if(updatedBlock instanceof IGrowable || updatedBlock instanceof IPlantable) amount = 1f;
-            if(amount>0f) SkillWrapper.addSP((EntityPlayerMP)player,"farming",amount,false);
+            if(amount>0f) SkillWrapper.addActionSP((EntityPlayerMP)player,"farming",amount);
         }
         return ret;
     }

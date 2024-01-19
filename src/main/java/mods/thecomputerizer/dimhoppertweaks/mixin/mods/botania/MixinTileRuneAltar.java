@@ -1,7 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.mods.botania;
 
-import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
-import mods.thecomputerizer.dimhoppertweaks.registry.items.RecipeFunctionItem;
+import mods.thecomputerizer.dimhoppertweaks.registry.items.RecipeFunction;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -61,8 +60,8 @@ public abstract class MixinTileRuneAltar extends TileSimpleInventory {
                     this.recieveMana(-mana);
                     ItemStack output = recipe.getOutput().copy();
                     this.saveLastRecipe();
-                    if(output.getItem() instanceof RecipeFunctionItem) {
-                        RecipeFunctionItem item = (RecipeFunctionItem)output.getItem();
+                    if(output.getItem() instanceof RecipeFunction) {
+                        RecipeFunction item = (RecipeFunction)output.getItem();
                         item.addInputs(output,this.lastRecipe);
                         output = item.transformStack(output);
                     }

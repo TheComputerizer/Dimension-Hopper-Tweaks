@@ -13,7 +13,9 @@ import java.util.Set;
 public interface ISkillCapability {
 
     void of(SkillCapability copy, EntityPlayerMP newPlayer);
-    void addSkillXP(String skill, int amount, EntityPlayerMP player, boolean fromXP);
+    void initWrappers();
+    int addSkillSP(String skill, int amount, EntityPlayerMP player, boolean fromXP);
+    boolean isCapped(String skill, EntityPlayerMP player);
     int getSkillXP(String skill);
     int getSkillLevel(String skill);
     int getSkillLevelXP(String skill);

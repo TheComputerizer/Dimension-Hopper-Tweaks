@@ -52,6 +52,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+@SuppressWarnings("deprecation")
 public class EntityFinalBoss extends EntityLiving implements IAnimatable {
     private final BossInfoServer bossInfo = (BossInfoServer) (new BossInfoServer(this.getDisplayName(), BossInfo.Color.RED, BossInfo.Overlay.NOTCHED_20)).setDarkenSky(true);
     private final AnimationFactory factory = new AnimationFactory(this);
@@ -76,7 +77,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
     public EntityFinalBoss(World worldIn) {
         super(worldIn);
         this.setHealth(this.getMaxHealth());
-        this.setSize(1F, 1.875F);
+        this.setSize(1f,1.875f);
         this.isImmuneToFire = true;
         this.experienceValue = 999;
         this.phase = 0;
@@ -103,7 +104,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
         this.tasks.addTask(5, new PhaseFive(this));
         this.tasks.addTask(6, new PhaseSix(this));
         this.tasks.addTask(7, new PhaseSeven(this));
-        this.tasks.addTask(9, new EntityAIWatchClosest(this, EntityPlayer.class, 64.0F));
+        this.tasks.addTask(9, new EntityAIWatchClosest(this,EntityPlayer.class,64f));
     }
 
     @Override
@@ -136,7 +137,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
 
     @Override
     public void onKillCommand() {
-        this.damageBoss(new DamageSourceInfinitySword(null), Float.MAX_VALUE,null);
+        this.damageBoss(new DamageSourceInfinitySword(null),Float.MAX_VALUE,null);
     }
 
     @Override
@@ -236,7 +237,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
 
     public void updateShield(boolean isShieldUp) {
         this.isShieldUp = isShieldUp;
-        this.bossInvulnerable = this.phase == 0 || isShieldUp;
+        this.bossInvulnerable = this.phase==0 || isShieldUp;
         this.curLook = Vec3d.ZERO;
         if(!isShieldUp) {
             this.currentAnimation = "damaged";
@@ -273,39 +274,39 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
     }
 
     public void teleportUp() {
-        double y = this.posY+(this.rand.nextDouble() * 8d);
-        this.setPositionAndUpdate(this.posX, y, this.posZ);
+        double y = this.posY+(this.rand.nextDouble()*8d);
+        this.setPositionAndUpdate(this.posX,y,this.posZ);
         this.setVelocity(0,0,0);
         this.playSound(SoundEvents.ENTITY_ENDERMEN_TELEPORT,1f,1f);
     }
 
     public void teleportBehindPlayer(EntityPlayer player) {
         Vec3d vec = player.getLookVec();
-        double x = player.posX - (vec.x * 4);
+        double x = player.posX-(vec.x*4);
         double y = player.posY;
-        double z = player.posZ - (vec.z * 4);
+        double z = player.posZ-(vec.z*4);
         this.setPositionAndRotation(x, y, z, player.cameraYaw, player.cameraPitch);
         this.setVelocity(0,0,0);
         this.playSound(SoundEvents.ENTITY_ENDERMEN_TELEPORT,1f,1f);
     }
 
     public void teleportRandomly() {
-        double x = this.posX + (-32 + (this.rand.nextDouble()) * 64d);
-        double y = this.posY + (-4 + (this.rand.nextDouble()) * 8d);
-        double z = this.posZ + (-32 + (this.rand.nextDouble()) * 64d);
+        double x = this.posX+(-32+(this.rand.nextDouble())*64d);
+        double y = this.posY+(-4+(this.rand.nextDouble())*8d);
+        double z = this.posZ+(-32+(this.rand.nextDouble())*64d);
         this.setPositionAndUpdate(x, y, z);
         this.setVelocity(0,0,0);
         this.playSound(SoundEvents.ENTITY_ENDERMEN_TELEPORT,1f,1f);
     }
 
     public void teleportForcefield() {
-        for (EntityPlayer player : this.players) {
+        for(EntityPlayer player : this.players) {
             if(!(this.phase==5 && player.getHeldItemMainhand().getItem() instanceof RealitySlasher)) {
-                if (isEntityCloseEnough(player, this.getPositionVector(), 8)) {
-                    double x = this.posX + (-32 + (this.rand.nextDouble()) * 64d);
-                    double y = this.posY + (-4 + (this.rand.nextDouble()) * 8d);
-                    double z = this.posZ + (-32 + (this.rand.nextDouble()) * 64d);
-                    player.setPositionAndUpdate(x, y, z);
+                if (isEntityCloseEnough(player,this.getPositionVector(),8)) {
+                    double x = this.posX+(-32+(this.rand.nextDouble())*64d);
+                    double y = this.posY+(-4+(this.rand.nextDouble())*8d);
+                    double z = this.posZ+(-32+(this.rand.nextDouble())*64d);
+                    player.setPositionAndUpdate(x,y,z);
                     playSound(x,y,z,SoundEvents.ENTITY_ENDERMEN_TELEPORT);
                 }
             }
@@ -316,15 +317,15 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
         boolean hit = false;
         for(EntityPlayer player : this.players) {
             if(isEntityCloseEnough(player, posVec, range))
-                if(subtractPlayerHealth(player, 4d)) hit = true;
+                if(subtractPlayerHealth(player,4d)) hit = true;
         }
-        if(!hit && sound) playSound(posVec, SoundEvents.ENTITY_ENDEREYE_DEATH);
+        if(!hit && sound) playSound(posVec,SoundEvents.ENTITY_ENDEREYE_DEATH);
     }
 
     public void addAOECounter(List<Vec3d> vecList, int time, int range, int phase) {
         if(!vecList.isEmpty()) {
-            this.aoeAttacks.add(new DelayedAOE(vecList, time, range, phase));
-            NetworkHandler.sendToTracking(new PacketRenderBossAttack(vecList, time, range,this.getEntityId(),phase),this);
+            this.aoeAttacks.add(new DelayedAOE(vecList,time,range,phase));
+            NetworkHandler.sendToTracking(new PacketRenderBossAttack(vecList,time,range,this.getEntityId(),phase),this);
         }
     }
 
@@ -344,12 +345,12 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
 
     public boolean subtractPlayerHealth(EntityPlayer player, double amount) {
         if(amount>0) {
-            if (!damageCooldown.containsKey(player) || damageCooldown.get(player).getValue() <= 0) {
-                double newHealth = player.getMaxHealth() - amount;
-                if (newHealth>0) {
+            if(!damageCooldown.containsKey(player) || damageCooldown.get(player).getValue()<=0) {
+                double newHealth = player.getMaxHealth()-amount;
+                if(newHealth>0) {
                     //player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(newHealth);
-                    this.damageCooldown.put(player, new MutableInt(5));
-                    playSound(player.getPositionVector(), SoundRegistry.SHORT_STATIC);
+                    this.damageCooldown.put(player,new MutableInt(5));
+                    playSound(player.getPositionVector(),SoundRegistry.BOSS_HURT);
                     return true;
                 } else {
                     this.setDropItemsWhenDead(false);
@@ -386,7 +387,8 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
         this.curLook = readVec(compound.getCompoundTag("DimensionHopperBoss_CurLook"));
         int size = compound.getInteger("PlayerHealth_Size");
         NBTTagCompound compound1 = compound.getCompoundTag("DimensionHopperBoss_PlayerHealth");
-        for(int i=1;i<size;i++) this.savedPlayerHealth.put(compound1.getString("PlayerHealth_UUID_"+i),compound1.getDouble("PlayerHealth_Health_"+i));
+        for(int i=1;i<size;i++)
+            this.savedPlayerHealth.put(compound1.getString("PlayerHealth_UUID_"+i),compound1.getDouble("PlayerHealth_Health_"+i));
         this.setCustomNameTag(this.getObfuscatedNameProgress());
     }
 
@@ -425,33 +427,33 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
 
     @Override
     public boolean attackEntityFrom(@Nonnull DamageSource source, float amount) {
-        if (!this.bossInvulnerable && !this.isShieldUp) {
-            if (source.getTrueSource() instanceof EntityPlayer) {
-                EntityPlayer player = (EntityPlayer) source.getTrueSource();
-                if (player.getHeldItemMainhand().getItem() instanceof ItemSwordInfinity) {
-                    this.damageBoss(new DamageSourceInfinitySword(player), amount, player);
+        if(!this.bossInvulnerable && !this.isShieldUp) {
+            if(source.getTrueSource() instanceof EntityPlayer) {
+                EntityPlayer player = (EntityPlayer)source.getTrueSource();
+                if(player.getHeldItemMainhand().getItem() instanceof ItemSwordInfinity) {
+                    this.damageBoss(new DamageSourceInfinitySword(player),amount,player);
                     return true;
                 }
             }
-        } else if (this.phase == 5 && source.getTrueSource() instanceof EntityPlayer &&
-                ((EntityPlayer) source.getTrueSource()).getHeldItemMainhand().getItem() instanceof RealitySlasher)
+        } else if(this.phase==5 && source.getTrueSource() instanceof EntityPlayer &&
+                ((EntityPlayer)source.getTrueSource()).getHeldItemMainhand().getItem() instanceof RealitySlasher)
             this.boom = true;
         return false;
     }
 
     private void damageBoss(DamageSource source, float amount, EntityPlayer player) {
-        amount = ForgeHooks.onLivingHurt(this, source, amount);
-        this.getCombatTracker().trackDamage(source, this.getHealth(), amount);
+        amount = ForgeHooks.onLivingHurt(this,source,amount);
+        this.getCombatTracker().trackDamage(source,this.getHealth(),amount);
         this.setHealth(MathHelper.clamp(this.getHealth()-amount,0f,this.getMaxHealth()));
         this.setCustomNameTag(this.getObfuscatedNameProgress());
-        if (this.getHealth() <= 0.0F) {
-            SoundEvent soundevent = this.getDeathSound();
-            if (soundevent != null) this.playSound(soundevent, this.getSoundVolume(), this.getSoundPitch());
+        if(this.getHealth()<=0f) {
+            SoundEvent sound = this.getDeathSound();
+            if(Objects.nonNull(sound)) this.playSound(sound,this.getSoundVolume(),this.getSoundPitch());
             this.onDeath(source);
         }
         else this.playHurtSound(source);
-        if (player instanceof EntityPlayerMP) CriteriaTriggers.PLAYER_HURT_ENTITY.trigger((EntityPlayerMP)player,
-                this, source, amount, amount, false);
+        if(player instanceof EntityPlayerMP) CriteriaTriggers.PLAYER_HURT_ENTITY.trigger((EntityPlayerMP)player,
+                this,source,amount,amount,false);
         this.setAnimation("damaged",true);
     }
 
@@ -460,7 +462,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
     }
 
     private void playSound(double x, double y, double z, SoundEvent sound) {
-        this.world.playSound(null, x, y, z, sound, this.getSoundCategory(), 1f,1f);
+        this.world.playSound(null,x,y,z,sound,this.getSoundCategory(),1f,1f);
     }
 
     @Override
@@ -471,8 +473,8 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
 
     @Override
     @Nullable
-    protected SoundEvent getHurtSound(@Nonnull DamageSource damageSourceIn) {
-        return SoundRegistry.SHORT_STATIC;
+    protected SoundEvent getHurtSound(@Nonnull DamageSource source) {
+        return SoundRegistry.BOSS_HURT;
     }
 
     @Override
@@ -485,7 +487,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
         if(!this.world.isRemote) {
             if(animation.matches("damaged")) teleportRandomly();
             if(sendUpdate) NetworkHandler.sendToTracking(new PacketUpdateBossRender(this.getEntityId(),
-                    this.phase,this.isShieldUp, animation, this.projectileChargeTime),this);
+                    this.phase,this.isShieldUp,animation,this.projectileChargeTime),this);
         }
     }
 
@@ -565,21 +567,20 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
 
         @Override
         public void updateTask() {
-            if (this.boss.ticksExisted < 329) {
-                if (this.boss.ticksExisted == 25)
-                    this.boss.setAnimation("sword",true);
-                if (this.boss.ticksExisted > 189) {
-                    this.boss.setVelocity(0, 0.1, 0);
-                    if (this.boss.ticksExisted == 190) {
+            if(this.boss.ticksExisted<329) {
+                if(this.boss.ticksExisted==25) this.boss.setAnimation("sword",true);
+                if(this.boss.ticksExisted>189) {
+                    this.boss.setVelocity(0d,0.1d,0d);
+                    if(this.boss.ticksExisted==190) {
                         this.boss.setAnimation("idle",true);
                         this.boss.dialogueMessage(1);
-                        this.boss.updateTrackedEntity(this.boss.world.getClosestPlayerToEntity(this.boss, 100d));
+                        this.boss.updateTrackedEntity(this.boss.world.getClosestPlayerToEntity(this.boss,100d));
                     }
                 }
             } else {
                 this.boss.dialogueMessage(2);
-                this.boss.setVelocity(0, 0, 0);
-                for (EntityPlayer player : this.boss.players)
+                this.boss.setVelocity(0d,0d,0d);
+                for(EntityPlayer player : this.boss.players)
                     this.boss.savedPlayerHealth.put(player.getUniqueID().toString(), player.getEntityAttribute(
                             SharedMonsterAttributes.MAX_HEALTH).getAttributeValue());
                 this.boss.doneWithIntro = true;

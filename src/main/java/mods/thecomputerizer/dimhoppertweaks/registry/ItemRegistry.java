@@ -21,20 +21,21 @@ import static mods.thecomputerizer.dimhoppertweaks.registry.RegistryHandler.DIM_
 public final class ItemRegistry {
 
     private static final List<Item> ALL_ITEMS = new ArrayList<>();
-    public static final Item STARGATE_ADDRESSER = makeItem("stargate_addresser",StargateAddresser::new);
-    public static final Item REALITY_SLASHER = makeItem("reality_slasher",RealitySlasher::new);
-    public static final RecipeFunctionItem RECIPE_FUNCTION = makeItem("recipe_function",RecipeFunctionItem::new);
-    public static final Item SKILL_TOKEN = makeItem("skill_token",SkillToken::new);
-    public static final Item PRESTIGE_TOKEN = makeItem("prestige_token",PrestigeToken::new,
+    public static final StargateAddresser STARGATE_ADDRESSER = makeItem("stargate_addresser",StargateAddresser::new);
+    public static final RealitySlasher REALITY_SLASHER = makeItem("reality_slasher",RealitySlasher::new);
+    public static final RecipeFunction RECIPE_FUNCTION = makeItem("recipe_function",RecipeFunction::new);
+    public static final SkillCredit SKILL_CREDIT = makeItem("skill_credit",SkillCredit::new);
+    public static final SkillToken SKILL_TOKEN = makeItem("skill_token",SkillToken::new);
+    public static final PrestigeToken PRESTIGE_TOKEN = makeItem("prestige_token",PrestigeToken::new,
             item -> item.setMaxStackSize(10));
-    public static final Item LIGHTNING_ENHANCER = makeEpicItemBlock(BlockRegistry.LIGHTNING_ENHANCER);
+    public static final ItemBlock LIGHTNING_ENHANCER = makeEpicItemBlock(BlockRegistry.LIGHTNING_ENHANCER);
 
     private static <I extends Item> I makeItem(final String name, final Supplier<I> constructor) {
         return makeItem(name,constructor,null);
     }
 
-    private static <I extends Item> I makeItem(final String name, final Supplier<I> constructor,
-                                 final @Nullable Consumer<I> config) {
+    private static <I extends Item> I makeItem(
+            final String name, final Supplier<I> constructor, final @Nullable Consumer<I> config) {
         final I item = constructor.get();
         item.setCreativeTab(DIM_HOPPER_TAB);
         item.setMaxStackSize(1);

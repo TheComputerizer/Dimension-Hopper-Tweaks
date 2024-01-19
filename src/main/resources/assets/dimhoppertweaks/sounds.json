@@ -1,9 +1,31 @@
 {
-  "boss.static": { "sounds": [ "dimhoppertweaks:boss/static" ] },
-  "boss.spawn": { "sounds": [ "dimhoppertweaks:boss/spawn" ] },
+  "boss.static": { 
+    "category": "hostile",
+    "sounds": [ 
+      "dimhoppertweaks:boss/static" 
+    ] 
+  },
+  "boss.spawn": { 
+    "category": "ambient",
+    "sounds": [ 
+      "dimhoppertweaks:boss/spawn" 
+    ] 
+  },
   "boss.music": {
     "category": "music",
-    "sounds": [ "dimhoppertweaks:boss/music" ],
+    "sounds": [ 
+      "dimhoppertweaks:boss/music" 
+    ],
     "stream": true
+  },
+  "bell": {
+    "sounds": [ 
+      "dimhoppertweaks:bell" 
+    ]
+  },
+  "reverse": {
+    "sounds": [
+      "dimhoppertweaks:reversebell"
+    ]
   }
 }

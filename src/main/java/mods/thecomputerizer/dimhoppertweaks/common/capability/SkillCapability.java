@@ -44,18 +44,23 @@ public class SkillCapability implements ISkillCapability {
     private int fanUsage = 0;
 
     public SkillCapability() {
-        for(String skill : SkillCapabilityStorage.SKILLS)
-            this.skillMap.put(skill,new SkillWrapper(skill,0,1,0));
+        for(String skill : SkillWrapper.SKILLS)
+            this.skillMap.put(skill,SkillWrapper.getNewInstance(skill,"Empty Skill"));
         DHTRef.LOGGER.debug("Initializing skill capability with skills {}",this.skillMap.keySet());
+    }
+
+    private SkillWrapper addWrapper(String skill, String initFailMsg) {
+        SkillWrapper wrapper = SkillWrapper.getNewInstance(skill,initFailMsg);
+        this.skillMap.put(skill,wrapper);
+        return wrapper;
     }
 
     private void checkAndApply(String skill, Consumer<SkillWrapper> applier) {
         String name = skill.toLowerCase();
         SkillWrapper wrapper = this.skillMap.get(skill);
         if(Objects.isNull(wrapper)) {
-            DHTRef.LOGGER.error("Could not find "+name+" skill! Substituting with a new level 1 "+name+" skill :)");
-            wrapper = new SkillWrapper(name,0,1,0);
-            this.skillMap.put(name,wrapper);
+            DHTRef.LOGGER.warn("Could not find skill with name `{}`! Substituting with a new level 1 skill :)",name);
+            wrapper = addWrapper(name,"Missing Skill");
         }
         applier.accept(wrapper);
     }
@@ -64,9 +69,8 @@ public class SkillCapability implements ISkillCapability {
         String name = skill.toLowerCase();
         SkillWrapper wrapper = this.skillMap.get(skill);
         if(Objects.isNull(wrapper)) {
-            DHTRef.LOGGER.error("Could not find "+name+" skill! Substituting with a new level 1 "+name+" skill :)");
-            wrapper = new SkillWrapper(name,0,1,0);
-            this.skillMap.put(name,wrapper);
+            DHTRef.LOGGER.warn("Could not find skill with name `{}`! Substituting with a new level 1 skill :)",name);
+            wrapper = addWrapper(name,"Missing Skill");
         }
         return getter.apply(wrapper);
     }
@@ -84,16 +88,33 @@ public class SkillCapability implements ISkillCapability {
     }
 
     @Override
-    public void addSkillXP(String skill, int amount, EntityPlayerMP player, boolean fromXP) {
+    public void initWrappers() {
+        for(String skill : SkillWrapper.SKILLS)
+            if(!this.skillMap.containsKey(skill))
+                addWrapper(skill,"New Instance");
+    }
+
+    /**
+     * Returns the SP in regard to the input amount that was NOT added
+     */
+    @Override
+    public int addSkillSP(String skill, int amount, EntityPlayerMP player, boolean fromXP) {
+        int ret = 0;
         if(amount>0) {
-            checkAndApply(skill,wrapper -> wrapper.addXP(amount,player,fromXP));
+            ret = checkAndReturn(skill,wrapper -> wrapper.addSP(amount,player,fromXP));
             SkillWrapper.updateTokens(player);
         }
+        return ret;
+    }
+
+    @Override
+    public boolean isCapped(String skill, EntityPlayerMP player) {
+        return checkAndReturn(skill,SkillWrapper::isCapped);
     }
 
     @Override
     public int getSkillXP(String skill) {
-        return checkAndReturn(skill,SkillWrapper::getXP);
+        return checkAndReturn(skill,SkillWrapper::getSP);
     }
 
     @Override
@@ -103,7 +124,7 @@ public class SkillCapability implements ISkillCapability {
 
     @Override
     public int getSkillLevelXP(String skill) {
-        return checkAndReturn(skill,SkillWrapper::getLevelXP);
+        return checkAndReturn(skill,SkillWrapper::getLevelSP);
     }
 
     @Override
@@ -335,7 +356,7 @@ public class SkillCapability implements ISkillCapability {
     private NBTTagCompound writeSkill(String name, SkillWrapper wrapper) {
         NBTTagCompound tag = new NBTTagCompound();
         tag.setString("skillName",name);
-        tag.setInteger("skillXp",wrapper.getXP());
+        tag.setInteger("skillXp",wrapper.getSP());
         tag.setInteger("skillLevel",wrapper.getLevel());
         tag.setInteger("skillPrestige",wrapper.getPrestigeLevel());
         return tag;
@@ -412,10 +433,8 @@ public class SkillCapability implements ISkillCapability {
 
     private void readSkill(NBTBase tag) {
         if(!(tag instanceof NBTTagCompound)) return;
-        NBTTagCompound skillTag = (NBTTagCompound)tag;
-        String name = skillTag.getString("skillName").toLowerCase();
-        this.skillMap.put(name,new SkillWrapper(name,skillTag.getInteger("skillXp"),
-                skillTag.getInteger("skillLevel"),skillTag.getInteger("skillPrestige")));
+        SkillWrapper wrapper = SkillWrapper.getTagInstance((NBTTagCompound)tag);
+        if(Objects.nonNull(wrapper)) this.skillMap.put(wrapper.getName(),wrapper);
     }
 
     private void readGatheringTimers(NBTBase tag) {
@@ -464,9 +483,8 @@ public class SkillCapability implements ISkillCapability {
 
     private void readOldSkills(NBTTagCompound tag) {
         for(int i=0; i<tag.getInteger("skills_num"); i++) {
-            String name = tag.getString("skill_"+i).toLowerCase();
-            this.skillMap.put(name,new SkillWrapper(name,tag.getInteger(name+"_xp"),
-                    tag.getInteger(name+"_level"),tag.getInteger(name+"_prestige")));
+            SkillWrapper wrapper = SkillWrapper.getTagInstance(tag,i);
+            if(Objects.nonNull(wrapper)) this.skillMap.put(wrapper.getName(),wrapper);
         }
     }
 }

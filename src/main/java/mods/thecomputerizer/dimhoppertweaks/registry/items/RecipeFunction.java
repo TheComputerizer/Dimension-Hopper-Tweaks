@@ -28,20 +28,20 @@ import java.util.Objects;
 
 @SuppressWarnings("DataFlowIssue")
 @ParametersAreNonnullByDefault
-public class RecipeFunctionItem extends EpicItem {
+public class RecipeFunction extends EpicItem {
 
     @SideOnly(Side.CLIENT)
     public static ModelResourceLocation getModelLocation(ItemStack stack) {
         if(stack.hasTagCompound()) {
             NBTTagCompound tag = stack.getTagCompound();
             if(tag.getString("type").equals("item"))
-                stack = ((RecipeFunctionItem)stack.getItem()).transformStack(stack);
+                stack = ((RecipeFunction)stack.getItem()).transformStack(stack);
         }
         return new ModelResourceLocation(stack.getItem().getRegistryName(),"inventory");
     }
 
     public void addInputs(ItemStack stack, Collection<ItemStack> inputs) {
-        if(!(stack.getItem() instanceof RecipeFunctionItem)) return;
+        if(!(stack.getItem() instanceof RecipeFunction)) return;
         NBTTagCompound tag = ItemUtil.getOrCreateTag(stack);
         NBTTagList inputsTag = new NBTTagList();
         for(ItemStack input : inputs) {
@@ -59,7 +59,7 @@ public class RecipeFunctionItem extends EpicItem {
     }
 
     public ItemStack transformStack(ItemStack stack) {
-        if(!(stack.getItem() instanceof RecipeFunctionItem)) return stack;
+        if(!(stack.getItem() instanceof RecipeFunction)) return stack;
         NBTTagCompound tag = stack.getTagCompound();
         if(Objects.isNull(tag)) return ItemStack.EMPTY;
         switch(tag.getString("type")) {

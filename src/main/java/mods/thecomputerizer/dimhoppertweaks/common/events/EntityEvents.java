@@ -97,7 +97,7 @@ public class EntityEvents {
             EntityPlayerMP player = (EntityPlayerMP)event.getEntityLiving();
             int jumpFactor = player.isPotionActive(MobEffects.JUMP_BOOST) ?
                     Objects.requireNonNull(player.getActivePotionEffect(MobEffects.JUMP_BOOST)).getAmplifier()+2 : 1;
-            SkillWrapper.addSP((EntityPlayerMP)event.getEntityLiving(),"agility",jumpFactor,false);
+            SkillWrapper.addActionSP((EntityPlayerMP)event.getEntityLiving(),"agility",jumpFactor);
         }
     }
 
@@ -113,7 +113,7 @@ public class EntityEvents {
                     if(Objects.nonNull(cap)) {
                         amount+=(float)(3d*SkillWrapper.getPrestigeFactor(player,"attack"));
                         event.setAmount(amount);
-                        SkillWrapper.addSP(player,"attack",Math.max(0.5f,(amount/2f)),false);
+                        SkillWrapper.addActionSP(player,"attack",Math.max(0.5f,(amount/2f)));
                     }
                     if(amount>=50f && player.getHeldItemMainhand().getItem() instanceof ItemElementiumSword) {
                         EntityPixie pixie = new EntityPixie(player.getServerWorld());
@@ -164,7 +164,7 @@ public class EntityEvents {
                         Iterables.toArray(event.getEntityLiving().getArmorInventoryList(),ItemStack.class));
                 float armor = (25f-ISpecialArmor.ArmorProperties.applyArmor(
                         event.getEntityLiving(),armorList,event.getSource(),25f))*2f;
-                SkillWrapper.addSP(player,"defense",armor,false);
+                SkillWrapper.addActionSP(player,"defense",armor);
             }
         } else {
             EntityLivingBase entity = event.getEntityLiving();

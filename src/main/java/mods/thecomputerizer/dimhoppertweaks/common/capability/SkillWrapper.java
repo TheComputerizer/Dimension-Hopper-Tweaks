@@ -9,9 +9,10 @@ import codersafterdark.reskillable.api.skill.Skill;
 import codersafterdark.reskillable.api.toast.ToastHelper;
 import codersafterdark.reskillable.api.unlockable.IAbilityEventHandler;
 import codersafterdark.reskillable.api.unlockable.Trait;
-import codersafterdark.reskillable.api.unlockable.Unlockable;
+import com.google.common.collect.ImmutableList;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.registry.ItemRegistry;
+import mods.thecomputerizer.dimhoppertweaks.registry.SoundRegistry;
 import mods.thecomputerizer.dimhoppertweaks.registry.TraitRegistry;
 import mods.thecomputerizer.dimhoppertweaks.registry.items.SkillToken;
 import net.minecraft.entity.Entity;
@@ -19,6 +20,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
@@ -26,9 +28,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -37,10 +43,12 @@ import java.util.function.Consumer;
 public class SkillWrapper {
 
     public static final ResourceLocation SKILL_CAPABILITY = DHTRef.res("skills");
+    public static final ImmutableList<String> SKILLS = makeOrderedSkillList();
 
-    public static void addSP(EntityPlayerMP player, String skill, float amount, boolean fromXP) {
+    public static void addActionSP(EntityPlayerMP player, String skill, float amount) {
         ISkillCapability cap = getSkillCapability(player);
-        if(Objects.nonNull(cap)) cap.addSkillXP(skill,(int)withMultiplier(player,amount),player,fromXP);
+        if(Objects.nonNull(cap))
+            player.addExperience(cap.addSkillSP(skill,(int)withMultiplier(player,amount),player,false));
     }
 
     public static void executeOnSkill(PlayerData data, @Nullable Skill skill, Consumer<IAbilityEventHandler> consumer) {
@@ -73,15 +81,44 @@ public class SkillWrapper {
         return Objects.nonNull(cap) ? cap.getFanUsage() : 0;
     }
 
+    public static @Nullable SkillWrapper getInstance(String name, int sp, int level, int prestige, String initFailMsg) {
+        name = name.toLowerCase();
+        Skill skill = getSkill(name);
+        if(Objects.isNull(skill)) {
+            DHTRef.LOGGER.error("Failed to initialize unknown skill from `{}`",initFailMsg);
+            return null;
+        }
+        return new SkillWrapper(name,skill).initialize(sp,level,prestige);
+    }
+
+    public static @Nullable SkillWrapper getNewInstance(String name, String initFailMsg) {
+        return getInstance(name,0,1,0,initFailMsg);
+    }
+
+    public static @Nullable SkillWrapper getTagInstance(NBTTagCompound skillTag) {
+        String name = skillTag.getString("skillName");
+        int sp = skillTag.getInteger("skillXp");
+        int level = skillTag.getInteger("skillLevel");
+        int prestige = skillTag.getInteger("skillPrestige");
+        return getInstance(name,sp,level,prestige,skillTag.toString());
+    }
+
+    /**
+     * Old storage method for skill data
+     */
+    public static @Nullable SkillWrapper getTagInstance(NBTTagCompound oldSkillTag, int index) {
+        String name = oldSkillTag.getString("skill_"+index);
+        int sp = oldSkillTag.getInteger(name+"_xp");
+        int level = oldSkillTag.getInteger(name+"_level");
+        int prestige = oldSkillTag.getInteger(name+"_prestige");
+        return getInstance(name,sp,level,prestige,oldSkillTag.toString());
+    }
+
     public static @Nullable Skill getSkill(String name) {
+        if(StringUtils.isBlank(name) || !isValidSkill(name)) return null;
         ResourceLocation skillRes =  name.matches("research") || name.matches("void") ? DHTRef.res(name) :
                 new ResourceLocation("reskillable",name);
         return ReskillableRegistries.SKILLS.containsKey(skillRes) ? ReskillableRegistries.SKILLS.getValue(skillRes) : null;
-    }
-
-    public static @Nullable Unlockable getUnlockable(ResourceLocation unlockableRes) {
-        return ReskillableRegistries.UNLOCKABLES.containsKey(unlockableRes) ?
-                ReskillableRegistries.UNLOCKABLES.getValue(unlockableRes) : null;
     }
 
     public static @Nullable ISkillCapability getSkillCapability(EntityPlayer player) {
@@ -99,6 +136,21 @@ public class SkillWrapper {
         return Objects.nonNull(data) && Objects.nonNull(skill) && data.getSkillInfo(skill).isUnlocked(trait);
     }
 
+    public static boolean isValidSkill(String skill) {
+        return SKILLS.contains(skill);
+    }
+
+    public static void onPlayerJoin(EntityPlayerMP player) {
+        ISkillCapability cap = SkillWrapper.getSkillCapability(player);
+        if(Objects.nonNull(cap)) {
+            cap.initWrappers();
+            BlockPos pos = cap.getTwilightRespawn();
+            if(player.dimension==7 && Objects.isNull(player.getBedLocation(7)) && Objects.nonNull(pos))
+                player.setSpawnPoint(pos,true);
+            updateTokens(player);
+        }
+    }
+
     public static void resetFanUsage(Entity entity) {
         if(entity instanceof EntityPlayer) {
             ISkillCapability cap = getSkillCapability((EntityPlayer)entity);
@@ -110,7 +162,7 @@ public class SkillWrapper {
         ISkillCapability cap = getSkillCapability(player);
         if(Objects.isNull(cap)) return;
         float amount = cap.getShieldedDamage();
-        if(state==29 && amount>0) addSP(player,"defense",Math.max(1f,amount/2f),false);
+        if(state==29 && amount>0) addActionSP(player,"defense",Math.max(1f,amount/2f));
     }
 
     public static boolean ticKDreamer(EntityPlayerMP player, int ticks) {
@@ -137,62 +189,97 @@ public class SkillWrapper {
         return Objects.nonNull(cap) ? cap.getSkillXpMultiplier(amount) : 0f;
     }
 
-    private final String modid;
     private final String name;
+    private final Skill skill;
     private final int maxLevel;
-    private int xp;
+    private final double levelFactor;
+    private int sp;
     private int level;
-    private int levelXP;
+    private int levelSP;
     private int prestigeLevel;
 
-    public SkillWrapper(String name, int xp, int level, int prestigeLevel) {
-        this.modid = name.matches("research") || name.matches("void") ? DHTRef.MODID : "reskillable";
+    private SkillWrapper(String name, Skill skill) {
         this.name = name;
-        this.xp = xp;
-        this.level = level;
-        this.levelXP = calculateLevelXP(level);
-        Skill skill = getSkill();
-        int cap = 1024;
-        if(skill!=null) cap = getSkill().getCap();
-        this.maxLevel = cap;
-        this.prestigeLevel = prestigeLevel;
-        DHTRef.LOGGER.debug("Registered skill {}:{} at level {} with xp {}/{}",modid,name,level,xp,levelXP);
+        this.skill = skill;
+        this.maxLevel = skill.getCap();
+        this.levelFactor = getLevelFactor();
     }
 
-    public int getXP() {
-        return this.xp;
+    private static ImmutableList<String> makeOrderedSkillList() {
+        List<String> skills = Arrays.asList("agility","attack","building","defense","farming","gathering","magic",
+                "mining","research","void");
+        Collections.sort(skills);
+        return ImmutableList.copyOf(skills);
+    }
+
+    public SkillWrapper initialize(int sp, int level, int prestigeLevel) {
+        this.sp = sp;
+        this.level = level;
+        calculateLevelSP();
+        this.prestigeLevel = prestigeLevel;
+        DHTRef.LOGGER.debug("Initialized skill {} at level {} with xp {}/{}",this.skill.getRegistryName(),level,
+                sp,this.levelSP);
+        return this;
+    }
+
+    private double getLevelFactor() {
+        ResourceLocation res = this.skill.getRegistryName();
+        if(Objects.isNull(res)) return 0d;
+        switch(res.getPath()) {
+            case "gathering":
+            case "magic":
+                return 3d;
+            case "attack":
+            case "mining":
+            case "building":
+                return 1.5d;
+            case "agility": return 7.5d;
+            case "void": return 0.75d;
+            case "defense":
+            case "farming":
+            case "research": return 1.1d;
+            default: return 1d;
+        }
+    }
+
+    public int getSP() {
+        return this.sp;
     }
 
     public int getLevel() {
         return this.level;
     }
 
-    public int getLevelXP() {
-        return this.levelXP;
+    public int getLevelSP() {
+        return this.levelSP;
     }
 
-    public void setPrestigeLevel(int level) {
-        this.prestigeLevel = level;
+    public int getMaxLevel() {
+        return Math.min(this.maxLevel,(this.prestigeLevel+1)*32);
+    }
+
+    public String getName() {
+        return this.name;
     }
 
     public int getPrestigeLevel() {
         return this.prestigeLevel;
     }
 
-    private boolean canLevelUp(int amount) {
-        if(this.xp>=this.levelXP && this.level!=0 && !isMaxLevel() && !isMaxLevelForPrestige()) {
-            if(((double)this.level)/32d<=this.prestigeLevel+1) return true;
-            else this.xp-=amount;
-        }
-        return false;
+    public void setPrestigeLevel(int level) {
+        this.prestigeLevel = level;
     }
 
-    private boolean isMaxLevel() {
-        return this.level>=this.maxLevel;
+    public Skill getSkill() {
+        return this.skill;
     }
 
-    private boolean isMaxLevelForPrestige() {
-        return MathHelper.floor(((double)this.level)/32d)>=this.prestigeLevel+1;
+    private boolean canLevelUp() {
+        return !isCapped() && this.sp>=this.levelSP;
+    }
+
+    public boolean isCapped() {
+        return this.level<=0 || this.level>=getMaxLevel();
     }
 
     private int getPrestigeFactor(EntityPlayerMP player, int amount, boolean fromXP) {
@@ -201,14 +288,27 @@ public class SkillWrapper {
         return checkSkillEvent(player,Math.max(1,MathHelper.floor(((float)amount)*factor)),fromXP);
     }
 
-    public void addXP(int amount, EntityPlayerMP player, boolean fromXP) {
-        if(!isMaxLevel() && !isMaxLevelForPrestige() && this.level!=0) {
-            amount = getPrestigeFactor(player,amount,fromXP);
-            if(amount>0) {
-                this.xp+=amount;
-                if(canLevelUp(amount)) levelUpWithOverflow(player,true,fromXP);
-            }
+    /**
+     * Returns the SP in regard to the input amount that was NOT added
+     */
+    public int addSP(int amount, EntityPlayerMP player, boolean fromXP) {
+        if(!isCapped()) {
+            int amountAdded = getPrestigeFactor(player,amount,fromXP);
+            if(amountAdded>0) {
+                int amountNotAdded = 0;
+                double factor = ((double)amount/(double)amountAdded);
+                this.sp +=amountAdded;
+                if(canLevelUp()) {
+                    int leftover = levelUpWithOverflow(player,true,fromXP);
+                    amountNotAdded+=leftover;
+                } else {
+                    amountNotAdded = this.sp;
+                    this.sp = 0;
+                }
+                return Math.min(amount,(int)((double)amountNotAdded*factor));
+            } else return amount;
         }
+        return amount;
     }
 
     private int checkSkillEvent(EntityPlayerMP player, int amount, boolean fromXP) {
@@ -229,7 +329,7 @@ public class SkillWrapper {
                 int lowestLevel = this.level;
                 ISkillCapability cap = getSkillCapability(player);
                 if(Objects.nonNull(cap)) {
-                    for(String skill : SkillCapabilityStorage.SKILLS) {
+                    for(String skill : SKILLS) {
                         int otherLevel = cap.getSkillLevel(skill);
                         if(otherLevel>highestLevel) highestLevel = otherLevel;
                         if(otherLevel<lowestLevel) lowestLevel = otherLevel;
@@ -246,85 +346,77 @@ public class SkillWrapper {
         return fromXP && ret<1 ? 1 : ret;
     }
 
-    private void levelUpWithOverflow(EntityPlayerMP player, boolean showToast, boolean fromXP) {
+    private int levelUpWithOverflow(EntityPlayerMP player, boolean showToast, boolean fromXP) {
+        int amountNotAdded = 0;
         boolean leveledUp = false;
-        int amount = this.xp;
-        if(!fromXP) amount = 0;
-        while(canLevelUp(amount)) {
-            this.xp-=this.levelXP;
+        boolean hitCap = false;
+        while(canLevelUp()) {
+            this.sp-=this.levelSP;
             this.level++;
-            if(isMaxLevel()) {
-                this.level = this.maxLevel;
-                this.levelXP = 0;
-                this.xp = 0;
-                break;
-            } else if(isMaxLevelForPrestige()) {
-                this.xp = 0;
-                this.levelXP = calculateLevelXP(this.level);
-                break;
-            } else this.levelXP = calculateLevelXP(this.level);
+            hitCap = isCapped();
+            if(hitCap) {
+                amountNotAdded = this.sp;
+                this.level = getMaxLevel();
+                this.sp = 0;
+            }
+            calculateLevelSP();
             leveledUp = true;
+            if(hitCap) break;
         }
         PlayerData data = PlayerDataHandler.get(player);
-        PlayerSkillInfo skillInfo = data.getSkillInfo(getSkill());
+        PlayerSkillInfo skillInfo = data.getSkillInfo(this.skill);
         int oldLevel = skillInfo.getLevel();
         skillInfo.setLevel(this.level);
         data.saveAndSync();
-        if(showToast) ToastHelper.sendSkillToast(player,getSkill(),skillInfo.getLevel());
+        if(showToast) ToastHelper.sendSkillToast(player,this.skill,skillInfo.getLevel());
         if(leveledUp) {
             World world = player.world;
-            SoundEvent levelSound = fromXP ? SoundEvents.ENTITY_PLAYER_LEVELUP : SoundEvents.BLOCK_END_PORTAL_SPAWN;
-            world.playSound(null,player.posX,player.posY,player.posZ,levelSound,SoundCategory.MASTER,1f,1f);
-            MinecraftForge.EVENT_BUS.post(new LevelUpEvent.Post(player,getSkill(),this.level,oldLevel));
+            SoundEvent sound = levelUpSound(fromXP,hitCap);
+            world.playSound(null,player.posX,player.posY,player.posZ,sound,SoundCategory.MASTER,1f,1f);
+            MinecraftForge.EVENT_BUS.post(new LevelUpEvent.Post(player,this.skill,this.level,oldLevel));
         }
+        return amountNotAdded;
+    }
+
+    private SoundEvent levelUpSound(boolean fromXP, boolean hitCap) {
+        return hitCap ? SoundRegistry.BELL :
+                (fromXP ? SoundEvents.ENTITY_PLAYER_LEVELUP : SoundEvents.BLOCK_END_PORTAL_SPAWN);
     }
 
     public void syncLevel(EntityPlayerMP player) {
-        if(Objects.nonNull(PlayerDataHandler.get(player)) && Objects.nonNull(PlayerDataHandler.get(player).getSkillInfo(getSkill()))) {
-            this.level = PlayerDataHandler.get(player).getSkillInfo(getSkill()).getLevel();
-            if (isMaxLevel()) {
-                this.level = this.maxLevel;
-                this.levelXP = 0;
-                this.xp = 0;
-            } else this.levelXP = calculateLevelXP(this.level);
-            if (this.xp>=this.levelXP) this.levelUpWithOverflow(player,false,true);
+        PlayerData data = PlayerDataHandler.get(player);
+        if(Objects.nonNull(data)) {
+            PlayerSkillInfo info = data.getSkillInfo(this.skill);
+            if(Objects.nonNull(info)) {
+                this.level = data.getSkillInfo(this.skill).getLevel();
+                if(isCapped()) {
+                    this.level = getMaxLevel();
+                    this.sp = 0;
+                }
+                calculateLevelSP();
+                if(this.sp>=this.levelSP) this.levelUpWithOverflow(player,false,true);
+            }
         }
     }
 
-    private Skill getSkill() {
-        return ReskillableRegistries.SKILLS.getValue(new ResourceLocation(this.modid,this.name));
-    }
-
-    //level xp calculations are fun...
-    private int calculateLevelXP(double level) {
-        double levelXP;
-        double multiple = level/32d;
-        if(multiple<=1) levelXP = 50d*Math.pow(1.1385d,level);
+    /**
+     * Level XP calculations are fun...
+     */
+    private void calculateLevelSP() {
+        if(this.level>=this.maxLevel) {
+            this.levelSP = 0;
+            return;
+        }
+        double newLevelSP;
+        double multiple = ((double)this.level)/32d;
+        if(multiple<=1) newLevelSP = 50d*Math.pow(1.1385d,this.level);
         else {
-            double xpMultiplier = 50d*multipleFactor(((int) multiple)%7)*Math.pow(10,(int)(multiple/7d));
+            double spMultiplier = 50d*multipleFactor(((int) multiple)%7)*Math.pow(10,(int)(multiple/7d));
             int levelProgress = (int)(32d*(multiple-((int)multiple)));
             if(levelProgress==0) levelProgress = 32;
-            levelXP = xpMultiplier*Math.pow(1.1385d,Math.max(1d,levelProgress));
+            newLevelSP = spMultiplier*Math.pow(1.1385d,Math.max(1d,levelProgress));
         }
-        return (int)(levelXP*levelFactor());
-    }
-
-    private double levelFactor() {
-        switch(this.name) {
-            case "gathering":
-            case "magic":
-                return 3d;
-            case "attack":
-            case "mining":
-            case "building":
-                return 1.5d;
-            case "agility": return 7.5d;
-            case "void": return 0.75d;
-            case "defense":
-            case "farming":
-            case "research": return 1.1d;
-            default: return 1d;
-        }
+        this.levelSP = (int)(newLevelSP*this.levelFactor);
     }
 
     private double multipleFactor(int remainder) {
