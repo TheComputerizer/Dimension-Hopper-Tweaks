@@ -55,6 +55,7 @@
     "dimdoors.MixinGatewayGenerator",
     "extendedcrafting.MixinTileAutomationInterface",
     "extrautils2.MixinTileMine",
+    "forestry.MixinStorageJeiPlugin",
     "gaiadimension.MixinGDGaiaPortal",
     "gaiadimension.MixinTeleporterGaia",
     "galacticraft.MixinBaseConfiguration",
