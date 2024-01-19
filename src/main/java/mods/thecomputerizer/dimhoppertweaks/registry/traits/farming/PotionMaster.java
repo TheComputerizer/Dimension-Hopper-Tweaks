@@ -10,10 +10,12 @@ import net.darkhax.gamestages.GameStageHelper;
 import net.darkhax.itemstages.ItemStages;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import thebetweenlands.common.item.herblore.ItemElixir;
 
 import java.util.Objects;
 
@@ -25,7 +27,8 @@ public class PotionMaster extends ExtendedEventsTrait {
 
     @Override
     public void onFinishUsingItem(EntityPlayer player, ItemStack stack) {
-        if(player.isSneaking() && stack.getItem() instanceof ItemPotion) {
+        Item item = stack.getItem();
+        if(player.isSneaking() && (item instanceof ItemPotion || item instanceof ItemElixir)) {
             ISkillCapability cap = SkillWrapper.getSkillCapability(player);
             if(Objects.nonNull(cap)) cap.togglePassivePotion((EntityPlayerMP)player,stack,true);
         }
@@ -51,7 +54,8 @@ public class PotionMaster extends ExtendedEventsTrait {
     }
 
     private boolean canUseItem(EntityPlayer player, ItemStack stack) {
-        if(stack.isEmpty() || !(stack.getItem() instanceof ItemPotion)) return false;
+        Item item = stack.getItem();
+        if(stack.isEmpty() || (!(item instanceof ItemPotion) && !(item instanceof ItemElixir))) return false;
         String stage = ItemStages.getStage(stack);
         return LevelLockHandler.canPlayerUseItem(player,stack) && isItemWhitelisted(player,stack) &&
                 (Objects.isNull(stage) || GameStageHelper.hasStage(player,stage));

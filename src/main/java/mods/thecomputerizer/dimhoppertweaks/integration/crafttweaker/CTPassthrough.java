@@ -7,9 +7,6 @@ import crafttweaker.api.block.IBlockState;
 import crafttweaker.api.item.IItemDefinition;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
-import forestry.api.storage.BackpackManager;
-import forestry.storage.BackpackDefinition;
-import forestry.storage.BackpackFilter;
 import mods.thecomputerizer.dimhoppertweaks.integration.jei.JeiActionSupplier;
 import mods.thecomputerizer.dimhoppertweaks.util.ItemUtil;
 import mods.thecomputerizer.theimpossiblelibrary.util.TextUtil;
@@ -41,12 +38,30 @@ import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 @ZenRegister
 @ZenClass("mods.dimhoppertweaks.CTPassthrough")
 public class CTPassthrough {
 
+    private static final List<String> ADVENTURE_BACKPACK_IDS = Arrays.asList("contenttweaker:twilight_key_winter",
+            "contenttweaker:twilight_key_swamp","contenttweaker:twilight_key_forest","contenttweaker:twilight_key",
+            "twilightforest:meef_stroganoff","twilightforest:steeleaf_ingot","minecraft:coal","minecraft:coal_block",
+            "psi:material","psicosts:psi_cell","dimdoors:world_thread");
     public static final Map<IToolPart,Material> SPECIALIZED_PARTS = createSpecialPartMap();
+    private static List<String> ADVENTURE_BACKPACK_NAMES = new ArrayList<>();
+    private static boolean isBackpackCached = false;
+
+    private static void createBackpackItems() {
+        List<Item> items = new ArrayList<>();
+        for(String id : ADVENTURE_BACKPACK_IDS) {
+            Item item = ItemUtil.getItem(id);
+            if(Objects.nonNull(item)) items.add(item);
+        }
+        ADVENTURE_BACKPACK_NAMES = Collections.unmodifiableList(items.stream()
+                .map(item -> item.getItemStackDisplayName(new ItemStack(item))).collect(Collectors.toList()));
+        isBackpackCached = true;
+    }
 
     private static Map<IToolPart,Material> createSpecialPartMap() {
         Map<IToolPart,Material> map = new HashMap<>();
@@ -72,12 +87,9 @@ public class CTPassthrough {
 
     @ZenMethod
     public static String getAdventuringBackpackItems() {
-        Collection<String> items = Collections.emptyList();
-        BackpackDefinition def = (BackpackDefinition)BackpackManager.backpackInterface.getBackpackDefinition("forestry.adventurer");
-        if(Objects.nonNull(def) && def.getFilter() instanceof BackpackFilter)
-            items = ((BackpackFilter)def.getFilter()).getAcceptedItemStacks();
-        String ret = TextUtil.listToString(items,", ");
-        return Objects.nonNull(ret) ? ret : "";
+        if(!isBackpackCached) createBackpackItems();
+        String ret = TextUtil.listToString(ADVENTURE_BACKPACK_NAMES,", ");
+        return Objects.nonNull(ret) ? ret : "?";
     }
 
     @ZenMethod

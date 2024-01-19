@@ -66,7 +66,7 @@
     "jaopca.MixinRecipeHandler",
     "jei.MixinIngredientInfoRecipe",
     "jei.MixinItemStackListFactory",
-    "jei.MixinJEIAddonPlugin",
+    "jei.MixinJEIMod",
     "jei.MixinJeiStarter",
     "jei.MixinModRegistry",
     "lightningcraft.MixinBlockEnergyProvider",

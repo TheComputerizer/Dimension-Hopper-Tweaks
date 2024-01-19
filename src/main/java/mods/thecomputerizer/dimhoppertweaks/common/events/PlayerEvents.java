@@ -29,6 +29,7 @@ import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import thebetweenlands.common.item.herblore.ItemElixir;
 
 import java.util.Objects;
 
@@ -120,7 +121,8 @@ public class PlayerEvents {
                     if(h instanceof ExtendedEventsTrait) {
                         ExtendedEventsTrait trait = (ExtendedEventsTrait)h;
                         if(item instanceof ItemFood) trait.onShiftRightClickFood(player,(ItemFood)item);
-                        else if(item instanceof ItemPotion) trait.onShiftRightClickPotion(player,event.getItemStack());
+                        else if(item instanceof ItemPotion || item instanceof ItemElixir)
+                            trait.onShiftRightClickPotion(player,event.getItemStack());
                     }
                 });
             }

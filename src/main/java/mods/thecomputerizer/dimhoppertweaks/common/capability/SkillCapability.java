@@ -20,6 +20,8 @@ import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import org.apache.commons.lang3.mutable.MutableInt;
+import thebetweenlands.common.herblore.elixir.effects.ElixirEffect;
+import thebetweenlands.common.item.herblore.ItemElixir;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -176,7 +178,8 @@ public class SkillCapability implements ISkillCapability {
 
     @Override
     public void togglePassivePotion(EntityPlayerMP player, ItemStack stack, boolean isEnable) {
-        if(stack.getItem() instanceof ItemPotion) {
+        Item item = stack.getItem();
+        if(item instanceof ItemPotion) {
             for(PotionEffect effect : PotionUtils.getEffectsFromStack(stack)) {
                 Potion potion = effect.getPotion();
                 int amplifier = effect.getAmplifier();
@@ -184,18 +187,27 @@ public class SkillCapability implements ISkillCapability {
                 else if(isEnable && effect.getDuration()>20 && !potion.isInstant())
                     this.autoPotionWhitelist.add(new Tuple<>(potion,amplifier));
             }
-            syncClientData(player);
+        } else if(item instanceof ItemElixir) {
+            ItemElixir elixir = (ItemElixir)item;
+            Potion potion = elixir.getElixirFromItem(stack).getPotionEffect();
+            int amplifier = elixir.getElixirStrength(stack);
+            int duration = elixir.getElixirDuration(stack);
+            if(containsPotion(potion,amplifier) && !isEnable) removePotion(potion,amplifier);
+            else if(isEnable && duration>20 && !potion.isInstant())
+                this.autoPotionWhitelist.add(new Tuple<>(potion,amplifier));
         }
+        syncClientData(player);
     }
 
     private void removePotion(Potion potion, int amplifier) {
-        this.autoPotionWhitelist.removeIf(validPotion -> potion == validPotion.getFirst() &&
-                amplifier == validPotion.getSecond());
+        this.autoPotionWhitelist.removeIf(validPotion -> potion==validPotion.getFirst() &&
+                amplifier==validPotion.getSecond());
     }
 
     @Override
     public boolean canAutoDrink(EntityPlayerMP player, ItemStack stack) {
-        if(stack.getItem() instanceof ItemPotion) {
+        Item item = stack.getItem();
+        if(item instanceof ItemPotion) {
             for(PotionEffect effect : PotionUtils.getEffectsFromStack(stack)) {
                 Potion potion = effect.getPotion();
                 if(containsPotion(potion,effect.getAmplifier()) && effect.getDuration()>20 && !potion.isInstant()) {
@@ -203,6 +215,16 @@ public class SkillCapability implements ISkillCapability {
                     if(Objects.isNull(playerEffect) || playerEffect.getAmplifier()<effect.getAmplifier())
                         return true;
                 }
+            }
+        } else if(item instanceof ItemElixir) {
+            ItemElixir elixir = (ItemElixir)item;
+            ElixirEffect effect = elixir.getElixirFromItem(stack);
+            Potion potion = effect.getPotionEffect();
+            int amplifier = elixir.getElixirStrength(stack);
+            int duration = elixir.getElixirDuration(stack);
+            if(containsPotion(potion,amplifier) && duration>20 && !potion.isInstant()) {
+                int strength = effect.getStrength(player);
+                return strength>-1 && amplifier>strength;
             }
         }
         return false;
