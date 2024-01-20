@@ -44,25 +44,23 @@ public final class DHTClient {
     public static void registerItemModels() {
         ModelLoader.setCustomModelResourceLocation(ItemRegistry.PRESTIGE_TOKEN,0,
                 getModelRes(ItemRegistry.STARGATE_ADDRESSER));
-        //ModelLoader.setCustomModelResourceLocation(ItemRegistry.RECIPE_FUNCTION,0,
-                //getModelRes(ItemRegistry.STARGATE_ADDRESSER));
+        ModelLoader.setCustomModelResourceLocation(ItemRegistry.RECIPE_FUNCTION,0,
+                getModelRes(ItemRegistry.STARGATE_ADDRESSER));
+        ModelLoader.setCustomModelResourceLocation(ItemRegistry.SKILL_CREDIT,0,
+                getModelRes(ItemRegistry.STARGATE_ADDRESSER));
         ModelLoader.setCustomModelResourceLocation(ItemRegistry.SKILL_TOKEN,0,
                 getModelRes(ItemRegistry.SKILL_TOKEN));
         ModelLoader.setCustomModelResourceLocation(ItemRegistry.STARGATE_ADDRESSER,0,
                 getModelRes(ItemRegistry.STARGATE_ADDRESSER));
-        //ModelLoader.setCustomMeshDefinition(ItemRegistry.RECIPE_FUNCTION,RecipeFunctionItem::getModelLocation);
-        ModelLoader.setCustomMeshDefinition(ItemRegistry.RECIPE_FUNCTION,
-                stack -> getModelRes(ItemRegistry.STARGATE_ADDRESSER));
-        ModelLoader.registerItemVariants(ItemRegistry.RECIPE_FUNCTION,ItemRegistry.STARGATE_ADDRESSER.getRegistryName());
     }
 
     private static void registerEntityRenderers() {
         RenderingRegistry.registerEntityRenderingHandler(EntityFinalBoss.class, RenderFinalBoss::new);
         RenderingRegistry.registerEntityRenderingHandler(HomingProjectile.class, RenderHomingProjectile::new);
         try {
-            FORCEFIELD_MODEL = (OBJModel) OBJLoader.INSTANCE.loadModel(getModelRes("models/boss/forcefield.obj"));
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to load obj model!",e);
+            FORCEFIELD_MODEL = (OBJModel)OBJLoader.INSTANCE.loadModel(getModelRes("models/boss/forcefield.obj"));
+        } catch(Exception ex) {
+            throw new RuntimeException("Failed to load obj model!",ex);
         }
     }
 
@@ -83,12 +81,12 @@ public final class DHTClient {
 
     public static void fixFog(Minecraft mc) {
         mc.addScheduledTask(() -> {
-            float density = tryOrDef(() -> GL11.glGetFloat(GL11.GL_FOG_DENSITY), Float.MAX_VALUE, "Unable to query fog density");
+            float density = tryOrDef(() -> GL11.glGetFloat(GL11.GL_FOG_DENSITY),Float.MAX_VALUE,"Unable to query fog density");
             if(density>=0 && density<Float.MAX_VALUE) {
                 float farplane = ((EntityRendererAccess)mc.entityRenderer).getFarPlaneDistance();
                 GlStateManager.setFogStart(farplane*0.75f);
                 GlStateManager.setFogEnd(farplane);
-                if(GLContext.getCapabilities().GL_NV_fog_distance) GlStateManager.glFogi(34138, 34139);
+                if(GLContext.getCapabilities().GL_NV_fog_distance) GlStateManager.glFogi(34138,34139);
                 DHTRef.LOGGER.info("Set fog to ({},{})",farplane*0.75f,farplane);
             }
         });
@@ -96,18 +94,18 @@ public final class DHTClient {
 
     public static void queryFog(Minecraft mc) {
         mc.addScheduledTask(() -> {
-            int fogMode = tryOrDef(() -> GL11.glGetInteger(GL11.GL_FOG_MODE), Integer.MAX_VALUE, "Unable to query fog mode");
-            float fogStart = tryOrDef(() -> GL11.glGetFloat(GL11.GL_FOG_START), Float.MAX_VALUE, "Unable to query fog start");
-            float fogEnd = tryOrDef(() -> GL11.glGetFloat(GL11.GL_FOG_END), Float.MAX_VALUE, "Unable to query fog end");
-            float fogDensity = tryOrDef(() -> GL11.glGetFloat(GL11.GL_FOG_DENSITY), Float.MAX_VALUE, "Unable to query fog density");
-            DHTRef.LOGGER.error("FOG INFO: `MODE {} | START {} | END {} | DENSITY {}`", fogMode, fogStart, fogEnd, fogDensity);
+            int fogMode = tryOrDef(() -> GL11.glGetInteger(GL11.GL_FOG_MODE),Integer.MAX_VALUE,"Unable to query fog mode");
+            float fogStart = tryOrDef(() -> GL11.glGetFloat(GL11.GL_FOG_START),Float.MAX_VALUE,"Unable to query fog start");
+            float fogEnd = tryOrDef(() -> GL11.glGetFloat(GL11.GL_FOG_END),Float.MAX_VALUE,"Unable to query fog end");
+            float fogDensity = tryOrDef(() -> GL11.glGetFloat(GL11.GL_FOG_DENSITY),Float.MAX_VALUE,"Unable to query fog density");
+            DHTRef.LOGGER.error("FOG INFO: `MODE {} | START {} | END {} | DENSITY {}`",fogMode,fogStart,fogEnd,fogDensity);
         });
     }
 
     public static void queryGame(Minecraft mc) {
         mc.addScheduledTask(() -> {
             GameSettings settings = mc.gameSettings;
-            int renderDist = getOrDef(settings, s -> s.renderDistanceChunks, Integer.MAX_VALUE);
+            int renderDist = getOrDef(settings,s -> s.renderDistanceChunks,Integer.MAX_VALUE);
             float farPlaneDist = getOrDef(mc.entityRenderer,r -> ((EntityRendererAccess)r).getFarPlaneDistance(),Float.MAX_VALUE);
             PotionEffect blindness = mc.player.getActivePotionEffect(MobEffects.BLINDNESS);
             boolean isBlind = Objects.nonNull(blindness);
@@ -127,13 +125,13 @@ public final class DHTClient {
     public static void queryWorld(Minecraft mc) {
         mc.addScheduledTask(() -> {
             WorldClient world = mc.world;
-            WorldProvider provider = getOrNull(world, wc -> wc.provider);
-            int dimension = getOrDef(provider, WorldProvider::getDimension, Integer.MAX_VALUE);
-            IRenderHandler cloudRender = getOrNull(provider, WorldProvider::getCloudRenderer);
-            IRenderHandler skyRender = getOrNull(provider, WorldProvider::getSkyRenderer);
-            IRenderHandler weatherRender = getOrNull(provider, WorldProvider::getWeatherRenderer);
+            WorldProvider provider = getOrNull(world,wc -> wc.provider);
+            int dimension = getOrDef(provider,WorldProvider::getDimension,Integer.MAX_VALUE);
+            IRenderHandler cloudRender = getOrNull(provider,WorldProvider::getCloudRenderer);
+            IRenderHandler skyRender = getOrNull(provider,WorldProvider::getSkyRenderer);
+            IRenderHandler weatherRender = getOrNull(provider,WorldProvider::getWeatherRenderer);
             DHTRef.LOGGER.error("WORLD INFO: `PROVIDER {} | DIMENSION {} | CLOUD RENDER {} | SKY RENDER {} | " +
-                            "WEATHER RENDER {}`", getClassName(provider), dimension, getClassName(cloudRender), getClassName(skyRender),
+                            "WEATHER RENDER {}`",getClassName(provider),dimension,getClassName(cloudRender),getClassName(skyRender),
                     getClassName(weatherRender));
         });
     }

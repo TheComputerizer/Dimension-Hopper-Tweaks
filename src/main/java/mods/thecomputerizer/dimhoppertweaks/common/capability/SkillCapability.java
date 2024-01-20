@@ -98,7 +98,7 @@ public class SkillCapability implements ISkillCapability {
      * Returns the SP in regard to the input amount that was NOT added
      */
     @Override
-    public int addSkillSP(String skill, int amount, EntityPlayerMP player, boolean fromXP) {
+    public int addSP(String skill, int amount, EntityPlayerMP player, boolean fromXP) {
         int ret = 0;
         if(amount>0) {
             ret = checkAndReturn(skill,wrapper -> wrapper.addSP(amount,player,fromXP));
@@ -113,7 +113,7 @@ public class SkillCapability implements ISkillCapability {
     }
 
     @Override
-    public int getSkillXP(String skill) {
+    public int getSkillSP(String skill) {
         return checkAndReturn(skill,SkillWrapper::getSP);
     }
 
@@ -123,7 +123,7 @@ public class SkillCapability implements ISkillCapability {
     }
 
     @Override
-    public int getSkillLevelXP(String skill) {
+    public int getSkillLevelSP(String skill) {
         return checkAndReturn(skill,SkillWrapper::getLevelSP);
     }
 
@@ -162,13 +162,13 @@ public class SkillCapability implements ISkillCapability {
     }
 
     @Override
-    public float getXPDumpMultiplier() {
-        return checkAndReturn("mining",wrapper -> Math.max(1f,0.2f*(((float)wrapper.getLevel())/32f)));
+    public float getXPFactor() {
+        return checkAndReturn("magic",wrapper -> Math.max(1f,0.2f*(((float)wrapper.getLevel())/32f)));
     }
 
     @Override
-    public int getSkillXpMultiplier(float initialAmount) {
-        return checkAndReturn("mining",wrapper -> (int)(initialAmount*Math.max(1f,0.2f*(((float)wrapper.getLevel())/32f))));
+    public int getActionFactor(float initialAmount) {
+        return checkAndReturn("research",wrapper -> (int)(initialAmount*Math.max(1f,0.2f*(((float)wrapper.getLevel())/32f))));
     }
 
     @Override

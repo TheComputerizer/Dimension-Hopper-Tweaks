@@ -15,6 +15,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.StringUtils;
@@ -30,16 +31,16 @@ public class SkillCredit extends EpicItem {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer p, EnumHand hand) {
-        if(p instanceof EntityPlayerMP) {
+        if(p instanceof EntityPlayerMP && !(p instanceof FakePlayer)) {
             EntityPlayerMP player = (EntityPlayerMP)p;
             ISkillCapability cap = SkillWrapper.getSkillCapability(player);
             ItemStack stack = player.getHeldItem(hand);
-            String skill = getSkill(stack);
-            int amount = getAmount(stack);
+            NBTTagCompound tag = ItemUtil.getOrCreateTag(stack);
+            String skill = getSkill(tag);
+            int amount = getAmount(tag);
             if(Objects.nonNull(cap) && Objects.nonNull(skill) && amount>0) {
-                amount = cap.addSkillSP(skill,amount,player,false);
+                amount = cap.addSP(skill,amount,player,false);
                 if(amount>0) {
-                    NBTTagCompound tag = ItemUtil.getOrCreateTag(stack);
                     tag.setInteger("amount",amount);
                 } else stack.shrink(1);
                 return new ActionResult<>(EnumActionResult.SUCCESS,stack);
@@ -50,7 +51,7 @@ public class SkillCredit extends EpicItem {
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
-        int amount = getAmount(stack);
+        int amount = getAmount(ItemUtil.getOrCreateTag(stack));
         if(amount==-1) tooltip.add("Unspecified SP amount");
         else tooltip.add(String.format("%d SP",amount));
     }
@@ -59,23 +60,21 @@ public class SkillCredit extends EpicItem {
     public String getItemStackDisplayName(ItemStack stack) {
         String name = super.getItemStackDisplayName(stack);
         String skill = getSkillTranslation(stack);
-        return Objects.nonNull(skill) ? String.format("%s [%s]",name,getSkillTranslation(stack)) : name;
+        return Objects.nonNull(skill) ? String.format("%s [%s]",name,skill) : name;
     }
 
-    private int getAmount(ItemStack stack) {
-        NBTTagCompound tag = ItemUtil.getOrCreateTag(stack);
+    private int getAmount(NBTTagCompound tag) {
         int amount = tag.getInteger("amount");
         return amount>0 ? amount : -1;
     }
 
-    private @Nullable String getSkill(ItemStack stack) {
-        NBTTagCompound tag = ItemUtil.getOrCreateTag(stack);
-        String skill = tag.getString("skill");
+    private @Nullable String getSkill(NBTTagCompound tag) {
+        String skill = tag.getString("skill").replaceAll("\"","");
         return StringUtils.isNotBlank(skill) && SkillWrapper.isValidSkill(skill) ? skill : null;
     }
 
     private @Nullable String getSkillTranslation(ItemStack stack) {
-        String skill = getSkill(stack);
+        String skill = getSkill(ItemUtil.getOrCreateTag(stack));
         return Objects.nonNull(skill) ? TextUtil.getTranslated(String.format("%s.%s.%s","skill",DHTRef.MODID,skill)) : null;
     }
 }

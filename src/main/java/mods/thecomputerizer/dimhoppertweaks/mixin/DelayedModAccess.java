@@ -16,6 +16,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
 import mariot7.xlfoodmod.init.ItemListxlfoodmod;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.integration.crafttweaker.CTPassthrough;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.IChunk;
 import mods.thecomputerizer.dimhoppertweaks.mixin.api.IInventoryCrafting;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketSendKeyPressed;
 import net.darkhax.gamestages.GameStageHelper;
@@ -338,6 +339,18 @@ public class DelayedModAccess {
 
     public static boolean isFakeEntity(Entity entity) {
         return entity instanceof PreviewPlayer || entity.getEntityData().getBoolean("isFakeEntityForMoBends");
+    }
+
+    public static boolean isInFastChunk(TileEntity tile) {
+        return isFastChunk(tile.getWorld(),tile.getPos());
+    }
+
+    public static boolean isFastChunk(World world, BlockPos pos) {
+        return isFastChunk(world.getChunk(pos));
+    }
+
+    public static boolean isFastChunk(Chunk chunk) {
+        return ((IChunk)chunk).dimhoppertweaks$isFast();
     }
 
     public static Block getGDKeystoneBlock() {

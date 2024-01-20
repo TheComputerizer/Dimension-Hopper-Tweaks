@@ -14,18 +14,18 @@ public interface ISkillCapability {
 
     void of(SkillCapability copy, EntityPlayerMP newPlayer);
     void initWrappers();
-    int addSkillSP(String skill, int amount, EntityPlayerMP player, boolean fromXP);
+    int addSP(String skill, int amount, EntityPlayerMP player, boolean fromXP);
     boolean isCapped(String skill, EntityPlayerMP player);
-    int getSkillXP(String skill);
+    int getSkillSP(String skill);
     int getSkillLevel(String skill);
-    int getSkillLevelXP(String skill);
+    int getSkillLevelSP(String skill);
     void setPrestigeLevel(String skill, int level);
     int getPrestigeLevel(String skill);
     float getBreakSpeedMultiplier();
     void setShieldedDamage(float amount);
     float getShieldedDamage();
-    float getXPDumpMultiplier();
-    int getSkillXpMultiplier(float initialAmount);
+    float getXPFactor();
+    int getActionFactor(float initialAmount);
     void decrementGatheringItems(int amount);
     boolean checkGatheringItem(Item item);
     void togglePassiveFood(EntityPlayerMP player, Item item, boolean isEnable);

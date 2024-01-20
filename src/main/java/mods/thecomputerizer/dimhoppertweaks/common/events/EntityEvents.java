@@ -224,11 +224,11 @@ public class EntityEvents {
         World world = entity.getEntityWorld();
         List<Chunk> queuedRemovals = new ArrayList<>();
         for(int x=newX-2; x<=newX+2; x++) {
-            for(int z=newX-2; z<=newX+2; z++) {
+            for(int z=newZ-2; z<=newZ+2; z++) {
                 if(world.isChunkGeneratedAt(x,z)) {
                     Chunk chunk = world.getChunk(x,z);
                     if(chunk.isLoaded()) {
-                        if(x>=newX-1 && x<=newX+1 && z>=newZ-1 && z<=newZ+1)
+                        if(isAdjacent(newX,newZ,x,z))
                             ((IChunk)chunk).dimhoppertweaks$setFast(true);
                         else queuedRemovals.add(chunk);
                     }
@@ -245,13 +245,17 @@ public class EntityEvents {
             boolean remove = true;
             for(EntityPlayer player : players) {
                 if(player==entity) continue;
-                if(Math.abs(chunk.x-player.chunkCoordX)<=1 && Math.abs(chunk.z-player.chunkCoordZ)<=1) {
+                if(isAdjacent(chunk.x,chunk.z,player.chunkCoordX,player.chunkCoordZ)) {
                     remove = false;
                     break;
                 }
             }
             if(remove) ((IChunk)chunk).dimhoppertweaks$setFast(false);
         }
+    }
+
+    private static boolean isAdjacent(int chunkX, int chunkZ, int otherChunkX, int otherChunkZ) {
+        return Math.abs(chunkX-otherChunkX)<=1 && Math.abs(chunkZ-otherChunkZ)<=1;
     }
 
     private static boolean isIncorrectEntityForChunk(Entity entity) {

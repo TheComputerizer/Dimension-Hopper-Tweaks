@@ -45,10 +45,17 @@ public class SkillWrapper {
     public static final ResourceLocation SKILL_CAPABILITY = DHTRef.res("skills");
     public static final ImmutableList<String> SKILLS = makeOrderedSkillList();
 
+    private static ImmutableList<String> makeOrderedSkillList() {
+        List<String> skills = Arrays.asList("agility","attack","building","defense","farming","gathering","magic",
+                "mining","research","void");
+        Collections.sort(skills);
+        return ImmutableList.copyOf(skills);
+    }
+
     public static void addActionSP(EntityPlayerMP player, String skill, float amount) {
         ISkillCapability cap = getSkillCapability(player);
         if(Objects.nonNull(cap))
-            player.addExperience(cap.addSkillSP(skill,(int)withMultiplier(player,amount),player,false));
+            player.addExperience(cap.addSP(skill,(int)withMultiplier(player,amount),player,false));
     }
 
     public static void executeOnSkill(PlayerData data, @Nullable Skill skill, Consumer<IAbilityEventHandler> consumer) {
@@ -186,7 +193,7 @@ public class SkillWrapper {
 
     public static float withMultiplier(EntityPlayerMP player, float amount) {
         ISkillCapability cap = getSkillCapability(player);
-        return Objects.nonNull(cap) ? cap.getSkillXpMultiplier(amount) : 0f;
+        return Objects.nonNull(cap) ? cap.getActionFactor(amount) : 0f;
     }
 
     private final String name;
@@ -203,13 +210,6 @@ public class SkillWrapper {
         this.skill = skill;
         this.maxLevel = skill.getCap();
         this.levelFactor = getLevelFactor();
-    }
-
-    private static ImmutableList<String> makeOrderedSkillList() {
-        List<String> skills = Arrays.asList("agility","attack","building","defense","farming","gathering","magic",
-                "mining","research","void");
-        Collections.sort(skills);
-        return ImmutableList.copyOf(skills);
     }
 
     public SkillWrapper initialize(int sp, int level, int prestigeLevel) {
@@ -275,7 +275,11 @@ public class SkillWrapper {
     }
 
     private boolean canLevelUp() {
-        return !isCapped() && this.sp>=this.levelSP;
+        if(isCapped()) {
+            this.sp = 0;
+            return false;
+        }
+        return this.sp>=this.levelSP;
     }
 
     public boolean isCapped() {
@@ -297,14 +301,11 @@ public class SkillWrapper {
             if(amountAdded>0) {
                 int amountNotAdded = 0;
                 double factor = ((double)amount/(double)amountAdded);
-                this.sp +=amountAdded;
+                this.sp+=amountAdded;
                 if(canLevelUp()) {
                     int leftover = levelUpWithOverflow(player,true,fromXP);
                     amountNotAdded+=leftover;
-                } else {
-                    amountNotAdded = this.sp;
-                    this.sp = 0;
-                }
+                } else if(this.sp==0) amountNotAdded = amountAdded;
                 return Math.min(amount,(int)((double)amountNotAdded*factor));
             } else return amount;
         }

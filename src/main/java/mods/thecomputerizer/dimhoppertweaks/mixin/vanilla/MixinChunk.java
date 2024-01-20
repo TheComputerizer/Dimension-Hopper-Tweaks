@@ -1,10 +1,14 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.vanilla;
 
+import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.mixin.DelayedModAccess;
 import mods.thecomputerizer.dimhoppertweaks.mixin.api.IChunk;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.IChunkGenerator;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -12,6 +16,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Chunk.class)
 public abstract class MixinChunk implements IChunk {
+
+    @Shadow @Final public int x;
+    @Shadow @Final public int z;
     @Unique private boolean dimhoppertweaks$isFast = false;
 
     @Inject(at = @At("RETURN"), method = "populate(Lnet/minecraft/world/gen/IChunkGenerator;)V")

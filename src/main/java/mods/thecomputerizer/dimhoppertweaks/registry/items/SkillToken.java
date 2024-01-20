@@ -66,13 +66,13 @@ public class SkillToken extends EpicItem {
                 if(Objects.nonNull(cap)) {
                     int prestige = cap.getPrestigeLevel(skill)+1;
                     for(int i=0; i<amount; i++) {
-                        int SP = (int)(convertXPToSP(player.experienceLevel)*cap.getXPDumpMultiplier());
-                        int currSP = cap.getSkillXP(skill);
-                        int levelSP = cap.getSkillLevelXP(skill);
+                        int SP = (int)(convertXPToSP(player.experienceLevel)*cap.getXPFactor());
+                        int currSP = cap.getSkillSP(skill);
+                        int levelSP = cap.getSkillLevelSP(skill);
                         int currLevel = cap.getSkillLevel(skill);
                         boolean isWithinPrestigeRange = ((double)currLevel/32d)<prestige;
                         if(currSP+SP<levelSP || (currSP+SP>=levelSP && isWithinPrestigeRange)) {
-                            cap.addSkillSP(skill,SP,player,true);
+                            cap.addSP(skill,SP,player,true);
                             player.addExperienceLevel(-1);
                         }
                     }
@@ -83,7 +83,9 @@ public class SkillToken extends EpicItem {
         } else return super.onItemRightClick(world,p,hand);
     }
 
-    //XP calculations are fun...
+    /**
+     * XP calculations are fun...
+     */
     private float convertXPToSP(int level) {
         if(level<=16) return ((float)(2*(level-1)+7))/2f;
         else if(level<=31) return ((float)(5*(level-1)-38))/2f;
