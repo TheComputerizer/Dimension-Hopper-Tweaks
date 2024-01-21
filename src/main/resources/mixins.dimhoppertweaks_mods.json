@@ -31,6 +31,7 @@
     "avaritia.MixinAvaritiaRecipeManager",
     "avaritia.MixinDamageSourceInfinitySword",
     "avaritia.MixinInfinitySword",
+    "avaritia.MixinShaderHelper",
     "betterquesting.MixinPanelEntityPreview",
     "blueskies.MixinBrightlandsBiomeDecorator",
     "blueskies.MixinEntitySummoner",

@@ -401,7 +401,7 @@ public class SkillWrapper {
     }
 
     /**
-     * Level XP calculations are fun...
+     * Level SP calculations are fun...
      */
     private void calculateLevelSP() {
         if(this.level>=this.maxLevel) {
@@ -412,7 +412,7 @@ public class SkillWrapper {
         double multiple = ((double)this.level)/32d;
         if(multiple<=1) newLevelSP = 50d*Math.pow(1.1385d,this.level);
         else {
-            double spMultiplier = 50d*multipleFactor(((int) multiple)%7)*Math.pow(10,(int)(multiple/7d));
+            double spMultiplier = 50d*multipleFactor(((int)multiple)%7)*Math.pow(10,(int)(multiple/7d));
             int levelProgress = (int)(32d*(multiple-((int)multiple)));
             if(levelProgress==0) levelProgress = 32;
             newLevelSP = spMultiplier*Math.pow(1.1385d,Math.max(1d,levelProgress));

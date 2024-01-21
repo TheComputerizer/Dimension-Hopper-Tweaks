@@ -7,6 +7,7 @@ import mods.thecomputerizer.dimhoppertweaks.mixin.vanilla.access.EntityRendererA
 import mods.thecomputerizer.dimhoppertweaks.registry.ItemRegistry;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.HomingProjectile;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
+import mods.thecomputerizer.dimhoppertweaks.registry.items.RecipeFunction;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.GlStateManager;
@@ -52,6 +53,7 @@ public final class DHTClient {
                 getModelRes(ItemRegistry.SKILL_TOKEN));
         ModelLoader.setCustomModelResourceLocation(ItemRegistry.STARGATE_ADDRESSER,0,
                 getModelRes(ItemRegistry.STARGATE_ADDRESSER));
+        ModelLoader.setCustomMeshDefinition(ItemRegistry.RECIPE_FUNCTION,RecipeFunction::getModelLocation);
     }
 
     private static void registerEntityRenderers() {

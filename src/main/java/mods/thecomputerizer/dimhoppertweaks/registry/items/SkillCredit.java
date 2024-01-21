@@ -43,6 +43,7 @@ public class SkillCredit extends EpicItem {
                 if(amount>0) {
                     tag.setInteger("amount",amount);
                 } else stack.shrink(1);
+                player.getCooldownTracker().setCooldown(stack.getItem(),1200);
                 return new ActionResult<>(EnumActionResult.SUCCESS,stack);
             } else return super.onItemRightClick(world,p,hand);
         } else return super.onItemRightClick(world,p,hand);

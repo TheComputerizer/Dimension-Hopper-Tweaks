@@ -1,9 +1,11 @@
 package mods.thecomputerizer.dimhoppertweaks.registry.items;
 
+import mods.thecomputerizer.dimhoppertweaks.registry.ItemRegistry;
 import mods.thecomputerizer.dimhoppertweaks.util.ItemUtil;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
@@ -32,12 +34,40 @@ public class RecipeFunction extends EpicItem {
 
     @SideOnly(Side.CLIENT)
     public static ModelResourceLocation getModelLocation(ItemStack stack) {
-        if(stack.hasTagCompound()) {
+        String id = null;
+        String varient = "";
+        if(stack.hasTagCompound() && stack.getItem() instanceof RecipeFunction) {
             NBTTagCompound tag = stack.getTagCompound();
-            if(tag.getString("type").equals("item"))
-                stack = ((RecipeFunction)stack.getItem()).transformStack(stack);
+            if(tag.hasKey("display")) {
+                NBTTagCompound displayTag = tag.getCompoundTag("display");
+                id = displayTag.getString("id");
+                varient = displayTag.getString("varient");
+            } else {
+                RecipeFunction item = (RecipeFunction)stack.getItem();
+                switch(tag.getString("type")) {
+                    case "item": {
+                        ItemStack transformed = item.transformToItem(tag.getCompoundTag("item"));
+                        id = transformed.getItem().getRegistryName().toString();
+                        break;
+                    }
+                    case "oredict": {
+                        id = Items.IRON_AXE.getRegistryName().toString();
+                        break;
+                    }
+                    case "liquid": {
+                        id = Items.WATER_BUCKET.getRegistryName().toString();
+                        break;
+                    }
+                }
+            }
         }
-        return new ModelResourceLocation(stack.getItem().getRegistryName(),"inventory");
+        ResourceLocation res = StringUtils.isNotBlank(id) ? new ResourceLocation(id) : ItemRegistry.STARGATE_ADDRESSER.getRegistryName();
+        if(StringUtils.isBlank(varient)) varient = "inventory";
+        return getModelLocation(res,varient);
+    }
+
+    private static @Nullable ModelResourceLocation getModelLocation(@Nullable ResourceLocation res, String varient) {
+        return Objects.nonNull(res) ? new ModelResourceLocation(res,varient) : null;
     }
 
     public void addInputs(ItemStack stack, Collection<ItemStack> inputs) {
@@ -97,7 +127,7 @@ public class RecipeFunction extends EpicItem {
         return null;
     }
 
-    private ItemStack transformToItem(NBTTagCompound itemTag) {
+    protected ItemStack transformToItem(NBTTagCompound itemTag) {
         ItemStack stack = ItemStack.EMPTY;
         Item item = ItemUtil.getItem(itemTag.getString("id"));
         if(Objects.nonNull(item)) {
