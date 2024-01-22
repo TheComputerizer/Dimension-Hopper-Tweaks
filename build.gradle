@@ -127,6 +127,7 @@ dependencies {
     implementation(fg.deobf("curse.maven:draconic-evolution-223565:${project.de_version}"))
     implementation(fg.deobf("curse.maven:dynamic-surroundings-238891:${project.dsurround_version}"))
     implementation(fg.deobf("curse.maven:ender-io-64578:${project.eio_version}"))
+    implementation(fg.deobf("curse.maven:environmental-tech-245453:${project.et_version}"))
     implementation(fg.deobf("curse.maven:extended-crafting-nomifactory-edition-398267:${project.excrafting_version}"))
     implementation(fg.deobf("curse.maven:extraplanets-241291:${project.extraplanets_version}"))
     implementation(fg.deobf("curse.maven:extra-utilities-225561:${project.xu2_version}"))

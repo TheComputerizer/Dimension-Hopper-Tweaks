@@ -36,14 +36,14 @@ public class RandomTP extends DHTCommand {
             try {
                 dim = parseLong(args[1]);
                 diameter = parseLong(args[2]);
-                player = getPlayer(server, sender, args[0]);
+                player = getPlayer(server,sender,args[0]);
             }
             catch(Exception e) {
                 sendMessage(sender,true,"player");
             }
             if(Objects.nonNull(player)) {
-                DimensionManager.initDimension((int) dim);
-                WorldServer world = DimensionManager.getWorld((int) dim);
+                DimensionManager.initDimension((int)dim);
+                WorldServer world = DimensionManager.getWorld((int)dim);
                 if(!world.isRemote) {
                     boolean success = true;
                     while (success) {
@@ -57,20 +57,20 @@ public class RandomTP extends DHTCommand {
                                 if(biomeName.toString().toLowerCase().contains(args[3+i])) {
                                     TeleportUtils.teleport(player,(int)dim,x,y,z,player.rotationYaw,player.rotationPitch);
                                     ISkillCapability cap = SkillWrapper.getSkillCapability(player);
-                                    if ((int)dim==7 && Objects.nonNull(cap)) {
+                                    if((int)dim==7 && Objects.nonNull(cap)) {
                                         cap.setTwilightRespawn(new BlockPos(x,100,z));
                                         SkillWrapper.forceTwilightRespawn(player);
                                     }
-                                    sendMessage(sender, false, null);
+                                    sendMessage(sender,false,null);
                                     success = false;
                                     break;
                                 }
                             }
-                        } else sendMessage(sender, true, "biome",x,y,z);
+                        } else sendMessage(sender,true,"biome",x,y,z);
                     }
                 }
             }
-        } else sendMessage(sender, true, null);
+        } else sendMessage(sender,true,null);
     }
 
     @Override

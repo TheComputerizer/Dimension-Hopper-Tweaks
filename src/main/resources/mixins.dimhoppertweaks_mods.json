@@ -63,6 +63,7 @@
     "geckolib3.MixinAnimationFileLoader",
     "geckolib3.MixinGeckoLibCache",
     "goodnightsleep.MixinGoodDreamBiomeDecorator",
+    "infernalmobs.MixinInfernalMobsCore",
     "infernalmobs.MixinMM_Choke",
     "itemstages.MixinItemStages",
     "jaopca.MixinRecipeHandler",
