@@ -31,11 +31,11 @@ public class RandomTP extends DHTCommand {
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if(args.length>3) {
             long dim=0;
-            long radius=0;
+            long diameter=0;
             EntityPlayerMP player=null;
             try {
                 dim = parseLong(args[1]);
-                radius = parseLong(args[2]);
+                diameter = parseLong(args[2]);
                 player = getPlayer(server, sender, args[0]);
             }
             catch(Exception e) {
@@ -47,10 +47,11 @@ public class RandomTP extends DHTCommand {
                 if(!world.isRemote) {
                     boolean success = true;
                     while (success) {
-                        float x = rand.nextFloat()*radius;
+                        float offset = ((float)diameter)/2f;
+                        float x = (rand.nextFloat()*diameter)-offset;
                         float y = 1000;
-                        float z = rand.nextFloat()*radius;
-                        ResourceLocation biomeName = world.getBiome(new BlockPos(x, y, z)).getRegistryName();
+                        float z = (rand.nextFloat()*diameter)-offset;
+                        ResourceLocation biomeName = world.getBiome(new BlockPos(x,y,z)).getRegistryName();
                         if(Objects.nonNull(biomeName)) {
                             for(int i=0; i<args.length-3; i++) {
                                 if(biomeName.toString().toLowerCase().contains(args[3+i])) {
