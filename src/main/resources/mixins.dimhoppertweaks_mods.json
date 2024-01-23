@@ -68,6 +68,7 @@
     "infernalmobs.MixinMM_Choke",
     "itemstages.MixinItemStages",
     "jaopca.MixinRecipeHandler",
+    "jecalculation.MixinUtilities",
     "jei.MixinIngredientInfoRecipe",
     "jei.MixinItemStackListFactory",
     "jei.MixinJEIMod",

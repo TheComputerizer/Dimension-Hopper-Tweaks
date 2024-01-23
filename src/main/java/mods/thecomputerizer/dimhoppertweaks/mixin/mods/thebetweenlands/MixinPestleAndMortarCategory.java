@@ -32,7 +32,6 @@ public abstract class MixinPestleAndMortarCategory {
         group.init(2,false,88,6);
         List<ItemStack> inputs = ingredients.getInputs(VanillaTypes.ITEM).get(0);
         ItemStack pestle = ingredients.getInputs(VanillaTypes.ITEM).get(1).get(0);
-        List<ItemStack> outputs = ingredients.getOutputs(VanillaTypes.ITEM).get(0);
         NBTTagCompound compound = new NBTTagCompound();
         compound.setBoolean("active",true);
         pestle.setTagCompound(compound);
@@ -45,6 +44,6 @@ public abstract class MixinPestleAndMortarCategory {
             group.set(2,Arrays.asList(new ItemStack(vial),new ItemStack(vial,1,2)));
             group.set(3,new ItemStack(ItemRegistry.ASPECT_VIAL));
         }
-        else group.set(2,outputs);
+        else group.set(2,ingredients.getOutputs(VanillaTypes.ITEM).get(0));
     }
 }
