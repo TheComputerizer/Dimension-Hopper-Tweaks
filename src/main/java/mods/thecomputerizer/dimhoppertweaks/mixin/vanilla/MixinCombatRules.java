@@ -1,6 +1,5 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.vanilla;
 
-import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import net.minecraft.util.CombatRules;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -24,24 +23,19 @@ public abstract class MixinCombatRules {
      */
     @Overwrite
     public static float getDamageAfterAbsorb(float damage, float armor, float toughness) {
-        DHTRef.LOGGER.error("PRE BOTH `DAMAGE {} | ARMOR {} | TOUGHNESS {}`",damage,armor,toughness);
         double reduction = 0d;
         double armorPercent = 0d;
         if(armor>0f) {
             armorPercent = Math.min(dimhoppertweaks$maxArmorPercent,dimhoppertweaks$calculateArmorPercent(armor))/100d;
             double maxReduction = Math.min(50d,((dimhoppertweaks$maxArmorPercent/100d)*50d)*armorPercent);
             reduction = Math.min(damage*armorPercent,maxReduction);
-            DHTRef.LOGGER.error("AFTER ARMOR `PERCENT {} | MAX {} | REDUCTION {}`",armorPercent,maxReduction,reduction);
         }
         if(toughness>0f) {
             double toughnessPercent = Math.min(dimhoppertweaks$maxToughnessPercent,dimhoppertweaks$calculateToughnessPercent(toughness))/100d;
-            DHTRef.LOGGER.error("INITIAL TOUGHNESS PERCENT {}`",toughnessPercent);
             toughnessPercent = (1d-armorPercent)*toughnessPercent;
             double maxReduction = Math.min(10d,((dimhoppertweaks$maxToughnessPercent/100d)*20d)*toughnessPercent);
             reduction+=(Math.min(damage*toughnessPercent,maxReduction));
-            DHTRef.LOGGER.error("AFTER TOUGHNESS `PERCENT {} | MAX {} | REDUCTION {}`",toughnessPercent,maxReduction,reduction);
         }
-        DHTRef.LOGGER.error("AFTER BOTH `DAMAGE {} | REDUCTION {} | DIFFERENCE {}`",damage,reduction,damage-reduction);
         return (float)Math.max(0d,damage-reduction);
     }
 
