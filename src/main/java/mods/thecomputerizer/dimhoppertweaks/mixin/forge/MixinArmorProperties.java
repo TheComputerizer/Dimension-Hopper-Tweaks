@@ -100,7 +100,7 @@ public abstract class MixinArmorProperties {
                 }
             }
             if(totalArmor>0d && prestigeFactor>0d)
-                totalArmor = dimhopeprtweaks$adjustVal(prestigeFactor,totalArmor,0.25d);
+                totalArmor = dimhopeprtweaks$adjustVal(prestigeFactor,totalArmor,0.1d);
             if(totalToughness>0d && prestigeFactor>0d)
                 totalToughness = dimhopeprtweaks$adjustVal(prestigeFactor,totalToughness,0.1d);
             damage = CombatRules.getDamageAfterAbsorb((float)damage,(float)totalArmor,(float)totalToughness);

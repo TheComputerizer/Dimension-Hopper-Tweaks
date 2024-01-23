@@ -34,6 +34,7 @@
     "avaritia.MixinShaderHelper",
     "betterquesting.MixinPanelEntityPreview",
     "blueskies.MixinBrightlandsBiomeDecorator",
+    "blueskies.MixinEntityAlchemist",
     "blueskies.MixinEntitySummoner",
     "blueskies.MixinUnorthodoxValleyBiomeDecorator",
     "botania.MixinEntityPixie",
@@ -135,6 +136,7 @@
     "twilightforest.MixinTFGenCaveStalactite",
     "twilightforest.MixinTFGenMonolith",
     "unidict.MixinCraftingIntegration",
+    "valkyrielib.MixinStructureFormer",
     "vintagefix.MixinDynamicBakedModelProvider",
     "vintagefix.MixinDynamicModelProvider",
     "zollerngalaxy.MixinZGBlockBase"

@@ -194,6 +194,7 @@ dependencies {
     implementation(fg.deobf("curse.maven:together-forever-285968:${project.together_version}"))
     implementation(fg.deobf("curse.maven:tool-progression-266550:${project.toolprog_version}"))
     implementation(fg.deobf("curse.maven:unidict-244258:${project.unidict_version}"))
+    implementation(fg.deobf("curse.maven:valkyrielib-245480:${project.valklib_version}"))
     implementation(fg.deobf("curse.maven:vintagefix-871198:${project.vf_version}"))
     implementation(fg.deobf("curse.maven:wanionlib-253043:${project.wlib_version}"))
     implementation(fg.deobf("curse.maven:xl-food-mod-247217:${project.xlfood_version}"))

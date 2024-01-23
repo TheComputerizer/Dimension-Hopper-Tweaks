@@ -8,6 +8,7 @@
   "mixins": [
     "MixinAdvancementList",
     "MixinChunk",
+    "MixinCombatRules",
     "MixinEntity",
     "MixinEntityLivingBase",
     "MixinEntityPlayer",
@@ -16,6 +17,7 @@
     "MixinExplosion",
     "MixinInventoryCrafting",
     "MixinItemDye",
+    "MixinItemStack",
     "MixinNetherPortal",
     "MixinSPacketEntityEffect",
     "MixinStatisticManager",
