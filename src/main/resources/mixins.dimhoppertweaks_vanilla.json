@@ -18,6 +18,7 @@
     "MixinInventoryCrafting",
     "MixinItemDye",
     "MixinItemStack",
+    "access.ModifiableAttributeInstanceAccess",
     "MixinNetherPortal",
     "MixinSPacketEntityEffect",
     "MixinStatisticManager",
