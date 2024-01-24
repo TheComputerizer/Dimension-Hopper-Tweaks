@@ -134,6 +134,8 @@
     "thebetweenlands.MixinPestleAndMortarCategory",
     "togetherforever.MixinAdvancementEventSyncAction",
     "toolprogression.MixinGSHelper",
+    "translocators.MixinTileCraftingGrid",
+    "travelersbackpack.MixinContainerTravelersBackpack",
     "twilightforest.MixinItemTFPeacockFan",
     "twilightforest.MixinTFGenCaveStalactite",
     "twilightforest.MixinTFGenMonolith",

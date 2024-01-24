@@ -24,6 +24,6 @@ public abstract class MixinTileCraftCrate {
     private InventoryCrafting dimhoppertweaks$attachCraftingStages(Container container, int width, int height) {
         InventoryCrafting inv = new InventoryCrafting(container,width,height);
         ((IInventoryCrafting)inv).dimhoppertweaks$setStages(((ITileEntity)dimhoppertweaks$cast()).dimhoppertweaks$getStages());
-        return null;
+        return inv;
     }
 }
