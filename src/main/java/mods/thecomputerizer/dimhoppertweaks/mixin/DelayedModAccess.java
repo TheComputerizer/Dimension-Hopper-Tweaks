@@ -210,7 +210,7 @@ public class DelayedModAccess {
         String name = res.toString();
         String mod = res.getNamespace();
         String path = res.getPath();
-        return name.equals("rftools:syringe") || path.contains("bucket") ||
+        return name.equals("rftools:syringe") || name.equals("tconstruct:clay_cast") || path.contains("bucket") ||
                 (mod.equals("forestry") && !path.contains("queen") || mod.equals("gendustry"));
     }
 
