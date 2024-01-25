@@ -17,7 +17,7 @@ public abstract class MixinEntityBlightFire extends Entity {
      * @author The_Computerizer
      * @reason Remove any existing blight fire entities from the world since the custom renderer doesn't need them
      */
-    @Overwrite
+    @Overwrite(remap = true)
     public void onUpdate() {
         if(this.world.isRemote) this.setDead();
     }

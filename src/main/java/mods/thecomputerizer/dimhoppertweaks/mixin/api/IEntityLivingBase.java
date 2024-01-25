@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.api;
 
-public interface IEntityLivinBase {
+public interface IEntityLivingBase {
 
     void dimhoppertweaks$setBlight(boolean isBlighted);
     boolean dimhoppertweaks$isBlighted();

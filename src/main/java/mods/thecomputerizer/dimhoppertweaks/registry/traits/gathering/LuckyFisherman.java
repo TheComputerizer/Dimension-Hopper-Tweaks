@@ -4,10 +4,12 @@ import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.MobEffects;
+import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
+import ovh.corail.tombstone.item.ItemFishingRodOfMisadventure;
 
 import java.util.Objects;
 
@@ -22,10 +24,14 @@ public class LuckyFisherman extends ExtendedEventsTrait {
     public void onPlayerTick(PlayerTickEvent event) {
         EntityPlayer player = event.player;
         if(Objects.nonNull(player.fishEntity)) {
-            ResourceLocation res = player.getActiveItemStack().getItem().getRegistryName();
-            Potion luckPotion = Objects.nonNull(res) && res.getNamespace().equals("tombstone") ? MobEffects.UNLUCK : MobEffects.LUCK;
+            boolean hasBadLuck = hasBadLuck(player.getHeldItemMainhand()) || hasBadLuck(player.getHeldItemOffhand());
+            Potion luckPotion = hasBadLuck ? MobEffects.UNLUCK : MobEffects.LUCK;
             int amplifier = Math.max(0,(int)(SkillWrapper.getPrestigeFactor(player,"gathering")-1d));
             player.addPotionEffect(new PotionEffect(luckPotion,10,amplifier,true,true));
         }
+    }
+
+    private boolean hasBadLuck(ItemStack stack) {
+        return !stack.isEmpty() && stack.getItem() instanceof ItemFishingRodOfMisadventure;
     }
 }

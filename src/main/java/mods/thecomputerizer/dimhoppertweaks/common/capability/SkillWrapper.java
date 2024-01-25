@@ -8,7 +8,7 @@ import codersafterdark.reskillable.api.event.LevelUpEvent;
 import codersafterdark.reskillable.api.skill.Skill;
 import codersafterdark.reskillable.api.toast.ToastHelper;
 import codersafterdark.reskillable.api.unlockable.IAbilityEventHandler;
-import codersafterdark.reskillable.api.unlockable.Trait;
+import codersafterdark.reskillable.api.unlockable.Unlockable;
 import com.google.common.collect.ImmutableList;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.registry.ItemRegistry;
@@ -138,13 +138,17 @@ public class SkillWrapper {
         return Objects.isNull(cap) ? 1d : 1d+(((double)cap.getSkillLevel(skill))/32d);
     }
 
-    public static boolean hasTrait(@Nullable PlayerData data, String skillName, Trait trait) {
+    public static boolean hasTrait(@Nullable PlayerData data, String skillName, Unlockable trait) {
         Skill skill = getSkill(skillName);
         return Objects.nonNull(data) && Objects.nonNull(skill) && data.getSkillInfo(skill).isUnlocked(trait);
     }
 
     public static boolean isValidSkill(String skill) {
         return SKILLS.contains(skill);
+    }
+
+    public static boolean makesChunksFast(EntityPlayer player) {
+        return hasTrait(PlayerDataHandler.get(player),"magic",TraitRegistry.NATURES_AURA);
     }
 
     public static void onPlayerJoin(EntityPlayerMP player) {

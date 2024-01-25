@@ -7,9 +7,7 @@ import mods.thecomputerizer.dimhoppertweaks.common.capability.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillCapabilityProvider;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
-import mods.thecomputerizer.dimhoppertweaks.mixin.api.IChunk;
 import mods.thecomputerizer.dimhoppertweaks.mixin.api.IEntityPixie;
-import mods.thecomputerizer.dimhoppertweaks.registry.TraitRegistry;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
 import mods.thecomputerizer.dimhoppertweaks.util.WorldUtil;
@@ -27,7 +25,6 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.ISpecialArmor;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -40,8 +37,6 @@ import net.silentchaos512.scalinghealth.event.BlightHandler;
 import vazkii.botania.common.entity.EntityPixie;
 import vazkii.botania.common.item.equipment.tool.elementium.ItemElementiumSword;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @SuppressWarnings("SpellCheckingInspection")
@@ -218,48 +213,11 @@ public class EntityEvents {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onEnteringChunk(EnteringChunk event) {
         Entity entity = event.getEntity();
-        if(isIncorrectEntityForChunk(entity)) return;
-        int newX = event.getNewChunkX();
-        int newZ = event.getNewChunkZ();
-        World world = entity.getEntityWorld();
-        List<Chunk> queuedRemovals = new ArrayList<>();
-        for(int x=newX-2; x<=newX+2; x++) {
-            for(int z=newZ-2; z<=newZ+2; z++) {
-                if(world.isChunkGeneratedAt(x,z)) {
-                    Chunk chunk = world.getChunk(x,z);
-                    if(chunk.isLoaded()) {
-                        if(isAdjacent(newX,newZ,x,z))
-                            ((IChunk)chunk).dimhoppertweaks$setFast(true);
-                        else queuedRemovals.add(chunk);
-                    }
-                }
-            }
+        if(entity instanceof EntityPlayer) {
+            EntityPlayer player = (EntityPlayer)entity;
+            World world = player.getEntityWorld();
+            WorldUtil.iterateChunks(world,event.getNewChunkX(),event.getNewChunkZ(),2,
+                    chunk -> WorldUtil.setFastChunk(world,chunk.x,chunk.z,null));
         }
-        if(queuedRemovals.isEmpty()) return;
-        List<EntityPlayer> players = world.playerEntities;
-        for(Chunk chunk : queuedRemovals) {
-            if(players.size()<=1) {
-                ((IChunk)chunk).dimhoppertweaks$setFast(false);
-                continue;
-            }
-            boolean remove = true;
-            for(EntityPlayer player : players) {
-                if(player==entity) continue;
-                if(isAdjacent(chunk.x,chunk.z,player.chunkCoordX,player.chunkCoordZ)) {
-                    remove = false;
-                    break;
-                }
-            }
-            if(remove) ((IChunk)chunk).dimhoppertweaks$setFast(false);
-        }
-    }
-
-    private static boolean isAdjacent(int chunkX, int chunkZ, int otherChunkX, int otherChunkZ) {
-        return Math.abs(chunkX-otherChunkX)<=1 && Math.abs(chunkZ-otherChunkZ)<=1;
-    }
-
-    private static boolean isIncorrectEntityForChunk(Entity entity) {
-        return !(entity instanceof EntityPlayer) || !SkillWrapper.hasTrait(PlayerDataHandler.get((EntityPlayer)entity),
-                "magic",TraitRegistry.NATURES_AURA);
     }
 }

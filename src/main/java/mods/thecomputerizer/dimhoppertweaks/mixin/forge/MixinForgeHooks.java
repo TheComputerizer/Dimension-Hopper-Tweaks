@@ -2,19 +2,18 @@ package mods.thecomputerizer.dimhoppertweaks.mixin.forge;
 
 import com.google.common.collect.Lists;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockFarmland;
-import net.minecraft.block.IGrowable;
+import net.minecraft.block.*;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemBucket;
-import net.minecraft.item.ItemStack;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.*;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
@@ -26,8 +25,10 @@ import net.minecraftforge.event.world.BlockEvent.PlaceEvent;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import stevekung.mods.moreplanets.planets.nibiru.items.ItemInfectedSugarCane;
 import stevekung.mods.moreplanets.utils.blocks.BlockFarmlandMP;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -70,6 +71,7 @@ public abstract class MixinForgeHooks {
         if(Objects.nonNull(stack.getTagCompound())) nbt = stack.getTagCompound().copy();
         if(!(stack.getItem() instanceof ItemBucket)) // if not bucket
             world.captureBlockSnapshots = true;
+        boolean isPlantableItem = dimhoppertweaks$verifyPlantableItem(stack);
         EnumActionResult ret = stack.getItem().onItemUse(player,world,pos,hand,side,hitX,hitY,hitZ);
         world.captureBlockSnapshots = false;
         if(ret==EnumActionResult.SUCCESS) {
@@ -113,16 +115,32 @@ public abstract class MixinForgeHooks {
                     world.markAndNotifyBlock(snap.getPos(),null,oldBlock,newBlock,updateFlag);
                 }
                 player.addStat(StatList.getObjectUseStats(stack.getItem()));
+                if(isPlantableItem && dimhoppertweaks$verifyPlantedBlock(previousBlock))
+                    SkillWrapper.addActionSP((EntityPlayerMP)player,"farming",1f);
             }
         }
         world.capturedBlockSnapshots.clear();
         Block updatedBlock = world.getBlockState(pos).getBlock();
-        if(!world.isRemote && !(player instanceof FakePlayer) && updatedBlock!=previousBlock) {
-            float amount = 0f;
-            if(updatedBlock instanceof BlockFarmland || updatedBlock instanceof BlockFarmlandMP) amount = 3f;
-            if(updatedBlock instanceof IGrowable || updatedBlock instanceof IPlantable) amount = 1f;
-            if(amount>0f) SkillWrapper.addActionSP((EntityPlayerMP)player,"farming",amount);
-        }
+        if(!world.isRemote && !(player instanceof FakePlayer) && updatedBlock!=previousBlock &&
+                (updatedBlock instanceof BlockFarmland || updatedBlock instanceof BlockFarmlandMP))
+            SkillWrapper.addActionSP((EntityPlayerMP)player,"farming",3f);
         return ret;
+    }
+
+    @Unique
+    private static boolean dimhoppertweaks$verifyPlantableItem(ItemStack stack) {
+        Item item = stack.getItem();
+        if(item instanceof IPlantable || item instanceof ItemInfectedSugarCane) return true;
+        if(item instanceof ItemBlockSpecial) {
+            ResourceLocation res = item.getRegistryName();
+            return res.getPath().contains("reed");
+        }
+        return false;
+    }
+
+    @Unique
+    private static boolean dimhoppertweaks$verifyPlantedBlock(Block block) {
+        return block instanceof IGrowable || block instanceof BlockFarmland || block instanceof BlockFarmlandMP ||
+                block==Blocks.SAND;
     }
 }

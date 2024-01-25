@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.vanilla;
 
-import mods.thecomputerizer.dimhoppertweaks.mixin.api.IEntityLivinBase;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.IEntityLivingBase;
 import mods.thecomputerizer.dimhoppertweaks.mixin.vanilla.access.ModifiableAttributeInstanceAccess;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -18,18 +18,16 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(EntityLivingBase.class)
-public abstract class MixinEntityLivingBase extends Entity implements IEntityLivinBase {
+public abstract class MixinEntityLivingBase extends Entity implements IEntityLivingBase {
+
+    @Shadow @Final private static DataParameter<Float> HEALTH;
+    @Unique private boolean dimhoppertweaks$isBlighted;
+    @Shadow public abstract float getHealth();
+    @Shadow public abstract IAttributeInstance getEntityAttribute(IAttribute attribute);
 
     public MixinEntityLivingBase(World world) {
         super(world);
     }
-
-    @Shadow public abstract IAttributeInstance getEntityAttribute(IAttribute attribute);
-
-    @Shadow public abstract float getHealth();
-
-    @Shadow @Final private static DataParameter<Float> HEALTH;
-    @Unique private boolean dimhoppertweaks$isBlighted;
 
     @Unique
     private EntityLivingBase dimhoppertweaks$cast() {

@@ -3,13 +3,16 @@ package mods.thecomputerizer.dimhoppertweaks.common.events;
 import codersafterdark.reskillable.api.data.PlayerData;
 import codersafterdark.reskillable.api.data.PlayerDataHandler;
 import codersafterdark.reskillable.api.event.LevelUpEvent;
+import codersafterdark.reskillable.api.event.UnlockUnlockableEvent;
 import gcewing.sg.block.SGBlock;
 import mods.thecomputerizer.dimhoppertweaks.client.render.ClientEffects;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
+import mods.thecomputerizer.dimhoppertweaks.registry.TraitRegistry;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
+import mods.thecomputerizer.dimhoppertweaks.util.WorldUtil;
 import net.darkhax.gamestages.GameStageHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -72,6 +75,14 @@ public class PlayerEvents {
         if(event.isCanceled()) return;
         if(event.getEntityPlayer() instanceof EntityPlayerMP)
             SkillWrapper.updateTokens((EntityPlayerMP)event.getEntityPlayer());
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onTraitToggled(UnlockUnlockableEvent.Post event) {
+        if(event.isCanceled()) return;
+        EntityPlayer player = event.getEntityPlayer();
+        if(event.getUnlockable()==TraitRegistry.NATURES_AURA)
+            WorldUtil.setFastChunk(player.getEntityWorld(),player.chunkCoordX,player.chunkCoordZ,player);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

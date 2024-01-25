@@ -1,7 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.vanilla;
 
 import mods.thecomputerizer.dimhoppertweaks.client.render.BetterBlightFireRenderer;
-import mods.thecomputerizer.dimhoppertweaks.mixin.api.IEntityLivinBase;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.IEntityLivingBase;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
@@ -20,7 +20,7 @@ public abstract class MixinRenderManager {
         instance.doRender(entity,x,y,z,yaw,partialTicks);
         if(entity instanceof EntityLivingBase) {
             EntityLivingBase living = (EntityLivingBase)entity;
-            if(((IEntityLivinBase)living).dimhoppertweaks$isBlighted())
+            if(((IEntityLivingBase)living).dimhoppertweaks$isBlighted())
                 BetterBlightFireRenderer.render((RenderManager)(Object)this,living,x,y,z);
         }
     }

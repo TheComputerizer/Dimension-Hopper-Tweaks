@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.mods.scalinghealth;
 
-import mods.thecomputerizer.dimhoppertweaks.mixin.api.IEntityLivinBase;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.IEntityLivingBase;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -29,7 +29,7 @@ public abstract class MixinBlightHandler {
      */
     @Overwrite
     public static boolean isBlight(EntityLivingBase entity) {
-        return Objects.nonNull(entity) && ((IEntityLivinBase)entity).dimhoppertweaks$isBlighted();
+        return Objects.nonNull(entity) && ((IEntityLivingBase)entity).dimhoppertweaks$isBlighted();
     }
 
     /**
@@ -40,7 +40,7 @@ public abstract class MixinBlightHandler {
     public static void markBlight(EntityLivingBase entity, boolean isBlight) {
         if(Objects.nonNull(entity)) {
             entity.getEntityData().setBoolean("ScalingHealth.IsBlight",isBlight);
-            ((IEntityLivinBase)entity).dimhoppertweaks$setBlight(isBlight);
+            ((IEntityLivingBase)entity).dimhoppertweaks$setBlight(isBlight);
         }
     }
 
