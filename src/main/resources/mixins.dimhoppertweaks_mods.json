@@ -90,6 +90,8 @@
     "lockyzextradimensionsmod.Mixinmcreator_interDimensionalOre",
     "loottweaker.MixinMutableLootPool",
     "loottweaker.MixinMutableLootTable",
+    "mekanism.MixinSize",
+    "mekanism.MixinNeighborListener",
     "mekanism.MixinTileComponentSecurity",
     "mist.MixinServerEventHandler",
     "mobends.MixinEntityRenderHandler",

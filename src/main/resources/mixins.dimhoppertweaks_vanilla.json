@@ -6,6 +6,8 @@
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "access.ModifiableAttributeInstanceAccess",
+    "access.TileEntityLockableLootAccess",
     "MixinAdvancementList",
     "MixinChunk",
     "MixinCombatRules",
@@ -18,21 +20,20 @@
     "MixinInventoryCrafting",
     "MixinItemDye",
     "MixinItemStack",
-    "MixinNetherPortal",
+    "MixinSize",
     "MixinSPacketEntityEffect",
     "MixinStatisticManager",
     "MixinStructureComponent",
+    "MixinTeleporter",
     "MixinTileEntity",
     "MixinTileEntityFurnace",
-    "MixinWorldServer",
-    "access.ModifiableAttributeInstanceAccess",
-    "access.TileEntityLockableLootAccess"
+    "MixinWorldServer"
   ],
   "client": [
+    "access.EntityRendererAccess",
     "MixinItemRenderer",
     "MixinParticle",
     "MixinRenderManager",
-    "MixinShaderGroup",
-    "access.EntityRendererAccess"
+    "MixinShaderGroup"
   ]
 }

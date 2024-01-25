@@ -2,6 +2,9 @@ package mods.thecomputerizer.dimhoppertweaks.common.events;
 
 import codersafterdark.reskillable.api.data.PlayerData;
 import codersafterdark.reskillable.api.data.PlayerDataHandler;
+import de.ellpeck.nyx.capabilities.NyxWorld;
+import de.ellpeck.nyx.network.PacketHandler;
+import de.ellpeck.nyx.network.PacketNyxWorld;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
@@ -81,6 +84,8 @@ public class GameEvents {
             SkillWrapper.addActionSP(player,"void",5f);
             ISkillCapability cap = SkillWrapper.getSkillCapability(player);
             if(Objects.nonNull(cap)) cap.resetDreamTimer();
+            NyxWorld world = NyxWorld.get(player.getEntityWorld());
+            if(Objects.nonNull(world.currentEvent)) PacketHandler.sendTo(player,new PacketNyxWorld(world));
         }
     }
 

@@ -161,6 +161,7 @@ dependencies {
     implementation(fg.deobf("curse.maven:natures-aura-306626:${project.na_version}"))
     implementation(fg.deobf("curse.maven:neat-238372:${project.neat_version}"))
     implementation(fg.deobf("curse.maven:netherex-248039:${project.netherex_version}"))
+    implementation(fg.deobf("curse.maven:netherportalfix-241160:${project.npfix_version}"))
     implementation(fg.deobf("curse.maven:nodamitem-377815:${project.nodami_verion}"))
     implementation(fg.deobf("curse.maven:nyx-349214:${project.nyx_version}"))
     implementation(fg.deobf("curse.maven:openblocks-228816:${project.openblocks_version}"))
