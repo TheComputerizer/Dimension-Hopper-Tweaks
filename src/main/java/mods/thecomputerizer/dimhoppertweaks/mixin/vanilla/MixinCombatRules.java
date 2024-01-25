@@ -11,11 +11,13 @@ public abstract class MixinCombatRules {
     @Unique private static final double dimhoppertweaks$maxArmor = 200d;
     @Unique private static final double dimhoppertweaks$maxArmorPercent = 90d;
     @Unique private static final double dimhoppertweaks$armorPercentFactor = 15d;
-    @Unique private static final double dimhoppertweaks$maxArmorLinear = dimhoppertweaks$maxArmor/(Math.pow(2d,dimhoppertweaks$maxArmorPercent/dimhoppertweaks$armorPercentFactor)-1d);
+    @Unique private static final double dimhoppertweaks$maxArmorLinear = dimhoppertweaks$maxArmor/(Math.pow(2d,dimhoppertweaks$maxArmorPercent/dimhoppertweaks$armorPercentFactor-1d));
+    @Unique private static final double dimhoppertweaks$maxArmorReduction = (100d/dimhoppertweaks$maxArmorPercent)*50d;
     @Unique private static final double dimhoppertweaks$maxToughness = 50d;
     @Unique private static final double dimhoppertweaks$maxToughnessPercent = 50d;
     @Unique private static final double dimhoppertweaks$toughnessPercentFactor = 10d;
-    @Unique private static final double dimhoppertweaks$maxToughnessLinear = dimhoppertweaks$maxToughness/(Math.pow(2d,dimhoppertweaks$maxToughnessPercent/dimhoppertweaks$toughnessPercentFactor)-2d);
+    @Unique private static final double dimhoppertweaks$maxToughnessLinear = dimhoppertweaks$maxToughness/(Math.pow(2d,dimhoppertweaks$maxToughnessPercent/dimhoppertweaks$toughnessPercentFactor-2d));
+    @Unique private static final double dimhoppertweaks$maxToughnessReduction = (100d/dimhoppertweaks$maxToughnessPercent)*10d;
 
     /**
      * @author The_Computerizer
@@ -27,13 +29,15 @@ public abstract class MixinCombatRules {
         double armorPercent = 0d;
         if(armor>0f) {
             armorPercent = Math.min(dimhoppertweaks$maxArmorPercent,dimhoppertweaks$calculateArmorPercent(armor))/100d;
-            double maxReduction = Math.min(50d,((dimhoppertweaks$maxArmorPercent/100d)*50d)*armorPercent);
+            double reductionCap = dimhoppertweaks$maxArmorReduction*dimhoppertweaks$maxArmorPercent;
+            double maxReduction = Math.min(reductionCap,((dimhoppertweaks$maxArmorPercent/100d)*dimhoppertweaks$maxArmorReduction)*armorPercent);
             reduction = Math.min(damage*armorPercent,maxReduction);
         }
         if(toughness>0f) {
             double toughnessPercent = Math.min(dimhoppertweaks$maxToughnessPercent,dimhoppertweaks$calculateToughnessPercent(toughness))/100d;
             toughnessPercent = (1d-armorPercent)*toughnessPercent;
-            double maxReduction = Math.min(10d,((dimhoppertweaks$maxToughnessPercent/100d)*20d)*toughnessPercent);
+            double reductionCap = dimhoppertweaks$maxToughnessReduction*dimhoppertweaks$maxToughnessPercent;
+            double maxReduction = Math.min(reductionCap,((dimhoppertweaks$maxToughnessPercent/100d)*dimhoppertweaks$maxToughnessReduction)*toughnessPercent);
             reduction+=(Math.min(damage*toughnessPercent,maxReduction));
         }
         return (float)Math.max(0d,damage-reduction);

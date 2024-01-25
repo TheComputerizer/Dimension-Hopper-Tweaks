@@ -3,6 +3,9 @@ package mods.thecomputerizer.dimhoppertweaks.common.events;
 import codersafterdark.reskillable.api.data.PlayerData;
 import codersafterdark.reskillable.api.data.PlayerDataHandler;
 import com.google.common.collect.Iterables;
+import de.ellpeck.nyx.capabilities.NyxWorld;
+import de.ellpeck.nyx.network.PacketHandler;
+import de.ellpeck.nyx.network.PacketNyxWorld;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillCapabilityProvider;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
@@ -32,6 +35,7 @@ import net.minecraftforge.common.ISpecialArmor;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityEvent.EnteringChunk;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -261,5 +265,14 @@ public class EntityEvents {
     private static boolean isIncorrectEntityForChunk(Entity entity) {
         return !(entity instanceof EntityPlayer) || !SkillWrapper.hasTrait(PlayerDataHandler.get((EntityPlayer)entity),
                 "magic",TraitRegistry.NATURES_AURA);
+    }
+
+    @SubscribeEvent
+    public static void onJoinWorld(EntityJoinWorldEvent event) {
+        if(event.getEntity() instanceof EntityPlayerMP && !(event.getEntity() instanceof FakePlayer)) {
+            EntityPlayerMP player = (EntityPlayerMP)event.getEntity();
+            NyxWorld world = NyxWorld.get(player.getEntityWorld());
+            if(Objects.nonNull(world.currentEvent)) PacketHandler.sendTo(player,new PacketNyxWorld(world));
+        }
     }
 }
