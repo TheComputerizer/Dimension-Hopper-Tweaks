@@ -58,7 +58,6 @@ import slimeknights.tconstruct.tools.common.item.ItemBlockTable;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 @SuppressWarnings({"unused", "SameParameterValue"})
@@ -389,29 +388,36 @@ public class DelayedModAccess {
     }
 
     public static void replaceChest(Random rand, TileEntityChest tile, IBlockState state) {
-        if(state.getBlock() instanceof BlockChest && randFloat(rand,DHTRef.CHEST_REPLACEMENT_CHANCE))
-            replaceContainer(tile.getWorld(),tile.getPos(),tile,getCrateBlock().getDefaultState(),(previous,current) -> {
-                TileEntityChest chest = (TileEntityChest)previous;
-                TileEntityGiantChest crate = (TileEntityGiantChest)current;
-                if(chest.isEmpty()) {
-                    crate.lootTable = chest.getLootTable();
+        if(state.getBlock() instanceof BlockChest && randFloat(rand,DHTRef.CHEST_REPLACEMENT_CHANCE)) {
+            Map<ItemStack,Integer> slotMap = new HashMap<>();
+            for(int i=0; i<tile.getSizeInventory(); i++) {
+                ItemStack stack = tile.getStackInSlot(i);
+                if(!stack.isEmpty()) {
+                    slotMap.put(stack.copy(),i);
+                    stack.setCount(0);
+                }
+            }
+            replaceContainer(tile.getWorld(),tile.getPos(),getCrateBlock().getDefaultState(),(current) -> {
+                TileEntityGiantChest crate = (TileEntityGiantChest) current;
+                if(slotMap.isEmpty()) {
+                    crate.lootTable = tile.getLootTable();
                     return;
                 }
                 IItemHandler handler = crate.getItemHandler(null);
-                double ratio = ((double)handler.getSlots())/27d;
-                for(int slot=0; slot<27; slot++) {
-                    int crateSlot = Math.min((int)(((double)slot)*ratio),handler.getSlots()-1);
-                    handler.insertItem(crateSlot,chest.getStackInSlot(slot),false);
+                double ratio = ((double) handler.getSlots()) / 27d;
+                for (Map.Entry<ItemStack, Integer> slotEntry : slotMap.entrySet()) {
+                    int crateSlot = Math.min((int)(((double)slotEntry.getValue())*ratio),handler.getSlots()-1);
+                    handler.insertItem(crateSlot, slotEntry.getKey(), false);
                 }
             });
+        }
     }
 
     public static void replaceContainer(
-            World world, BlockPos pos, TileEntity previousTile, IBlockState state,
-            @Nullable BiConsumer<TileEntity,TileEntity> lootTableHandler) {
+            World world, BlockPos pos,IBlockState state, @Nullable Consumer<TileEntity> lootTableHandler) {
         world.setBlockState(pos,state);
         if(state.getBlock().hasTileEntity(state) && Objects.nonNull(lootTableHandler))
-            lootTableHandler.accept(previousTile,world.getTileEntity(pos));
+            lootTableHandler.accept(world.getTileEntity(pos));
     }
 
     public static void replaceTiles(World world, Chunk chunk) {

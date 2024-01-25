@@ -43,6 +43,6 @@ public class NaturesAuraSkillEffect implements IDrainSpotEffect {
     @Override
     public void update(World world, Chunk chunk, IAuraChunk auraChunk, BlockPos pos, Integer spot) {
         if(IAuraChunk.getAuraInArea(world,pos,30)<=150000)
-            auraChunk.storeAura(pos,250,false,false);
+            auraChunk.storeAura(pos,500,false,false);
     }
 }
