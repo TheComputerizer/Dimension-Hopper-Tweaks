@@ -1,4 +1,4 @@
-package mods.thecomputerizer.dimhoppertweaks.common.capability;
+package mods.thecomputerizer.dimhoppertweaks.common.capability.player;
 
 import codersafterdark.reskillable.api.ReskillableRegistries;
 import codersafterdark.reskillable.api.data.PlayerData;
@@ -10,6 +10,7 @@ import codersafterdark.reskillable.api.toast.ToastHelper;
 import codersafterdark.reskillable.api.unlockable.IAbilityEventHandler;
 import codersafterdark.reskillable.api.unlockable.Unlockable;
 import com.google.common.collect.ImmutableList;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.CommonCapability;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.registry.ItemRegistry;
 import mods.thecomputerizer.dimhoppertweaks.registry.SoundRegistry;
@@ -37,6 +38,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 @SuppressWarnings("ConstantValue")
 @ParametersAreNonnullByDefault
@@ -53,9 +55,11 @@ public class SkillWrapper {
     }
 
     public static void addActionSP(EntityPlayerMP player, String skill, float amount) {
-        ISkillCapability cap = getSkillCapability(player);
-        if(Objects.nonNull(cap))
-            player.addExperience(cap.addSP(skill,(int)withMultiplier(player,amount),player,false));
+        executeIfPresent(player,cap -> player.addExperience(cap.addSP(skill,(int)withMultiplier(player,amount),player,false)));
+    }
+
+    private static void executeIfPresent(EntityPlayer player,Consumer<ISkillCapability> exectuor) {
+        CommonCapability.executeIfPresent(player,SkillCapabilityProvider.SKILL_CAPABILITY,exectuor);
     }
 
     public static void executeOnSkill(PlayerData data, @Nullable Skill skill, Consumer<IAbilityEventHandler> consumer) {
@@ -76,6 +80,11 @@ public class SkillWrapper {
     }
 
     public static void forceTwilightRespawn(EntityPlayer player) {
+        executeIfPresent(player,cap -> {
+            BlockPos pos = cap.getTwilightRespawn();
+            if(player.dimension==7 && Objects.isNull(player.getBedLocation(7)) && Objects.nonNull(pos))
+                player.setSpawnPoint(pos,true);
+        });
         ISkillCapability cap = getSkillCapability(player);
         if(Objects.isNull(cap)) return;
         BlockPos pos = cap.getTwilightRespawn();
@@ -100,6 +109,10 @@ public class SkillWrapper {
 
     public static @Nullable SkillWrapper getNewInstance(String name, String initFailMsg) {
         return getInstance(name,0,1,0,initFailMsg);
+    }
+
+    public static <T> T getOrDefault(EntityPlayerMP player, Function<ISkillCapability,T> getter, T defVal) {
+        return CommonCapability.getOrDefault(player,SkillCapabilityProvider.SKILL_CAPABILITY,getter,defVal);
     }
 
     public static @Nullable SkillWrapper getTagInstance(NBTTagCompound skillTag) {
@@ -129,13 +142,11 @@ public class SkillWrapper {
     }
 
     public static @Nullable ISkillCapability getSkillCapability(EntityPlayer player) {
-        return Objects.nonNull(player) && Objects.nonNull(SkillCapabilityProvider.SKILL_CAPABILITY) ?
-                player.getCapability(SkillCapabilityProvider.SKILL_CAPABILITY,null) : null;
+        return CommonCapability.getCapability(player,SkillCapabilityProvider.SKILL_CAPABILITY);
     }
 
     public static double getPrestigeFactor(EntityPlayer player, String skill) {
-        ISkillCapability cap = getSkillCapability(player);
-        return Objects.isNull(cap) ? 1d : 1d+(((double)cap.getSkillLevel(skill))/32d);
+        return getOrDefault((EntityPlayerMP)player,cap -> 1d+(((double)cap.getSkillLevel(skill))/32d),1d);
     }
 
     public static boolean hasTrait(@Nullable PlayerData data, String skillName, Unlockable trait) {
@@ -152,52 +163,45 @@ public class SkillWrapper {
     }
 
     public static void onPlayerJoin(EntityPlayerMP player) {
-        ISkillCapability cap = SkillWrapper.getSkillCapability(player);
-        if(Objects.nonNull(cap)) {
+        executeIfPresent(player,cap -> {
             cap.initWrappers();
             BlockPos pos = cap.getTwilightRespawn();
             if(player.dimension==7 && Objects.isNull(player.getBedLocation(7)) && Objects.nonNull(pos))
                 player.setSpawnPoint(pos,true);
             updateTokens(player);
-        }
+        });
     }
 
     public static void resetFanUsage(Entity entity) {
-        if(entity instanceof EntityPlayer) {
-            ISkillCapability cap = getSkillCapability((EntityPlayer)entity);
-            if (Objects.nonNull(cap)) cap.resetFanUsage();
-        }
+        if(entity instanceof EntityPlayer) executeIfPresent((EntityPlayer)entity,ISkillCapability::resetFanUsage);
     }
 
     public static void shieldHook(EntityPlayerMP player, byte state) {
-        ISkillCapability cap = getSkillCapability(player);
-        if(Objects.isNull(cap)) return;
-        float amount = cap.getShieldedDamage();
-        if(state==29 && amount>0) addActionSP(player,"defense",Math.max(1f,amount/2f));
+        executeIfPresent(player,cap -> {
+            float amount = cap.getShieldedDamage();
+            if(state==29 && amount>0) addActionSP(player,"defense",Math.max(1f,amount/2f));
+        });
     }
 
     public static boolean ticKDreamer(EntityPlayerMP player, int ticks) {
-        ISkillCapability cap = getSkillCapability(player);
-        if(Objects.isNull(cap)) return false;
-        return cap.incrementDreamTimer(player,ticks);
+        return getOrDefault(player,cap -> cap.incrementDreamTimer(player,ticks),false);
     }
 
     public static void updateTokens(EntityPlayerMP player) {
-        ISkillCapability cap = getSkillCapability(player);
-        if(Objects.isNull(cap)) return;
-        cap.syncSkills(player);
-        for(int i=0; i<player.inventory.getSizeInventory(); i++) {
-            ItemStack stack = player.inventory.getStackInSlot(i);
-            if(stack.getItem() instanceof SkillToken) {
-                SkillToken token = (SkillToken) stack.getItem();
-                token.updateSkills(stack,cap.getCurrentValues(),cap.getDrainSelection(),cap.getDrainLevels());
+        executeIfPresent(player,cap -> {
+            cap.syncSkills(player);
+            for(int i=0; i<player.inventory.getSizeInventory(); i++) {
+                ItemStack stack = player.inventory.getStackInSlot(i);
+                if(stack.getItem() instanceof SkillToken) {
+                    SkillToken token = (SkillToken) stack.getItem();
+                    token.updateSkills(stack,cap.getCurrentValues(),cap.getDrainSelection(),cap.getDrainLevels());
+                }
             }
-        }
+        });
     }
 
     public static float withMultiplier(EntityPlayerMP player, float amount) {
-        ISkillCapability cap = getSkillCapability(player);
-        return Objects.nonNull(cap) ? cap.getActionFactor(amount) : 0f;
+        return getOrDefault(player,cap -> (float)cap.getActionFactor(amount),0f);
     }
 
     private final String name;

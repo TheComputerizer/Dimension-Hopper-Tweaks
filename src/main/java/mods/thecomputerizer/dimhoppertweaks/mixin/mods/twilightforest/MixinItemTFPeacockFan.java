@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.mods.twilightforest;
 
-import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;

@@ -3,9 +3,8 @@ package mods.thecomputerizer.dimhoppertweaks.common.events;
 import codersafterdark.reskillable.api.data.PlayerData;
 import codersafterdark.reskillable.api.data.PlayerDataHandler;
 import com.google.common.collect.Iterables;
-import mods.thecomputerizer.dimhoppertweaks.common.capability.ISkillCapability;
-import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillCapabilityProvider;
-import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.player.ISkillCapability;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.mixin.api.IEntityPixie;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
@@ -26,8 +25,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
-import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityEvent.EnteringChunk;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.fml.common.Mod;
@@ -42,12 +39,6 @@ import java.util.Objects;
 @SuppressWarnings("SpellCheckingInspection")
 @Mod.EventBusSubscriber(modid = DHTRef.MODID)
 public class EntityEvents {
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void attachEntityCapabilities(AttachCapabilitiesEvent<Entity> event) {
-        if(event.getObject() instanceof EntityPlayerMP && !(event.getObject() instanceof FakePlayer))
-            event.addCapability(SkillWrapper.SKILL_CAPABILITY,new SkillCapabilityProvider());
-    }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onLivingAttack(LivingAttackEvent event) {
@@ -217,7 +208,7 @@ public class EntityEvents {
             EntityPlayer player = (EntityPlayer)entity;
             World world = player.getEntityWorld();
             WorldUtil.iterateChunks(world,event.getNewChunkX(),event.getNewChunkZ(),2,
-                    chunk -> WorldUtil.setFastChunk(world,chunk.x,chunk.z,null));
+                    chunk -> WorldUtil.setFastChunk(world,chunk.x,chunk.z,true));
         }
     }
 }

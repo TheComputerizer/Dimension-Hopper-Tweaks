@@ -1,9 +1,12 @@
 package mods.thecomputerizer.dimhoppertweaks;
 
 import mods.thecomputerizer.dimhoppertweaks.client.DHTClient;
-import mods.thecomputerizer.dimhoppertweaks.common.capability.ISkillCapability;
-import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillCapability;
-import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillCapabilityStorage;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.chunk.ExtraChunkData;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.chunk.ExtraChunkDataStorage;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.chunk.IExtraChunkData;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.player.ISkillCapability;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillCapability;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillCapabilityStorage;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.network.*;
 import mods.thecomputerizer.dimhoppertweaks.registry.RegistryHandler;
@@ -33,6 +36,7 @@ public class DimHopperTweaks {
     public static void preInit(FMLPreInitializationEvent event) {
         DHTRef.LOGGER.info("Starting pre-init");
         CapabilityManager.INSTANCE.register(ISkillCapability.class,new SkillCapabilityStorage(),SkillCapability::new);
+        CapabilityManager.INSTANCE.register(IExtraChunkData.class,new ExtraChunkDataStorage(),ExtraChunkData::new);
         if (FMLCommonHandler.instance().getSide().isClient()) {
             OBJLoader.INSTANCE.addDomain(DHTRef.MODID);
             DHTClient.registerRenderers();

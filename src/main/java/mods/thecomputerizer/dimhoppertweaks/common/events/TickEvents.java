@@ -2,8 +2,8 @@ package mods.thecomputerizer.dimhoppertweaks.common.events;
 
 import bedrockcraft.ModWorlds;
 import lumien.randomthings.item.ModItems;
-import mods.thecomputerizer.dimhoppertweaks.common.capability.ISkillCapability;
-import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.player.ISkillCapability;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.common.commands.DHDebugCommands;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.mixin.api.IItemTimeInABottle;

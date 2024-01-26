@@ -1,5 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.vanilla;
 
+import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import net.minecraft.util.CombatRules;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -17,7 +18,7 @@ public abstract class MixinCombatRules {
     @Unique private static final double dimhoppertweaks$maxToughnessPercent = 50d;
     @Unique private static final double dimhoppertweaks$toughnessPercentFactor = 10d;
     @Unique private static final double dimhoppertweaks$maxToughnessLinear = dimhoppertweaks$maxToughness/(Math.pow(2d,dimhoppertweaks$maxToughnessPercent/dimhoppertweaks$toughnessPercentFactor-2d));
-    @Unique private static final double dimhoppertweaks$maxToughnessReduction = (100d/dimhoppertweaks$maxToughnessPercent)*50d;
+    @Unique private static final double dimhoppertweaks$maxToughnessReduction = (100d/dimhoppertweaks$maxToughnessPercent)*25d;
 
     /**
      * @author The_Computerizer
@@ -25,6 +26,7 @@ public abstract class MixinCombatRules {
      */
     @Overwrite
     public static float getDamageAfterAbsorb(float damage, float armor, float toughness) {
+        DHTRef.LOGGER.error("COMBAT RULES: `BASE DAMAGE {} | BASE ARMOR {} | PRESTIGE TOUGHNESS {}`",damage,armor,toughness);
         double reduction = 0d;
         double armorPercent = 0d;
         if(armor>0f) {
@@ -32,6 +34,8 @@ public abstract class MixinCombatRules {
             armorPercent = Math.min(maxPercent,dimhoppertweaks$calculateArmorPercent(armor))/100d;
             double maxReduction = Math.min(dimhoppertweaks$maxArmorReduction*maxPercent,dimhoppertweaks$maxArmorReduction*armorPercent);
             reduction = Math.min(damage*armorPercent,maxReduction);
+            DHTRef.LOGGER.error("COMBAT RULES: `MAX ARMOR PERCENT {} | CALCULATED ARMOR PERCENT {} | "+
+                    "MAX ARMOR REDUCTION {} | ACTUAL ARMOR REDUCTION {}`",maxPercent,armorPercent,maxReduction,reduction);
         }
         if(toughness>0f) {
             double maxPercent = dimhoppertweaks$maxToughnessPercent/100d;
@@ -39,7 +43,10 @@ public abstract class MixinCombatRules {
             double maxReduction = Math.min(dimhoppertweaks$maxToughnessReduction*maxPercent,dimhoppertweaks$maxToughnessReduction*toughnessPercent);
             toughnessPercent = (1d-armorPercent)*toughnessPercent;
             reduction+=(Math.min(damage*toughnessPercent,maxReduction));
+            DHTRef.LOGGER.error("COMBAT RULES: `MAX TOUGHNESS PERCENT {} | CALCULATED TOUGHNESS PERCENT {} | "+
+                    "MAX TOUGHNESS REDUCTION {}`",maxPercent,toughnessPercent,maxReduction);
         }
+        DHTRef.LOGGER.error("COMBAT RULES: `TOTAL DAMAGE REDUCTION {} | TOTAL DAMAGE {}`",reduction,damage-reduction);
         return (float)Math.max(0d,damage-reduction);
     }
 

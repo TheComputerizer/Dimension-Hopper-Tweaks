@@ -1,4 +1,4 @@
-package mods.thecomputerizer.dimhoppertweaks.common.capability;
+package mods.thecomputerizer.dimhoppertweaks.common.capability.player;
 
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;

@@ -1,16 +1,16 @@
-package mods.thecomputerizer.dimhoppertweaks.common.capability;
+package mods.thecomputerizer.dimhoppertweaks.common.capability.player;
 
+import mods.thecomputerizer.dimhoppertweaks.common.capability.ICommonCapability;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.Map;
 import java.util.Set;
 
 @SuppressWarnings("unused")
-public interface ISkillCapability {
+public interface ISkillCapability extends ICommonCapability {
 
     void of(SkillCapability copy, EntityPlayerMP newPlayer);
     void initWrappers();
@@ -45,6 +45,4 @@ public interface ISkillCapability {
     void markResourcesKeyPressed();
     int getFanUsage();
     void resetFanUsage();
-    NBTTagCompound writeToNBT();
-    void readFromNBT(NBTTagCompound tag);
 }

@@ -1,9 +1,9 @@
 package mods.thecomputerizer.dimhoppertweaks.util;
 
 import mods.thecomputerizer.dimhoppertweaks.client.particle.ParticleBlightFire;
-import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.chunk.ExtraChunkData;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
-import mods.thecomputerizer.dimhoppertweaks.mixin.api.IChunk;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -60,11 +60,8 @@ public class WorldUtil {
     }
 
     public static boolean isChunkFast(World world, int chunkX, int chunkZ) {
-        if(world.isChunkGeneratedAt(chunkX,chunkZ)) {
-            Chunk chunk = world.getChunk(chunkX,chunkZ);
-            if(chunk.isLoaded()) return ((IChunk)chunk).dimhoppertweaks$isFast();
-            else DHTRef.LOGGER.error("Tried to query fast status of unloaded chunk at ({},{})!",chunkX,chunkZ);
-        } else DHTRef.LOGGER.error("Tried to query fast status of ungenerated chunk at ({},{})!",chunkX,chunkZ);
+        if(world.isChunkGeneratedAt(chunkX,chunkZ)) return ExtraChunkData.isChunkFast(world.getChunk(chunkX,chunkZ));
+        else DHTRef.LOGGER.error("Tried to query fast status of ungenerated chunk at ({},{})!",chunkX,chunkZ);
         return false;
     }
 
@@ -101,19 +98,18 @@ public class WorldUtil {
         return replacementCount;
     }
 
-    public static void setFastChunk(World world, int chunkX, int chunkZ, @Nullable EntityPlayer player) {
-        boolean fast = Objects.nonNull(player) && SkillWrapper.makesChunksFast(player);
+    public static void setFastChunk(World world, int chunkX, int chunkZ, boolean fast) {
         if(world.isChunkGeneratedAt(chunkX,chunkZ)) {
             Chunk chunk = world.getChunk(chunkX,chunkZ);
             if(chunk.isLoaded()) {
-                IChunk access = (IChunk)chunk;
-                if(fast || !hasFastPlayerInOrAdjacent(world,chunk,player)) access.dimhoppertweaks$setFast(fast);
+                if(fast) fast = hasFastPlayerInOrAdjacent(world,chunkX,chunkZ,null);
+                ExtraChunkData.setFastChunk(chunk,fast);
             }
         }
     }
 
-    public static boolean hasFastPlayerInOrAdjacent(World world, Chunk chunk, @Nullable EntityPlayer setter) {
-        return hasFastPlayerInOrAdjacent(world,chunk.x,chunk.z,setter);
+    public static void setFastChunk(World world, int chunkX, int chunkZ, @Nullable EntityPlayer player) {
+        setFastChunk(world,chunkX,chunkZ,Objects.nonNull(player) && SkillWrapper.makesChunksFast(player));
     }
 
     public static boolean hasFastPlayerInOrAdjacent(World world, int chunkX, int chunkZ, @Nullable EntityPlayer setter) {

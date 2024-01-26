@@ -1,7 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.registry.traits.attack;
 
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
-import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.DamageSource;

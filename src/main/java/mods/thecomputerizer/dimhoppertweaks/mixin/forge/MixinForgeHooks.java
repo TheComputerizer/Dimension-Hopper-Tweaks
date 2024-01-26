@@ -1,7 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.forge;
 
 import com.google.common.collect.Lists;
-import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
 import net.minecraft.block.*;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;

@@ -14,9 +14,9 @@ import de.ellpeck.actuallyadditions.mod.tile.TileEntityGiantChest;
 import de.ellpeck.naturesaura.blocks.tiles.TileEntityAutoCrafter;
 import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
 import mariot7.xlfoodmod.init.ItemListxlfoodmod;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.chunk.ExtraChunkData;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.integration.crafttweaker.CTPassthrough;
-import mods.thecomputerizer.dimhoppertweaks.mixin.api.IChunk;
 import mods.thecomputerizer.dimhoppertweaks.mixin.api.IInventoryCrafting;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketSendKeyPressed;
 import net.darkhax.gamestages.GameStageHelper;
@@ -349,7 +349,7 @@ public class DelayedModAccess {
     }
 
     public static boolean isFastChunk(Chunk chunk) {
-        return ((IChunk)chunk).dimhoppertweaks$isFast();
+        return ExtraChunkData.isChunkFast(chunk);
     }
 
     public static Block getGDKeystoneBlock() {

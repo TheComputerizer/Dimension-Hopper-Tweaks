@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.registry.traits.gathering;
 
-import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.MobEffects;

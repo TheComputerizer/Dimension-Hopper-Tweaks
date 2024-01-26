@@ -1,7 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.common.commands;
 
 import mcp.MethodsReturnNonnullByDefault;
-import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketQueryGenericClient;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketTileEntityClassQuery;
@@ -252,7 +252,6 @@ public class DHDebugCommands extends DHTCommand {
         DHTRef.LOGGER.info(prefix+" dimension IDs:");
         for(Integer id : ids) {
             String str = String.valueOf(id);
-            DHTRef.LOGGER.info(String.valueOf(id));
             DimensionType type = null;
             try {
                 type = DimensionManager.getProviderType(id);

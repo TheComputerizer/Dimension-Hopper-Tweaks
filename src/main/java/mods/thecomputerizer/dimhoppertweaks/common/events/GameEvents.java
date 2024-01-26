@@ -5,17 +5,24 @@ import codersafterdark.reskillable.api.data.PlayerDataHandler;
 import de.ellpeck.nyx.capabilities.NyxWorld;
 import de.ellpeck.nyx.network.PacketHandler;
 import de.ellpeck.nyx.network.PacketNyxWorld;
-import mods.thecomputerizer.dimhoppertweaks.common.capability.ISkillCapability;
-import mods.thecomputerizer.dimhoppertweaks.common.capability.SkillWrapper;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.chunk.ExtraChunkData;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.chunk.ExtraChunkDataProvider;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.player.ISkillCapability;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillCapabilityProvider;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketQueryGenericClient;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
 import net.darkhax.gamestages.GameStageHelper;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -28,6 +35,17 @@ import java.util.Objects;
 
 @Mod.EventBusSubscriber(modid = DHTRef.MODID)
 public class GameEvents {
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void attachEntityCapabilities(AttachCapabilitiesEvent<Entity> event) {
+        if(event.getObject() instanceof EntityPlayerMP && !(event.getObject() instanceof FakePlayer))
+            event.addCapability(SkillWrapper.SKILL_CAPABILITY,new SkillCapabilityProvider());
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void attachChunkCapabilities(AttachCapabilitiesEvent<Chunk> event) {
+       event.addCapability(ExtraChunkData.CHUNK_CAPABILITY,new ExtraChunkDataProvider());
+    }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void playerJoin(PlayerLoggedInEvent event) {

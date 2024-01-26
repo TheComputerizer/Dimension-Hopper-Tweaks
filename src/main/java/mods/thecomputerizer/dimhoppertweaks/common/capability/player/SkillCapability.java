@@ -1,4 +1,4 @@
-package mods.thecomputerizer.dimhoppertweaks.common.capability;
+package mods.thecomputerizer.dimhoppertweaks.common.capability.player;
 
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketGrayScaleTimer;
