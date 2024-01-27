@@ -90,8 +90,8 @@
     "lockyzextradimensionsmod.Mixinmcreator_interDimensionalOre",
     "loottweaker.MixinMutableLootPool",
     "loottweaker.MixinMutableLootTable",
-    "mekanism.MixinSize",
     "mekanism.MixinNeighborListener",
+    "mekanism.MixinSize",
     "mekanism.MixinTileComponentSecurity",
     "mist.MixinServerEventHandler",
     "mobends.MixinEntityRenderHandler",
@@ -154,6 +154,7 @@
     "conarm.MixinModelConstructsArmor",
     "mobends.MixinArmorWrapper",
     "mobends.MixinLayerCustomBipedArmor",
+    "mobends.MixinLayerCustomCape",
     "reskillable.MixinGuiSkills",
     "silentgems.MixinItemEnchantmentToken"
   ]
