@@ -85,7 +85,7 @@ public final class DHTClient {
         mc.addScheduledTask(() -> {
             float density = tryOrDef(() -> GL11.glGetFloat(GL11.GL_FOG_DENSITY),Float.MAX_VALUE,"Unable to query fog density");
             if(density>=0 && density<Float.MAX_VALUE) {
-                float farplane = ((EntityRendererAccess)mc.entityRenderer).getFarPlaneDistance();
+                float farplane = ((EntityRendererAccess)Minecraft.getMinecraft().entityRenderer).getFarPlaneDistance();
                 GlStateManager.setFogStart(farplane*0.75f);
                 GlStateManager.setFogEnd(farplane);
                 if(GLContext.getCapabilities().GL_NV_fog_distance) GlStateManager.glFogi(34138,34139);
@@ -106,10 +106,10 @@ public final class DHTClient {
 
     public static void queryGame(Minecraft mc) {
         mc.addScheduledTask(() -> {
-            GameSettings settings = mc.gameSettings;
+            GameSettings settings = Minecraft.getMinecraft().gameSettings;
             int renderDist = getOrDef(settings,s -> s.renderDistanceChunks,Integer.MAX_VALUE);
-            float farPlaneDist = getOrDef(mc.entityRenderer,r -> ((EntityRendererAccess)r).getFarPlaneDistance(),Float.MAX_VALUE);
-            PotionEffect blindness = mc.player.getActivePotionEffect(MobEffects.BLINDNESS);
+            float farPlaneDist = getOrDef(Minecraft.getMinecraft().entityRenderer,r -> ((EntityRendererAccess)r).getFarPlaneDistance(),Float.MAX_VALUE);
+            PotionEffect blindness = Minecraft.getMinecraft().player.getActivePotionEffect(MobEffects.BLINDNESS);
             boolean isBlind = Objects.nonNull(blindness);
             int blindLevel = isBlind ? blindness.getAmplifier() : Integer.MAX_VALUE;
             DHTRef.LOGGER.error("GAME INFO: `RENDER DISTANCE (CHUNKS) {} | FARPLANE DISTANCE {} | "+
@@ -119,14 +119,14 @@ public final class DHTClient {
 
     public static void queryShader(Minecraft mc) {
         mc.addScheduledTask(() -> {
-            mc.entityRenderer.switchUseShader();
+            Minecraft.getMinecraft().entityRenderer.switchUseShader();
             DHTRef.LOGGER.error("SWITCH SHADER USAGE");
         });
     }
 
     public static void queryWorld(Minecraft mc) {
         mc.addScheduledTask(() -> {
-            WorldClient world = mc.world;
+            WorldClient world = Minecraft.getMinecraft().world;
             WorldProvider provider = getOrNull(world,wc -> wc.provider);
             int dimension = getOrDef(provider,WorldProvider::getDimension,Integer.MAX_VALUE);
             IRenderHandler cloudRender = getOrNull(provider,WorldProvider::getCloudRenderer);

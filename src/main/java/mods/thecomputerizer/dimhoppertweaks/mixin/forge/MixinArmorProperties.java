@@ -1,7 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.forge;
 
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
-import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
@@ -100,7 +99,6 @@ public abstract class MixinArmorProperties {
                     if(inventory.get(i).getCount()==0) inventory.set(i,ItemStack.EMPTY);
                 }
             }
-            DHTRef.LOGGER.error("ARMOR PROPERTIES: `BASE ARMOR {} | BASE TOUGHNESS {} | PRESTIGE FACTOR {}`",totalArmor,totalToughness,prestigeFactor);
             if(totalArmor>0d && prestigeFactor>0d)
                 totalArmor = dimhopeprtweaks$adjustVal(prestigeFactor,totalArmor,0.1d);
             if(totalToughness>0d && prestigeFactor>0d)

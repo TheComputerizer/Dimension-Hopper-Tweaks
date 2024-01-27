@@ -1,6 +1,5 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.vanilla;
 
-import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import net.minecraft.util.CombatRules;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -26,46 +25,46 @@ public abstract class MixinCombatRules {
      */
     @Overwrite
     public static float getDamageAfterAbsorb(float damage, float armor, float toughness) {
-        DHTRef.LOGGER.error("COMBAT RULES: `BASE DAMAGE {} | BASE ARMOR {} | PRESTIGE TOUGHNESS {}`",damage,armor,toughness);
         double reduction = 0d;
         double armorPercent = 0d;
         if(armor>0f) {
-            double maxPercent = dimhoppertweaks$maxArmorPercent/100d;
-            armorPercent = Math.min(maxPercent,dimhoppertweaks$calculateArmorPercent(armor))/100d;
+            double maxPercent = dimhoppertweaks$maxArmorPercent/100d; //decimal percentage
+            armorPercent = Math.min(maxPercent,dimhoppertweaks$calculateArmorPercent(armor)); //decimal percentage
             double maxReduction = Math.min(dimhoppertweaks$maxArmorReduction*maxPercent,dimhoppertweaks$maxArmorReduction*armorPercent);
             reduction = Math.min(damage*armorPercent,maxReduction);
-            DHTRef.LOGGER.error("COMBAT RULES: `MAX ARMOR PERCENT {} | CALCULATED ARMOR PERCENT {} | "+
-                    "MAX ARMOR REDUCTION {} | ACTUAL ARMOR REDUCTION {}`",maxPercent,armorPercent,maxReduction,reduction);
         }
         if(toughness>0f) {
-            double maxPercent = dimhoppertweaks$maxToughnessPercent/100d;
-            double toughnessPercent = Math.min(maxPercent,dimhoppertweaks$calculateToughnessPercent(toughness))/100d;
+            double maxPercent = dimhoppertweaks$maxToughnessPercent/100d; //decimal percentage
+            double toughnessPercent = Math.min(maxPercent,dimhoppertweaks$calculateToughnessPercent(toughness)); //decimal percentage
             double maxReduction = Math.min(dimhoppertweaks$maxToughnessReduction*maxPercent,dimhoppertweaks$maxToughnessReduction*toughnessPercent);
             toughnessPercent = (1d-armorPercent)*toughnessPercent;
             reduction+=(Math.min(damage*toughnessPercent,maxReduction));
-            DHTRef.LOGGER.error("COMBAT RULES: `MAX TOUGHNESS PERCENT {} | CALCULATED TOUGHNESS PERCENT {} | "+
-                    "MAX TOUGHNESS REDUCTION {}`",maxPercent,toughnessPercent,maxReduction);
         }
-        DHTRef.LOGGER.error("COMBAT RULES: `TOTAL DAMAGE REDUCTION {} | TOTAL DAMAGE {}`",reduction,damage-reduction);
         return (float)Math.max(0d,damage-reduction);
     }
 
+    /**
+     * Returns a decimal percentage
+     */
     @Unique
     private static double dimhoppertweaks$calculateArmorPercent(double armor) {
         armor = Math.min(armor,dimhoppertweaks$maxArmor);
         if(armor<=dimhoppertweaks$maxArmorLinear)
-            return dimhoppertweaks$armorPercentFactor*(armor/dimhoppertweaks$maxArmorLinear);
+            return (dimhoppertweaks$armorPercentFactor*(armor/dimhoppertweaks$maxArmorLinear))/100d;
         double factor = Math.log(dimhoppertweaks$maxArmor/armor)/Math.log(2d);
-        return dimhoppertweaks$maxArmorPercent-(dimhoppertweaks$armorPercentFactor*factor);
+        return (dimhoppertweaks$maxArmorPercent-(dimhoppertweaks$armorPercentFactor*factor))/100d;
     }
 
+    /**
+     * Returns a decimal percentage
+     */
     @Unique
     private static double dimhoppertweaks$calculateToughnessPercent(double toughness) {
         toughness = Math.min(toughness,dimhoppertweaks$maxToughness);
         if(toughness<=dimhoppertweaks$maxToughnessLinear)
-            return dimhoppertweaks$toughnessPercentFactor*(toughness/dimhoppertweaks$maxToughnessLinear);
+            return ((dimhoppertweaks$toughnessPercentFactor*2d)*(toughness/dimhoppertweaks$maxToughnessLinear))/100d;
         double factor = Math.log(dimhoppertweaks$maxToughness/toughness)/Math.log(2d);
-        return dimhoppertweaks$maxToughnessPercent-(dimhoppertweaks$toughnessPercentFactor*factor);
+        return (dimhoppertweaks$maxToughnessPercent-(dimhoppertweaks$toughnessPercentFactor*factor))/100d;
     }
 
     /**

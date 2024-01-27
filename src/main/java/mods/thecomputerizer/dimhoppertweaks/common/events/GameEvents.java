@@ -13,6 +13,7 @@ import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrappe
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketQueryGenericClient;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
+import mods.thecomputerizer.dimhoppertweaks.util.WorldUtil;
 import net.darkhax.gamestages.GameStageHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,6 +21,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -56,6 +58,9 @@ public class GameEvents {
             if(!GameStageHelper.hasStage(player,"bedrockFinal"))
                 player.inventory.clearMatchingItems(Item.getItemFromBlock(Blocks.BEDROCK),-1,0,null);
             SkillWrapper.onPlayerJoin(player);
+            World world = player.getEntityWorld();
+            WorldUtil.iterateChunks(world,player.chunkCoordX,player.chunkCoordZ,1,
+                    chunk -> WorldUtil.setFastChunk(world,chunk.x,chunk.z,player));
             new PacketQueryGenericClient("fix").addPlayers(player).send();
         }
     }

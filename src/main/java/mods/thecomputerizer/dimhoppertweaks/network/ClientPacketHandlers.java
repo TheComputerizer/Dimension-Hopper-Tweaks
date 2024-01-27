@@ -5,10 +5,12 @@ import mods.thecomputerizer.dimhoppertweaks.client.DHTClient;
 import mods.thecomputerizer.dimhoppertweaks.client.render.ClientEffects;
 import mods.thecomputerizer.dimhoppertweaks.client.render.RenderDelayedAOE;
 import mods.thecomputerizer.dimhoppertweaks.client.render.RenderEvents;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.chunk.ExtraChunkData;
 import mods.thecomputerizer.dimhoppertweaks.registry.SoundRegistry;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
@@ -116,5 +118,15 @@ public class ClientPacketHandlers {
                 DHTClient.queryWorld(mc);
                 break;
         }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static void handleExtraChunkData(int chunkX, int chunkZ, boolean isFast) {
+        Minecraft mc = Minecraft.getMinecraft();
+        mc.addScheduledTask(() -> {
+            WorldClient world = Minecraft.getMinecraft().world;
+            if(world.isChunkGeneratedAt(chunkX,chunkZ))
+                ExtraChunkData.setFastChunk(world.getChunk(chunkX,chunkZ),isFast);
+        });
     }
 }
