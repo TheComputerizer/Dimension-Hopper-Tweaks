@@ -6,6 +6,7 @@ import mods.thecomputerizer.dimhoppertweaks.mixin.api.IEntity;
 import net.minecraft.block.BlockPortal;
 import net.minecraft.block.state.pattern.BlockPattern;
 import net.minecraft.entity.Entity;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumFacing;
@@ -20,6 +21,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import javax.annotation.Nullable;
 
@@ -39,6 +41,7 @@ public abstract class MixinEntity implements IEntity {
     @Unique private int dimhoppertweaks$gaiaPortalCounter;
     @Unique private int dimhoppertweaks$gaiaTimeUntilPortal;
     @Unique private int dimhoppertweaks$dimFrom;
+    @Unique private double dimhoppertweaks$gravityFactor = 1d;
     @Shadow public abstract int getPortalCooldown();
     @Shadow public abstract boolean isRiding();
     @Shadow public abstract int getMaxInPortalTime();
@@ -48,6 +51,17 @@ public abstract class MixinEntity implements IEntity {
     @Unique
     private Entity dimhoppertweaks$cast() {
         return (Entity)(Object)this;
+    }
+
+    @Override
+    public double dimhoppertweaks$getGravityFactor() {
+        return this.dimhoppertweaks$gravityFactor;
+    }
+
+    @Override
+    public void dimhoppertweaks$setGravityFactor(double gravityFactor) {
+        if(gravityFactor<=0) gravityFactor = 1d;
+        this.dimhoppertweaks$gravityFactor = gravityFactor;
     }
 
     /**
@@ -110,5 +124,15 @@ public abstract class MixinEntity implements IEntity {
     @Inject(at = @At("RETURN"), method = "onEntityUpdate")
     private void setDimhoppertweaks$onEntityUpdate(CallbackInfo ci) {
         if(!this.world.isRemote && this.onGround) SkillWrapper.resetFanUsage(dimhoppertweaks$cast());
+    }
+
+    @Inject(at = @At("RETURN"), method = "writeToNBT")
+    private void dimhoppertweaks$writeToNBT(NBTTagCompound compound, CallbackInfoReturnable<NBTTagCompound> cir) {
+        compound.setDouble("gravityFactor",this.dimhoppertweaks$gravityFactor);
+    }
+
+    @Inject(at = @At("RETURN"), method = "readFromNBT")
+    private void dimhoppertweaks$readFromNBT(NBTTagCompound compound, CallbackInfo ci) {
+        dimhoppertweaks$setGravityFactor(compound.getDouble("gravityFactor"));
     }
 }

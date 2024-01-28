@@ -58,12 +58,17 @@ public final class DHTConfig {
         @Name("auraCap")
         @LangKey("config.dimhoppertweaks.skills.auraCap")
         @Comment("The maximum amount of aura the Nature's aura trait can balance to (neutral is 1000000)")
-        public int auraCap = 1500000;
+        public int auraCap = 2000000;
 
         @Name("auraGains")
         @LangKey("config.dimhoppertweaks.skills.auraGains")
-        @Comment("The amount of aura added per tick with the Nature's aura trait when the current chunk is below the auraCap")
-        public int auraGains = 250;
+        @Comment("The amount of aura added per second with the Nature's aura trait when the current chunk is below the auraCap")
+        public int auraGains = 10000;
+
+        @Name("auraRadius")
+        @LangKey("config.dimhoppertweaks.skills.auraRadius")
+        @Comment("The range in blocks to use when checking the auraCap around a player with the Nature's Aura trait")
+        public int auraRadius = 30;
     }
 
     public static final class Tweaks {

@@ -155,6 +155,7 @@
     "mobends.MixinArmorWrapper",
     "mobends.MixinLayerCustomBipedArmor",
     "mobends.MixinLayerCustomCape",
+    "naturesaura.MixinTileEntityNatureAltarClient",
     "reskillable.MixinGuiSkills",
     "silentgems.MixinItemEnchantmentToken"
   ]

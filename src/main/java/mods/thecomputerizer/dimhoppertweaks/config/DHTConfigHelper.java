@@ -1,5 +1,8 @@
 package mods.thecomputerizer.dimhoppertweaks.config;
 
+import de.ellpeck.naturesaura.api.aura.chunk.IAuraChunk;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,48 +13,49 @@ import java.util.Random;
 public class DHTConfigHelper {
 
     private static final Logger DEV_LOGGER = LogManager.getLogger("DHT Dev");
-
     private static double maxArmorLinear = calculateMaxArmorLinear();
     private static double actualMaxArmorReduction = calculateActualMaxArmorReduction();
     private static double maxToughnessLinear = calculateMaxArmorLinear();
     private static double actualMaxToughnessReduction = calculateActualMaxToughnessReduction();
 
+    public static int auraInRadius(World world, BlockPos pos) {
+        return IAuraChunk.getAuraInArea(world,pos,DHTConfig.SKILLS.auraRadius);
+    }
+
     private static double calculateActualMaxArmorReduction() {
-        DHTConfig.Tweaks tweaks = DHTConfig.TWEAKS;
-        return (100d/tweaks.maxArmorPercentage)*tweaks.maxArmorReduction;
+        return (100d/DHTConfig.TWEAKS.maxArmorPercentage)*DHTConfig.TWEAKS.maxArmorReduction;
     }
 
     private static double calculateActualMaxToughnessReduction() {
-        DHTConfig.Tweaks tweaks = DHTConfig.TWEAKS;
-        return (100d/tweaks.maxToughnessPercentage)*tweaks.maxToughnessReduction;
+        return (100d/DHTConfig.TWEAKS.maxToughnessPercentage)*DHTConfig.TWEAKS.maxToughnessReduction;
     }
 
     public static double calculateArmorPercentage(double armor) {
-        DHTConfig.Tweaks tweaks = DHTConfig.TWEAKS;
-        armor = Math.min(armor,tweaks.maxArmor);
+        armor = Math.min(armor,DHTConfig.TWEAKS.maxArmor);
         if(armor<=maxArmorLinear)
-            return (tweaks.armorPercentageFactor*(armor/maxArmorLinear))/100d;
-        double factor = Math.log(tweaks.maxArmor/armor)/Math.log(2d);
-        return (tweaks.maxArmorPercentage-(tweaks.armorPercentageFactor*factor))/100d;
+            return (DHTConfig.TWEAKS.armorPercentageFactor*(armor/maxArmorLinear))/100d;
+        double factor = Math.log(DHTConfig.TWEAKS.maxArmor/armor)/Math.log(2d);
+        return (DHTConfig.TWEAKS.maxArmorPercentage-(DHTConfig.TWEAKS.armorPercentageFactor*factor))/100d;
     }
 
     private static double calculateMaxArmorLinear() {
-        DHTConfig.Tweaks tweaks = DHTConfig.TWEAKS;
-        return tweaks.maxArmor/(Math.pow(2d,tweaks.maxArmorPercentage/tweaks.armorPercentageFactor-1d));
+        return DHTConfig.TWEAKS.maxArmor/(Math.pow(2d,DHTConfig.TWEAKS.maxArmorPercentage/DHTConfig.TWEAKS.armorPercentageFactor-1d));
     }
 
     private static double calculateMaxToughnessLinear() {
-        DHTConfig.Tweaks tweaks = DHTConfig.TWEAKS;
-        return tweaks.maxToughness/(Math.pow(2d,tweaks.maxToughnessPercentage/tweaks.toughnessPercentageFactor-2d));
+        return DHTConfig.TWEAKS.maxToughness/(Math.pow(2d,DHTConfig.TWEAKS.maxToughnessPercentage/DHTConfig.TWEAKS.toughnessPercentageFactor-2d));
     }
 
     public static double calculateToughnessPercentage(double toughness) {
-        DHTConfig.Tweaks tweaks = DHTConfig.TWEAKS;
-        toughness = Math.min(toughness,tweaks.maxToughness);
+        toughness = Math.min(toughness,DHTConfig.TWEAKS.maxToughness);
         if(toughness<=maxToughnessLinear)
-            return (tweaks.toughnessPercentageFactor*(toughness/maxToughnessLinear))/100d;
-        double factor = Math.log(tweaks.maxToughness/toughness)/Math.log(2d);
-        return (tweaks.maxToughnessPercentage-(tweaks.toughnessPercentageFactor*factor))/100d;
+            return (DHTConfig.TWEAKS.toughnessPercentageFactor*(toughness/maxToughnessLinear))/100d;
+        double factor = Math.log(DHTConfig.TWEAKS.maxToughness/toughness)/Math.log(2d);
+        return (DHTConfig.TWEAKS.maxToughnessPercentage-(DHTConfig.TWEAKS.toughnessPercentageFactor*factor))/100d;
+    }
+
+    public static boolean canAddAura(int aura) {
+        return aura<DHTConfig.SKILLS.auraCap;
     }
 
     public static void devDebug(String msg, Object ... parameters) {
@@ -76,10 +80,6 @@ public class DHTConfigHelper {
 
     public static void devWarn(String msg, Object ... parameters) {
         devLog(Level.WARN,msg,parameters);
-    }
-
-    public static int getAuraCap() {
-        return DHTConfig.SKILLS.auraCap;
     }
 
     public static int getAuraGains() {

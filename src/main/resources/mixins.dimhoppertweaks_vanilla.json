@@ -12,6 +12,7 @@
     "MixinCombatRules",
     "MixinDimensionType",
     "MixinEntity",
+    "MixinEntityItem",
     "MixinEntityLivingBase",
     "MixinEntityPlayer",
     "MixinEntityTrackerEntry",

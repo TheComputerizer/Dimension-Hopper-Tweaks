@@ -43,10 +43,11 @@ public class NaturesAuraSkillEffect implements IDrainSpotEffect {
 
     @Override
     public void update(World world, Chunk chunk, IAuraChunk auraChunk, BlockPos pos, Integer spot) {
-        if(IAuraChunk.getAuraInArea(world,pos,30)<=DHTConfigHelper.getAuraCap()) {
-            int aura = DHTConfigHelper.getAuraGains();
-            DHTConfigHelper.devInfo("STORING {}} AURA AT POS ({},{},{})",aura,pos.getX(),pos.getY(),pos.getZ());
-            auraChunk.storeAura(pos,aura,false,false);
+        int aura = DHTConfigHelper.auraInRadius(world,pos);
+        if(DHTConfigHelper.canAddAura(aura)) {
+            int gains = DHTConfigHelper.getAuraGains();
+            DHTConfigHelper.devInfo("[{}] ADDING `{}` TO AREA WITH `{}` AURA",pos,gains,aura);
+            auraChunk.storeAura(pos,gains,false,false);
         }
     }
 }
