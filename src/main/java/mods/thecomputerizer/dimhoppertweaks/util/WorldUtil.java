@@ -3,6 +3,7 @@ package mods.thecomputerizer.dimhoppertweaks.util;
 import mods.thecomputerizer.dimhoppertweaks.client.particle.ParticleBlightFire;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.chunk.ExtraChunkData;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
+import mods.thecomputerizer.dimhoppertweaks.config.DHTConfigHelper;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -12,6 +13,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -103,6 +105,10 @@ public class WorldUtil {
             Chunk chunk = world.getChunk(chunkX,chunkZ);
             if(chunk.isLoaded()) {
                 if(fast) fast = hasFastPlayerInOrAdjacent(world,chunkX,chunkZ,null);
+                if(DHTConfigHelper.isDevLogEnabled())
+                    DHTConfigHelper.devDebug((fast ? "MARKING" : "REMOVING FAST STATUS FROM")+" CHUNK AT ({},{}) "+
+                            (fast ? "AS FAST" : "")+" ON "+(world instanceof WorldServer ? "SERVER" : "CLIENT")+" SIDE",
+                            chunkX,chunkZ);
                 ExtraChunkData.setFastChunk(chunk,fast);
             }
         }

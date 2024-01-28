@@ -1,6 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.forge;
 
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
+import mods.thecomputerizer.dimhoppertweaks.config.DHTConfigHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
@@ -99,10 +100,13 @@ public abstract class MixinArmorProperties {
                     if(inventory.get(i).getCount()==0) inventory.set(i,ItemStack.EMPTY);
                 }
             }
+            if(prestigeFactor>0d)
+                DHTConfigHelper.devInfo("ARMOR PROPERTIES: `BASE ARMOR {} | BASE TOUGHNESS {} | "+
+                        "PRESTIGE FACTOR {}`", totalArmor,totalToughness,prestigeFactor);
             if(totalArmor>0d && prestigeFactor>0d)
-                totalArmor = dimhopeprtweaks$adjustVal(prestigeFactor,totalArmor,0.1d);
+                totalArmor = dimhopeprtweaks$adjustVal(prestigeFactor,totalArmor);
             if(totalToughness>0d && prestigeFactor>0d)
-                totalToughness = dimhopeprtweaks$adjustVal(prestigeFactor,totalToughness,0.1d);
+                totalToughness = dimhopeprtweaks$adjustVal(prestigeFactor,totalToughness);
             damage = CombatRules.getDamageAfterAbsorb((float)damage,(float)totalArmor,(float)totalToughness);
         }
         if(DEBUG) System.out.println("Return: "+(int)(damage)+" "+damage);
@@ -110,7 +114,7 @@ public abstract class MixinArmorProperties {
     }
 
     @Unique
-    private static double dimhopeprtweaks$adjustVal(double prestigeFactor, double armorVal, double modifier) {
-        return armorVal+(armorVal*prestigeFactor*modifier);
+    private static double dimhopeprtweaks$adjustVal(double prestigeFactor, double armorVal) {
+        return armorVal+(armorVal*prestigeFactor*0.1d);
     }
 }

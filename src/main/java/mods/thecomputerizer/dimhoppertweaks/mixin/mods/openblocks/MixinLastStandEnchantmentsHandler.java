@@ -2,6 +2,7 @@ package mods.thecomputerizer.dimhoppertweaks.mixin.mods.openblocks;
 
 import info.openmods.calc.ExprType;
 import info.openmods.calc.SingleExprEvaluator;
+import mods.thecomputerizer.dimhoppertweaks.config.DHTConfigHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -24,9 +25,9 @@ public abstract class MixinLastStandEnchantmentsHandler {
         return 0;
     }
 
-    @Shadow @Final private SingleExprEvaluator<Double, ExprType> reductionCalculator;
+    @Shadow @Final private SingleExprEvaluator<Double,ExprType> reductionCalculator;
 
-    @Unique private final Map<EntityPlayer, MutableInt> dimhoppertweaks$playerTicker = Collections.synchronizedMap(new HashMap<>());
+    @Unique private final Map<EntityPlayer,MutableInt> dimhoppertweaks$playerTicker = Collections.synchronizedMap(new HashMap<>());
 
     /**
      * @author The_Computerizer
@@ -42,19 +43,19 @@ public abstract class MixinLastStandEnchantmentsHandler {
                 synchronized(this.dimhoppertweaks$playerTicker) {
                     this.dimhoppertweaks$playerTicker.putIfAbsent(player, new MutableInt());
                     float playerHealth = player.getHealth();
-                    float healthAvailable = playerHealth - e.getAmount();
+                    float healthAvailable = playerHealth-e.getAmount();
                     if(this.dimhoppertweaks$playerTicker.get(player).intValue()<=0 && healthAvailable<1f) {
-                        int time = Math.max(2,5-enchantmentLevels);
+                        int time = DHTConfigHelper.getLastStandCooldown(enchantmentLevels);
                         int xpAvailable = EnchantmentUtils.getPlayerXP(player);
                         float xpRequired = this.reductionCalculator.evaluate(env -> {
-                            env.setGlobalSymbol("ench", (double) enchantmentLevels);
-                            env.setGlobalSymbol("xp", (double) xpAvailable);
-                            env.setGlobalSymbol("hp", (double) playerHealth);
-                            env.setGlobalSymbol("dmg", (double) e.getAmount());
+                            env.setGlobalSymbol("ench",(double)enchantmentLevels);
+                            env.setGlobalSymbol("xp",(double)xpAvailable);
+                            env.setGlobalSymbol("hp",(double)playerHealth);
+                            env.setGlobalSymbol("dmg",(double)e.getAmount());
                         },() -> {
                             float xp = 1f-healthAvailable;
-                            xp *= 200f;
-                            xp /= (float)enchantmentLevels;
+                            xp*=200f;
+                            xp/=(float)enchantmentLevels;
                             xp = Math.max(1f,xp);
                             return (double)xp;
                         }).floatValue();

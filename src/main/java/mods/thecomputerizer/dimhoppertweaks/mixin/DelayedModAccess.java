@@ -15,6 +15,7 @@ import de.ellpeck.naturesaura.blocks.tiles.TileEntityAutoCrafter;
 import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
 import mariot7.xlfoodmod.init.ItemListxlfoodmod;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.chunk.ExtraChunkData;
+import mods.thecomputerizer.dimhoppertweaks.config.DHTConfigHelper;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.integration.crafttweaker.CTPassthrough;
 import mods.thecomputerizer.dimhoppertweaks.mixin.api.IInventoryCrafting;
@@ -369,14 +370,6 @@ public class DelayedModAccess {
         return new TeleporterGaia(world,getGDPortalBlock(),getGDKeystoneBlock().getDefaultState());
     }
 
-    private static boolean randDouble(Random rand, double d) {
-        return rand.nextDouble()<=d;
-    }
-
-    private static boolean randFloat(Random rand, float f) {
-        return rand.nextFloat()<=f;
-    }
-
     public static void replaceAfterStructureGeneration(Chunk chunk) {
         World world = chunk.getWorld();
         replaceBlocksInDimension(world,chunk);
@@ -388,7 +381,7 @@ public class DelayedModAccess {
     }
 
     public static void replaceChest(Random rand, TileEntityChest tile, IBlockState state) {
-        if(state.getBlock() instanceof BlockChest && randFloat(rand,DHTRef.CHEST_REPLACEMENT_CHANCE)) {
+        if(state.getBlock() instanceof BlockChest && DHTConfigHelper.shouldReplaceChest(rand)) {
             Map<ItemStack,Integer> slotMap = new HashMap<>();
             for(int i=0; i<tile.getSizeInventory(); i++) {
                 ItemStack stack = tile.getStackInSlot(i);

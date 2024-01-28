@@ -6,6 +6,7 @@ import de.ellpeck.naturesaura.api.aura.chunk.IDrainSpotEffect;
 import de.ellpeck.naturesaura.api.aura.type.IAuraType;
 import de.ellpeck.naturesaura.items.ModItems;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
+import mods.thecomputerizer.dimhoppertweaks.config.DHTConfigHelper;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.registry.TraitRegistry;
 import net.minecraft.entity.player.EntityPlayer;
@@ -42,7 +43,10 @@ public class NaturesAuraSkillEffect implements IDrainSpotEffect {
 
     @Override
     public void update(World world, Chunk chunk, IAuraChunk auraChunk, BlockPos pos, Integer spot) {
-        if(IAuraChunk.getAuraInArea(world,pos,30)<=150000)
-            auraChunk.storeAura(pos,500,false,false);
+        if(IAuraChunk.getAuraInArea(world,pos,30)<=DHTConfigHelper.getAuraCap()) {
+            int aura = DHTConfigHelper.getAuraGains();
+            DHTConfigHelper.devInfo("STORING {}} AURA AT POS ({},{},{})",aura,pos.getX(),pos.getY(),pos.getZ());
+            auraChunk.storeAura(pos,aura,false,false);
+        }
     }
 }
