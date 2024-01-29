@@ -1,0 +1,14 @@
+{
+    "name": "book.dimhoppertweaks.name",
+    "landing_text": "book.dimhoppertweaks.main.info",
+    "advancement_namespaces": [
+        "triumph"
+    ],
+    "creative_tab": "dimhoppertweaks",
+    "advancements_tab": "dimensionhopper",
+    "book_texture": "dimhoppertweaks:textures/skills/void.png",
+    "filler_texture": "dimhoppertweaks:textures/skills/research.png",
+    "progress_bar_background": "000000",
+    "progress_bar_color": "4500a6",
+    "subtitle": "book.dimhoppertweaks.tooltip"
+}

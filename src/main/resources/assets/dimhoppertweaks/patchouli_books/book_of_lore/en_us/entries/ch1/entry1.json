@@ -1,0 +1,11 @@
+{
+    "name": "book.dimhoppertweaks.ch1.entry1.name",
+    "icon": "minecraft:textures/blocks/grass_side.png",
+    "advancement": "triumph:chapter1",
+    "pages": [
+        {
+            "type": "text",
+            "text": "book.dimhoppertweaks.ch1.entry1.desc"
+        }
+    ]
+}

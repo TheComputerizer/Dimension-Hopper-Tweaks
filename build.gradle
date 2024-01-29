@@ -197,6 +197,7 @@ dependencies {
     implementation(fg.deobf("curse.maven:together-forever-285968:${project.together_version}"))
     implementation(fg.deobf("curse.maven:tool-progression-266550:${project.toolprog_version}"))
     implementation(fg.deobf("curse.maven:translocators-247695:${project.translocators_version}"))
+    implementation(fg.deobf("curse.maven:triumph-235492:${project.triumph_version}"))
     implementation(fg.deobf("curse.maven:unidict-244258:${project.unidict_version}"))
     implementation(fg.deobf("curse.maven:universal-tweaks-705000:${project.ut_version}"))
     implementation(fg.deobf("curse.maven:valkyrielib-245480:${project.valklib_version}"))

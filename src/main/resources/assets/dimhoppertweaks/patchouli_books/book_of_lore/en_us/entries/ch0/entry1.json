@@ -1,0 +1,11 @@
+{
+    "name": "book.dimhoppertweaks.ch0.entry1.name",
+    "icon": "twilightforest:textures/items/experiment_115.png",
+    "advancement": "triumph:prologue",
+    "pages": [
+        {
+            "type": "text",
+            "text": "book.dimhoppertweaks.ch0.entry1.desc"
+        }
+    ]
+}

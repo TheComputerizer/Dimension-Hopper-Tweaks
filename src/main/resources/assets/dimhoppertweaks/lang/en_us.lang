@@ -1,3 +1,15 @@
+book.dimhoppertweaks.ch0.desc=Prologue description
+book.dimhoppertweaks.ch0.entry1.name=Prologue Lore Entry #1
+book.dimhoppertweaks.ch0.entry1.desc=Description goes here
+book.dimhoppertweaks.ch0.name=Prologue
+book.dimhoppertweaks.ch1.desc=Chapter 1 description
+book.dimhoppertweaks.ch1.entry1.name=Chapter 1 Lore Entry #1
+book.dimhoppertweaks.ch1.entry1.desc=Description goes here
+book.dimhoppertweaks.ch1.name=The Overworld
+book.dimhoppertweaks.main.info=Book description or something idk
+book.dimhoppertweaks.name=Book of Lore
+book.dimhoppertweaks.tooltip=Why is there a book of lore here
+
 category.dimhoppertweaks.ancient_stargate=Ancient Stargate Visualizer
 category.dimhoppertweaks.ancient_stargate.addresser=§5This will only work in the dimension it is created in
 category.dimhoppertweaks.ancient_stargate.corner=§5Replace the corners of the platform with this
