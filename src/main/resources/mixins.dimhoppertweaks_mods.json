@@ -138,6 +138,7 @@
     "toolprogression.MixinGSHelper",
     "translocators.MixinTileCraftingGrid",
     "travelersbackpack.MixinContainerTravelersBackpack",
+    "twilightforest.MixinEntityTFNatureBolt",
     "twilightforest.MixinItemTFPeacockFan",
     "twilightforest.MixinTFEventListener",
     "twilightforest.MixinTFGenCaveStalactite",
