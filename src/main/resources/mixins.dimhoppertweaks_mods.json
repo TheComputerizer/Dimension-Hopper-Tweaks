@@ -139,6 +139,7 @@
     "translocators.MixinTileCraftingGrid",
     "travelersbackpack.MixinContainerTravelersBackpack",
     "twilightforest.MixinItemTFPeacockFan",
+    "twilightforest.MixinTFEventListener",
     "twilightforest.MixinTFGenCaveStalactite",
     "twilightforest.MixinTFGenMonolith",
     "twilightforest.MixinTraitSynergy",
