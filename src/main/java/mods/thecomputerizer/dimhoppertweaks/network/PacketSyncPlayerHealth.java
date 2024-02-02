@@ -8,18 +8,18 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public class PacketSyncPlayerHealth extends MessageImpl {
 
-    private double health;
+    private boolean isActive;
 
     public PacketSyncPlayerHealth() {}
 
-    public PacketSyncPlayerHealth(double health) {
-        this.health = health;
+    public PacketSyncPlayerHealth(boolean isActive) {
+        this.isActive = isActive;
     }
 
 
     @Override
     public IMessage handle(MessageContext ctx) {
-        ClientPacketHandlers.handleSyncPlayerHealth(this.health);
+        ClientPacketHandlers.handleSyncPlayerHealth(this.isActive);
         return null;
     }
 
@@ -30,11 +30,11 @@ public class PacketSyncPlayerHealth extends MessageImpl {
 
     @Override
     public void fromBytes(ByteBuf buf) {
-        this.health = buf.readDouble();
+        this.isActive = buf.readBoolean();
     }
 
     @Override
     public void toBytes(ByteBuf buf) {
-        buf.writeDouble(this.health);
+        buf.writeBoolean(this.isActive);
     }
 }

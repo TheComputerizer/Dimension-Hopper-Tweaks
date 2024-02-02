@@ -39,7 +39,7 @@ public final class IndiscriminateAOE extends Action {
         if(activeProgress>=this.windupDelay) {
             List<Vec3d> vecList = new ArrayList<>();
             for(int i=0;i<spawnsPerTick;i++)
-                vecList.add(i,getRandomPos(boss.getPositionVector(),boss.world.rand));
+                vecList.add(i,getRandomPos(boss.getPositionVector(),boss.world.rand,activeProgress));
             boss.addAOECounter(vecList,this.aoeTime,this.aoeRange,this.activePhase);
             if(!this.skySwapped) {
                 NetworkHandler.sendToTracking(new PacketBossClientEffects(true,0f),boss);
@@ -59,8 +59,22 @@ public final class IndiscriminateAOE extends Action {
         boss.updateShield(true);
     }
 
-    private Vec3d getRandomPos(Vec3d initial, Random rand) {
-        return new Vec3d(initial.x+getRandomDouble(rand),initial.y+getRandomDouble(rand),initial.z+getRandomDouble(rand));
+    private Vec3d getRandomPos(Vec3d initial, Random rand, int activeProgress) {
+        double randX = getRandomDouble(rand);
+        double randY = getRandomDouble(rand);
+        double randZ = getRandomDouble(rand);
+        if(activeProgress%5==0) {
+            randY = 0;
+            double xDif = randX-initial.x;
+            if(Math.abs(xDif)<3d) {
+                randX+=(xDif<0 ? -2d : 2d);
+            }
+            double zDif = randZ-initial.z;
+            if(Math.abs(zDif)<3d) {
+                randZ+=(zDif<0 ? -3d : 3d);
+            }
+        }
+        return new Vec3d(initial.x+randX,initial.y+randY,initial.z+randZ);
     }
 
     private double getRandomDouble(Random rand) {

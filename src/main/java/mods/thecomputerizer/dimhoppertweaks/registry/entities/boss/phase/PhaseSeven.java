@@ -14,7 +14,7 @@ public class PhaseSeven extends PhaseBase {
         MovePlayers move = new MovePlayers(15,true,this.phase);
         DelayedAOE aoe = new DelayedAOE(10,false,this.phase,3);
         Teleport teleport = new Teleport(10,false,this.phase);
-        Charge charge = new Charge(50,false,this.phase,15,25d);
+        Charge charge = new Charge(50,false,this.phase,15,15d);
         Beam beam = new Beam(160,false,this.phase,80);
         IndiscriminateAOE indiscriminate = new IndiscriminateAOE(160,false,this.phase,26,
                 25d,10,7, 10);

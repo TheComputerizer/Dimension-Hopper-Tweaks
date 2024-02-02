@@ -12,7 +12,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.potion.Potion;
@@ -22,6 +21,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.silentchaos512.scalinghealth.config.Config;
 import net.tslat.aoa3.client.event.KeyBinder;
 
 import java.util.List;
@@ -35,7 +35,8 @@ public class ClientPacketHandlers {
         EntityPlayer player = Minecraft.getMinecraft().player;
         if(Objects.nonNull(player)) {
             Entity entity = player.world.getEntityByID(bossID);
-            if (entity instanceof EntityFinalBoss) {
+            if(entity instanceof EntityFinalBoss) {
+                DHTClient.REMOVE_FOG = true;
                 EntityFinalBoss boss = (EntityFinalBoss) entity;
                 boss.phase = phase;
                 boss.updateShieldClient(shield);
@@ -64,10 +65,8 @@ public class ClientPacketHandlers {
     }
 
     @SideOnly(Side.CLIENT)
-    public static void handleSyncPlayerHealth(double health) {
-        EntityPlayer player = Minecraft.getMinecraft().player;
-        if(Objects.nonNull(player))
-            player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(health);
+    public static void handleSyncPlayerHealth(boolean isActive) {
+        Config.Player.Health.allowModify = isActive;
     }
 
     @SideOnly(Side.CLIENT)

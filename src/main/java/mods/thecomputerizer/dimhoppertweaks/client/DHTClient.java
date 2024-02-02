@@ -37,6 +37,7 @@ public final class DHTClient {
     public final static ResourceLocation ATTACK = new ResourceLocation(DHTRef.MODID,"textures/models/attack.png");
     public static OBJModel FORCEFIELD_MODEL;
     public static float FOG_DENSITY_OVERRIDE = -1f;
+    public static boolean REMOVE_FOG = false;
 
     public static void registerRenderers() {
         registerEntityRenderers();

@@ -1,6 +1,5 @@
 package mods.thecomputerizer.dimhoppertweaks.registry.entities.boss;
 
-import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.client.DHTClient;
 import mods.thecomputerizer.dimhoppertweaks.registry.SoundRegistry;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.HomingProjectile;
@@ -8,9 +7,12 @@ import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.phase.*;
 import mods.thecomputerizer.dimhoppertweaks.registry.items.RealitySlasher;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketRenderBossAttack;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketUpdateBossRender;
+import mods.thecomputerizer.dimhoppertweaks.util.DamageSourceFinalBoss;
 import mods.thecomputerizer.theimpossiblelibrary.network.NetworkHandler;
+import morph.avaritia.handler.AvaritiaEventHandler;
 import morph.avaritia.item.tools.ItemSwordInfinity;
 import morph.avaritia.util.DamageSourceInfinitySword;
+import net.darkhax.gamestages.GameStageHelper;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
@@ -36,6 +38,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.silentchaos512.scalinghealth.config.Config;
 import org.apache.commons.lang3.mutable.MutableInt;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -47,14 +50,11 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @SuppressWarnings("deprecation")
 public class EntityFinalBoss extends EntityLiving implements IAnimatable {
-    private final BossInfoServer bossInfo = (BossInfoServer) (new BossInfoServer(this.getDisplayName(), BossInfo.Color.RED, BossInfo.Overlay.NOTCHED_20)).setDarkenSky(true);
+    private final BossInfoServer bossInfo = (BossInfoServer)new BossInfoServer(this.getDisplayName(),BossInfo.Color.RED, BossInfo.Overlay.NOTCHED_20).setDarkenSky(true);
     private final AnimationFactory factory = new AnimationFactory(this);
     private final AnimationController<EntityFinalBoss> animationController;
     private String currentAnimation = "spawn";
@@ -65,14 +65,15 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
     private boolean isShieldUp;
     private final List<EntityPlayer> players;
     public final List<HomingProjectile> projectiles;
-    private final HashMap<String,Double> savedPlayerHealth;
-    private final HashMap<EntityPlayer, MutableInt> damageCooldown;
+    private final Map<EntityPlayer,MutableInt> damageCooldown;
     private final List<DelayedAOE> aoeAttacks;
     private int projectileChargeTime;
     private int projectileChargeProgress;
     private Vec3d curLook;
     private Entity trackedEntity;
     public boolean isCharging;
+    public boolean setMaxHealth;
+    private boolean isActuallyDead;
 
     public EntityFinalBoss(World worldIn) {
         super(worldIn);
@@ -87,30 +88,30 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
         this.isShieldUp = false;
         this.players = new ArrayList<>();
         this.projectiles = new ArrayList<>();
-        this.savedPlayerHealth = new HashMap<>();
         this.damageCooldown = new HashMap<>();
         this.aoeAttacks = new ArrayList<>();
-        this.animationController = new AnimationController<>(this, "boss_controller", 0, this::predicate);
+        this.animationController = new AnimationController<>(this,"boss_controller",0, this::predicate);
         this.curLook = Vec3d.ZERO;
+        Config.Player.Health.allowModify = false;
     }
 
     @Override
     protected void initEntityAI() {
-        this.tasks.addTask(0, new BossIntro(this));
-        this.tasks.addTask(1, new PhaseOne(this));
-        this.tasks.addTask(2, new PhaseTwo(this));
-        this.tasks.addTask(3, new PhaseThree(this));
-        this.tasks.addTask(4, new PhaseFour(this));
-        this.tasks.addTask(5, new PhaseFive(this));
-        this.tasks.addTask(6, new PhaseSix(this));
-        this.tasks.addTask(7, new PhaseSeven(this));
-        this.tasks.addTask(9, new EntityAIWatchClosest(this,EntityPlayer.class,64f));
+        this.tasks.addTask(0,new BossIntro(this));
+        this.tasks.addTask(1,new PhaseOne(this));
+        this.tasks.addTask(2,new PhaseTwo(this));
+        this.tasks.addTask(3,new PhaseThree(this));
+        this.tasks.addTask(4,new PhaseFour(this));
+        this.tasks.addTask(5,new PhaseFive(this));
+        this.tasks.addTask(6,new PhaseSix(this));
+        this.tasks.addTask(7,new PhaseSeven(this));
+        this.tasks.addTask(9,new EntityAIWatchClosest(this,EntityPlayer.class,64f));
     }
 
     @Override
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(100d);
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(250d);
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.6000000238418579d);
         this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(256d);
         this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(1d);
@@ -141,18 +142,27 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
     }
 
     @Override
+    protected boolean canDespawn() {
+        return false;
+    }
+
+    @Override
     protected void despawnEntity() {}
 
     @Override
     public void setDead() {
         super.setDead();
-        DHTClient.FOG_DENSITY_OVERRIDE = -1f;
-        this.onAddedToWorld();
+        this.isActuallyDead = this.isActuallyDead || getHealth()<=0f;
+        if(this.isActuallyDead) {
+            DHTClient.FOG_DENSITY_OVERRIDE = -1f;
+            this.onAddedToWorld();
+        } else this.dead = false;
     }
 
     @Override
     public void onAddedToWorld() {
         super.onAddedToWorld();
+        Config.Player.Health.allowModify = this.dead;
         DHTClient.FOG_DENSITY_OVERRIDE = 0f;
     }
 
@@ -198,16 +208,25 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
         return this.players;
     }
 
+    public void setTrackingHealth() {
+        for(EntityPlayer player : this.players) setMaxPlayerHealth(player);
+    }
+
+    public void setMaxPlayerHealth(EntityPlayer player) {
+        double health = GameStageHelper.hasStage(player,"hardcore") ? 1d : 100d;
+        if(player.getMaxHealth()>health) {
+            player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).removeAllModifiers();
+            player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(health);
+        }
+    }
+
     @Override
     public void addTrackingPlayer(@Nonnull EntityPlayerMP player) {
         super.addTrackingPlayer(player);
         this.bossInfo.addPlayer(player);
         if(this.players.isEmpty()) this.phase = 0;
         this.players.add(player);
-        if(this.doneWithIntro) {
-            this.savedPlayerHealth.put(player.getUniqueID().toString(),player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).getAttributeValue());
-            player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(100d);
-        }
+        if(this.setMaxHealth) setMaxPlayerHealth(player);
         this.updateShieldForPlayer(player,this.getShieldUp());
     }
 
@@ -216,8 +235,6 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
         super.removeTrackingPlayer(player);
         this.bossInfo.removePlayer(player);
         this.players.remove(player);
-        if(this.savedPlayerHealth.containsKey(player.getUniqueID().toString()))
-            player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(this.savedPlayerHealth.get(player.getUniqueID().toString()));
         if(getTrackingPlayers().isEmpty()) {
             this.setHealth(this.getMaxHealth());
             this.phase = -1;
@@ -230,7 +247,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
     }
 
     public void updateShieldForPlayer(EntityPlayerMP player, boolean isShieldUp) {
-        new PacketUpdateBossRender(this.getEntityId(),this.phase,isShieldUp, this.currentAnimation,
+        new PacketUpdateBossRender(this.getEntityId(),this.phase,isShieldUp,this.currentAnimation,
                 this.projectileChargeTime).addPlayers(player).send();
         this.isShieldUp = isShieldUp;
     }
@@ -262,10 +279,10 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
         if(phase==7) this.onKillCommand();
         else {
             this.isCharging = false;
-            this.phase = phase + 1;
-            for (HomingProjectile projectile : this.projectiles) projectile.setDead();
+            this.phase = phase+1;
+            for(HomingProjectile projectile : this.projectiles) projectile.setDead();
             this.updateShield(isShieldUp);
-            playSound(SoundEvents.ENTITY_WITHER_SPAWN,1f,1f);
+            this.world.playSound(null,this.posX,this.posY,this.posZ,SoundEvents.ENTITY_WITHER_SPAWN,SoundCategory.HOSTILE,1f,1f);
         }
     }
 
@@ -332,10 +349,8 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
     public void chargingAttack() {
         double damageScale = Math.min(10d,Math.hypot(Math.hypot(this.motionX,this.motionY),this.motionZ)*10d);
         for(EntityPlayer player : this.players) {
-            if(isEntityCloseEnough(player,this.getPositionVector(),1)) {
-                DHTRef.LOGGER.error("CHARGING ATTACK DID {}",damageScale);
+            if(isEntityCloseEnough(player,this.getPositionVector(),1))
                 subtractPlayerHealth(player,damageScale);
-            }
         }
     }
 
@@ -345,16 +360,22 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
 
     public boolean subtractPlayerHealth(EntityPlayer player, double amount) {
         if(amount>0) {
-            if(!damageCooldown.containsKey(player) || damageCooldown.get(player).getValue()<=0) {
-                double newHealth = player.getMaxHealth()-amount;
+            if(!AvaritiaEventHandler.isInfinite(player)) {
+                player.onDeath(new DamageSourceFinalBoss(this));
+                return true;
+            }
+            if(!this.damageCooldown.containsKey(player) || this.damageCooldown.get(player).getValue()<=0) {
+                double newHealth = player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).getBaseValue()-amount;
                 if(newHealth>0) {
-                    //player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(newHealth);
+                    player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(newHealth);
                     this.damageCooldown.put(player,new MutableInt(5));
                     playSound(player.getPositionVector(),SoundRegistry.BOSS_HURT);
                     return true;
                 } else {
                     this.setDropItemsWhenDead(false);
-                    //this.setDead();
+                    this.isActuallyDead = true;
+                    this.setDead();
+                    player.onDeath(new DamageSourceFinalBoss(this));
                     return false;
                 }
             }
@@ -385,10 +406,6 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
         updateShield(compound.getBoolean("DimensionHopperBoss_Shield"));
         this.doneWithIntro = compound.getBoolean("DimensionHopperBoss_Intro");
         this.curLook = readVec(compound.getCompoundTag("DimensionHopperBoss_CurLook"));
-        int size = compound.getInteger("PlayerHealth_Size");
-        NBTTagCompound compound1 = compound.getCompoundTag("DimensionHopperBoss_PlayerHealth");
-        for(int i=1;i<size;i++)
-            this.savedPlayerHealth.put(compound1.getString("PlayerHealth_UUID_"+i),compound1.getDouble("PlayerHealth_Health_"+i));
         this.setCustomNameTag(this.getObfuscatedNameProgress());
     }
 
@@ -406,15 +423,6 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
         compound.setBoolean("DimensionHopperBoss_Shield",this.isShieldUp);
         compound.setBoolean("DimensionHopperBoss_Intro",this.doneWithIntro);
         compound.setTag("DimensionHopperBoss_CurLook",writeVec());
-        NBTTagCompound compound1 = new NBTTagCompound();
-        compound1.setInteger("PlayerHealth_Size",this.savedPlayerHealth.keySet().size());
-        int index = 1;
-        for(String uuid : this.savedPlayerHealth.keySet()) {
-            compound1.setString("PlayerHealth_UUID_"+index,uuid);
-            compound1.setDouble("PlayerHealth_Health_"+index,this.savedPlayerHealth.get(uuid));
-            index++;
-        }
-        compound.setTag("DimensionHopperBoss_PlayerHealth",compound1);
     }
 
     private NBTTagCompound writeVec() {
@@ -466,14 +474,12 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
     }
 
     @Override
-    @Nonnull
-    public SoundCategory getSoundCategory() {
+    public @Nonnull SoundCategory getSoundCategory() {
         return SoundCategory.HOSTILE;
     }
 
     @Override
-    @Nullable
-    protected SoundEvent getHurtSound(@Nonnull DamageSource source) {
+    protected @Nullable SoundEvent getHurtSound(@Nonnull DamageSource source) {
         return SoundRegistry.BOSS_HURT;
     }
 
@@ -580,10 +586,9 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
             } else {
                 this.boss.dialogueMessage(2);
                 this.boss.setVelocity(0d,0d,0d);
-                for(EntityPlayer player : this.boss.players)
-                    this.boss.savedPlayerHealth.put(player.getUniqueID().toString(), player.getEntityAttribute(
-                            SharedMonsterAttributes.MAX_HEALTH).getAttributeValue());
                 this.boss.doneWithIntro = true;
+                this.boss.setTrackingHealth();
+                this.boss.setMaxHealth = true;
                 this.boss.finishPhase(0,true);
                 this.boss.addPotionEffect(new PotionEffect(MobEffects.GLOWING,Integer.MAX_VALUE,5,false,false));
             }

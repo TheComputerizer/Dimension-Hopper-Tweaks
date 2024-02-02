@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(value = ItemSwordInfinity.class, remap = false)
 public abstract class MixinInfinitySword {
 
-    @Inject(at = @At(value = "HEAD"), method = "hitEntity", cancellable = true)
+    @Inject(at = @At(value = "HEAD"), method = "hitEntity", cancellable = true, remap = true)
     private void dimhoppertweaks$hitEntity(
             ItemStack stack, EntityLivingBase victim, EntityLivingBase player, CallbackInfoReturnable<Boolean> cir) {
         if(victim instanceof EntityFinalBoss) {

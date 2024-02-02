@@ -153,6 +153,7 @@
   "client": [
     "access.ModelArmorInfinityAccess",
     "aoa3.MixinKeyBinder",
+    "bedrockcraft.MixinWorldProviderVoid",
     "conarm.MixinModelConstructsArmor",
     "mobends.MixinArmorWrapper",
     "mobends.MixinLayerCustomBipedArmor",

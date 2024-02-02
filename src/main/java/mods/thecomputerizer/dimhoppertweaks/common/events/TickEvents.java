@@ -7,7 +7,6 @@ import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrappe
 import mods.thecomputerizer.dimhoppertweaks.common.commands.DHDebugCommands;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.mixin.api.IItemTimeInABottle;
-import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.util.ItemUtil;
 import mods.thecomputerizer.dimhoppertweaks.util.WorldUtil;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,7 +15,6 @@ import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -33,9 +31,6 @@ import java.util.Objects;
 public class TickEvents {
 
     private static final MutableInt TICK_DELAY = new MutableInt();
-    public static int bossSpawnCount = -1;
-    private static WorldServer worldServer;
-    private static BlockPos blockPos;
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void playerTick(TickEvent.PlayerTickEvent event) {
@@ -58,26 +53,6 @@ public class TickEvents {
                 }
             }
         }
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void serverTick(ServerTickEvent event) {
-        if(event.isCanceled()) return;
-        if(event.phase.ordinal()==1) {
-            if (bossSpawnCount > 0) bossSpawnCount--;
-            else if (bossSpawnCount == 0) {
-                EntityFinalBoss boss = new EntityFinalBoss(worldServer);
-                boss.setPositionAndUpdate(blockPos.getX(),blockPos.getY(),blockPos.getZ());
-                worldServer.spawnEntity(boss);
-                bossSpawnCount--;
-            }
-        }
-    }
-
-    public static void startSummonBoss(WorldServer world, BlockPos pos) {
-        worldServer = world;
-        blockPos = pos;
-        bossSpawnCount = 162;
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
