@@ -54,7 +54,6 @@ public final class IndiscriminateAOE extends Action {
 
     @Override
     public void finishAction(EntityFinalBoss boss) {
-        super.finishAction(boss);
         this.shieldDropped = false;
         boss.updateShield(true);
     }

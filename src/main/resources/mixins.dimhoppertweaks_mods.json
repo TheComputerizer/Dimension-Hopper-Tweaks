@@ -148,6 +148,7 @@
     "valkyrielib.MixinStructureFormer",
     "vintagefix.MixinDynamicBakedModelProvider",
     "vintagefix.MixinDynamicModelProvider",
+    "xreliquary.MixinItemMobCharm",
     "zollerngalaxy.MixinZGBlockBase"
   ],
   "client": [

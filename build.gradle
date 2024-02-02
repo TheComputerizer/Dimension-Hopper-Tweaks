@@ -180,6 +180,7 @@ dependencies {
     implementation(fg.deobf("curse.maven:random-things-59816:${project.randomthings_version}"))
     implementation(fg.deobf("curse.maven:recipe-stages-280554:${project.recipestages_version}"))
     implementation(fg.deobf("curse.maven:redstone-flux-270789:${project.rf_version}"))
+    implementation(fg.deobf("curse.maven:reliquary-reincarnations-241319:${project.xreliquary_version}"))
     implementation(fg.deobf("curse.maven:reskillable-286382:${project.reskillable_version}"))
     implementation(fg.deobf("curse.maven:scaling-health-248027:${project.scalinghealth_version}"))
     implementation(fg.deobf("curse.maven:sgcraft-289115:${project.sgcraft_version}"))

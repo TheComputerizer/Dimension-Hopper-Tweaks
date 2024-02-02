@@ -1,5 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.client;
 
+import codechicken.lib.texture.TextureUtils;
+import codechicken.lib.util.TransformUtils;
 import mods.thecomputerizer.dimhoppertweaks.client.render.RenderFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.client.render.RenderHomingProjectile;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
@@ -12,6 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.Item;
@@ -22,6 +25,7 @@ import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.client.model.obj.OBJModel;
+import net.minecraftforge.client.model.obj.OBJModel.OBJBakedModel;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.opengl.GL11;
@@ -32,12 +36,21 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+@SuppressWarnings("deprecation")
 public final class DHTClient {
     public final static ResourceLocation FORCEFIELD = new ResourceLocation(DHTRef.MODID,"textures/models/forcefield.png");
     public final static ResourceLocation ATTACK = new ResourceLocation(DHTRef.MODID,"textures/models/attack.png");
     public static OBJModel FORCEFIELD_MODEL;
+    public static OBJBakedModel BAKED_FORCEFIELD;
     public static float FOG_DENSITY_OVERRIDE = -1f;
     public static boolean REMOVE_FOG = false;
+
+    public static OBJBakedModel getBakedForcefield() {
+        if(Objects.isNull(BAKED_FORCEFIELD))
+            BAKED_FORCEFIELD = (OBJBakedModel)DHTClient.FORCEFIELD_MODEL.bake(TransformUtils.DEFAULT_BLOCK,
+                    DefaultVertexFormats.BLOCK,TextureUtils.bakedTextureGetter);
+        return BAKED_FORCEFIELD;
+    }
 
     public static void registerRenderers() {
         registerEntityRenderers();
@@ -58,8 +71,8 @@ public final class DHTClient {
     }
 
     private static void registerEntityRenderers() {
-        RenderingRegistry.registerEntityRenderingHandler(EntityFinalBoss.class, RenderFinalBoss::new);
-        RenderingRegistry.registerEntityRenderingHandler(HomingProjectile.class, RenderHomingProjectile::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityFinalBoss.class,RenderFinalBoss::new);
+        RenderingRegistry.registerEntityRenderingHandler(HomingProjectile.class,RenderHomingProjectile::new);
         try {
             FORCEFIELD_MODEL = (OBJModel)OBJLoader.INSTANCE.loadModel(getModelRes("models/boss/forcefield.obj"));
         } catch(Exception ex) {

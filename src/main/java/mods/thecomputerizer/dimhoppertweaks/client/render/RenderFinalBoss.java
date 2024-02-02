@@ -1,8 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.client.render;
 
 import codechicken.lib.colour.ColourRGBA;
-import codechicken.lib.texture.TextureUtils;
-import codechicken.lib.util.TransformUtils;
 import mods.thecomputerizer.dimhoppertweaks.client.DHTClient;
 import mods.thecomputerizer.dimhoppertweaks.client.model.ModelFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
@@ -25,7 +23,7 @@ import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Random;
 
-@SuppressWarnings({"deprecation", "DataFlowIssue"})
+@SuppressWarnings("DataFlowIssue")
 public class RenderFinalBoss extends GeoEntityRenderer<EntityFinalBoss> {
 
     public RenderFinalBoss(RenderManager renderManager) {
@@ -35,9 +33,8 @@ public class RenderFinalBoss extends GeoEntityRenderer<EntityFinalBoss> {
     @Override
     public void doRender(@Nonnull EntityFinalBoss entity, double x, double y, double z, float entityYaw, float partialTicks) {
         super.doRender(entity, x, y, z, entityYaw, partialTicks);
+        OBJBakedModel bakedForceField = DHTClient.getBakedForcefield();
         if(entity.hasShield()) {
-            //TODO Stop baking the model every frame???
-            OBJBakedModel bakedForceField = (OBJBakedModel) DHTClient.FORCEFIELD_MODEL.bake(TransformUtils.DEFAULT_BLOCK,DefaultVertexFormats.BLOCK,TextureUtils.bakedTextureGetter);
             GlStateManager.pushMatrix();
             GlStateManager.disableCull();
             GlStateManager.disableAlpha();
@@ -60,12 +57,10 @@ public class RenderFinalBoss extends GeoEntityRenderer<EntityFinalBoss> {
             GlStateManager.enableAlpha();
             GlStateManager.disableBlend();
             GlStateManager.enableLighting();
-            GlStateManager.color(1F, 1F, 1F, 1);
+            GlStateManager.color(1f,1f,1f,1);
             GlStateManager.popMatrix();
         }
         if(entity.isChargingProjectile()) {
-            OBJBakedModel bakedForceField = (OBJBakedModel)DHTClient.FORCEFIELD_MODEL.bake(
-                    TransformUtils.DEFAULT_BLOCK,DefaultVertexFormats.BLOCK,TextureUtils.bakedTextureGetter);
             GlStateManager.pushMatrix();
             GlStateManager.disableCull();
             GlStateManager.disableAlpha();

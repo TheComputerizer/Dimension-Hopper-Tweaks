@@ -1,8 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.client.render;
 
 import codechicken.lib.colour.ColourRGBA;
-import codechicken.lib.texture.TextureUtils;
-import codechicken.lib.util.TransformUtils;
 import mods.thecomputerizer.dimhoppertweaks.client.DHTClient;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
 import net.minecraft.client.Minecraft;
@@ -14,14 +12,13 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
-import net.minecraftforge.client.model.obj.OBJModel.OBJBakedModel;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 import java.util.Objects;
 
-@SuppressWarnings({"deprecation", "DataFlowIssue"})
+@SuppressWarnings("DataFlowIssue")
 public class RenderDelayedAOE {
 
     private final Vec3d posVec;
@@ -63,8 +60,6 @@ public class RenderDelayedAOE {
 
     public void render(float partialTicks) {
         if(this.canRender()) {
-            //TODO Stop baking the model every frame???
-            OBJBakedModel bakedForceField = (OBJBakedModel)DHTClient.FORCEFIELD_MODEL.bake(TransformUtils.DEFAULT_BLOCK,DefaultVertexFormats.BLOCK,TextureUtils.bakedTextureGetter);
             GlStateManager.pushMatrix();
             GlStateManager.disableCull();
             GlStateManager.disableAlpha();
@@ -85,7 +80,7 @@ public class RenderDelayedAOE {
             GlStateManager.color(1f,1f,1f,1f);
             ColourRGBA color = scale >= this.range ? new ColourRGBA(1f,0f,0f,0.5f) :
                     new ColourRGBA(0.9f,0.4f,0f,0.2f);
-            renderOBJ(bakedForceField.getQuads(null,null,0),color.argb());
+            renderOBJ(DHTClient.getBakedForcefield().getQuads(null,null,0),color.argb());
             GlStateManager.popMatrix();
         }
     }

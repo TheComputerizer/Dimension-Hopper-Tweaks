@@ -4,6 +4,9 @@ import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBo
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.Vec3d;
@@ -17,9 +20,9 @@ import java.util.Objects;
 
 public class HomingProjectile extends Entity {
 
+    private static final DataParameter<Integer> PHASE_STATE = EntityDataManager.createKey(HomingProjectile.class,DataSerializers.VARINT);
     private final MutableInt moveCounter = new MutableInt();
     private EntityFinalBoss boss;
-    private int phaseFired;
     private boolean synced;
     @SideOnly(Side.CLIENT)
     private float speed = 1f;
@@ -32,21 +35,26 @@ public class HomingProjectile extends Entity {
         this.synced = false;
     }
 
-    public void setUpdate(EntityFinalBoss boss, int phaseFired, float speed) {
+    public int getPhase() {
+        return this.dataManager.get(PHASE_STATE);
+    }
+
+    public void setPhase(int phase) {
+        this.dataManager.set(PHASE_STATE,phase);
+    }
+
+    public void setUpdate(EntityFinalBoss boss, Vec3d initialTarget, float speed) {
         this.boss = boss;
-        this.phaseFired = phaseFired;
-        Vec3d posVec = this.boss.getPositionVector().add(this.getPositionVector()).normalize();
-        this.motionX = posVec.x*speed;
-        this.motionY = posVec.y*speed;
-        this.motionZ = posVec.z*speed;
+        setPhase(boss.getPhase());
         this.speed = speed;
+        calculateMove(initialTarget);
         this.glowing = true;
         this.synced = true;
     }
 
     @Override
     protected void entityInit() {
-
+        this.dataManager.register(PHASE_STATE,0);
     }
 
     @Override
@@ -68,25 +76,24 @@ public class HomingProjectile extends Entity {
             if(this.moveCounter.getValue()>=50) calculateMove();
             if(this.moveCounter.getValue()<20) this.moveSimple();
             else {
-                this.motionX = 0d;
-                this.motionY = 0d;
-                this.motionZ = 0d;
+                this.motionX*=0.8d;
+                this.motionY*=0.8d;
+                this.motionZ*=0.8d;
             }
             this.moveCounter.increment();
-            if(this.synced && (Objects.isNull(this.boss) || this.boss.isDead || this.boss.isPhase(this.phaseFired)))
-                this.setDead();
+            if(this.synced && (Objects.isNull(this.boss) || this.boss.isDead)) this.setDead();
             boolean boom = false;
-            for (EntityPlayer player : this.boss.getTrackingPlayers()) {
-                if (this.getDistance(player)<=(boom ? 4 : 3)) {
-                    this.boss.subtractPlayerHealth(player, 10d);
+            for(EntityPlayer player : this.boss.getTrackingPlayers()) {
+                if(this.getDistance(player)<=(boom ? 4 : 3)) {
+                    this.boss.subtractPlayerHealth(player,10d);
                     boom = true;
                 }
             }
-            if (this.getDistance(this.boss)<=(boom ? 6 : 5)) {
+            if(this.getDistance(this.boss)<=(boom ? 6 : 5)) {
                 this.boss.boom = true;
                 boom = true;
             }
-            if (boom) {
+            if(boom) {
                 this.world.createExplosion(this,this.posX,this.posY,this.posZ,5f,true);
                 this.setDead();
             } else if(this.ticksExisted>=400) expire();
@@ -95,13 +102,16 @@ public class HomingProjectile extends Entity {
     }
 
     private void calculateMove() {
-        EntityPlayer player = world.getClosestPlayer(this.posX,this.posY,this.posZ,100d,false);
-        if(Objects.nonNull(player)) {
-            Vec3d posVec = player.getPositionVector().subtract(this.getPositionVector()).normalize();
-            this.motionX = posVec.x*this.speed;
-            this.motionY = posVec.y*this.speed;
-            this.motionZ = posVec.z*this.speed;
-        }
+        EntityPlayer player = this.world.getClosestPlayer(this.posX,this.posY,this.posZ,100d,false);
+        if(Objects.nonNull(player)) calculateMove(player.getPositionVector());
+        else this.moveCounter.setValue(0);
+    }
+
+    private void calculateMove(Vec3d targetVec) {
+        Vec3d posVec = targetVec.subtract(this.getPositionVector()).normalize();
+        this.motionX = posVec.x*this.speed;
+        this.motionY = posVec.y*this.speed;
+        this.motionZ = posVec.z*this.speed;
         this.moveCounter.setValue(0);
     }
 
@@ -118,12 +128,12 @@ public class HomingProjectile extends Entity {
         if(Objects.nonNull(this.boss)) {
             boolean boom = false;
             for(EntityPlayer player : this.boss.getTrackingPlayers()) {
-                if (this.getDistance(player)<=4) {
-                    this.boss.subtractPlayerHealth(player, 10d);
+                if(this.getDistance(player)<=4) {
+                    this.boss.subtractPlayerHealth(player,10d);
                     boom = true;
                 }
             }
-            if(this.getDistance(this.boss)<=(boom?6:4)) this.boss.boom = true;
+            if(this.getDistance(this.boss)<=(boom ? 6 : 4)) this.boss.boom = true;
         }
         this.world.createExplosion(this,this.posX,this.posY,this.posZ,5f,true);
         this.setDead();

@@ -62,7 +62,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
     private static final DataParameter<Integer> TRACKED_ENTITY_ID = EntityDataManager.createKey(EntityFinalBoss.class,DataSerializers.VARINT);
     private static final DataParameter<Integer> PROJECTILE_CHARGE_STATE = EntityDataManager.createKey(EntityFinalBoss.class,DataSerializers.VARINT);
     private static final DataParameter<Integer> PROJECTILE_MAX_CHARGE = EntityDataManager.createKey(EntityFinalBoss.class,DataSerializers.VARINT);
-    private final BossInfoServer bossInfo = (BossInfoServer)new BossInfoServer(this.getDisplayName(),BossInfo.Color.RED, BossInfo.Overlay.NOTCHED_20).setDarkenSky(true);
+    private final BossInfoServer bossInfo;
     private final AnimationFactory factory = new AnimationFactory(this);
     private final AnimationController<EntityFinalBoss> animationController;
     public boolean boom;
@@ -73,20 +73,20 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
     private Vec3d curLook;
     private Entity trackedEntity;
     public boolean setMaxHealth;
-    private boolean isActuallyDead;
 
     public EntityFinalBoss(World worldIn) {
         super(worldIn);
         this.setHealth(this.getMaxHealth());
         this.setSize(1f,1.875f);
+        this.setEntityInvulnerable(true);
+        this.bossInfo = (BossInfoServer)new BossInfoServer(this.getDisplayName(),BossInfo.Color.RED,BossInfo.Overlay.NOTCHED_20).setDarkenSky(true);
         this.isImmuneToFire = true;
         this.experienceValue = 999;
-        this.setEntityInvulnerable(true);
         this.players = new ArrayList<>();
         this.projectiles = new ArrayList<>();
         this.damageCooldown = new HashMap<>();
         this.aoeAttacks = new ArrayList<>();
-        this.animationController = new AnimationController<>(this,"boss_controller",0, this::predicate);
+        this.animationController = new AnimationController<>(this,"boss_controller",0,this::predicate);
         this.curLook = Vec3d.ZERO;
         Config.Player.Health.allowModify = false;
     }
@@ -118,7 +118,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
         this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(250d);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.6000000238418579d);
+        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.6d);
         this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(256d);
         this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(1d);
     }
@@ -192,7 +192,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
         this.dataManager.register(SHIELD_STATE,false);
         this.dataManager.register(CHARGING_STATE,false);
         this.dataManager.register(TRACKED_ENTITY_ID,-1);
-        this.dataManager.register(PROJECTILE_CHARGE_STATE,0);
+        this.dataManager.register(PROJECTILE_CHARGE_STATE,-1);
         this.dataManager.register(PROJECTILE_MAX_CHARGE,10);
     }
 
@@ -300,7 +300,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
     }
 
     public boolean isChargingProjectile() {
-        return this.dataManager.get(PROJECTILE_CHARGE_STATE)>0;
+        return this.dataManager.get(PROJECTILE_CHARGE_STATE)>=0;
     }
 
     protected boolean isEntityCloseEnough(Entity entity, Vec3d posVec, int max) {
@@ -410,7 +410,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
         this.players.remove(player);
         if(getTrackingPlayers().isEmpty()) {
             this.setHealth(this.getMaxHealth());
-            setPhase(-1);
+            setPhase(0);
         }
     }
 
@@ -431,11 +431,8 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
     @Override
     public void setDead() {
         super.setDead();
-        this.isActuallyDead = this.isActuallyDead || getHealth()<=0f;
-        if(this.isActuallyDead) {
-            DHTClient.FOG_DENSITY_OVERRIDE = -1f;
-            this.onAddedToWorld();
-        } else this.dead = false;
+        DHTClient.FOG_DENSITY_OVERRIDE = -1f;
+        this.onAddedToWorld();
     }
 
     public void setMaxPlayerHealth(EntityPlayer player) {
@@ -452,7 +449,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
 
     public void setProjectileCharge(int max) {
         this.dataManager.set(PROJECTILE_MAX_CHARGE,max);
-        this.dataManager.set(PROJECTILE_CHARGE_STATE,0);
+        this.dataManager.set(PROJECTILE_CHARGE_STATE,max==0 ? -1 : 0);
     }
 
     public void setTrackingHealth() {
@@ -461,6 +458,14 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
 
     public void setShield(boolean hasShield) {
         this.dataManager.set(SHIELD_STATE,hasShield);
+    }
+
+    public void spawnProjectile(Vec3d spawnPos, Vec3d target, float speed) {
+        HomingProjectile projectile = new HomingProjectile(this.world);
+        projectile.setPosition(spawnPos.x,spawnPos.y,spawnPos.z);
+        this.world.spawnEntity(projectile);
+        this.projectiles.add(projectile);
+        if(target!=Vec3d.ZERO) projectile.setUpdate(this,target,speed);
     }
 
     @SuppressWarnings("SameParameterValue")
@@ -487,9 +492,8 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
                     return true;
                 } else {
                     this.setDropItemsWhenDead(false);
-                    this.isActuallyDead = true;
-                    this.setDead();
                     player.onDeath(new DamageSourceFinalBoss(this));
+                    this.setDead();
                     return false;
                 }
             }
