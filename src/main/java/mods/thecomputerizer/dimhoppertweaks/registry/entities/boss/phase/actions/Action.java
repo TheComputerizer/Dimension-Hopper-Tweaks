@@ -35,7 +35,7 @@ public abstract class Action {
     private EntityPlayer getRandomPlayer(EntityFinalBoss boss) {
         Random rand = boss.world.rand;
         List<EntityPlayer> players = nonNullPlayers(boss.getTrackingPlayers().toArray(new EntityPlayer[0]));
-        return players.size()==0 ? null : players.size()==1 ? players.get(0) : players.get(rand.nextInt(players.size()));
+        return players.isEmpty() ? null : players.size()==1 ? players.get(0) : players.get(rand.nextInt(players.size()));
     }
 
     private EntityPlayer getClosestPlayer(EntityFinalBoss boss) {
@@ -54,7 +54,7 @@ public abstract class Action {
     public abstract void continueAction(EntityFinalBoss boss, int activeProgress);
 
     public void finishAction(EntityFinalBoss boss) {
-        boss.setAnimation("idle",true);
+        boss.setAnimationState("idle");
     }
 
     public int getActiveTicks() {

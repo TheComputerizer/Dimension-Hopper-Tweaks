@@ -12,7 +12,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.potion.Potion;
 import net.minecraft.tileentity.TileEntity;
@@ -29,22 +28,6 @@ import java.util.Objects;
 import java.util.Set;
 
 public class ClientPacketHandlers {
-
-    @SideOnly(Side.CLIENT)
-    public static void handleUpdateBossRender(int bossID, int phase, boolean shield, String animation, int chargeTime) {
-        EntityPlayer player = Minecraft.getMinecraft().player;
-        if(Objects.nonNull(player)) {
-            Entity entity = player.world.getEntityByID(bossID);
-            if(entity instanceof EntityFinalBoss) {
-                DHTClient.REMOVE_FOG = true;
-                EntityFinalBoss boss = (EntityFinalBoss) entity;
-                boss.phase = phase;
-                boss.updateShieldClient(shield);
-                boss.setAnimation(animation,false);
-                boss.setProjectileCharge(chargeTime);
-            }
-        }
-    }
 
     @SideOnly(Side.CLIENT)
     public static void handleBossClientEffects() {

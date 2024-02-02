@@ -11,7 +11,7 @@ import java.util.Objects;
 public final class SpawnProjectile extends Action {
 
     public SpawnProjectile(int activeTicks, boolean singleton, int activePhase) {
-        super(activeTicks, singleton, activePhase, "CLOSEST");
+        super(activeTicks,singleton,activePhase,"CLOSEST");
     }
 
     @Override
@@ -19,7 +19,7 @@ public final class SpawnProjectile extends Action {
         List<EntityPlayer> targets = findPlayerTargets(boss);
         if(!targets.isEmpty()) {
             boss.updateLook(targets.get(0).getPositionVector());
-            boss.setAnimation("pointsword", false);
+            boss.setAnimationState("pointsword");
             boss.setProjectileCharge(this.activeTicks);
         }
     }

@@ -20,7 +20,7 @@ public final class Beam extends Action {
         List<EntityPlayer> targets = findPlayerTargets(boss);
         if(!targets.isEmpty()) {
             boss.getLookHelper().setLookPositionWithEntity(targets.get(0), boss.getHorizontalFaceSpeed(), boss.getVerticalFaceSpeed());
-            boss.setAnimation("pointsword",true);
+            boss.setAnimationState("pointsword");
         }
     }
 

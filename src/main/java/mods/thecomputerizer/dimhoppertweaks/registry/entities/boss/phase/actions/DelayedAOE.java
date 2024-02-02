@@ -29,7 +29,7 @@ public final class DelayedAOE extends Action {
             }
             boss.addAOECounter(vecList,this.activeTicks,this.range,this.activePhase);
             boss.updateLook(lookAtMe.getPositionVector());
-            boss.setAnimation("point",true);
+            boss.setAnimationState("point");
         }
     }
 

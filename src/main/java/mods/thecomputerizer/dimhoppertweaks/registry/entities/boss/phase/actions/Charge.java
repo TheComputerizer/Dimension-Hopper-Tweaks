@@ -21,13 +21,13 @@ public final class Charge extends Action {
 
     @Override
     public void startAction(EntityFinalBoss boss) {
-        this.wasShieldUp = boss.getShieldUp();
+        this.wasShieldUp = boss.hasShield();
         boss.updateShield(false);
         List<EntityPlayer> targets = findPlayerTargets(boss);
         if(!targets.isEmpty()) {
             this.target = targets.get(0);
             boss.teleportBehindPlayer(this.target);
-            boss.setAnimation("charge", true);
+            boss.setAnimationState("charge");
         }
     }
 
@@ -38,14 +38,14 @@ public final class Charge extends Action {
             boss.motionX += posVec.x*this.impulse;
             boss.motionY += posVec.y*this.impulse;
             boss.motionZ += posVec.z*this.impulse;
-            boss.isCharging = true;
+            boss.setCharging(true);
         }
     }
 
     @Override
     public void finishAction(EntityFinalBoss boss) {
         super.finishAction(boss);
-        boss.isCharging = false;
+        boss.setCharging(false);
         boss.updateShield(this.wasShieldUp);
     }
 }

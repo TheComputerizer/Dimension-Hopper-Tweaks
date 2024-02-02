@@ -29,7 +29,7 @@ public class DimHopperTweaks {
         NetworkHandler.queueClientPacketRegistries(PacketBossClientEffects.class,PacketGrayScaleTimer.class,
                 PacketOpenGui.class, PacketQueryGenericClient.class,PacketRenderBossAttack.class,
                 PacketSyncCapabilityData.class, PacketSyncExtraChunkData.class,PacketSyncPlayerHealth.class,
-                PacketTileEntityClassQuery.class,PacketUpdateBossRender.class);
+                PacketTileEntityClassQuery.class);
     }
 
     @EventHandler

@@ -30,12 +30,12 @@ public abstract class PhaseBase extends EntityAIBase {
 
     @Override
     public boolean shouldExecute() {
-        return this.phase==this.boss.phase;
+        return this.boss.isPhase(this.phase);
     }
 
     @Override
     public boolean shouldContinueExecuting() {
-        return this.phase==this.boss.phase;
+        return this.boss.isPhase(this.phase);
     }
 
     @Override

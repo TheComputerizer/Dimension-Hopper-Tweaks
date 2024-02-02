@@ -63,7 +63,7 @@ public class HomingProjectile extends Entity {
     public void onUpdate() {
         if(this.world.isRemote) {
             this.world.spawnParticle(EnumParticleTypes.PORTAL,this.posX,this.posY,this.posZ,
-                    (rand.nextDouble()-0.5d)*2d,-1d*rand.nextDouble(),(rand.nextDouble()-0.5d)*2d);
+                    (this.rand.nextDouble()-0.5d)*2d,-1d*this.rand.nextDouble(),(this.rand.nextDouble()-0.5d)*2d);
         } else {
             if(this.moveCounter.getValue()>=50) calculateMove();
             if(this.moveCounter.getValue()<20) this.moveSimple();
@@ -73,21 +73,21 @@ public class HomingProjectile extends Entity {
                 this.motionZ = 0d;
             }
             this.moveCounter.increment();
-            if(this.synced && (Objects.isNull(this.boss) || this.boss.isDead || this.phaseFired!=this.boss.phase))
+            if(this.synced && (Objects.isNull(this.boss) || this.boss.isDead || this.boss.isPhase(this.phaseFired)))
                 this.setDead();
             boolean boom = false;
             for (EntityPlayer player : this.boss.getTrackingPlayers()) {
-                if (this.getDistance(player)<=(boom?4:3)) {
+                if (this.getDistance(player)<=(boom ? 4 : 3)) {
                     this.boss.subtractPlayerHealth(player, 10d);
                     boom = true;
                 }
             }
-            if (this.getDistance(this.boss)<=(boom?6:5)) {
+            if (this.getDistance(this.boss)<=(boom ? 6 : 5)) {
                 this.boss.boom = true;
                 boom = true;
             }
             if (boom) {
-                this.world.createExplosion(this,this.posX,this.posY,this.posZ,5f, true);
+                this.world.createExplosion(this,this.posX,this.posY,this.posZ,5f,true);
                 this.setDead();
             } else if(this.ticksExisted>=400) expire();
         }
@@ -125,7 +125,7 @@ public class HomingProjectile extends Entity {
             }
             if(this.getDistance(this.boss)<=(boom?6:4)) this.boss.boom = true;
         }
-        this.world.createExplosion(this, this.posX, this.posY, this.posZ, 5f, true);
+        this.world.createExplosion(this,this.posX,this.posY,this.posZ,5f,true);
         this.setDead();
     }
 
@@ -135,12 +135,12 @@ public class HomingProjectile extends Entity {
     }
 
     @Override
-    public void readEntityFromNBT(@Nonnull NBTTagCompound compound) {
-        this.synced = compound.getBoolean("projectileSynced");
+    public void readEntityFromNBT(@Nonnull NBTTagCompound tag) {
+        this.synced = tag.getBoolean("isSynced");
     }
 
     @Override
-    public void writeEntityToNBT(@Nonnull NBTTagCompound compound) {
-        compound.setBoolean("projectileSynced",this.synced);
+    public void writeEntityToNBT(@Nonnull NBTTagCompound tag) {
+        tag.setBoolean("isSynced",this.synced);
     }
 }

@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Objects;
 
 @ParametersAreNonnullByDefault
 @Mixin(CommandTP.class)
@@ -36,10 +37,8 @@ public abstract class MixinCommandTP extends CommandBase {
             }
             if(args.length!=1 && args.length!=2) {
                 if(args.length<i+3) throw new WrongUsageException("commands.tp.usage");
-                else if (entity.world != null)
-                {
-                    int j = 4096;
-                    int k = i + 1;
+                else if(Objects.nonNull(entity.world)) {
+                    int k = i+1;
                     CommandBase.CoordinateArg arg = parseCoordinate(entity.posX,args[i],true);
                     CommandBase.CoordinateArg arg1 = parseCoordinate(entity.posY,args[k++],-4096,4096,false);
                     CommandBase.CoordinateArg arg2 = parseCoordinate(entity.posZ,args[k++],true);

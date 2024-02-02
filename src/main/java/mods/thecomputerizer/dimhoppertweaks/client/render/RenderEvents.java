@@ -17,15 +17,14 @@ public class RenderEvents {
     @SubscribeEvent
     public static void renderAttacks(RenderWorldLastEvent event) {
         synchronized (ATTACKS) {
-            for (RenderDelayedAOE attack : ATTACKS)
-                attack.render(event.getPartialTicks());
+            for(RenderDelayedAOE attack : ATTACKS) attack.render(event.getPartialTicks());
         }
     }
 
     @SubscribeEvent
     public static void tickTimers(TickEvent.ClientTickEvent event) {
         synchronized (ATTACKS) {
-            if (event.phase == TickEvent.Phase.END) ATTACKS.removeIf(RenderDelayedAOE::tick);
+            if(event.phase==TickEvent.Phase.END) ATTACKS.removeIf(RenderDelayedAOE::tick);
         }
     }
 }

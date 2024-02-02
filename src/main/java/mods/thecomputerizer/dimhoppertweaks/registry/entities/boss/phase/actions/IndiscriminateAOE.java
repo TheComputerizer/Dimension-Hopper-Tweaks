@@ -31,7 +31,7 @@ public final class IndiscriminateAOE extends Action {
 
     @Override
     public void startAction(EntityFinalBoss boss) {
-        boss.setAnimation("energyrelease",true);
+        boss.setAnimationState("energyrelease");
     }
 
     @Override
