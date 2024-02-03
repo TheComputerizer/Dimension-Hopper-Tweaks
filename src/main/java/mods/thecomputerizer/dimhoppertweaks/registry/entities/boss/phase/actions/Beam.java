@@ -21,9 +21,8 @@ public final class Beam extends Action {
     public void startAction(EntityFinalBoss boss) {
         List<EntityPlayer> targets = findPlayerTargets(boss);
         if(!targets.isEmpty()) {
-            boss.getLookHelper().setLookPositionWithEntity(targets.get(0),boss.getHorizontalFaceSpeed(),boss.getVerticalFaceSpeed());
             boss.setAnimationState("pointsword");
-            calculateTargets(boss.getPositionVector(),targets);
+            boss.updateLook(calculateTargets(boss.getPositionVector(),targets));
             boss.setProjectileCharge(this.chargeTicks);
         }
     }
@@ -41,17 +40,21 @@ public final class Beam extends Action {
     public void finishAction(EntityFinalBoss boss) {
         super.finishAction(boss);
         this.targets.clear();
+        boss.updateLook(Vec3d.ZERO);
     }
 
-    private void calculateTargets(Vec3d bossVec, List<EntityPlayer> players) {
+    private Vec3d calculateTargets(Vec3d bossVec, List<EntityPlayer> players) {
+        Vec3d lookTo = Vec3d.ZERO;
         for(EntityPlayer player : players) {
-            Vec3d beamStep = calculateTargetStep(bossVec,player.getPositionVector());
+            lookTo = player.getPositionVector();
+            Vec3d beamStep = calculateTargetStep(bossVec,lookTo);
             this.targets.add(new MobileVec3d(bossVec.add(beamStep),beamStep));
         }
+        return lookTo;
     }
 
     private Vec3d calculateTargetStep(Vec3d bossVec, Vec3d target) {
-        double timeScale = 2d/(this.activeTicks-this.chargeTicks);
+        double timeScale = 10d/(this.activeTicks-this.chargeTicks);
         return target.subtract(bossVec).scale(timeScale);
     }
 }

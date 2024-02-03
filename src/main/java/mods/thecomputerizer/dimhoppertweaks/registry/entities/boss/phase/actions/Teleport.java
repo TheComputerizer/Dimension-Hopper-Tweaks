@@ -5,7 +5,11 @@ import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBo
 public final class Teleport extends Action {
 
     public Teleport(int activeTicks, boolean singleton, int activePhase) {
-        super(activeTicks, singleton, activePhase, "CLOSEST");
+        this(activeTicks,singleton,activePhase,true);
+    }
+
+    public Teleport(int activeTicks, boolean singleton, int activePhase, boolean idleOnFinish) {
+        super(activeTicks,singleton,activePhase,"CLOSEST",idleOnFinish);
     }
 
     @Override

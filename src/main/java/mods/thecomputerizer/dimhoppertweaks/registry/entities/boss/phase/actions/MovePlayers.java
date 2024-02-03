@@ -5,7 +5,11 @@ import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBo
 public final class MovePlayers extends Action {
 
     public MovePlayers(int activeTicks, boolean singleton, int activePhase) {
-        super(activeTicks, singleton, activePhase, "ALL");
+        this(activeTicks,singleton,activePhase,true);
+    }
+
+    public MovePlayers(int activeTicks, boolean singleton, int activePhase, boolean idleOnFinish) {
+        super(activeTicks,singleton,activePhase,"ALL",idleOnFinish);
     }
 
     @Override

@@ -6,10 +6,8 @@ import mods.thecomputerizer.dimhoppertweaks.client.render.ClientEffects;
 import mods.thecomputerizer.dimhoppertweaks.client.render.RenderDelayedAOE;
 import mods.thecomputerizer.dimhoppertweaks.client.render.RenderEvents;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.chunk.ExtraChunkData;
-import mods.thecomputerizer.dimhoppertweaks.registry.SoundRegistry;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
@@ -44,7 +42,7 @@ public class ClientPacketHandlers {
                 for (Vec3d posVec : vecList)
                     RenderEvents.ATTACKS.add(new RenderDelayedAOE(posVec,start,size,boss,phase));
             }
-        } else mc.getSoundHandler().playSound(PositionedSoundRecord.getMusicRecord(SoundRegistry.BOSS_MUSIC));
+        }
     }
 
     @SideOnly(Side.CLIENT)

@@ -65,14 +65,13 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
     private final BossInfoServer bossInfo;
     private final AnimationFactory factory = new AnimationFactory(this);
     private final AnimationController<EntityFinalBoss> animationController;
-    public boolean boom;
     private final List<EntityPlayer> players;
     public final List<HomingProjectile> projectiles;
     private final Map<EntityPlayer,MutableInt> damageCooldown;
     private final List<DelayedAOE> aoeAttacks;
+    public boolean boom;
     private Vec3d curLook;
     private Entity trackedEntity;
-    public boolean setMaxHealth;
 
     public EntityFinalBoss(World worldIn) {
         super(worldIn);
@@ -104,7 +103,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
         this.bossInfo.addPlayer(player);
         if(this.players.isEmpty()) setPhase(0);
         this.players.add(player);
-        if(this.setMaxHealth) setMaxPlayerHealth(player);
+        if(getPhase()>0) setMaxPlayerHealth(player);
     }
 
     public void aoeAttack(Vec3d posVec, int range, boolean sound) {
@@ -278,6 +277,10 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
         return this.dataManager.get(SHIELD_STATE);
     }
 
+    private boolean ignoresDamageAnimation(String animation) {
+        return animation.equals("pointsword") || animation.equals("energyrelease");
+    }
+
     public void incrementProjectileProgress() {
         this.dataManager.set(PROJECTILE_CHARGE_STATE,this.dataManager.get(PROJECTILE_CHARGE_STATE)+1);
     }
@@ -415,7 +418,10 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
     }
 
     public void setAnimationState(String animation) {
-        if(animation.equals("damaged")) teleportRandomly();
+        if(animation.equals("damaged")) {
+            teleportRandomly();
+            if(ignoresDamageAnimation(getAnimationState())) return;
+        }
         this.dataManager.set(ANIMATION_STATE,animation);
     }
 
@@ -605,7 +611,6 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
                 this.boss.dialogueMessage(2);
                 this.boss.setVelocity(0d,0d,0d);
                 this.boss.setTrackingHealth();
-                this.boss.setMaxHealth = true;
                 this.boss.finishPhase(0,true);
                 this.boss.addPotionEffect(new PotionEffect(MobEffects.GLOWING,Integer.MAX_VALUE,5,false,false));
             }

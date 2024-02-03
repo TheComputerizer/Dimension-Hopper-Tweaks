@@ -13,21 +13,21 @@ public class SkyShaderRenderer extends IRenderHandler {
 
     private static final ResourceLocation END_SKY_TEXTURES = new ResourceLocation("textures/environment/end_sky.png");
 
-    private final Consumer<Void> shaderUser;
-    private final Consumer<Void> shaderReleaser;
+    private final Consumer<Float> shaderUser;
+    private final Consumer<Float> shaderReleaser;
     private int renderID = -1;
     private boolean cached = false;
     
-    public SkyShaderRenderer(Consumer<Void> shaderUser, Consumer<Void> shaderReleaser) {
+    public SkyShaderRenderer(Consumer<Float> shaderUser, Consumer<Float> shaderReleaser) {
         this.shaderUser = shaderUser;
         this.shaderReleaser = shaderReleaser;
     }
     
     @Override
     public void render(float partialTicks, WorldClient world, Minecraft mc) {
-        this.shaderUser.accept(null);
+        this.shaderUser.accept(partialTicks);
         renderSky(partialTicks,mc);
-        this.shaderReleaser.accept(null);
+        this.shaderReleaser.accept(partialTicks);
     }
     
     private void renderSky(float partialTicks, Minecraft mc) {

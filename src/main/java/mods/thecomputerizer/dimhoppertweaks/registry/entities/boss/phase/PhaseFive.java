@@ -14,10 +14,10 @@ public class PhaseFive extends PhaseBase {
 
     @Override
     protected Action[] orderedActions() {
-        MovePlayers move = new MovePlayers(10,true,this.phase);
+        MovePlayers move = new MovePlayers(10,true,this.phase,false);
         IndiscriminateAOE indiscriminate = new IndiscriminateAOE(220,false,this.phase,26,
                 20d,15,5,4);
-        Teleport teleport = new Teleport(20,false,this.phase);
+        Teleport teleport = new Teleport(20,false,this.phase,false);
         return new Action[]{move,indiscriminate,teleport};
     }
 

@@ -11,12 +11,18 @@ public abstract class Action {
     private final boolean singleton;
     protected final int activePhase;
     private final String target;
+    private final boolean idleOnFinish;
 
     protected Action(int activeTicks, boolean singleton, int activePhase, String target) {
+        this(activeTicks,singleton,activePhase,target,true);
+    }
+
+    protected Action(int activeTicks, boolean singleton, int activePhase, String target, boolean idleOnFinish) {
         this.activeTicks = activeTicks;
         this.singleton = singleton;
         this.activePhase = activePhase;
         this.target = target;
+        this.idleOnFinish = idleOnFinish;
     }
 
     protected List<EntityPlayer> findPlayerTargets(EntityFinalBoss boss) {
@@ -54,7 +60,7 @@ public abstract class Action {
     public abstract void continueAction(EntityFinalBoss boss, int activeProgress);
 
     public void finishAction(EntityFinalBoss boss) {
-        boss.setAnimationState("idle");
+        if(this.idleOnFinish) boss.setAnimationState("idle");
     }
 
     public int getActiveTicks() {

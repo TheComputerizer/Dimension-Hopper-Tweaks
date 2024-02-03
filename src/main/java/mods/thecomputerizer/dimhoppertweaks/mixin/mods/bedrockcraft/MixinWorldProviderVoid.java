@@ -3,7 +3,7 @@ package mods.thecomputerizer.dimhoppertweaks.mixin.mods.bedrockcraft;
 import bedrockcraft.voidworld.WorldProviderVoid;
 import mods.thecomputerizer.dimhoppertweaks.client.DHTClient;
 import mods.thecomputerizer.dimhoppertweaks.client.render.SkyShaderRenderer;
-import morph.avaritia.client.render.shader.CosmicShaderHelper;
+import mods.thecomputerizer.dimhoppertweaks.client.shader.ShaderManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Unique;
@@ -22,11 +22,8 @@ public abstract class MixinWorldProviderVoid {
     @Inject(at = @At("TAIL"), method = "init", remap = true)
     private void dimhoppertweaks$init(CallbackInfo ci) {
         WorldProviderVoid instance = dimhoppertweaks$cast();
-        instance.setSkyRenderer(new SkyShaderRenderer(v -> {
-            CosmicShaderHelper.setLightLevel(1f);
-            CosmicShaderHelper.cosmicOpacity = 1f;
-            CosmicShaderHelper.useShader();
-        },v -> CosmicShaderHelper.releaseShader()));
+        instance.setSkyRenderer(new SkyShaderRenderer(pt -> ShaderManager.getInstance().cosmicShader.use(pt)
+                ,pt -> ShaderManager.getInstance().cosmicShader.release()));
     }
 
     /**

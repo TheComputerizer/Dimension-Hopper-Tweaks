@@ -35,7 +35,7 @@ mat4 rotationMatrix(vec3 axis, float angle)
                 0.0,                                0.0,                                0.0,                                1.0);
 }
 
-void main (void) 
+void main ()
 {
     vec4 light = gl_Color;
     vec4 mask = texture2D(texture0, gl_TexCoord[0].xy);
@@ -46,15 +46,15 @@ void main (void)
     int uvtiles = 16;
     
     // background colour
-    vec4 col = vec4(0.1,0.0,0.0,1.0);
+    vec4 bgColor = vec4(0.1,0.0,0.0,1.0);
     
     float pulse = mod(time,400)/400.0;
     
-    col.g = sin(pulse*M_PI*2) * 0.075 + 0.225;
-    col.b = cos(pulse*M_PI*2) * 0.05 + 0.3;
+    bgColor.g = sin(pulse*M_PI*2)*0.075+0.025;
+    bgColor.b = cos(pulse*M_PI*2)*0.05+0.1;
     
     // get ray from camera to fragment
-    vec4 dir = normalize(vec4( -position, 0));
+    vec4 dir = normalize(vec4(-position, 0));
 
 	// rotate the ray to show the right bit of the sphere for the angle
 	float sb = sin(pitch);
@@ -161,18 +161,18 @@ void main (void)
 			
 			// mix the colours
 			//col = col*(1-a) + vec4(r,g,b,1)*a;
-			col = col + vec4(r,g,b,1)*a;
+			bgColor = bgColor + vec4(r,g,b,1)*a;
 		}
 	}
 
 	// apply lighting
     vec3 shade = light.rgb * (lightmix) + vec3(1.0-lightmix,1.0-lightmix,1.0-lightmix);
-    col.rgb *= shade;
+    bgColor.rgb *= shade;
     
     // apply mask
-    col.a *= mask.r * opacity;
+    bgColor.a *= mask.r * opacity;
     
-	col = clamp(col,0.0,1.0);
+	bgColor = clamp(bgColor,0.0,1.0);
 	
-    gl_FragColor = col;
+    gl_FragColor = bgColor;
 }

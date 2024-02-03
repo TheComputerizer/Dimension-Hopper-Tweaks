@@ -89,7 +89,7 @@ public class HomingProjectile extends Entity {
                     boom = true;
                 }
             }
-            if(this.getDistance(this.boss)<=(boom ? 6 : 5)) {
+            if(this.ticksExisted>40 && this.getDistance(this.boss)<=(boom ? 6 : 5)) {
                 this.boss.boom = true;
                 boom = true;
             }
