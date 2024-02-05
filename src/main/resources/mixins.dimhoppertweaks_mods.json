@@ -101,7 +101,6 @@
     "mekanism.MixinNeighborListener",
     "mekanism.MixinSize",
     "mekanism.MixinTileComponentSecurity",
-    "mekanism.MixinToolsJEI",
     "mist.MixinServerEventHandler",
     "mobends.MixinEntityRenderHandler",
     "mobends.MixinHumanoidLimbWrapper",

@@ -4,7 +4,6 @@ plugins {
     id 'org.jetbrains.gradle.plugin.idea-ext' version '1.1.7'
     id 'wtf.gofancy.fancygradle' version '1.1.+'
     id 'org.spongepowered.mixin' version '0.7.+'
-    id 'com.github.ManifestClasspath' version '0.1.0-RELEASE'
 }
 
 fancyGradle {
@@ -49,27 +48,16 @@ minecraft {
 
 repositories {
     maven {
-        name = 'BlameJared'
-        url = uri('https://maven.blamejared.com')
-    }
-    maven {
-        name = 'CleanRoom'
-        url = uri('https://maven.cleanroommc.com')
-    }
-    maven {
         name = 'CurseForge'
         url = uri('https://www.cursemaven.com')
         content {
             includeGroup 'curse.maven'
         }
     }
+    mavenCentral()
     maven {
-        name = 'Galacticraft'
-        url = uri('https://maven.galacticraft.net/repository/legacy/')
-    }
-    maven {
-        name = 'GitHub'
-        url = uri('https://jitpack.io')
+        name = 'BlameJared'
+        url = uri('https://maven.blamejared.com')
     }
     maven {
         name = 'Modrinth'
@@ -78,8 +66,17 @@ repositories {
             includeGroup 'maven.modrinth'
         }
     }
-    flatDir {
-        dirs 'build/libs'
+    maven {
+        name = 'Galacticraft'
+        url = uri('https://maven.galacticraft.net/repository/legacy/')
+    }
+    maven {
+        name = 'CleanRoom'
+        url = uri('https://maven.cleanroommc.com')
+    }
+    maven {
+        name = 'GitHub'
+        url = uri('https://jitpack.io')
     }
 }
 
@@ -106,7 +103,7 @@ dependencies {
     implementation(fg.deobf("curse.maven:ae2-extended-life-570458:${project.ae2_verion}"))
     implementation(fg.deobf("curse.maven:betweenalnds-243363:${project.betweenlands_version}"))
     implementation(fg.deobf("curse.maven:aoa-311054:${project.aoa_version}"))
-    implementation(fg.deobf("curse.maven:apotheosis-313970:${project.apotheosis_version}"))
+    //implementation(fg.deobf("curse.maven:apotheosis-313970:${project.apotheosis_version}"))
     implementation(fg.deobf("curse.maven:aquaculture-60028:${project.aquaculture_version}"))
     implementation(fg.deobf("curse.maven:infernal-mobs-227875:${project.aim_version}"))
     implementation(fg.deobf("curse.maven:atum-59621:${project.atum_version}"))
@@ -156,7 +153,7 @@ dependencies {
     implementation(fg.deobf("curse.maven:mantle-74924:${project.mantle_version}"))
     implementation(fg.deobf("curse.maven:mcjtylib-233105:${project.mcjl_version}"))
     implementation(fg.deobf("curse.maven:mekanism-ce-399904:${project.mce_version}"))
-    implementation(fg.deobf("curse.maven:mekanism-ce-tools-813407:${project.mcetools_version}"))
+    //implementation(fg.deobf("curse.maven:mekanism-ce-tools-813407:${project.mcetools_version}"))
     implementation(fg.deobf("curse.maven:mo-bends-231347:${project.mobends_version}"))
     implementation(fg.deobf("curse.maven:modtweaker-220954:${project.modtweaker_version}"))
     implementation(fg.deobf("curse.maven:moretweaker-336569:${project.moretweaker_version}"))
