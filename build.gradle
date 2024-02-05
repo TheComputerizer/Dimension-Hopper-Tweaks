@@ -161,7 +161,6 @@ dependencies {
     implementation(fg.deobf("curse.maven:more-planets-gc-addon-261990:${project.moreplanets_version}"))
     implementation(fg.deobf("curse.maven:more-planet-extras-266184:${project.moreplanetsextras_version}"))
     implementation(fg.deobf("curse.maven:multiblocked-604054:${project.mbd_version}"))
-    implementation(fg.deobf("curse.maven:music-triggers-518410:${project.mt_version}"))
     implementation(fg.deobf("curse.maven:natures-aura-306626:${project.na_version}"))
     implementation(fg.deobf("curse.maven:neat-238372:${project.neat_version}"))
     implementation(fg.deobf("curse.maven:netherex-248039:${project.netherex_version}"))
@@ -224,17 +223,6 @@ dependencies {
         transitive = false
     }
     implementation("CraftTweaker2:ZenScript:${project.ct_version}")
-
-    //runtime stuff and libraries
-    runtimeOnly(fg.deobf("curse.maven:autoreglib-250363:${project.autoreglib_version}"))
-    runtimeOnly(fg.deobf("curse.maven:brandons-core-231382:${project.bc_version}"))
-    runtimeOnly(fg.deobf("curse.maven:censoredasm-460609:${project.asm_version}"))
-    runtimeOnly(fg.deobf("curse.maven:cofh-world-271384:${project.cofhworld_version}"))
-    runtimeOnly(fg.deobf("curse.maven:mjrlegendslib-284331:${project.mjrlib_version}"))
-    runtimeOnly(fg.deobf("curse.maven:potioncore-242872:${project.pc_version}"))
-    runtimeOnly(fg.deobf("curse.maven:reid-629017:${project.reid_version}"))
-    runtimeOnly(fg.deobf("curse.maven:the-one-probe-245211:${project.top_version}"))
-    runtimeOnly(fg.deobf("curse.maven:thermal-foundation-222880:${project.thermalfoundation_version}"))
 }
 
 processResources {
