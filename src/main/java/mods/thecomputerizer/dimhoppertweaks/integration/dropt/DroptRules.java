@@ -49,7 +49,7 @@ public class DroptRules {
     }
 
     private static IDroptHarvesterRuleBuilder gameStageHarvester(boolean any, String ... stages) {
-        return DroptAPI.harvester().gameStages(EnumListType.BLACKLIST, any ? EnumHarvesterGameStageType.ANY :
+        return DroptAPI.harvester().gameStages(EnumListType.BLACKLIST,any ? EnumHarvesterGameStageType.ANY :
                 EnumHarvesterGameStageType.ALL,stages);
     }
 
@@ -64,6 +64,6 @@ public class DroptRules {
 
     private static String matchModItems(Item item, String mod) {
         ResourceLocation res = item.getRegistryName();
-        return Objects.nonNull(res) && res.getNamespace().equals(mod) ? res+":*" : null;
+        return Objects.nonNull(res) && res.getNamespace().equals(mod) ? res+":"+32767 : null;
     }
 }

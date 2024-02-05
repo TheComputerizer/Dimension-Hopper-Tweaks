@@ -179,6 +179,8 @@ public class DHDebugCommands extends DHTCommand {
                     world.spawnEntity(item);
                 }
             },qualifier);
+        } else if(type.equals("enchant")) {
+
         }
     }
 

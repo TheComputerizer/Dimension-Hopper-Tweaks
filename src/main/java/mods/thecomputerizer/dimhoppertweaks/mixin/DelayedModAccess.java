@@ -59,6 +59,7 @@ import slimeknights.tconstruct.tools.common.item.ItemBlockTable;
 import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -94,7 +95,16 @@ public class DelayedModAccess {
     private static boolean FOUND_BREAKER_CLASSES = false;
     private static boolean FOUND_PLACER_CLASSES = false;
 
-
+    public static void callInaccessibleMethod(Class<?> clazz, String methodName) {
+        try {
+            Method method = clazz.getDeclaredMethod(methodName);
+            if(!method.isAccessible()) method.setAccessible(true);
+            method.invoke(null);
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException ex) {
+            DHTRef.LOGGER.error("Failed to invoke inaccessible method `{}` from class `{}`",methodName,
+                    clazz.getName(),ex);
+        }
+    }
 
     public static ItemStack cheese() {
         return new ItemStack(ItemListxlfoodmod.cheese);
@@ -340,6 +350,7 @@ public class DelayedModAccess {
         Constructor<?> constructor = Objects.nonNull(clazz) ? constructorFinder.apply(clazz) : null;
         if(Objects.nonNull(constructor)) {
             try {
+                if(!constructor.isAccessible()) constructor.setAccessible(true);
                 return constructor.newInstance(args);
             } catch(InvocationTargetException | InstantiationException | IllegalAccessException ex) {
                 DHTRef.LOGGER.error("Failed to instantiate inaccessible class {} using arge `{}`",

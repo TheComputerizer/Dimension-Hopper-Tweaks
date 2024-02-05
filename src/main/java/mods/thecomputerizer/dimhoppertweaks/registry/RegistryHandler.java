@@ -4,6 +4,7 @@ import codersafterdark.reskillable.api.skill.Skill;
 import codersafterdark.reskillable.api.unlockable.Unlockable;
 import mods.thecomputerizer.dimhoppertweaks.common.commands.DHDebugCommands;
 import mods.thecomputerizer.dimhoppertweaks.common.commands.RandomTP;
+import mods.thecomputerizer.dimhoppertweaks.common.commands.SmiteStick;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.registry.structures.AbstractStructure;
 import mods.thecomputerizer.dimhoppertweaks.registry.tiles.LightningEnhancerEntity;
@@ -45,6 +46,7 @@ public final class RegistryHandler {
         DHTRef.LOGGER.info("Registering commands");
         event.registerServerCommand(new DHDebugCommands());
         event.registerServerCommand(new RandomTP());
+        event.registerServerCommand(new SmiteStick());
     }
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {

@@ -5,8 +5,10 @@ import mezz.jei.plugins.jei.info.IngredientInfoRecipe;
 import mezz.jei.startup.ModRegistry;
 import mods.thecomputerizer.dimhoppertweaks.mixin.api.IIngredientInfoRecipe;
 import mods.thecomputerizer.dimhoppertweaks.mixin.api.IModRegistry;
+import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
 import java.util.Collection;
@@ -39,4 +41,12 @@ public abstract class MixinModRegistry implements IModRegistry {
             }
         }
     }
+
+    /**
+     * @author The_Computerizer
+     * @reason No adding anvil recipes
+     */
+    @Deprecated
+    @Overwrite
+    public void addAnvilRecipe(ItemStack leftInput, List<ItemStack> rightInputs, List<ItemStack> outputs) {}
 }

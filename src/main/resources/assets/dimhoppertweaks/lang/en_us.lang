@@ -44,8 +44,7 @@ commands.dimhoppertweaks.dimrandomtp.error=Usage: /dimrandomtp player dimension 
 commands.dimhoppertweaks.dimrandomtp.error.biome=Failed to get biome name at coords (%1$s, %2$s, %3$s) for dimrandomtp command!
 commands.dimhoppertweaks.dimrandomtp.error.player=Failed to get player for dimrandomtp command!
 commands.dimhoppertweaks.dimrandomtp.success=§4§oYour consciousness fades for a second as you hear a nearly indistinguishable voice in your mind - §l§4D§ko§r §4§ln§ko§r§4§lt tr§kus§r§4§lt §ktha§r§4§lt b§kook
-commands.dimhoppertweaks.summoncommandtest.error=Error exectuing summoncommandtest command
-commands.dimhoppertweaks.summoncommandtest.success=Summoning §5§l§kThe OverSeer
+commands.dimhoppertweaks.stickofsmite.error=Usage: `/stickofsmite player`
 
 config.dimhoppertweaks.debug=Debug
 config.dimhoppertweaks.debug.tooltip=Dev options for debugging
@@ -111,8 +110,7 @@ gui.dimhoppertweaks.skill_drain=Xp Drain Selection - Scroll on the circles to ch
 gui.dimhoppertweaks.level=The number of levels XP conversion will drain
 gui.dimhoppertweaks.current_skill=The skill that XP will drain into
 
-item.dimhoppertweaks.stargate_addresser.name=Stargate Addresser
-item.dimhoppertweaks.stargate_addresser.success=Gate successfully located with address: §5%1$s
+item.dimhoppertweaks.prestige_token.name=Prestige Token Level
 item.dimhoppertweaks.reality_slasher.name=Reality Slasher
 item.dimhoppertweaks.recipe_function.name=Recipe Output Information
 item.dimhoppertweaks.skill_credit.name=Skill Credit
@@ -121,7 +119,9 @@ item.dimhoppertweaks.skill_token.not_synced=§o§lSkill info for the %1$s skill 
 item.dimhoppertweaks.skill_token.skill_maxed=§r§6%1$s%2$s[1024]
 item.dimhoppertweaks.skill_token.skill_normal=%1$s§l%2$s[%3$s->%4$s]:§r %5$s%6$s/%7$s§r §6§l%8$s§r§6§o{%9$s}
 item.dimhoppertweaks.skill_token.xp_drain=§r§o§7Draining %1$s XP %2$s into %3$s
-item.dimhoppertweaks.prestige_token.name=Prestige Token Level
+item.dimhoppertweaks.stick_of_smite.name=§6§l§oSTICK§k §r§6§l§oOF§k §r§6§l§oSMITE
+item.dimhoppertweaks.stargate_addresser.name=Stargate Addresser
+item.dimhoppertweaks.stargate_addresser.success=Gate successfully located with address: §5%1$s
 
 misc.dimhoppertweaks.sleep_warning=Warning, difficulty increases by %1$s from sleeping!
 

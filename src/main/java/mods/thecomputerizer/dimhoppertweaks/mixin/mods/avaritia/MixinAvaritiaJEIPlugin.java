@@ -6,15 +6,12 @@ import mezz.jei.api.IModRegistry;
 import mezz.jei.api.gui.IDrawableStatic;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import morph.avaritia.client.gui.GUIExtremeCrafting;
-import morph.avaritia.client.gui.GUINeutroniumCompressor;
 import morph.avaritia.compat.jei.AvaritiaJEIPlugin;
-import morph.avaritia.compat.jei.compressor.CompressorRecipeWrapper;
 import morph.avaritia.compat.jei.extreme.ExtremeCraftingCategory;
 import morph.avaritia.compat.jei.extreme.ExtremeRecipeWrapper;
 import morph.avaritia.container.ContainerExtremeCrafting;
 import morph.avaritia.init.ModBlocks;
 import morph.avaritia.recipe.AvaritiaRecipeManager;
-import morph.avaritia.recipe.compressor.ICompressorRecipe;
 import morph.avaritia.recipe.extreme.ExtremeShapedRecipe;
 import morph.avaritia.recipe.extreme.ExtremeShapelessRecipe;
 import net.minecraft.item.ItemStack;
@@ -54,10 +51,6 @@ public abstract class MixinAvaritiaJEIPlugin {
         registry.addRecipeCatalyst(new ItemStack(ModBlocks.extremeCraftingTable),"Avatitia.Extreme");
         registry.getRecipeTransferRegistry().addRecipeTransferHandler(ContainerExtremeCrafting.class,"Avatitia.Extreme",1,81,82,36);
         registry.addRecipeClickArea(GUIExtremeCrafting.class, 175, 79, 28, 26,"Avatitia.Extreme");
-        registry.addRecipes(AvaritiaRecipeManager.COMPRESSOR_RECIPES.values(),"Avatitia.Compressor");
-        registry.handleRecipes(ICompressorRecipe.class,CompressorRecipeWrapper::new,"Avatitia.Compressor");
-        registry.addRecipeClickArea(GUINeutroniumCompressor.class,62,35,22,15,"Avatitia.Compressor");
-        registry.addRecipeCatalyst(new ItemStack(ModBlocks.neutronium_compressor), "Avatitia.Compressor");
     }
 
     /**
