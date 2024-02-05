@@ -12,12 +12,12 @@ public class SkyShader extends Shader {
 
     public SkyShader() {
         super(DHTRef.res("shaders/boss/skytest.fsh"),DHTRef.res("shaders/boss/skytest.vsh"));
-        addUniformFloat("u_msTime",() -> System.nanoTime()/1000000f);
-        addUniformFloat("u_timeScale",() -> 2.5E-7f);
-        addUniformFloat("u_zoom",() -> 0.8f);
-        addUniformFloat("u_offsetX",this::getXOffSet);
-        addUniformFloat("u_offsetY",this::getYOffSet);
-        addUniformFloat("u_offsetZ",() -> 0f);
+        addUniformFloat("millis",() -> System.nanoTime()/1000000f);
+        addUniformFloat("timeScale",() -> 2.5E-7f);
+        addUniformFloat("zoom",() -> 0.8f);
+        addUniformFloat("offsetX",this::getXOffSet);
+        addUniformFloat("offsetY",this::getYOffSet);
+        addUniformFloat("offsetZ",() -> 0f);
     }
 
     @Override

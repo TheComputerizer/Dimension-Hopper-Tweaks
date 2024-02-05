@@ -4,6 +4,7 @@ plugins {
     id 'org.jetbrains.gradle.plugin.idea-ext' version '1.1.7'
     id 'wtf.gofancy.fancygradle' version '1.1.+'
     id 'org.spongepowered.mixin' version '0.7.+'
+    id 'com.github.ManifestClasspath' version '0.1.0-RELEASE'
 }
 
 fancyGradle {
@@ -125,6 +126,7 @@ dependencies {
     implementation(fg.deobf("curse.maven:ctm-267602:${project.ctm_version}"))
     implementation(fg.deobf("curse.maven:dimensionaldoors-284876:${project.dimdoors_version}"))
     implementation(fg.deobf("curse.maven:draconic-evolution-223565:${project.de_version}"))
+    implementation(fg.deobf("curse.maven:dropt-284973:${project.dropt_version}"))
     implementation(fg.deobf("curse.maven:dynamic-surroundings-238891:${project.dsurround_version}"))
     implementation(fg.deobf("curse.maven:ender-io-64578:${project.eio_version}"))
     implementation(fg.deobf("curse.maven:environmental-tech-245453:${project.et_version}"))
@@ -140,9 +142,11 @@ dependencies {
     implementation(fg.deobf("curse.maven:had-enough-items-557549:${project.hei_version}"))
     implementation(fg.deobf("curse.maven:hunting-dimension-283235:${project.huntingdim_version}"))
     implementation(fg.deobf("curse.maven:immersive-engineering-231951:${project.ie_version}"))
+    implementation(fg.deobf("curse.maven:industrial-foregoing-266515:${project.if_version}"))
     implementation(fg.deobf("curse.maven:item-stages-280316:${project.itemstages_version}"))
     implementation(fg.deobf("curse.maven:jaopca-266936:${project.jaopca_version}"))
     implementation(fg.deobf("curse.maven:just-enough-calculation-242223:${project.jec_version}"))
+    implementation(fg.deobf("curse.maven:just-enough-resources-jer-240630:${project.jer_version}"))
     implementation(fg.deobf("curse.maven:libraryex-298965:${project.libex_version}"))
     implementation(fg.deobf("curse.maven:libnine-322344:${project.libnine_version}"))
     implementation(fg.deobf("curse.maven:lightningcraft-237422:${project.lightningcraft_version}"))
@@ -188,11 +192,13 @@ dependencies {
     implementation(fg.deobf("curse.maven:silent-lib-242998:${project.slib_version}"))
     implementation(fg.deobf("curse.maven:stevekungs-lib-296019:${project.sglib_version}"))
     implementation(fg.deobf("curse.maven:tesla-244651:${project.tesla_version}"))
+    implementation(fg.deobf("curse.maven:tesla-core-lib-254602:${project.tclib_version}"))
     implementation(fg.deobf("curse.maven:the-aether-ii-phosphor-not-included-917199:${project.aether_version}"))
     implementation(fg.deobf("curse.maven:the-impossible-library-661115:${project.til_version}"))
     implementation(fg.deobf("curse.maven:the-twilight-forest-227639:${project.tf_version}"))
     implementation(fg.deobf("curse.maven:thermal-cultivation-271835:${project.thermalcultivation_version}"))
     implementation(fg.deobf("curse.maven:thermal-expansion-69163:${project.thermalexpansion_version}"))
+    implementation(fg.deobf("curse.maven:tinker-i-o-229503:${project.tio_version}"))
     implementation(fg.deobf("curse.maven:tinkers-construct-74072:${project.tconstruct_version}"))
     implementation(fg.deobf("curse.maven:tiny-progressions-250850:${project.tp_version}"))
     implementation(fg.deobf("curse.maven:together-forever-285968:${project.together_version}"))

@@ -71,13 +71,13 @@ public class ShaderManager implements ISelectiveResourceReloadListener {
 
     public void initShaderFrame(WorldClient world) {
         //if(this.skyShader.canRender(world)) this.skyShader.init();
-        if(this.cosmicShader.canRender(world)) this.cosmicShader.init();
+        //if(this.cosmicShader.canRender(world)) this.cosmicShader.init();
     }
 
     @Override
     public void onResourceManagerReload(IResourceManager manager, Predicate<IResourceType> resourcePredicate) {
         //this.skyShader.delete();
-        this.cosmicShader.delete();
+        //this.cosmicShader.delete();
     }
 
     public void uploadFloats(FloatBuffer buffer, float ... vals) {

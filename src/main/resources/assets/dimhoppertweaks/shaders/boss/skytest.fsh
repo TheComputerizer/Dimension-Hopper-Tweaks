@@ -13,20 +13,20 @@
 #define distfading 0.730
 #define saturation 0.850
 
-uniform float u_msTime;
-uniform float u_timeScale;
-uniform float u_zoom;
-uniform float u_offsetX;
-uniform float u_offsetY;
-uniform float u_offsetZ;
+uniform float millis;
+uniform float timeScale;
+uniform float zoom;
+uniform float offsetX;
+uniform float offsetY;
+uniform float offsetZ;
 
 void main() {
     vec2 uv = gl_TexCoord[0].st;
-    vec3 dir = vec3(uv*u_zoom,1f);
-    float time = u_msTime * u_timeScale+0.25f;
+    vec3 dir = vec3(uv*zoom,1f);
+    float time = millis * timeScale+0.25f;
     vec3 from = vec3(1f,0.5f,0.5f);
     from += vec3(time*2f,time,-2f);
-    from += vec3(u_offsetX, u_offsetY, u_offsetZ);
+    from += vec3(offsetX, offsetY, offsetZ);
     //volumetric rendering
     float s = 0.1f;
     float fade = 1f;

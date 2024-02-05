@@ -6,6 +6,7 @@ import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrappe
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.util.ItemUtil;
 import mods.thecomputerizer.dimhoppertweaks.util.TextUtil;
+import mods.thecomputerizer.theimpossiblelibrary.util.TextUtil.TextCasing;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -60,7 +61,7 @@ public class SkillCredit extends EpicItem {
     @Override
     public String getItemStackDisplayName(ItemStack stack) {
         String name = super.getItemStackDisplayName(stack);
-        String skill = getSkillTranslation(stack);
+        String skill = DHTRef.CLIENT ? getClientSkillTranslation(stack) : getCommonSkillTranslation(stack);
         return Objects.nonNull(skill) ? String.format("%s [%s]",name,skill) : name;
     }
 
@@ -74,8 +75,17 @@ public class SkillCredit extends EpicItem {
         return StringUtils.isNotBlank(skill) && SkillWrapper.isValidSkill(skill) ? skill : null;
     }
 
-    private @Nullable String getSkillTranslation(ItemStack stack) {
+    @SideOnly(Side.CLIENT)
+    private @Nullable String getClientSkillTranslation(ItemStack stack) {
         String skill = getSkill(ItemUtil.getOrCreateTag(stack));
         return Objects.nonNull(skill) ? TextUtil.getTranslated(String.format("%s.%s.%s","skill",DHTRef.MODID,skill)) : null;
+    }
+
+    /**
+     * TextUtil is a client class so do a different calculation on the serverside to ensure nothing tries to load it
+     */
+    private @Nullable String getCommonSkillTranslation(ItemStack stack) {
+        String skill = getSkill(ItemUtil.getOrCreateTag(stack));
+        return Objects.nonNull(skill) ? TextCasing.PASCAL.combine(skill) : null;
     }
 }

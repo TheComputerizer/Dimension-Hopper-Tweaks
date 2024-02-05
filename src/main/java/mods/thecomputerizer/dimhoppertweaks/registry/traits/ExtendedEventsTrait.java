@@ -2,17 +2,20 @@ package mods.thecomputerizer.dimhoppertweaks.registry.traits;
 
 import codersafterdark.reskillable.api.unlockable.Trait;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
 import net.minecraftforge.event.entity.living.LootingLevelEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
 public abstract class ExtendedEventsTrait extends Trait {
@@ -36,8 +39,28 @@ public abstract class ExtendedEventsTrait extends Trait {
         return skills;
     }
 
+    private int animationFrames = 1;
+    private float animationFrameFactor = 16f;
+    private int curFrame = 1;
+
     public ExtendedEventsTrait(String name, int x, int y, ResourceLocation skillRes, int cost, String... requirements) {
         super(DHTRef.res(name),x,y,skillRes,cost,getReqs(requirements));
+    }
+
+    @SubscribeEvent
+    public void animationTick() {
+        this.curFrame++;
+        if(this.curFrame>this.animationFrames) this.curFrame = 1;
+    }
+
+    public void draw(int x, int y) {
+        float minV = (float)(this.curFrame-1)/this.animationFrameFactor;
+        float maxV = minV+this.animationFrameFactor;
+        Gui.drawModalRectWithCustomSizedTexture(x+5,y+5,0f,minV,16,16,16f,maxV);
+    }
+
+    public void drawAnimated(int x, int y) {
+        Gui.drawModalRectWithCustomSizedTexture(x+5,y+5,0f,0f,16,16,16f,16f);
     }
 
     public void onChangeDimensions(PlayerEvent.PlayerChangedDimensionEvent ev) {}
@@ -66,4 +89,12 @@ public abstract class ExtendedEventsTrait extends Trait {
     public void onSetTargetToTamed(EntityPlayer player, EntityLiving attacker) {}
 
     public void onFinishUsingItem(EntityPlayer player, ItemStack stack) {}
+
+    public ExtendedEventsTrait setAnimationFrames(int frames) {
+        if(frames>1) MinecraftForge.EVENT_BUS.register(this);
+        this.animationFrames = frames;
+        this.animationFrameFactor = 16f/(float)frames;
+        this.curFrame = 1;
+        return this;
+    }
 }

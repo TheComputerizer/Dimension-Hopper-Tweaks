@@ -51,6 +51,16 @@ public final class DHTConfig {
         @LangKey("config.dimhoppertweaks.mods.lastStandMaxCooldown")
         @Comment("The cooldown in ticks for the last stand enchantment at level 1. Each additional level subtracts a tick to the cooldown with a minimum possible cooldown of 2 ticks")
         public int lastStandCooldown = 5;
+
+        @Name("xpLossMasochist")
+        @LangKey("config.dimhoppertweaks.mods.xpLossMasochist")
+        @Comment("The percentage of XP lost on death for masochist mode players")
+        public int xpLossMasochist = 50;
+
+        @Name("xpLossNormal")
+        @LangKey("config.dimhoppertweaks.mods.xpLossDefault")
+        @Comment("The percentage of XP lost on death for non masochist mode players")
+        public int xpLossNormal = 10;
     }
 
     public static final class Skills {

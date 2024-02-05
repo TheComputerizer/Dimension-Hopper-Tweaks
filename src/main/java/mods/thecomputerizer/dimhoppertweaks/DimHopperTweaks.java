@@ -13,7 +13,6 @@ import mods.thecomputerizer.dimhoppertweaks.registry.RegistryHandler;
 import mods.thecomputerizer.theimpossiblelibrary.network.NetworkHandler;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -37,7 +36,7 @@ public class DimHopperTweaks {
         DHTRef.LOGGER.info("Starting pre-init");
         CapabilityManager.INSTANCE.register(ISkillCapability.class,new SkillCapabilityStorage(),SkillCapability::new);
         CapabilityManager.INSTANCE.register(IExtraChunkData.class,new ExtraChunkDataStorage(),ExtraChunkData::new);
-        if (FMLCommonHandler.instance().getSide().isClient()) {
+        if(DHTRef.CLIENT) {
             OBJLoader.INSTANCE.addDomain(DHTRef.MODID);
             DHTClient.registerRenderers();
         }
@@ -46,7 +45,7 @@ public class DimHopperTweaks {
 
     @EventHandler
     public static void postInit(FMLPostInitializationEvent event) {
-        if(FMLCommonHandler.instance().getSide().isClient()) RegistryHandler.onPostInit(event);
+        if(DHTRef.CLIENT) RegistryHandler.onPostInit(event);
     }
 
     @EventHandler

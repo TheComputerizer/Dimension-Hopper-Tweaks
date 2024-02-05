@@ -6,6 +6,7 @@ import net.minecraft.world.World;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ovh.corail.tombstone.config.ConfigTombstone;
 
 import java.util.Random;
 
@@ -17,6 +18,10 @@ public class DHTConfigHelper {
     private static double actualMaxArmorReduction = calculateActualMaxArmorReduction();
     private static double maxToughnessLinear = calculateMaxArmorLinear();
     private static double actualMaxToughnessReduction = calculateActualMaxToughnessReduction();
+
+    public static void adjustXPLossPercentage(boolean masochist) {
+        ConfigTombstone.player_death.xpLoss = masochist ? DHTConfig.MODS.xpLossMasochist : DHTConfig.MODS.xpLossNormal;
+    }
 
     public static int auraInRadius(World world, BlockPos pos) {
         return IAuraChunk.getAuraInArea(world,pos,DHTConfig.SKILLS.auraRadius);

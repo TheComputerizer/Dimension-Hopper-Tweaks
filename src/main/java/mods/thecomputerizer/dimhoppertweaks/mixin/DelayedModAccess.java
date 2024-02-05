@@ -57,13 +57,18 @@ import slimeknights.tconstruct.library.tools.IToolPart;
 import slimeknights.tconstruct.tools.common.item.ItemBlockTable;
 
 import javax.annotation.Nullable;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 @SuppressWarnings({"unused", "SameParameterValue"})
 public class DelayedModAccess {
 
+    public static final List<ItemStack> ADDED_ITEMS = new LinkedList<>();
+    private static final Set<Class<?>> BLOCK_BREAKER_CLASSES = new HashSet<>();
     private static final Collection<String> BLOCK_BREAKER_CLASS_NAMES = Arrays.asList(
             "openblocks.common.tileentity.TileEntityBlockBreaker",
             "lumien.randomthings.tileentity.TileEntityBlockBreaker",
@@ -75,6 +80,7 @@ public class DelayedModAccess {
             "li.cil.oc.common.tileentity.RobotProxy",
             "appeng.tile.networking.TileCableBus",
             "org.cyclops.integrateddynamics.core.tileentity.TileMultipartTicking");
+    private static final Set<Class<?>> BLOCK_PLACER_CLASSES = new HashSet<>();
     private static final Collection<String> BLOCK_PLACER_CLASS_NAMES = Arrays.asList(
             "openblocks.common.tileentity.TileEntityBlockPlacer",
             "com.rwtema.extrautils2.tile.TileUse",
@@ -82,23 +88,32 @@ public class DelayedModAccess {
             "appeng.tile.networking.TileCableBus",
             "de.ellpeck.actuallyadditions.mod.tile.TileEntityPlacer",
             "de.ellpeck.actuallyadditions.mod.tile.TileEntityPhantomPlacer");
-    private static final Set<Class<?>> BLOCK_BREAKER_CLASSES = new HashSet<>();
-    private static final Set<Class<?>> BLOCK_PLACER_CLASSES = new HashSet<>();
+    private static final Map<Item,Map<Integer,NBTTagCompound>> CACHED_ITEM_YEETS = new HashMap<>();
+    private static final List<Item> NULLED_ITEM_YEET_TAGS = new ArrayList<>();
+    public static final AtomicInteger YEET_COUNT = new AtomicInteger(0);
     private static boolean FOUND_BREAKER_CLASSES = false;
     private static boolean FOUND_PLACER_CLASSES = false;
-    public static final List<ItemStack> ADDED_ITEMS = new LinkedList<>();
-    private static final Map<Item,Map<Integer,NBTTagCompound>> CACHED_ITEM_YEETS = new HashMap<>();
-    private static  final List<Item> NULLED_ITEM_YEET_TAGS = new ArrayList<>();
-    public static final AtomicInteger YEET_COUNT = new AtomicInteger(0);
 
-    public static void finalizeYeeting() {
-        DHTRef.LOGGER.info("{} redundant JEI entries have been successfully trimmed!",DelayedModAccess.YEET_COUNT.get()/2);
-        NULLED_ITEM_YEET_TAGS.clear();
-        for(Map.Entry<Item,Map<Integer,NBTTagCompound>> entry : CACHED_ITEM_YEETS.entrySet()) {
-            entry.getValue().clear();
-            entry.setValue(null);
+
+
+    public static ItemStack cheese() {
+        return new ItemStack(ItemListxlfoodmod.cheese);
+    }
+
+    public static void checkForAutoCrafter(TileEntity tile, Collection<String> stages) {
+        if(tile instanceof TileEntityAutoCrafter)
+            ((IInventoryCrafting)((TileEntityAutoCrafter)tile).crafting).dimhoppertweaks$setStages(stages);
+    }
+
+    private static boolean checkTagRemovals(Item item, ResourceLocation res) {
+        if(item instanceof ItemMonsterPlacer || item instanceof ItemTankBlock) {
+            return true;
         }
-        CACHED_ITEM_YEETS.clear();
+        String name = res.toString();
+        String mod = res.getNamespace();
+        String path = res.getPath();
+        return name.equals("rftools:syringe") || name.equals("tconstruct:clay_cast") || path.contains("bucket") ||
+                (mod.equals("forestry") && !path.contains("queen") || mod.equals("gendustry"));
     }
 
     public static void checkYeet(ItemStack stack) {
@@ -203,15 +218,69 @@ public class DelayedModAccess {
         }
     }
 
-    private static boolean checkTagRemovals(Item item, ResourceLocation res) {
-        if(item instanceof ItemMonsterPlacer || item instanceof ItemTankBlock) {
-            return true;
+    public static void finalizeYeeting() {
+        DHTRef.LOGGER.info("{} redundant JEI entries have been successfully trimmed!",DelayedModAccess.YEET_COUNT.get()/2);
+        NULLED_ITEM_YEET_TAGS.clear();
+        for(Map.Entry<Item,Map<Integer,NBTTagCompound>> entry : CACHED_ITEM_YEETS.entrySet()) {
+            entry.getValue().clear();
+            entry.setValue(null);
         }
-        String name = res.toString();
-        String mod = res.getNamespace();
-        String path = res.getPath();
-        return name.equals("rftools:syringe") || name.equals("tconstruct:clay_cast") || path.contains("bucket") ||
-                (mod.equals("forestry") && !path.contains("queen") || mod.equals("gendustry"));
+        CACHED_ITEM_YEETS.clear();
+    }
+
+    private static @Nullable Class<?> findClass(String className) {
+        try {
+            return Class.forName(className);
+        } catch(ClassNotFoundException ex) {
+            DHTRef.LOGGER.error("Could not locate class with name `{}`",className);
+        }
+        return null;
+    }
+
+    private static void findClassesFromNames(Collection<String> classNames, Set<Class<?>> classSet, String type) {
+        for(String className : classNames) {
+            Class<?> foundClass = findClass(className);
+            if(Objects.nonNull(foundClass) && TileEntity.class.isAssignableFrom(foundClass)) {
+                classSet.add(foundClass);
+                DHTRef.LOGGER.info("Registered tile entity class with name `{}` as an automatic {}",
+                        className,type);
+            } else DHTRef.LOGGER.error("Tried to register non tile entity class with name {} as an " +
+                    "automatic {}!",className,type);
+        }
+    }
+
+    public static Set<Class<?>> getBreakerTileClasses() {
+        if(!FOUND_BREAKER_CLASSES) {
+            findClassesFromNames(BLOCK_BREAKER_CLASS_NAMES,BLOCK_BREAKER_CLASSES,"block breaker");
+            FOUND_BREAKER_CLASSES = true;
+        }
+        return Collections.unmodifiableSet(BLOCK_BREAKER_CLASSES);
+    }
+
+    public static Block getCrateBlock() {
+        return InitBlocks.blockGiantChest;
+    }
+
+    public static Collection<String> getGameStages(EntityPlayer player) {
+        if(Objects.isNull(player)) return new ArrayList<>();
+        IStageData data = GameStageHelper.getPlayerData(player);
+        return Objects.isNull(data) ? new ArrayList<>() : data.getStages();
+    }
+
+    public static Block getGDKeystoneBlock() {
+        return GDBlocks.keystone_block;
+    }
+
+    public static Block getGDPortalBlock() {
+        return GDBlocks.gaia_portal;
+    }
+
+    public static Set<Class<?>> getPlacerTileClasses() {
+        if(!FOUND_PLACER_CLASSES) {
+            findClassesFromNames(BLOCK_PLACER_CLASS_NAMES,BLOCK_PLACER_CLASSES,"block placer");
+            FOUND_PLACER_CLASSES = true;
+        }
+        return Collections.unmodifiableSet(BLOCK_PLACER_CLASSES);
     }
 
     private static NBTTagCompound getTinkerToolTag(Item item, int meta, List<PartMaterialType> components) {
@@ -236,85 +305,13 @@ public class DelayedModAccess {
         });
     }
 
-    private static Consumer<NBTTagCompound> replaceYeetedTinkerTable(String block) {
-        return tag -> {
-            NBTTagCompound textureTag = new NBTTagCompound();
-            textureTag.setString("id",block);
-            textureTag.setInteger("Count",1);
-            textureTag.setShort("Damage",(short)0);
-            tag.setTag("textureBlock",textureTag);
-        };
-    }
-
-    private static NBTTagCompound replaceYeetedTag(Item item, int meta, Consumer<NBTTagCompound> tagSettings) {
-        NBTTagCompound tag = new NBTTagCompound();
-        tagSettings.accept(tag);
-        CACHED_ITEM_YEETS.putIfAbsent(item,new Int2ObjectLinkedOpenHashMap<>());
-        CACHED_ITEM_YEETS.get(item).put(meta,tag);
-        return tag;
-    }
-
-    public static Collection<String> getGameStages(EntityPlayer player) {
-        if(Objects.isNull(player)) return new ArrayList<>();
-        IStageData data = GameStageHelper.getPlayerData(player);
-        return Objects.isNull(data) ? new ArrayList<>() : data.getStages();
-    }
-
-    public static void setGameStages(EntityPlayer player, Collection<String> stages) {
-        for(String stage : stages) setGameStage(player,stage);
-    }
-
-    public static void setGameStage(EntityPlayer player, String stage) {
-        if(Objects.nonNull(player)) GameStageHelper.addStage(player,stage);
-    }
-
-    public static boolean hasGameStage(Entity entity, String stage) {
-        return entity instanceof EntityPlayer && GameStageHelper.hasStage((EntityPlayer)entity,stage);
-    }
     public static IBlockState getWithOreStage(@Nullable Entity entity, IBlockState original) {
         Tuple<String,IBlockState> stageInfo = OreTiersAPI.getStageInfo(original);
         return Objects.isNull(stageInfo) || hasGameStage(entity,stageInfo.getFirst()) ? original : stageInfo.getSecond();
     }
 
-    public static ItemStack cheese() {
-        return new ItemStack(ItemListxlfoodmod.cheese);
-    }
-
-    public static void checkForAutoCrafter(TileEntity tile, Collection<String> stages) {
-        if(tile instanceof TileEntityAutoCrafter)
-            ((IInventoryCrafting)((TileEntityAutoCrafter)tile).crafting).dimhoppertweaks$setStages(stages);
-    }
-
-    public static Set<Class<?>> getBreakerTileClasses() {
-        if(!FOUND_BREAKER_CLASSES) {
-            findClassesFromNames(BLOCK_BREAKER_CLASS_NAMES,BLOCK_BREAKER_CLASSES,"block breaker");
-            FOUND_BREAKER_CLASSES = true;
-        }
-        return Collections.unmodifiableSet(BLOCK_BREAKER_CLASSES);
-    }
-
-    public static Set<Class<?>> getPlacerTileClasses() {
-        if(!FOUND_PLACER_CLASSES) {
-            findClassesFromNames(BLOCK_PLACER_CLASS_NAMES,BLOCK_PLACER_CLASSES,"block placer");
-            FOUND_PLACER_CLASSES = true;
-        }
-        return Collections.unmodifiableSet(BLOCK_PLACER_CLASSES);
-    }
-
-    private static void findClassesFromNames(Collection<String> classNames, Set<Class<?>> classSet, String type) {
-        for(String className : classNames) {
-            try {
-                Class<?> foundClass = Class.forName(className);
-                if(TileEntity.class.isAssignableFrom(foundClass)) {
-                    classSet.add(foundClass);
-                    DHTRef.LOGGER.info("Registered tile entity class with name `{}` as an automatic {}",
-                            className,type);
-                } else DHTRef.LOGGER.error("Tried to register non tile entity class with name {} as an " +
-                        "automatic {}!",className,type);
-            } catch (ClassNotFoundException ex) {
-                DHTRef.LOGGER.error("Could not locate class with name `{}`",className);
-            }
-        }
+    public static boolean hasGameStage(Entity entity, String stage) {
+        return entity instanceof EntityPlayer && GameStageHelper.hasStage((EntityPlayer)entity,stage);
     }
 
     public static double incrementDifficultyWithStageFactor(EntityPlayer player, double original) {
@@ -337,6 +334,21 @@ public class DelayedModAccess {
         return original;
     }
 
+    public static @Nullable Object instantiateInaccessibleClass(
+            String className, Function<Class<?>,Constructor<?>> constructorFinder, Object ... args) {
+        Class<?> clazz = findClass(className);
+        Constructor<?> constructor = Objects.nonNull(clazz) ? constructorFinder.apply(clazz) : null;
+        if(Objects.nonNull(constructor)) {
+            try {
+                return constructor.newInstance(args);
+            } catch(InvocationTargetException | InstantiationException | IllegalAccessException ex) {
+                DHTRef.LOGGER.error("Failed to instantiate inaccessible class {} using arge `{}`",
+                        className,args,ex);
+            }
+        } else DHTRef.LOGGER.error("The constructor for class {} seems to be null",className);
+        return null;
+    }
+
     public static boolean isFakeEntity(Entity entity) {
         return entity instanceof PreviewPlayer || entity.getEntityData().getBoolean("isFakeEntityForMoBends");
     }
@@ -351,18 +363,6 @@ public class DelayedModAccess {
 
     public static boolean isFastChunk(Chunk chunk) {
         return ExtraChunkData.isChunkFast(chunk);
-    }
-
-    public static Block getGDKeystoneBlock() {
-        return GDBlocks.keystone_block;
-    }
-
-    public static Block getGDPortalBlock() {
-        return GDBlocks.gaia_portal;
-    }
-
-    public static Block getCrateBlock() {
-        return InitBlocks.blockGiantChest;
     }
 
     public static ITeleporter makeGaiaTeleporter(int dim) {
@@ -427,6 +427,32 @@ public class DelayedModAccess {
 
     public static void replaceWithAir(World world, BlockPos pos) {
         world.setBlockState(pos,Blocks.AIR.getDefaultState());
+    }
+
+    private static NBTTagCompound replaceYeetedTag(Item item, int meta, Consumer<NBTTagCompound> tagSettings) {
+        NBTTagCompound tag = new NBTTagCompound();
+        tagSettings.accept(tag);
+        CACHED_ITEM_YEETS.putIfAbsent(item,new Int2ObjectLinkedOpenHashMap<>());
+        CACHED_ITEM_YEETS.get(item).put(meta,tag);
+        return tag;
+    }
+
+    private static Consumer<NBTTagCompound> replaceYeetedTinkerTable(String block) {
+        return tag -> {
+            NBTTagCompound textureTag = new NBTTagCompound();
+            textureTag.setString("id",block);
+            textureTag.setInteger("Count",1);
+            textureTag.setShort("Damage",(short)0);
+            tag.setTag("textureBlock",textureTag);
+        };
+    }
+
+    public static void setGameStages(EntityPlayer player, Collection<String> stages) {
+        for(String stage : stages) setGameStage(player,stage);
+    }
+
+    public static void setGameStage(EntityPlayer player, String stage) {
+        if(Objects.nonNull(player)) GameStageHelper.addStage(player,stage);
     }
 
     @SideOnly(Side.CLIENT)
