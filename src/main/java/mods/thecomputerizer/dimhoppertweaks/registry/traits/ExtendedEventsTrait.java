@@ -17,6 +17,8 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 
 public abstract class ExtendedEventsTrait extends Trait {
 
@@ -48,19 +50,17 @@ public abstract class ExtendedEventsTrait extends Trait {
     }
 
     @SubscribeEvent
-    public void animationTick() {
-        this.curFrame++;
-        if(this.curFrame>this.animationFrames) this.curFrame = 1;
+    public void animationTick(ClientTickEvent event) {
+        if(event.phase==Phase.START) {
+            this.curFrame++;
+            if(this.curFrame>this.animationFrames) this.curFrame = 1;
+        }
     }
 
     public void draw(int x, int y) {
         float minV = (float)(this.curFrame-1)/this.animationFrameFactor;
         float maxV = minV+this.animationFrameFactor;
         Gui.drawModalRectWithCustomSizedTexture(x+5,y+5,0f,minV,16,16,16f,maxV);
-    }
-
-    public void drawAnimated(int x, int y) {
-        Gui.drawModalRectWithCustomSizedTexture(x+5,y+5,0f,0f,16,16,16f,16f);
     }
 
     public void onChangeDimensions(PlayerEvent.PlayerChangedDimensionEvent ev) {}

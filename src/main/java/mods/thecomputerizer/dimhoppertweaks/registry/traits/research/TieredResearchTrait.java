@@ -42,10 +42,12 @@ public class TieredResearchTrait extends ExtendedEventsTrait {
         else if(level==4) {
             modid = "extendedcrafting";
             texturePath = "material_ultimate_ingot";
+            setAnimationFrames(7);
         }
         else if(level==5) {
             modid = "avaritia";
             texturePath = "resource/infinity_catalyst";
+            setAnimationFrames(9);
         }
         setIcon(new ResourceLocation(modid,"textures/items/"+texturePath+".png"));
     }
@@ -54,8 +56,7 @@ public class TieredResearchTrait extends ExtendedEventsTrait {
     public void onPlayerTick(TickEvent.PlayerTickEvent ev) {
         this.timer--;
         if(this.timer<=0) {
-            if(!GameStageHelper.hasStage(ev.player,this.stageName))
-                GameStageHelper.addStage(ev.player,this.stageName);
+            if(!GameStageHelper.hasStage(ev.player,this.stageName)) GameStageHelper.addStage(ev.player,this.stageName);
             this.timer = 20;
         }
     }
