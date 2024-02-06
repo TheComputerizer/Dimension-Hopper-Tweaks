@@ -28,6 +28,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -379,6 +380,17 @@ public class DelayedModAccess {
     public static ITeleporter makeGaiaTeleporter(int dim) {
         WorldServer world = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(dim);
         return new TeleporterGaia(world,getGDPortalBlock(),getGDKeystoneBlock().getDefaultState());
+    }
+
+    @SuppressWarnings("DataFlowIssue")
+    public static void removeModItems(Collection<ItemStack> stacks, String mod) {
+        stacks.removeIf( stack -> stack.isEmpty() || stack.getItem().getRegistryName().getNamespace().equals(mod));
+    }
+
+    @SuppressWarnings("DataFlowIssue")
+    public static void removeModItemEntities(Collection<EntityItem> stacks, String mod) {
+        stacks.removeIf(entity -> entity.getItem().isEmpty() ||
+                entity.getItem().getItem().getRegistryName().getNamespace().equals(mod));
     }
 
     public static void replaceAfterStructureGeneration(Chunk chunk) {

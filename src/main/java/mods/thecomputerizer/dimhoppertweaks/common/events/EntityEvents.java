@@ -6,6 +6,7 @@ import com.google.common.collect.Iterables;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
+import mods.thecomputerizer.dimhoppertweaks.mixin.DelayedModAccess;
 import mods.thecomputerizer.dimhoppertweaks.mixin.api.IEntityPixie;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
@@ -50,6 +51,13 @@ public class EntityEvents {
                 if(Objects.nonNull(cap)) cap.setShieldedDamage(event.getAmount());
             }
         }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onLivingDrop(LivingDropsEvent event) {
+        if(event.isCanceled()) return;
+        if(DelayedModAccess.hasGameStage(event.getEntity(),"advent"))
+            DelayedModAccess.removeModItemEntities(event.getDrops(),"aoa3");
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

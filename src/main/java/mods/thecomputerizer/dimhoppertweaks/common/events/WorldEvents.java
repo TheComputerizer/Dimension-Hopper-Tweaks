@@ -61,6 +61,13 @@ public class WorldEvents {
         }
     }
 
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void blockHarvest(HarvestDropsEvent event) {
+        if(event.isCanceled()) return;
+        if(DelayedModAccess.hasGameStage(event.getHarvester(),"advent"))
+            DelayedModAccess.removeModItems(event.getDrops(),"aoa3");
+    }
+
     @SuppressWarnings("deprecation")
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void blockPlace(PlaceEvent event) {
