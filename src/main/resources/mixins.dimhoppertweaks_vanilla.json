@@ -8,7 +8,7 @@
   "mixins": [
     "MixinAdvancementList",
     "MixinAnvilChunkLoader",
-    "MixinChunk",
+    "MixinChunkProviderServer",
     "MixinCombatRules",
     "MixinCommandTP",
     "MixinDimensionType",

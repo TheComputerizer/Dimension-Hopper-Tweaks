@@ -53,7 +53,7 @@ public class SmiteStick extends DHTCommand {
     }
 
     private int getEnchantmentID() {
-        ResourceLocation res = new ResourceLocation("lightningcraft","thor");
+        ResourceLocation res = new ResourceLocation("lightningcraft","hand_of_thor");
         if(ForgeRegistries.ENCHANTMENTS.containsKey(res)) {
             Enchantment enchant = ForgeRegistries.ENCHANTMENTS.getValue(res);
             return Objects.nonNull(enchant) ? Enchantment.getEnchantmentID(enchant) : 0;

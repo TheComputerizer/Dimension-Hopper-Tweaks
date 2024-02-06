@@ -1,8 +1,8 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.mods.xreliquary;
 
-import micdoodle8.mods.galacticraft.core.entities.player.GCEntityClientPlayerMP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -13,7 +13,7 @@ import xreliquary.items.ItemMobCharm;
 public abstract class MixinItemMobCharm {
 
     @Inject(at = @At("HEAD"), method = "damagePlayersMobCharm", cancellable = true)
-    private void dimhoppertweaks$noCharmDamageForGCPlayers(EntityPlayer player, Entity entity, CallbackInfoReturnable<Boolean> cir) {
-        if(player instanceof GCEntityClientPlayerMP) cir.setReturnValue(true);
+    private void dimhoppertweaks$onlyCharmDamageEntityPlayerMP(EntityPlayer player, Entity entity, CallbackInfoReturnable<Boolean> cir) {
+        if(!(player instanceof EntityPlayerMP)) cir.setReturnValue(false);
     }
 }
