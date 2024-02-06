@@ -8,6 +8,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
 import javax.annotation.Nullable;
@@ -16,6 +17,8 @@ import java.util.Random;
 
 @Mixin(value = InfernalMobsCore.class, remap = false)
 public abstract class MixinInfernalMobsCore {
+
+    @Shadow private static InfernalMobsCore instance;
 
     /**
      * @author The_Computerizer

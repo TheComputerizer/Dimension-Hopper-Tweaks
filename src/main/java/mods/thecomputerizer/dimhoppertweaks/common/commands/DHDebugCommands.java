@@ -197,7 +197,7 @@ public class DHDebugCommands extends DHTCommand {
             return;
         }
         if(sender instanceof EntityPlayerMP)
-            new PacketQueryGenericClient(type).addPlayers((EntityPlayerMP)sender).send();
+            new PacketQueryGenericClient(type).addPlayers((EntityPlayerMP) sender).send();
     }
 
     private void executeFill(MinecraftServer server, ICommandSender sender, @Nullable String rangeStr,
