@@ -1,6 +1,7 @@
 #version 120
 
 uniform sampler2D DiffuseSampler;
+uniform vec2 InSize;
 varying vec2 texCoord;
 varying vec2 oneTexel;
 uniform float Prominence = 1.0;

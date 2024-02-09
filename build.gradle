@@ -56,6 +56,10 @@ repositories {
     }
     mavenCentral()
     maven {
+        name = 'SpongePowered'
+        url = uri('https://repo.spongepowered.org/maven')
+    }
+    maven {
         name = 'BlameJared'
         url = uri('https://maven.blamejared.com')
     }
@@ -87,16 +91,18 @@ dependencies {
     annotationProcessor("com.google.code.gson:gson:${project.gson_annotation}")
     annotationProcessor("com.google.guava:guava:${project.guava_annotation}")
     annotationProcessor("org.ow2.asm:asm-debug-all:${project.asm_debug_annotation}")
-    annotationProcessor("zone.rong:mixinbooter:${project.mixinbooter_version}") {
-        transitive = false
-    }
-
-    implementation("zone.rong:mixinbooter:${project.mixinbooter_version}") {
+    annotationProcessor("org.spongepowered:mixin:${project.mixin_version}") {
         transitive = false
     }
 
     //stuff only needed to compile
     compileOnly(fg.deobf("curse.maven:industrial-craft-242638:${project.ic2_version}"))
+    compileOnly("CraftTweaker2:CraftTweaker2-API:${project.ct_version}")
+    compileOnly("CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${project.ct_version}")
+    compileOnly("CraftTweaker2:CraftTweaker2-MC1120-Mod-JEI:1.12-${project.ct_version}") {
+        transitive = false
+    }
+    compileOnly("CraftTweaker2:ZenScript:${project.ct_version}")
 
     //implemented cf stuff
     implementation(fg.deobf("curse.maven:actually-additions-228404:${project.aa_version}"))
@@ -110,7 +116,7 @@ dependencies {
     implementation(fg.deobf("curse.maven:avaritia-261348:${project.avaritia_version}"))
     implementation(fg.deobf("curse.maven:baubles-227083:${project.baubles_version}"))
     implementation(fg.deobf("curse.maven:bedrockcraft-363794:${project.bedrockcraft_version}"))
-    implementation(fg.deobf("curse.maven:better-questing-unofficial-629629:${project.bq_version}"))
+    implementation(fg.deobf("curse.maven:better-questing-629629:${project.bq_version}"))
     implementation(fg.deobf("curse.maven:biomes-o-plenty-220318:${project.bop_verison}"))
     implementation(fg.deobf("curse.maven:blue-skies-312918:${project.blueskies_version}"))
     implementation(fg.deobf("curse.maven:bookshelf-228525:${project.bookshelf_version}"))
@@ -131,6 +137,7 @@ dependencies {
     implementation(fg.deobf("curse.maven:extended-crafting-398267:${project.excrafting_version}"))
     implementation(fg.deobf("curse.maven:extraplanets-241291:${project.extraplanets_version}"))
     implementation(fg.deobf("curse.maven:extra-utilities-225561:${project.xu2_version}"))
+    implementation(fg.deobf("curse.maven:fermiumbooter-968474:${project.fbooter_version}"))
     implementation(fg.deobf("curse.maven:forestry-59751:${project.forestry_version}"))
     implementation(fg.deobf("curse.maven:gaia-dimension-302529:${project.gaia_version}"))
     implementation(fg.deobf("curse.maven:game-stages-268655:${project.gamestages_version}"))
@@ -155,10 +162,8 @@ dependencies {
     implementation(fg.deobf("curse.maven:mekanism-ce-399904:${project.mce_version}"))
     implementation(fg.deobf("curse.maven:mekanism-ce-tools-813407:${project.mcetools_version}"))
     implementation(fg.deobf("curse.maven:mo-bends-231347:${project.mobends_version}"))
-    implementation(fg.deobf("curse.maven:modtweaker-220954:${project.modtweaker_version}"))
-    implementation(fg.deobf("curse.maven:moretweaker-336569:${project.moretweaker_version}"))
+    //implementation(fg.deobf("curse.maven:moretweaker-336569:${project.moretweaker_version}"))
     implementation(fg.deobf("curse.maven:more-planets-261990:${project.moreplanets_version}"))
-    implementation(fg.deobf("curse.maven:more-planet-extras-266184:${project.moreplanetsextras_version}"))
     implementation(fg.deobf("curse.maven:multiblocked-604054:${project.mbd_version}"))
     implementation(fg.deobf("curse.maven:natures-aura-306626:${project.na_version}"))
     implementation(fg.deobf("curse.maven:neat-238372:${project.neat_version}"))
@@ -212,12 +217,9 @@ dependencies {
     //implemented other stuff
     implementation(fg.deobf("dev.galacticraft:galacticraft-legacy:${project.galacticraft_version}"))
     implementation(fg.deobf("maven.modrinth:travelersbackpack:${project.backpack_version}"))
-    implementation("CraftTweaker2:CraftTweaker2-API:${project.ct_version}")
-    implementation("CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${project.ct_version}")
-    implementation("CraftTweaker2:CraftTweaker2-MC1120-Mod-JEI:1.12-${project.ct_version}") {
+    implementation("org.spongepowered:mixin:${project.mixin_version}") {
         transitive = false
     }
-    implementation("CraftTweaker2:ZenScript:${project.ct_version}")
 }
 
 processResources {
