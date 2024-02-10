@@ -109,7 +109,6 @@ dependencies {
     compileOnly(fg.deobf("curse.maven:botania-225643:${botania_version}"))
     compileOnly(fg.deobf("curse.maven:cavern-285628:${cavern_version}"))
     compileOnly(fg.deobf("curse.maven:ccl-242818:${ccl_version}"))
-    compileOnly(fg.deobf("curse.maven:chisel-235279:${chisel_version}"))
     compileOnly(fg.deobf("curse.maven:compact-machines-224218:${cm3_version}"))
     compileOnly(fg.deobf("curse.maven:cofh-core-69162:${cofhcore_version}"))
     compileOnly(fg.deobf("curse.maven:constructs-armory-287683:${conarm_version}"))
