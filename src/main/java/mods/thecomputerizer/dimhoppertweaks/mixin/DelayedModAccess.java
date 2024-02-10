@@ -23,12 +23,10 @@ import mods.thecomputerizer.dimhoppertweaks.network.PacketSendKeyPressed;
 import net.darkhax.gamestages.GameStageHelper;
 import net.darkhax.gamestages.data.IStageData;
 import net.darkhax.huntingdim.item.ItemBiomeChanger;
-import net.darkhax.orestages.api.OreTiersAPI;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -40,7 +38,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.tileentity.*;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -316,11 +313,6 @@ public class DelayedModAccess {
         });
     }
 
-    public static IBlockState getWithOreStage(@Nullable Entity entity, IBlockState original) {
-        Tuple<String,IBlockState> stageInfo = OreTiersAPI.getStageInfo(original);
-        return Objects.isNull(stageInfo) || hasGameStage(entity,stageInfo.getFirst()) ? original : stageInfo.getSecond();
-    }
-
     public static boolean hasGameStage(Entity entity, String stage) {
         return entity instanceof EntityPlayer && GameStageHelper.hasStage((EntityPlayer)entity,stage);
     }
@@ -380,17 +372,6 @@ public class DelayedModAccess {
     public static ITeleporter makeGaiaTeleporter(int dim) {
         WorldServer world = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(dim);
         return new TeleporterGaia(world,getGDPortalBlock(),getGDKeystoneBlock().getDefaultState());
-    }
-
-    @SuppressWarnings("DataFlowIssue")
-    public static void removeModItems(Collection<ItemStack> stacks, String mod) {
-        stacks.removeIf( stack -> stack.isEmpty() || stack.getItem().getRegistryName().getNamespace().equals(mod));
-    }
-
-    @SuppressWarnings("DataFlowIssue")
-    public static void removeModItemEntities(Collection<EntityItem> stacks, String mod) {
-        stacks.removeIf(entity -> entity.getItem().isEmpty() ||
-                entity.getItem().getItem().getRegistryName().getNamespace().equals(mod));
     }
 
     public static void replaceAfterStructureGeneration(Chunk chunk) {

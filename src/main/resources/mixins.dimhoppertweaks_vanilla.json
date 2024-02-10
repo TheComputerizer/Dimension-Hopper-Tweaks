@@ -17,7 +17,6 @@
     "MixinEntityPlayer",
     "MixinEntityTrackerEntry",
     "MixinEntityWolf",
-    "MixinExplosion",
     "MixinInventoryCrafting",
     "MixinItemDye",
     "MixinItemStack",

@@ -26,12 +26,10 @@ public class DroptRules {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onDroptLoadRules(DroptLoadRulesEvent event) {
-        /*
         if(event.isCanceled()) return;
         List<IDroptRuleBuilder> builders = new ArrayList<>();
         addGenericStagedBuilder(builders,item -> matchModItems(item,"aoa3"),false,"advent");
         DroptAPI.registerRuleList(DHTRef.res("dropt_aoa3_all"),0,builders);
-         */
     }
 
     private static void addBuilder(
@@ -61,11 +59,12 @@ public class DroptRules {
             String matched = dropMatcher.apply(item);
             if(StringUtils.isNotBlank(matched)) items.add(matched);
         }
+        DHTRef.LOGGER.error("MATCHED ITEMS {}",items);
         return items.toArray(items.toArray(new String[0]));
     }
 
     private static String matchModItems(Item item, String mod) {
         ResourceLocation res = item.getRegistryName();
-        return Objects.nonNull(res) && res.getNamespace().equals(mod) ? res+":"+32767 : null;
+        return Objects.nonNull(res) && res.getNamespace().equals(mod) ? res.toString() : null;
     }
 }

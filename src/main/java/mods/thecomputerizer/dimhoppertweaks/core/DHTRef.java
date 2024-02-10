@@ -33,7 +33,6 @@ public class DHTRef {
             "required-after:mobends;"+
             "required-after:nodami;"+
             "required-after:openblocks;"+
-            "required-after:orestages;"+
             "required-after:overloaded;"+
             "required-after:packagedauto;"+
             "required-after:packagedexcrafting;"+

@@ -1,6 +1,5 @@
 package mods.thecomputerizer.dimhoppertweaks.registry.traits.gathering;
 
-import mods.thecomputerizer.dimhoppertweaks.mixin.DelayedModAccess;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -21,7 +20,7 @@ public class ExplosiveAura extends ExtendedEventsTrait {
         for(BlockPos pos : ev.getAffectedBlocks()) {
             Explosion ex = ev.getExplosion();
             World world = ev.getWorld();
-            IBlockState state = DelayedModAccess.getWithOreStage(ex.getExplosivePlacedBy(),world.getBlockState(pos));
+            IBlockState state = world.getBlockState(pos);
             if(state.getMaterial()!=Material.AIR) {
                 Block block = state.getBlock();
                 if(block.canDropFromExplosion(ex))
