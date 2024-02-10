@@ -8,6 +8,11 @@ import com.codetaylor.mc.dropt.api.event.DroptLoadRulesEvent;
 import com.codetaylor.mc.dropt.api.reference.EnumHarvesterGameStageType;
 import com.codetaylor.mc.dropt.api.reference.EnumListType;
 import com.codetaylor.mc.dropt.api.reference.EnumReplaceStrategy;
+import com.codetaylor.mc.dropt.modules.dropt.ModuleDropt;
+import com.codetaylor.mc.dropt.modules.dropt.Util;
+import com.codetaylor.mc.dropt.modules.dropt.rule.RuleLoader;
+import com.codetaylor.mc.dropt.modules.dropt.rule.log.DebugFileWrapper;
+import com.codetaylor.mc.dropt.modules.dropt.rule.log.LoggerWrapper;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
@@ -17,6 +22,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.FileWriter;
 import java.util.*;
 import java.util.function.Function;
 
@@ -59,12 +65,23 @@ public class DroptRules {
             String matched = dropMatcher.apply(item);
             if(StringUtils.isNotBlank(matched)) items.add(matched);
         }
-        DHTRef.LOGGER.error("MATCHED ITEMS {}",items);
+        DHTRef.LOGGER.info("Matched item drops {}",items);
         return items.toArray(items.toArray(new String[0]));
     }
 
     private static String matchModItems(Item item, String mod) {
         ResourceLocation res = item.getRegistryName();
-        return Objects.nonNull(res) && res.getNamespace().equals(mod) ? res.toString() : null;
+        return Objects.nonNull(res) && res.getNamespace().equals(mod) ? res+":"+32767 : null;
+    }
+
+    public static void reload() {
+        FileWriter logFileWriter = ModuleDropt.LOG_FILE_WRITER_PROVIDER.createLogFileWriter();
+        LoggerWrapper wrapper = new LoggerWrapper(DHTRef.LOGGER,logFileWriter);
+        ModuleDropt.RULE_LISTS.clear();
+        ModuleDropt.RULE_CACHE.clear();
+        RuleLoader.loadRuleLists(ModuleDropt.RULE_PATH,ModuleDropt.RULE_LISTS,wrapper,new DebugFileWrapper(logFileWriter));
+        RuleLoader.parseRuleLists(ModuleDropt.RULE_LISTS,wrapper,new DebugFileWrapper(logFileWriter));
+        Util.closeSilently(logFileWriter);
+        DHTRef.LOGGER.info("Reload [{}] dropt rule files",ModuleDropt.RULE_LISTS.size());
     }
 }

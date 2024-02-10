@@ -8,6 +8,7 @@ import mods.thecomputerizer.dimhoppertweaks.common.capability.player.ISkillCapab
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillCapabilityStorage;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
+import mods.thecomputerizer.dimhoppertweaks.integration.dropt.DroptRules;
 import mods.thecomputerizer.dimhoppertweaks.network.*;
 import mods.thecomputerizer.dimhoppertweaks.registry.RegistryHandler;
 import mods.thecomputerizer.theimpossiblelibrary.network.NetworkHandler;
@@ -15,6 +16,7 @@ import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
@@ -46,6 +48,11 @@ public class DimHopperTweaks {
     @EventHandler
     public static void postInit(FMLPostInitializationEvent event) {
         if(DHTRef.CLIENT) RegistryHandler.onPostInit(event);
+    }
+
+    @EventHandler
+    public static void loadComplete(FMLLoadCompleteEvent event) {
+        DroptRules.reload();
     }
 
     @EventHandler
