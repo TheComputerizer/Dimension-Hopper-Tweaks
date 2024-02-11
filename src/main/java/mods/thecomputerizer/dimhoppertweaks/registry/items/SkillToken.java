@@ -64,17 +64,12 @@ public class SkillToken extends EpicItem {
             } else if(player.experienceLevel>=amount) {
                 ISkillCapability cap = SkillWrapper.getSkillCapability(player);
                 if(Objects.nonNull(cap)) {
-                    int prestige = cap.getPrestigeLevel(skill)+1;
                     for(int i=0; i<amount; i++) {
                         int SP = (int)(convertXPToSP(player.experienceLevel)*cap.getXPFactor());
-                        int currSP = cap.getSkillSP(skill);
-                        int levelSP = cap.getSkillLevelSP(skill);
-                        int currLevel = cap.getSkillLevel(skill);
-                        boolean isWithinPrestigeRange = ((double)currLevel/32d)<prestige;
-                        if(currSP+SP<levelSP || (currSP+SP>=levelSP && isWithinPrestigeRange)) {
+                        if(!cap.isCapped(skill,player)) {
                             cap.addSP(skill,SP,player,true);
                             player.addExperienceLevel(-1);
-                        }
+                        } else break;
                     }
                     SkillWrapper.updateTokens(player);
                 }

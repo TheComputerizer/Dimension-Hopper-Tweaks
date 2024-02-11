@@ -168,7 +168,7 @@ public class SkillCapability implements ISkillCapability {
 
     @Override
     public int getActionFactor(float initialAmount) {
-        return checkAndReturn("research",wrapper -> (int)(initialAmount*Math.max(1f,0.2f*(((float)wrapper.getLevel())/32f))));
+        return checkAndReturn("research",wrapper -> (int)(initialAmount*Math.max(1f,2f*(((float)wrapper.getLevel())/32f))));
     }
 
     @Override
