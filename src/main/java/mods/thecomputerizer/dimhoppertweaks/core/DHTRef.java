@@ -57,7 +57,7 @@ public class DHTRef {
     public static final Logger LOGGER = LogManager.getLogger("Dimension Hopper Twinkies");
     public static final String MODID = "dimhoppertweaks";
     public static final String NAME = "Dimension Hopper Tweaks";
-    public static final String VERSION = "1.12.2-2.7.2";
+    public static final String VERSION = "1.12.2-2.7.3";
 
     public static String modID(String str) {
         return String.format(str,MODID);

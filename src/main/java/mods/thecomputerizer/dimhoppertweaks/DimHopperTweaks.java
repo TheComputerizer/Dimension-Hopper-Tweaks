@@ -16,10 +16,7 @@ import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.event.*;
 
 @SuppressWarnings("unused")
 @Mod(modid = DHTRef.MODID, name = DHTRef.NAME, version = DHTRef.VERSION, dependencies = DHTRef.DEPENDENCIES)
@@ -43,6 +40,11 @@ public class DimHopperTweaks {
             DHTClient.registerRenderers();
         }
         DHTRef.LOGGER.info("Completed pre-init");
+    }
+
+    @EventHandler
+    public static void init(FMLInitializationEvent event) {
+        RegistryHandler.addLightningStrikeRecipes();
     }
 
     @EventHandler

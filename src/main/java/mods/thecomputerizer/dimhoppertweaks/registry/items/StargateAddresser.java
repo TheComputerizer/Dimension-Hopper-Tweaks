@@ -97,7 +97,7 @@ public class StargateAddresser extends EpicItem {
                         try {
                             address = gateBase.getHomeAddress();
                             text = new TextComponentTranslation("item.dimhoppertweaks.stargate_addresser.success",address);
-                            stack.setStackDisplayName(I18n.format("stargate.dimhoppertweaks.address",address));
+                            stack.setStackDisplayName(String.format("Stargate Address: §5%s",address));
                             result = EnumActionResult.SUCCESS;
                         } catch (SGAddressing.AddressingError e) {
                             result = EnumActionResult.FAIL;

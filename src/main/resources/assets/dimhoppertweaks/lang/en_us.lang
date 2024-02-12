@@ -15,7 +15,12 @@ category.dimhoppertweaks.ancient_stargate.addresser=§5This will only work in th
 category.dimhoppertweaks.ancient_stargate.corner=§5Replace the corners of the platform with this
 category.dimhoppertweaks.ancient_stargate.heavy_duty=§5Replace the bricks and cracked bricks with this
 category.dimhoppertweaks.ancient_stargate.schematic=§5Use this schematic on the top middle block of the stargate ring while sneaking
-category.dimhoppertweaks.ancient_stargate.unknown_dimension=Unknown dimension ID `%4$s`
+category.dimhoppertweaks.all.unknown_dimension=Unknown dimension ID `%4$s`
+category.dimhoppertweaks.lightning_strike=Lightning Strike
+category.dimhoppertweaks.lightning_strike.catalyst=§5This is the catalyst item that will begin the recipe
+category.dimhoppertweaks.lightning_strike.input=§5This must be within the specified range of the lightning strike
+category.dimhoppertweaks.lightning_strike.output=§5This will be spawned when the catalyst and all inputs are within range and in the correct dimension
+category.dimhoppertweaks.tileworker=Tileworker
 
 commands.dimhoppertweaks.dimensionhopper.usage=Usage: `/dimensionhopper %1$s`
 commands.dimhoppertweaks.dhd.error.blockdata=Usages: `/dhd 1` | `/dhd 1 ?` | `/dhd 1 ? entity`
@@ -202,8 +207,6 @@ skill.dimhoppertweaks.farming=Farming
 skill.dimhoppertweaks.magic=Magic
 skill.dimhoppertweaks.void=Void
 skill.dimhoppertweaks.research=Research
-
-stargate.dimhoppertweaks.address=Stargate Address: §5%1$s
 
 trait.dimhoppertweaks.hungry_farmer.auto_feed_enabled=§aAuto-Feed is enabled for the Hungry Farmer trait on this item (%1$s)
 trait.dimhoppertweaks.potion_master.auto_drink_enabled=§aAuto-Drink is enabled for the Potion Master trait on this potion (%1$s,%2$s)

@@ -12,25 +12,29 @@ import twilightforest.world.feature.TFGenMonolith;
 public abstract class MixinTFGenMonolith {
 
     @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;"+
-            "getDefaultState()Lnet/minecraft/block/state/IBlockState;", ordinal = 0), method = "generate")
+            "getDefaultState()Lnet/minecraft/block/state/IBlockState;", ordinal = 0),
+            method = "generate", remap = true)
     private IBlockState dimhoppertweaks$replaceLapis1(Block block) {
         return Blocks.STONE.getDefaultState();
     }
 
     @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;"+
-            "getDefaultState()Lnet/minecraft/block/state/IBlockState;", ordinal = 2), method = "generate")
+            "getDefaultState()Lnet/minecraft/block/state/IBlockState;", ordinal = 2),
+            method = "generate", remap = true)
     private IBlockState dimhoppertweaks$replaceLapis2(Block block) {
         return Blocks.STONE.getDefaultState();
     }
 
     @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;"+
-            "getDefaultState()Lnet/minecraft/block/state/IBlockState;", ordinal = 4), method = "generate")
+            "getDefaultState()Lnet/minecraft/block/state/IBlockState;", ordinal = 4),
+            method = "generate", remap = true)
     private IBlockState dimhoppertweaks$replaceLapis3(Block block) {
         return Blocks.STONE.getDefaultState();
     }
 
     @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;"+
-            "getDefaultState()Lnet/minecraft/block/state/IBlockState;", ordinal = 6), method = "generate")
+            "getDefaultState()Lnet/minecraft/block/state/IBlockState;", ordinal = 6),
+            method = "generate", remap = true)
     private IBlockState dimhoppertweaks$replaceLapis4(Block block) {
         return Blocks.STONE.getDefaultState();
     }

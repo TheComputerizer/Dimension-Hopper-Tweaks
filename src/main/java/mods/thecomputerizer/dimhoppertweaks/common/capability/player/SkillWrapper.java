@@ -55,7 +55,7 @@ public class SkillWrapper {
     }
 
     public static void addActionSP(EntityPlayerMP player, String skill, float amount) {
-        executeIfPresent(player,cap -> player.addExperience(cap.addSP(skill,(int)withMultiplier(player,amount),player,false)));
+        executeIfPresent(player,cap -> player.addExperience(cap.addSP(skill,(int)amount,player,false)));
     }
 
     private static void executeIfPresent(EntityPlayer player,Consumer<ISkillCapability> exectuor) {
@@ -198,10 +198,6 @@ public class SkillWrapper {
                 }
             }
         });
-    }
-
-    public static float withMultiplier(EntityPlayerMP player, float amount) {
-        return getOrDefault(player,cap -> (float)cap.getActionFactor(amount),0f);
     }
 
     private final String name;

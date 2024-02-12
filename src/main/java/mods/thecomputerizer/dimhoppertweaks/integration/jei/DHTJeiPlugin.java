@@ -1,11 +1,14 @@
 package mods.thecomputerizer.dimhoppertweaks.integration.jei;
 
+import bedrockcraft.ModItems;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;
 import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
+import mods.thecomputerizer.dimhoppertweaks.recipes.LightningStrikeRecipe;
 import mods.thecomputerizer.dimhoppertweaks.registry.ItemRegistry;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -17,7 +20,7 @@ import java.util.List;
 import java.util.Objects;
 
 @JEIPlugin
-public class StargateJeiPlugin implements IModPlugin {
+public class DHTJeiPlugin implements IModPlugin {
 
     public static ItemStack getCornerStack(int dimension) {
         switch(dimension) {
@@ -50,14 +53,20 @@ public class StargateJeiPlugin implements IModPlugin {
     @Override
     public void registerCategories(IRecipeCategoryRegistration registry) {
         registry.addRecipeCategories(new StargateCategory(registry.getJeiHelpers().getGuiHelper()));
+        registry.addRecipeCategories(new LightningStrikeCategory(registry.getJeiHelpers().getGuiHelper()));
     }
 
     @Override
     public void register(IModRegistry registry) {
-        String id = DHTRef.MODID+".ancientStargate";
-        registry.addRecipeCatalyst(new ItemStack(ItemRegistry.STARGATE_ADDRESSER),id);
-        registry.handleRecipes(StargateRecipe.class,StargatePreviewWrapper::new,id);
-        registry.addRecipes(getStargateRecipes(),id);
+        String stargateID = DHTRef.MODID+".ancientStargate";
+        registry.addRecipeCatalyst(new ItemStack(ItemRegistry.STARGATE_ADDRESSER),stargateID);
+        registry.handleRecipes(StargateRecipe.class,StargatePreviewWrapper::new,stargateID);
+        registry.addRecipes(getStargateRecipes(),stargateID);
+        String lightningID = DHTRef.MODID+".lightningStrike";
+        registry.addRecipeCatalyst(new ItemStack(ModItems.components,1,9),lightningID);
+        registry.handleRecipes(LightningStrikeRecipe.class,LightningStrikeWrapper::new,lightningID);
+        registry.addRecipes(LightningStrikeRecipe.getRecipes(),lightningID);
+        String tileworkerID = DHTRef.MODID+".tileWorker";
     }
 
     private List<StargateRecipe> getStargateRecipes() {

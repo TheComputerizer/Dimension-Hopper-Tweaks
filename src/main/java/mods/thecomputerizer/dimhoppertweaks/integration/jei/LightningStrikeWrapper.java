@@ -2,6 +2,7 @@ package mods.thecomputerizer.dimhoppertweaks.integration.jei;
 
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
+import mods.thecomputerizer.dimhoppertweaks.recipes.LightningStrikeRecipe;
 import mods.thecomputerizer.dimhoppertweaks.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -16,39 +17,45 @@ import net.minecraft.world.DimensionType;
 import org.dave.compactmachines3.misc.RenderTickCounter;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @SuppressWarnings("deprecation")
 @ParametersAreNonnullByDefault
-public class StargatePreviewWrapper implements IRecipeWrapper {
+public class LightningStrikeWrapper implements IRecipeWrapper {
 
-    private static final BlockPos MIN = new BlockPos(-3,0,-3);
-    private static final BlockPos MAX = new BlockPos(3,5,3);
-    private final StargateRecipe recipe;
+    private static final BlockPos MIN = new BlockPos(-1,0,-1);
+    private static final BlockPos MAX = new BlockPos(1,2,1);
 
-    public StargatePreviewWrapper(StargateRecipe recipe) {
+    private final LightningStrikeRecipe recipe;
+
+    public LightningStrikeWrapper(LightningStrikeRecipe recipe) {
         this.recipe = recipe;
     }
 
     @Override
     public void getIngredients(IIngredients ingr) {
-        ingr.setInputs(ItemStack.class,this.recipe.getInputs());
-        ingr.setOutput(ItemStack.class,this.recipe.getOutput());
+        List<ItemStack> stacks = new ArrayList<>();
+        stacks.add(this.recipe.getCatalystStack());
+        stacks.addAll(this.recipe.getInputStacks());
+        ingr.setInputs(ItemStack.class,stacks);
+        ingr.setOutput(ItemStack.class,this.recipe.getOutputStacks());
     }
-    
+
     @Override
     public void drawInfo(Minecraft mc, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
-        AncientStargateRenderer renderer = AncientStargateRenderer.getForDimension(this.recipe.getDimension());
+        LightningStrikeRenderer renderer = LightningStrikeRenderer.getForRecipe(this.recipe);
         if(Objects.isNull(renderer)) return;
         GlStateManager.pushMatrix();
         GlStateManager.translate(0f, 0f, 216.5f);
         FontRenderer font = mc.fontRenderer;
-        String dimensions = getDimensionsString();
-        font.drawString(dimensions,153-font.getStringWidth(dimensions),105,4473924);
+        String range = String.format("Range = %,.2f Blocks",this.recipe.getRange());
+        font.drawString(range,153-font.getStringWidth(range),105,4473924);
         String dimName = getDimensionName(this.recipe.getDimension());
-        font.drawString(dimName,0,105,4473924);
+        font.drawString(dimName,0,105+font.FONT_HEIGHT,4473924);
         GlStateManager.popMatrix();
-        float angle = (float)RenderTickCounter.renderTicks*25f/128f;
+        float angle = (float) RenderTickCounter.renderTicks*25f/128f;
         TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
         textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         textureManager.getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);
@@ -89,11 +96,7 @@ public class StargatePreviewWrapper implements IRecipeWrapper {
         try {
             return DimensionType.getById(id).getName();
         } catch (IllegalArgumentException ex) {
-            return TextUtil.getTranslated("category.dimhoppertweaks.ancient_stargate.unknown_dimension",id);
+            return TextUtil.getTranslated("category.dimhoppertweaks.all.unknown_dimension",id);
         }
-    }
-
-    private String getDimensionsString() {
-        return String.format("%dx%dx%d",7,6,7);
     }
 }

@@ -101,7 +101,7 @@ public class SkillCapability implements ISkillCapability {
     public int addSP(String skill, int amount, EntityPlayerMP player, boolean fromXP) {
         int ret = 0;
         if(amount>0) {
-            ret = checkAndReturn(skill,wrapper -> wrapper.addSP(amount,player,fromXP));
+            ret = checkAndReturn(skill,wrapper -> wrapper.addSP(getActionFactor(amount),player,fromXP));
             SkillWrapper.updateTokens(player);
         }
         return ret;

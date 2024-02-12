@@ -7,6 +7,7 @@ import mods.thecomputerizer.dimhoppertweaks.common.capability.player.ISkillCapab
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.mixin.api.IEntityPixie;
+import mods.thecomputerizer.dimhoppertweaks.recipes.LightningStrikeRecipe;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
 import mods.thecomputerizer.dimhoppertweaks.util.WorldUtil;
@@ -26,6 +27,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
 import net.minecraftforge.event.entity.EntityEvent.EnteringChunk;
+import net.minecraftforge.event.entity.EntityStruckByLightningEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -210,5 +212,10 @@ public class EntityEvents {
             WorldUtil.iterateChunks(world,event.getNewChunkX(),event.getNewChunkZ(),2,
                     chunk -> WorldUtil.setFastChunk(world,chunk.x,chunk.z,true));
         }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onStruckByLightning(EntityStruckByLightningEvent event) {
+        LightningStrikeRecipe.checkLightningStrike(event.getLightning(),event.getEntity());
     }
 }
