@@ -8,7 +8,6 @@ import mods.thecomputerizer.dimhoppertweaks.registry.StructureRegistry;
 import mods.thecomputerizer.theimpossiblelibrary.util.object.ItemUtil;
 import net.darkhax.gamestages.GameStageHelper;
 import net.minecraft.block.Block;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;

@@ -8,7 +8,6 @@ import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.recipes.LightningStrikeRecipe;
 import mods.thecomputerizer.dimhoppertweaks.registry.ItemRegistry;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
