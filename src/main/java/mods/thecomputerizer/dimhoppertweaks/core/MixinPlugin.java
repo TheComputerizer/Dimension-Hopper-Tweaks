@@ -10,13 +10,13 @@ import java.util.Map;
 
 @IFMLLoadingPlugin.Name("DimHopperTweaks")
 @IFMLLoadingPlugin.MCVersion(ForgeVersion.mcVersion)
-public class EarlyMixinPlugin implements IFMLLoadingPlugin {
+public class MixinPlugin implements IFMLLoadingPlugin {
 
     static {
         DHTRef.LOGGER.info("Initializing early mixin twinkies... I mean tweaks");
     }
 
-    public EarlyMixinPlugin() {
+    public MixinPlugin() {
         FermiumRegistryAPI.enqueueMixin(false,DHTRef.modIDs("mixins.%s_vanilla.json","mixins.%s_forge.json"));
         FermiumRegistryAPI.enqueueMixin(true,DHTRef.modID("mixins.%s_mods.json"));
     }

@@ -1,14 +1,14 @@
 [
   {
-    "modid": "dimhoppertweaks",
-    "name": "Dimension Hopper Tweaks",
-    "description": "Various tweaks and additions for Dimension Hopper: The Fall",
+    "modid": "${modid}",
+    "name": "${name}",
+    "description": "${description}",
     "version": "${version}",
     "mcversion": "${mcversion}",
-    "url": "https://www.curseforge.com/minecraft/mc-mods/dimension-hopper-tweaks",
+    "url": "${url}",
     "authorList": ["The_Computerizer"],
-    "credits": "TheSilkMiner",
-    "logoFile": "tweaksLogo.png",
+    "credits": "${credits}",
+    "logoFile": "${logo}",
     "dependencies": [
       "actuallyadditions",
       "aoa3",

@@ -15,14 +15,14 @@ fancyGradle {
     }
 }
 
-group = base_package
+group = mod_package
 version = "${mod_version}+${minecraft_version}"
 
 java.toolchain.getLanguageVersion().set(JavaLanguageVersion.of(8))
 
 minecraft {
     mappings channel: 'stable', version: mappings_version
-    accessTransformer = file("src/main/resources/META-INF/${access_transformer}.cfg")
+    accessTransformer = file("src/main/resources/META-INF/${mod_accesstransformer}")
     runs {
         def args = [
                 '-Dmixin.debug.export=true',
@@ -203,11 +203,12 @@ dependencies {
 
 processResources {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
-    inputs.property "version", version
-    inputs.property "mcversion", minecraft_version
+    inputs.properties('modid': mod_id, 'name': mod_name, 'description': mod_description, 'version': version,
+            'mcversion': minecraft_version, 'url': mod_url, 'credits': mod_credits, 'logo': mod_logo)
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-        expand 'version': version, 'mcversion': minecraft_version
+        expand 'modid': mod_id, 'name': mod_name, 'description': mod_description, 'version': version,
+                'mcversion': minecraft_version, 'url': mod_url, 'credits': mod_credits, 'logo': mod_logo
     }
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
@@ -215,18 +216,21 @@ processResources {
 }
 
 mixin {
-    add sourceSets.main, "${refmap_name}.json"
+    add sourceSets.main, mod_refmap
 }
 
 jar {
     archiveBaseName = mod_id
     manifest {
         attributes([
-                'FMLCorePlugin': "${base_package}.${plugin_class}",
+                'DHT_DEPENDENCIES': mod_dependencies,
+                'DHT_NAME' : mod_name,
+                'DHT_VERSION' : mod_version,
+                'FMLAT': mod_accesstransformer,
+                'FMLCorePlugin': "${mod_package}.${mod_plugin}",
                 'FMLCorePluginContainsFMLMod': true,
                 'ForceLoadAsMod': true,
-                'TweakClass': tweak_class,
-                'FMLAT': "${access_transformer}.cfg"
+                'TweakClass': mod_tweakclass
         ])
     }
 }
