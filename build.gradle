@@ -66,6 +66,10 @@ repositories {
             includeGroup 'maven.modrinth'
         }
     }
+    maven {
+        name = 'BuildCraft'
+        url = uri('https://mod-buildcraft.com/maven')
+    }
 }
 
 dependencies {
@@ -80,6 +84,7 @@ dependencies {
     }
 
     //non cf dependencies
+    compileOnly(fg.deobf("com.mod-buildcraft:buildcraft-api:${buildcraft_version}"))
     compileOnly(fg.deobf("maven.modrinth:travelersbackpack:${backpack_version}"))
     compileOnly("CraftTweaker2:CraftTweaker2-MC1120-Mod-JEI:1.12-${project.ct_version}") {
         exclude group: 'com.google.code.gson'

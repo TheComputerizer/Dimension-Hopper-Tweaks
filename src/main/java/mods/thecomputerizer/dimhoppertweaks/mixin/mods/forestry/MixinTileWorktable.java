@@ -29,6 +29,6 @@ public abstract class MixinTileWorktable {
         InventoryCraftingForestry inventory = RecipeUtil.getCraftRecipe(equivalent,stacks,world,recipe);
         if(Objects.nonNull(inventory))
             ((IInventoryCrafting)inventory).dimhoppertweaks$setStages(((ITileEntity)instance).dimhoppertweaks$getStages());
-        return null;
+        return inventory;
     }
 }

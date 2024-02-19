@@ -8,6 +8,7 @@
   "mixins": [
     "aether.MixinBlockHolystone",
     "aether.MixinBlockIrradiatedDust",
+    "aether.MixinTileEntityHolystoneFurnace",
     "aoa3.MixinBaronStaff",
     "aoa3.MixinCelestialStaff",
     "aoa3.MixinFireStaff",

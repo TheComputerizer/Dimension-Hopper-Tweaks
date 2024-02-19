@@ -21,11 +21,6 @@ public abstract class MixinTileEntityFurnace {
     @Shadow private NonNullList<ItemStack> furnaceItemStacks;
     @Shadow protected abstract boolean canSmelt();
 
-    @Unique
-    private TileEntityFurnace dimhoppertweaks$cast() {
-        return (TileEntityFurnace)(Object)this;
-    }
-
     /**
      * @author The_Computerizer
      * @reason Make the vanilla furnace always output cheese for those who like cheesing stuff
@@ -33,12 +28,8 @@ public abstract class MixinTileEntityFurnace {
     @Overwrite
     public void smeltItem() {
         if(this.canSmelt()) {
-            TileEntityFurnace instance = dimhoppertweaks$cast();
-            Block block = instance.getWorld().getBlockState(instance.getPos()).getBlock();
             ItemStack stack = this.furnaceItemStacks.get(0);
-            ItemStack stack1 = Loader.isModLoaded("xlfoodmod") && (block==Blocks.FURNACE ||
-                    block==Blocks.LIT_FURNACE) ? DelayedModAccess.cheese() :
-                    FurnaceRecipes.instance().getSmeltingResult(stack);
+            ItemStack stack1 = DelayedModAccess.cheese();
             ItemStack stack2 = this.furnaceItemStacks.get(2);
             if(stack2.isEmpty()) this.furnaceItemStacks.set(2,stack1.copy());
             else if(stack2.getItem()==stack1.getItem()) stack2.grow(stack1.getCount());
