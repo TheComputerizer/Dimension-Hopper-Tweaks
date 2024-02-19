@@ -3,6 +3,7 @@ package mods.thecomputerizer.dimhoppertweaks.registry.traits.gathering;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
@@ -23,7 +24,7 @@ public class LuckyFisherman extends ExtendedEventsTrait {
     @Override
     public void onPlayerTick(PlayerTickEvent event) {
         EntityPlayer player = event.player;
-        if(Objects.nonNull(player.fishEntity)) {
+        if(player instanceof EntityPlayerMP && Objects.nonNull(player.fishEntity)) {
             boolean hasBadLuck = hasBadLuck(player.getHeldItemMainhand()) || hasBadLuck(player.getHeldItemOffhand());
             Potion luckPotion = hasBadLuck ? MobEffects.UNLUCK : MobEffects.LUCK;
             int amplifier = Math.max(0,(int)(SkillWrapper.getPrestigeFactor(player,"gathering")-1d));
