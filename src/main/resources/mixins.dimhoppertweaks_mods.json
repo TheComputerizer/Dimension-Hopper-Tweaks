@@ -63,6 +63,7 @@
     "extraplanets.MixinExtraPlanetsJEI",
     "extrautils2.MixinTileMine",
     "forestry.MixinStorageJeiPlugin",
+    "forestry.MixinTileWorktable",
     "gaiadimension.MixinGDGaiaPortal",
     "gaiadimension.MixinTeleporterGaia",
     "galacticraft.MixinBaseConfiguration",
