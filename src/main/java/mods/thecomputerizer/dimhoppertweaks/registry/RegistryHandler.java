@@ -18,7 +18,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -31,7 +31,7 @@ import vazkii.botania.common.block.ModBlocks;
 
 import javax.annotation.Nonnull;
 
-@Mod.EventBusSubscriber(modid = DHTRef.MODID)
+@EventBusSubscriber(modid = DHTRef.MODID)
 public final class RegistryHandler {
 
     public static final CreativeTabs DIM_HOPPER_TAB = new CreativeTabs(DHTRef.MODID) {
