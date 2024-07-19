@@ -52,6 +52,13 @@ repositories {
         }
     }
     maven {
+        name = 'Cleanroom'
+        url = uri('https://maven.cleanroommc.com')
+        content {
+            includeGroup 'zone.rong'
+        }
+    }
+    maven {
         name = 'BlameJared'
         url = uri('https://maven.blamejared.com')
     }
@@ -73,13 +80,14 @@ repositories {
 }
 
 dependencies {
+    //noinspection VulnerableLibrariesLocal
     minecraft("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
 
     //annotation processors
     annotationProcessor("com.google.code.gson:gson:${project.gson_annotation}")
     annotationProcessor("com.google.guava:guava:${project.guava_annotation}")
     annotationProcessor("org.ow2.asm:asm-debug-all:${project.asm_debug_annotation}")
-    annotationProcessor("org.spongepowered:mixin:${mixin_version}") {
+    annotationProcessor("zone.rong:mixinbooter:${mixinbooter_version}") {
         transitive = false
     }
 
@@ -91,7 +99,8 @@ dependencies {
         exclude group: 'deobf.mezz.jei'
         exclude group: 'org.ow2.asm'
     }
-    compileOnly("org.spongepowered:mixin:${mixin_version}") {
+
+    implementation("zone.rong:mixinbooter:${mixinbooter_version}") {
         transitive = false
     }
 
@@ -118,7 +127,8 @@ dependencies {
     compileOnly(fg.deobf("curse.maven:cofh-core-69162:${cofhcore_version}"))
     compileOnly(fg.deobf("curse.maven:constructs-armory-287683:${conarm_version}"))
     compileOnly(fg.deobf("curse.maven:ctm-267602:${ctm_version}"))
-    compileOnly(fg.deobf("curse.maven:dimensionaldoors-284876:${dimdoors_version}"))
+    compileOnly(fg.deobf("curse.maven:dimdoors-284876:${dimdoors_version}"))
+    compileOnly(fg.deobf("curse.maven:dimstages-269398:${dimstages_version}"))
     compileOnly(fg.deobf("curse.maven:draconic-evolution-223565:${de_version}"))
     compileOnly(fg.deobf("curse.maven:dropt-284973:${dropt_version}"))
     compileOnly(fg.deobf("curse.maven:ender-io-64578:${eio_version}"))
@@ -126,7 +136,6 @@ dependencies {
     compileOnly(fg.deobf("curse.maven:extended-crafting-398267:${excrafting_version}"))
     compileOnly(fg.deobf("curse.maven:extraplanets-241291:${extraplanets_version}"))
     compileOnly(fg.deobf("curse.maven:xu2-225561:${xu2_version}"))
-    compileOnly(fg.deobf("curse.maven:fermiumbooter-968474:${fbooter_version}"))
     compileOnly(fg.deobf("curse.maven:forestry-59751:${forestry_version}"))
     compileOnly(fg.deobf("curse.maven:gaia-302529:${gaia_version}"))
     compileOnly(fg.deobf("curse.maven:galacticraft-564236:${galacticraft_version}"))
@@ -202,6 +211,7 @@ dependencies {
     compileOnly(fg.deobf("curse.maven:valkyrielib-245480:${valklib_version}"))
     compileOnly(fg.deobf("curse.maven:vintagefix-871198:${vf_version}"))
     compileOnly(fg.deobf("curse.maven:wanionlib-253043:${wlib_version}"))
+    compileOnly(fg.deobf("curse.maven:waystones-245755:${waystones_version}"))
     compileOnly(fg.deobf("curse.maven:xl-food-247217:${xlfood_version}"))
     compileOnly(fg.deobf("curse.maven:zollern-galaxy-241940:${zollern_version}"))
 }

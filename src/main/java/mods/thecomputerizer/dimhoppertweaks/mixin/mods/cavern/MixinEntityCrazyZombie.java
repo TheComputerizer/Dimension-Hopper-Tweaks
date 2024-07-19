@@ -4,7 +4,9 @@ import cavern.entity.monster.EntityCavenicZombie;
 import cavern.entity.monster.EntityCrazyZombie;
 import cavern.world.CaveDimensions;
 import mods.thecomputerizer.dimhoppertweaks.client.particle.ParticleBlightFire;
+import mods.thecomputerizer.dimhoppertweaks.mixin.DelayedModAccess;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BossInfoServer;
@@ -33,6 +35,12 @@ public abstract class MixinEntityCrazyZombie extends EntityCavenicZombie {
             this.dimhoppertweaks$inCavenia = false;
             this.bossInfo.setVisible(false);
         }
+    }
+    
+    @Override
+    protected void dropLoot(boolean wasRecentlyHit, int lootingModifier, DamageSource source) {
+        super.dropLoot(wasRecentlyHit, lootingModifier, source);
+        this.entityDropItem(DelayedModAccess.getStack("contenttweaker:crazy_zombie_essence",1),0f);
     }
 
     /**

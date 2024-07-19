@@ -18,6 +18,7 @@ public class DHTRef {
             "required-after:cavern;"+
             "required-after:compactmachines3;"+
             "required-after:dimdoors;"+
+            "required-after:dimstages;"+
             "required-after:extendedcrafting;"+
             "required-after:extrautils2;"+
             "required-after:gamestages;"+
@@ -52,12 +53,13 @@ public class DHTRef {
             "required-after:tp;"+
             "required-after:twilightforest;"+
             "required-after:vintagefix;"+
+            "required-after:waystones;"+
             "required-after:xlfoodmod;"+
             "required-after:zollerngalaxy;";
     public static final Logger LOGGER = LogManager.getLogger("Dimension Hopper Twinkies");
     public static final String MODID = "dimhoppertweaks";
     public static final String NAME = "Dimension Hopper Tweaks";
-    public static final String VERSION = "1.12.2-2.7.3";
+    public static final String VERSION = "1.12.2-2.8.0";
 
     public static String modID(String str) {
         return String.format(str,MODID);

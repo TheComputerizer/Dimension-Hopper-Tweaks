@@ -1,24 +1,24 @@
 package mods.thecomputerizer.dimhoppertweaks.core;
 
-import fermiumbooter.FermiumRegistryAPI;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
+import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin.MCVersion;
+import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin.Name;
+import zone.rong.mixinbooter.IEarlyMixinLoader;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
+import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.LOGGER;
 
-@IFMLLoadingPlugin.Name("DimHopperTweaks")
-@IFMLLoadingPlugin.MCVersion(ForgeVersion.mcVersion)
-public class MixinPlugin implements IFMLLoadingPlugin {
+@Name("DimHopperTweaks")
+@MCVersion(ForgeVersion.mcVersion)
+public class MixinPlugin implements IEarlyMixinLoader, IFMLLoadingPlugin {
 
     static {
-        DHTRef.LOGGER.info("Initializing early mixin twinkies... I mean tweaks");
-    }
-
-    public MixinPlugin() {
-        FermiumRegistryAPI.enqueueMixin(false,DHTRef.modIDs("mixins.%s_vanilla.json","mixins.%s_forge.json"));
-        FermiumRegistryAPI.enqueueMixin(true,DHTRef.modID("mixins.%s_mods.json"));
+        LOGGER.info("Initializing early mixin twinkies... I mean tweaks");
     }
 
     @Override
@@ -37,10 +37,14 @@ public class MixinPlugin implements IFMLLoadingPlugin {
     }
 
     @Override
-    public void injectData(Map<String, Object> data) {}
+    public void injectData(Map<String,Object> data) {}
 
     @Override
     public String getAccessTransformerClass() {
         return null;
+    }
+    
+    @Override public List<String> getMixinConfigs() {
+        return Arrays.asList(DHTRef.modIDs("mixins.%s_vanilla.json","mixins.%s_forge.json"));
     }
 }

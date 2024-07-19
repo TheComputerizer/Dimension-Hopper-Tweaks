@@ -12,8 +12,7 @@
     "MixinFakePlayer",
     "MixinFMLModContainer",
     "MixinForgeHooks",
-    "MixinForgeVersion",
-    "MixinOreDictionary"
+    "MixinForgeVersion"
   ],
   "client": [
     "MixinModelLoader"

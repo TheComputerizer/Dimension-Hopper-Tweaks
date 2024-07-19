@@ -1,6 +1,5 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin;
 
-import androsa.gaiadimension.registry.GDBlocks;
 import androsa.gaiadimension.world.TeleporterGaia;
 import appeng.items.parts.ItemFacade;
 import c4.conarm.client.gui.PreviewPlayer;
@@ -13,11 +12,9 @@ import de.ellpeck.actuallyadditions.mod.blocks.InitBlocks;
 import de.ellpeck.actuallyadditions.mod.tile.TileEntityGiantChest;
 import de.ellpeck.naturesaura.blocks.tiles.TileEntityAutoCrafter;
 import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
-import mariot7.xlfoodmod.init.ItemListxlfoodmod;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.chunk.ExtraChunkData;
 import mods.thecomputerizer.dimhoppertweaks.config.DHTConfigHelper;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
-import mods.thecomputerizer.dimhoppertweaks.integration.crafttweaker.CTPassthrough;
 import mods.thecomputerizer.dimhoppertweaks.mixin.api.IInventoryCrafting;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketSendKeyPressed;
 import net.darkhax.gamestages.GameStageHelper;
@@ -48,6 +45,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.IItemHandler;
 import openblocks.common.item.ItemTankBlock;
+import org.apache.commons.lang3.StringUtils;
 import slimeknights.tconstruct.library.materials.Material;
 import slimeknights.tconstruct.library.tinkering.PartMaterialType;
 import slimeknights.tconstruct.library.tinkering.TinkersItem;
@@ -62,6 +60,16 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Function;
+
+import static androsa.gaiadimension.registry.GDBlocks.gaia_portal;
+import static androsa.gaiadimension.registry.GDBlocks.keystone_block;
+import static mariot7.xlfoodmod.init.ItemListxlfoodmod.cheese;
+import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.LOGGER;
+import static mods.thecomputerizer.dimhoppertweaks.integration.crafttweaker.CTPassthrough.SPECIALIZED_PARTS;
+import static net.darkhax.dimstages.DimensionStages.DIMENSION_MAP;
+import static net.minecraft.item.ItemStack.EMPTY;
+import static net.minecraftforge.fml.common.registry.ForgeRegistries.ITEMS;
+import static slimeknights.tconstruct.library.materials.Material.UNKNOWN;
 
 @SuppressWarnings({"unused", "SameParameterValue"})
 public class DelayedModAccess {
@@ -103,9 +111,16 @@ public class DelayedModAccess {
                     clazz.getName(),ex);
         }
     }
+    
+    public static boolean canTravelToDimension(Entity entity, int dimension) {
+        if(!(entity instanceof EntityPlayer)) return true;
+        int entityDim = entity.dimension;
+        return hasStageForDimension(entity,dimension) &&
+               (dimensionHatesDoors(dimension) || dimensionHatesDoors(entityDim) && dimension!=entityDim);
+    }
 
     public static ItemStack cheese() {
-        return new ItemStack(ItemListxlfoodmod.cheese);
+        return new ItemStack(cheese);
     }
 
     public static void checkForAutoCrafter(TileEntity tile, Collection<String> stages) {
@@ -161,7 +176,7 @@ public class DelayedModAccess {
         }
         if(item instanceof IToolPart) {
             stack.setTagCompound(replaceYeetedTag(item,meta,tag -> {
-                Material mat = CTPassthrough.SPECIALIZED_PARTS.get((IToolPart)item);
+                Material mat = SPECIALIZED_PARTS.get((IToolPart)item);
                 tag.setString("Material",Objects.nonNull(mat) ? mat.identifier : "constantan");
             }));
             return;
@@ -225,9 +240,13 @@ public class DelayedModAccess {
             }));
         }
     }
+    
+    public static boolean dimensionHatesDoors(int dimension) {
+        return dimension==20 || dimension==7;
+    }
 
     public static void finalizeYeeting() {
-        DHTRef.LOGGER.info("{} redundant JEI entries have been successfully trimmed!",DelayedModAccess.YEET_COUNT.get()/2);
+        LOGGER.info("{} redundant JEI entries have been successfully trimmed!",YEET_COUNT.get()/2);
         NULLED_ITEM_YEET_TAGS.clear();
         for(Map.Entry<Item,Map<Integer,NBTTagCompound>> entry : CACHED_ITEM_YEETS.entrySet()) {
             entry.getValue().clear();
@@ -240,7 +259,7 @@ public class DelayedModAccess {
         try {
             return Class.forName(className);
         } catch(ClassNotFoundException ex) {
-            DHTRef.LOGGER.error("Could not locate class with name `{}`",className);
+            LOGGER.error("Could not locate class with name `{}`",className);
         }
         return null;
     }
@@ -250,9 +269,9 @@ public class DelayedModAccess {
             Class<?> foundClass = findClass(className);
             if(Objects.nonNull(foundClass) && TileEntity.class.isAssignableFrom(foundClass)) {
                 classSet.add(foundClass);
-                DHTRef.LOGGER.info("Registered tile entity class with name `{}` as an automatic {}",
+                LOGGER.info("Registered tile entity class with name `{}` as an automatic {}",
                         className,type);
-            } else DHTRef.LOGGER.error("Tried to register non tile entity class with name {} as an " +
+            } else LOGGER.error("Tried to register non tile entity class with name {} as an " +
                     "automatic {}!",className,type);
         }
     }
@@ -276,11 +295,17 @@ public class DelayedModAccess {
     }
 
     public static Block getGDKeystoneBlock() {
-        return GDBlocks.keystone_block;
+        return keystone_block;
     }
 
     public static Block getGDPortalBlock() {
-        return GDBlocks.gaia_portal;
+        return gaia_portal;
+    }
+    
+    @SuppressWarnings("DataFlowIssue")
+    public static ItemStack getStack(String name, int count) {
+        ResourceLocation res = new ResourceLocation(name);
+        return ITEMS.containsKey(res) ? new ItemStack(ITEMS.getValue(res),count) : EMPTY;
     }
 
     public static Set<Class<?>> getPlacerTileClasses() {
@@ -289,6 +314,10 @@ public class DelayedModAccess {
             FOUND_PLACER_CLASSES = true;
         }
         return Collections.unmodifiableSet(BLOCK_PLACER_CLASSES);
+    }
+    
+    public static String getStageForDimension(int dimension) {
+        return DIMENSION_MAP.get(dimension);
     }
 
     private static NBTTagCompound getTinkerToolTag(Item item, int meta, List<PartMaterialType> components) {
@@ -302,10 +331,10 @@ public class DelayedModAccess {
                     break;
                 }
                 if(Objects.isNull(part)) {
-                    materials.appendTag(new NBTTagString(Material.UNKNOWN.identifier));
+                    materials.appendTag(new NBTTagString(UNKNOWN.identifier));
                     continue;
                 }
-                Material mat = CTPassthrough.SPECIALIZED_PARTS.get(part);
+                Material mat = SPECIALIZED_PARTS.get(part);
                 materials.appendTag(new NBTTagString(Objects.nonNull(mat) ? mat.identifier : "constantan"));
             }
             materialTag.setTag("Materials",materials);
@@ -315,6 +344,12 @@ public class DelayedModAccess {
 
     public static boolean hasGameStage(Entity entity, String stage) {
         return entity instanceof EntityPlayer && GameStageHelper.hasStage((EntityPlayer)entity,stage);
+    }
+    
+    public static boolean hasStageForDimension(Entity entity, int dimension) {
+        if(!(entity instanceof EntityPlayer)) return true;
+        String stage = getStageForDimension(dimension);
+        return StringUtils.isEmpty(stage) || hasGameStage(entity,stage);
     }
 
     public static double incrementDifficultyWithStageFactor(EntityPlayer player, double original) {
@@ -346,10 +381,10 @@ public class DelayedModAccess {
                 if(!constructor.isAccessible()) constructor.setAccessible(true);
                 return constructor.newInstance(args);
             } catch(InvocationTargetException | InstantiationException | IllegalAccessException ex) {
-                DHTRef.LOGGER.error("Failed to instantiate inaccessible class {} using arge `{}`",
+                LOGGER.error("Failed to instantiate inaccessible class {} using arge `{}`",
                         className,args,ex);
             }
-        } else DHTRef.LOGGER.error("The constructor for class {} seems to be null",className);
+        } else LOGGER.error("The constructor for class {} seems to be null",className);
         return null;
     }
 

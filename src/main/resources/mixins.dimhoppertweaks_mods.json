@@ -58,8 +58,9 @@
     "crafttweaker.MixinJEIMod",
     "dimdoors.MixinBaseGateway",
     "dimdoors.MixinChunkGeneratorLimbo",
-    "dimdoors.MixinEscapeTarget",
     "dimdoors.MixinGatewayGenerator",
+    "dimdoors.MixinTileEntityEntranceRift",
+    "dimdoors.MixinTileEntityFloatingRift",
     "extendedcrafting.MixinTileAutomationInterface",
     "extraplanets.MixinExtraPlanetsJEI",
     "extrautils2.MixinTileMine",
@@ -160,6 +161,7 @@
     "valkyrielib.MixinStructureFormer",
     "vintagefix.MixinDynamicBakedModelProvider",
     "vintagefix.MixinDynamicModelProvider",
+    "waystones.MixinClientProxy",
     "xreliquary.MixinItemMobCharm",
     "zollerngalaxy.MixinZGBlockBase"
   ],
