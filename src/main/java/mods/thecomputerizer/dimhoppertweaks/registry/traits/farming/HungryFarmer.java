@@ -14,16 +14,17 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.Objects;
+
+import static net.minecraft.item.ItemStack.EMPTY;
 
 public class HungryFarmer extends ExtendedEventsTrait {
 
     public HungryFarmer() {
         super("hungry_farmer",2,3,FARMING,20,"farming|64");
-        setIcon(new ResourceLocation("reskillable","textures/unlockables/hungry_farmer.png"));
+        setIcon("reskillable","unlockables","hungry_farmer");
     }
 
     @Override
@@ -42,7 +43,7 @@ public class HungryFarmer extends ExtendedEventsTrait {
             if(Objects.nonNull(data) && data.getSkillInfo(this.getParentSkill()).isUnlocked(this)) {
                 if(player.canEat(false)) {
                     NonNullList<ItemStack> inventoryList = player.inventoryContainer.getInventory();
-                    ItemStack curStack = ItemStack.EMPTY;
+                    ItemStack curStack = EMPTY;
                     for(ItemStack stack : inventoryList) {
                         if(canUseItem(player,stack)) {
                             curStack = stack;

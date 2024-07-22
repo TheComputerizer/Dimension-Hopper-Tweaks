@@ -44,6 +44,5 @@ public abstract class MixinGuiSkillInfo extends GuiScreen {
             this.canPurchase = !unlocked && info.getSkillPoints()>=unlockable.getCost();
             this.hoveredUnlockable = unlockable;
         }
-
     }
 }

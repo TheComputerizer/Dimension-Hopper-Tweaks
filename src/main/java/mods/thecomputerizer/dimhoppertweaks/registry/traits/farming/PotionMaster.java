@@ -19,6 +19,8 @@ import thebetweenlands.common.item.herblore.ItemElixir;
 
 import java.util.Objects;
 
+import static net.minecraft.item.ItemStack.EMPTY;
+
 public class PotionMaster extends ExtendedEventsTrait {
 
     public PotionMaster() {
@@ -41,7 +43,7 @@ public class PotionMaster extends ExtendedEventsTrait {
             PlayerData data = PlayerDataHandler.get(player);
             if(Objects.nonNull(data) && data.getSkillInfo(this.getParentSkill()).isUnlocked(this)) {
                 NonNullList<ItemStack> inventoryList = player.inventoryContainer.getInventory();
-                ItemStack curStack = ItemStack.EMPTY;
+                ItemStack curStack = EMPTY;
                 for(ItemStack stack : inventoryList) {
                     if(canUseItem(player,stack)) {
                         curStack = stack;

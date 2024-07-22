@@ -5,20 +5,24 @@ import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+
+import static net.minecraft.block.material.Material.CACTUS;
+import static net.minecraft.block.material.Material.GOURD;
+import static net.minecraft.block.material.Material.PLANTS;
+import static net.minecraft.init.Blocks.LEAVES;
+import static net.minecraft.init.Blocks.LEAVES2;
+import static net.minecraft.init.Items.DYE;
 
 public class GreenThumb extends ExtendedEventsTrait {
 
     public GreenThumb() {
         super("green_thumb",3,1,FARMING,10,"farming|24","magic|16");
-        setIcon(new ResourceLocation("reskillable","textures/unlockables/green_thumb.png"));
+        setIcon("reskillable","unlockables","green_thumb");
     }
 
     @Override
@@ -33,7 +37,7 @@ public class GreenThumb extends ExtendedEventsTrait {
                 int y = pos.getY() + i;
                 BlockPos offPos = new BlockPos(x,y,z);
                 if(!player.world.isAirBlock(offPos) && this.isPlant(player.world,offPos)) {
-                    ItemStack item = new ItemStack(Items.DYE,1,15);
+                    ItemStack item = new ItemStack(DYE,1,15);
                     ItemDye.applyBonemeal(item,player.world,offPos);
                     player.world.playEvent(2005,offPos,6+player.world.rand.nextInt(4));
                     break;
@@ -45,12 +49,13 @@ public class GreenThumb extends ExtendedEventsTrait {
     private boolean isPlant(World world, BlockPos pos) {
         IBlockState state = world.getBlockState(pos);
         Block block = state.getBlock();
-        if(block==Blocks.LEAVES || block==Blocks.LEAVES2 || block instanceof BlockBush &&
+        if(block==LEAVES || block==LEAVES2 || block instanceof BlockBush &&
                 !(block instanceof BlockCrops) && !(block instanceof BlockSapling)) return false;
         else {
             Material mat = state.getMaterial();
-            return (mat==Material.PLANTS || mat==Material.CACTUS || mat==Material.LEAVES || mat==Material.GOURD) &&
-                    block instanceof IGrowable && ((IGrowable)block).canGrow(world,pos,world.getBlockState(pos),world.isRemote);
+            return (mat==PLANTS || mat==CACTUS || mat==Material.LEAVES || mat==GOURD) &&
+                   block instanceof IGrowable &&
+                   ((IGrowable)block).canGrow(world,pos,world.getBlockState(pos),world.isRemote);
         }
     }
 }

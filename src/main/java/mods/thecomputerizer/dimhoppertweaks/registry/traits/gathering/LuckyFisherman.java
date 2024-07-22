@@ -4,7 +4,6 @@ import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrappe
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -13,6 +12,9 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 import ovh.corail.tombstone.item.ItemFishingRodOfMisadventure;
 
 import java.util.Objects;
+
+import static net.minecraft.init.MobEffects.LUCK;
+import static net.minecraft.init.MobEffects.UNLUCK;
 
 public class LuckyFisherman extends ExtendedEventsTrait {
 
@@ -26,7 +28,7 @@ public class LuckyFisherman extends ExtendedEventsTrait {
         EntityPlayer player = event.player;
         if(player instanceof EntityPlayerMP && Objects.nonNull(player.fishEntity)) {
             boolean hasBadLuck = hasBadLuck(player.getHeldItemMainhand()) || hasBadLuck(player.getHeldItemOffhand());
-            Potion luckPotion = hasBadLuck ? MobEffects.UNLUCK : MobEffects.LUCK;
+            Potion luckPotion = hasBadLuck ? UNLUCK : LUCK;
             int amplifier = Math.max(0,(int)(SkillWrapper.getPrestigeFactor(player,"gathering")-1d));
             player.addPotionEffect(new PotionEffect(luckPotion,10,amplifier,true,true));
         }

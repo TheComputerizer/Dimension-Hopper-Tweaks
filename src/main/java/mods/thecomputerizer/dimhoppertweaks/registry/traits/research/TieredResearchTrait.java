@@ -2,8 +2,7 @@ package mods.thecomputerizer.dimhoppertweaks.registry.traits.research;
 
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
 import net.darkhax.gamestages.GameStageHelper;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 
 public class TieredResearchTrait extends ExtendedEventsTrait {
 
@@ -49,11 +48,11 @@ public class TieredResearchTrait extends ExtendedEventsTrait {
             texturePath = "resource/infinity_catalyst";
             setAnimationFrames(9);
         }
-        setIcon(new ResourceLocation(modid,"textures/items/"+texturePath+".png"));
+        setIcon(modid,"items",texturePath);
     }
 
     @Override
-    public void onPlayerTick(TickEvent.PlayerTickEvent ev) {
+    public void onPlayerTick(PlayerTickEvent ev) {
         this.timer--;
         if(this.timer<=0) {
             if(!GameStageHelper.hasStage(ev.player,this.stageName)) GameStageHelper.addStage(ev.player,this.stageName);

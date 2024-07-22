@@ -5,9 +5,10 @@ import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.DamageSource;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+
+import static net.minecraft.util.DamageSource.OUT_OF_WORLD;
 
 public class VoidCheater extends ExtendedEventsTrait {
 
@@ -18,7 +19,7 @@ public class VoidCheater extends ExtendedEventsTrait {
     @Override
     public void onHurt(LivingHurtEvent event) {
         EntityLivingBase entity = event.getEntityLiving();
-        if(event.getSource()==DamageSource.OUT_OF_WORLD && entity.dimension!=-7877 && event.getAmount()<1000f && entity.posY<-60d) {
+        if(event.getSource()==OUT_OF_WORLD && entity.dimension!=-7877 && event.getAmount()<1000f && entity.posY<-60d) {
             if(!entity.world.isRemote && entity instanceof EntityPlayer) {
                 MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
                 server.getCommandManager().executeCommand(server,DHDebugCommands.buildRawCommand("tpx",

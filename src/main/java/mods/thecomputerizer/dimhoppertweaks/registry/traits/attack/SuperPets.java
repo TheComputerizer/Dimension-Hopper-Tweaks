@@ -10,6 +10,8 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
 import java.util.Objects;
 
+import static net.minecraft.util.DamageSource.*;
+
 public class SuperPets extends ExtendedEventsTrait {
 
     public SuperPets() {
@@ -19,12 +21,9 @@ public class SuperPets extends ExtendedEventsTrait {
     @Override
     public void onTamedHurt(LivingHurtEvent ev) {
         DamageSource source = ev.getSource();
-        if(source==DamageSource.FALL || source==DamageSource.IN_FIRE || source==DamageSource.ON_FIRE ||
-                source==DamageSource.LAVA || source==DamageSource.CACTUS || source==DamageSource.FALLING_BLOCK ||
-                source==DamageSource.HOT_FLOOR || source==DamageSource.CRAMMING || source==DamageSource.DROWN ||
-                source==DamageSource.LIGHTNING_BOLT || source==DamageSource.WITHER) {
-            ev.setCanceled(true);
-        }
+        if(source==FALL || source==IN_FIRE || source==ON_FIRE || source==LAVA || source==CACTUS ||
+           source==FALLING_BLOCK || source==HOT_FLOOR || source==CRAMMING || source==DROWN || source==LIGHTNING_BOLT ||
+           source==WITHER) ev.setCanceled(true);
     }
 
     @Override

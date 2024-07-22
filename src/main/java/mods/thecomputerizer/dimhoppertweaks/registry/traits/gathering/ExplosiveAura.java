@@ -2,12 +2,13 @@ package mods.thecomputerizer.dimhoppertweaks.registry.traits.gathering;
 
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.ExplosionEvent;
+
+import static net.minecraft.block.material.Material.AIR;
 
 public class ExplosiveAura extends ExtendedEventsTrait {
 
@@ -21,7 +22,7 @@ public class ExplosiveAura extends ExtendedEventsTrait {
             Explosion ex = ev.getExplosion();
             World world = ev.getWorld();
             IBlockState state = world.getBlockState(pos);
-            if(state.getMaterial()!=Material.AIR) {
+            if(state.getMaterial()!=AIR) {
                 Block block = state.getBlock();
                 if(block.canDropFromExplosion(ex))
                     block.dropBlockAsItemWithChance(world,pos,state,1f,0);

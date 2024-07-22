@@ -1,7 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.registry.traits.mining;
 
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
-import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
 
 public class ExpertMiner extends ExtendedEventsTrait {
 
@@ -10,7 +10,7 @@ public class ExpertMiner extends ExtendedEventsTrait {
     }
 
     @Override
-    public void getBreakSpeed(PlayerEvent.BreakSpeed event) {
+    public void getBreakSpeed(BreakSpeed event) {
         event.setNewSpeed(event.getNewSpeed()*2f);
     }
 }

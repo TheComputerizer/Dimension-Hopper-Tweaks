@@ -22,6 +22,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import java.util.Objects;
 
 import static java.lang.Integer.MAX_VALUE;
+import static mods.thecomputerizer.dimhoppertweaks.registry.TraitRegistry.SWIMMING_LESSONS;
 import static mods.thecomputerizer.dimhoppertweaks.registry.TraitRegistry.UNSTOPPABLE;
 import static net.minecraft.entity.SharedMonsterAttributes.MAX_HEALTH;
 
@@ -105,7 +106,7 @@ public abstract class MixinEntityPlayer extends EntityLivingBase {
     private void dimhoppertweaks$applySwimSpeed(IAttributeInstance instance, double v) {
         if(this.inWater) {
             PlayerData data = PlayerDataHandler.get((EntityPlayer)(Object)this);
-            if(Objects.nonNull(data) && !data.getSkillInfo(SkillWrapper.getSkill("agility")).isUnlocked(UNSTOPPABLE))
+            if(Objects.nonNull(data) && data.getSkillInfo(SkillWrapper.getSkill("agility")).isUnlocked(SWIMMING_LESSONS))
                 v*=2d;
         }
         instance.setBaseValue(v);

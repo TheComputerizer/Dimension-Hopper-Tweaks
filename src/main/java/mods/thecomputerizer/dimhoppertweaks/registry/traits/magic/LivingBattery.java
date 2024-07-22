@@ -3,21 +3,21 @@ package mods.thecomputerizer.dimhoppertweaks.registry.traits.magic;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import vazkii.botania.common.item.ItemManaTablet;
-import vazkii.botania.common.item.ModItems;
 import xyz.phanta.psicosts.capability.PsiCell;
 import xyz.phanta.psicosts.init.PsioCaps;
-import xyz.phanta.psicosts.init.PsioItems;
 
 import java.util.Objects;
+
+import static vazkii.botania.common.item.ModItems.manaTablet;
+import static xyz.phanta.psicosts.init.PsioItems.PSI_CELL;
 
 public class LivingBattery extends ExtendedEventsTrait {
 
     public LivingBattery() {
         super("living_battery",1,3,MAGIC,120,"magic|256","void|128","research|64","defense|32");
-        setIcon(new ResourceLocation("psicosts","textures/items/creative_cell.png"));
+        setIcon("psicosts","items","creative_cell");
     }
 
     @Override
@@ -49,7 +49,7 @@ public class LivingBattery extends ExtendedEventsTrait {
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean tryFillingPSI(ItemStack stack, EntityPlayer player, int amount) {
-        if(stack.isEmpty() || stack.getItem()!=PsioItems.PSI_CELL) return false;
+        if(stack.isEmpty() || stack.getItem()!=PSI_CELL) return false;
         PsiCell cell = stack.getCapability(PsioCaps.PSI_CELL,null);
         if(Objects.isNull(cell)) return false;
         if(cell.getPercentCharge()<1f) {
@@ -60,7 +60,7 @@ public class LivingBattery extends ExtendedEventsTrait {
     }
 
     private void tryFillingMana(ItemStack stack, EntityPlayer player, int amount) {
-        if(stack.isEmpty() || stack.getItem()!=ModItems.manaTablet) return;
+        if(stack.isEmpty() || stack.getItem()!=manaTablet) return;
         ItemManaTablet tablet = (ItemManaTablet)stack.getItem();
         if(tablet.getMana(stack)<tablet.getMaxMana(stack)) {
             tablet.addMana(stack,amount);
