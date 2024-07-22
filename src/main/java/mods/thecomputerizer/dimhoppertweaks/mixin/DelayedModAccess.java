@@ -4,6 +4,8 @@ import androsa.gaiadimension.world.TeleporterGaia;
 import appeng.items.parts.ItemFacade;
 import c4.conarm.client.gui.PreviewPlayer;
 import c4.conarm.lib.tinkering.TinkersArmor;
+import codersafterdark.reskillable.api.data.PlayerData;
+import codersafterdark.reskillable.api.data.PlayerDataHandler;
 import cofh.thermalexpansion.item.ItemFlorb;
 import cofh.thermalexpansion.item.ItemMorb;
 import crazypants.enderio.base.item.soulvial.ItemSoulVial;
@@ -12,8 +14,8 @@ import de.ellpeck.actuallyadditions.mod.tile.TileEntityGiantChest;
 import de.ellpeck.naturesaura.blocks.tiles.TileEntityAutoCrafter;
 import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.chunk.ExtraChunkData;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.config.DHTConfigHelper;
-import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.mixin.api.IInventoryCrafting;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketSendKeyPressed;
 import net.darkhax.gamestages.GameStageHelper;
@@ -24,7 +26,6 @@ import net.minecraft.block.BlockChest;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemEnchantedBook;
 import net.minecraft.item.ItemMonsterPlacer;
@@ -35,6 +36,7 @@ import net.minecraft.nbt.NBTTagString;
 import net.minecraft.tileentity.*;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
@@ -66,7 +68,9 @@ import static de.ellpeck.actuallyadditions.mod.blocks.InitBlocks.blockGiantChest
 import static mariot7.xlfoodmod.init.ItemListxlfoodmod.cheese;
 import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.LOGGER;
 import static mods.thecomputerizer.dimhoppertweaks.integration.crafttweaker.CTPassthrough.SPECIALIZED_PARTS;
+import static mods.thecomputerizer.dimhoppertweaks.registry.TraitRegistry.DIFFICULT_GAMBLE;
 import static net.darkhax.dimstages.DimensionStages.DIMENSION_MAP;
+import static net.minecraft.init.Blocks.AIR;
 import static net.minecraft.item.ItemStack.EMPTY;
 import static net.minecraftforge.fml.common.registry.ForgeRegistries.ITEMS;
 import static slimeknights.tconstruct.library.materials.Material.UNKNOWN;
@@ -83,7 +87,8 @@ public class DelayedModAccess {
             "de.ellpeck.actuallyadditions.mod.tile.TileEntityBreaker",
             "de.ellpeck.actuallyadditions.mod.tile.TileEntityPhantomBreaker",
             "de.ellpeck.actuallyadditions.mod.tile.TileEntityDirectionalBreaker",
-            "com.rwtema.extrautils2.tile.TileMine", "com.rwtema.extrautils2.tile.TileUse",
+            "com.rwtema.extrautils2.tile.TileMine",
+            "com.rwtema.extrautils2.tile.TileUse",
             "li.cil.oc.common.tileentity.RobotProxy",
             "appeng.tile.networking.TileCableBus",
             "org.cyclops.integrateddynamics.core.tileentity.TileMultipartTicking");
@@ -107,7 +112,7 @@ public class DelayedModAccess {
             if(!method.isAccessible()) method.setAccessible(true);
             method.invoke(null);
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException ex) {
-            DHTRef.LOGGER.error("Failed to invoke inaccessible method `{}` from class `{}`",methodName,
+            LOGGER.error("Failed to invoke inaccessible method `{}` from class `{}`",methodName,
                     clazz.getName(),ex);
         }
     }
@@ -325,11 +330,14 @@ public class DelayedModAccess {
     }
     
     public static double getMaxDifficulty(EntityPlayer player) {
-        return getDifficultyMultiplier(player)*50d;
+        PlayerData data = PlayerDataHandler.get(player);
+        if(Objects.nonNull(data) && data.getSkillInfo(SkillWrapper.getSkill("void")).isUnlocked(DIFFICULT_GAMBLE))
+            return 5000d;
+        return MathHelper.clamp(getDifficultyMultiplier(player)*50d,0d,5000d);
     }
     
     public static double getMinDifficulty(EntityPlayer player) {
-        return getDifficultyMultiplier(player)*25d;
+        return MathHelper.clamp(getDifficultyMultiplier(player)*25d,0d,5000d);
     }
 
     public static Set<Class<?>> getPlacerTileClasses() {
@@ -479,7 +487,7 @@ public class DelayedModAccess {
     }
 
     public static void replaceWithAir(World world, BlockPos pos) {
-        world.setBlockState(pos,Blocks.AIR.getDefaultState());
+        world.setBlockState(pos,AIR.getDefaultState());
     }
 
     private static NBTTagCompound replaceYeetedTag(Item item, int meta, Consumer<NBTTagCompound> tagSettings) {

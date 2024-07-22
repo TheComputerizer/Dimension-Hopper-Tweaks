@@ -15,6 +15,7 @@ import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.registry.SoundRegistry;
 import mods.thecomputerizer.dimhoppertweaks.registry.TraitRegistry;
 import mods.thecomputerizer.dimhoppertweaks.registry.items.SkillToken;
+import net.darkhax.gamestages.GameStageHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -28,6 +29,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.silentchaos512.scalinghealth.utils.SHPlayerDataHandler;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
@@ -40,6 +42,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static mods.thecomputerizer.dimhoppertweaks.registry.ItemRegistry.SKILL_TOKEN;
+import static mods.thecomputerizer.dimhoppertweaks.registry.TraitRegistry.DIFFICULT_GAMBLE;
 import static mods.thecomputerizer.dimhoppertweaks.registry.TraitRegistry.TOKEN_GAMBLE;
 
 @SuppressWarnings("ConstantValue")
@@ -92,6 +95,24 @@ public class SkillWrapper {
         BlockPos pos = cap.getTwilightRespawn();
         if(player.dimension==7 && Objects.isNull(player.getBedLocation(7)) && Objects.nonNull(pos))
             player.setSpawnPoint(pos,true);
+    }
+    
+    public static double getDifficultyFactor(EntityPlayer player) {
+        if(GameStageHelper.hasStage(player,"hardcore")) return 1d;
+        double factor = 0d;
+        PlayerData data = PlayerDataHandler.get(player);
+        if(Objects.nonNull(data) && data.getSkillInfo(getSkill("void")).isUnlocked(DIFFICULT_GAMBLE)) {
+            SHPlayerDataHandler.PlayerData difficultyData = SHPlayerDataHandler.get(player);
+            if(Objects.nonNull(difficultyData)) {
+                double difficulty = difficultyData.getDifficulty();
+                factor+=(difficulty/1000d);
+                if(difficulty>=500d) factor*=2d;
+                if(difficulty>=1000d) factor*=2d;
+                if(difficulty>=2500d) factor*=2d;
+                if(difficulty>=5000d) factor*=2d;
+            }
+        }
+        return 1d+factor;
     }
 
     public static int getFanUsage(EntityPlayer player) {
@@ -306,8 +327,9 @@ public class SkillWrapper {
             int amountAdded = getPrestigeFactor(player,amount,fromXP);
             if(amountAdded>0) {
                 int amountNotAdded = 0;
-                double factor = ((double)amount/(double)amountAdded);
-                this.sp+=amountAdded;
+                double difficulty = fromXP ? 1d : getDifficultyFactor(player);
+                double factor = ((double)amount/(double)amountAdded)/difficulty;
+                this.sp+=(int)((double)amountAdded*difficulty);
                 if(canLevelUp()) {
                     int leftover = levelUpWithOverflow(player,true,fromXP);
                     amountNotAdded+=leftover;

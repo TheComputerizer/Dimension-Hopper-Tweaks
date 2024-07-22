@@ -176,6 +176,7 @@
     "naturesaura.MixinTileEntityNatureAltarClient",
     "reskillable.MixinGuiSkillInfo",
     "reskillable.MixinGuiSkills",
+    "reskillable.MixinUnlockableToast",
     "silentgems.MixinItemEnchantmentToken"
   ]
 }

@@ -20,7 +20,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -29,8 +28,9 @@ import net.minecraftforge.common.ISpecialArmor;
 import net.minecraftforge.event.entity.EntityEvent.EnteringChunk;
 import net.minecraftforge.event.entity.EntityStruckByLightningEvent;
 import net.minecraftforge.event.entity.living.*;
+import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent.Finish;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.silentchaos512.scalinghealth.event.BlightHandler;
 import vazkii.botania.common.entity.EntityPixie;
@@ -38,11 +38,14 @@ import vazkii.botania.common.item.equipment.tool.elementium.ItemElementiumSword;
 
 import java.util.Objects;
 
+import static net.minecraft.util.DamageSource.OUT_OF_WORLD;
+import static net.minecraftforge.fml.common.eventhandler.EventPriority.LOWEST;
+
 @SuppressWarnings("SpellCheckingInspection")
 @Mod.EventBusSubscriber(modid = DHTRef.MODID)
 public class EntityEvents {
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = LOWEST)
     public static void onLivingAttack(LivingAttackEvent event) {
         if(event.isCanceled()) return;
         if(event.getEntityLiving() instanceof EntityPlayerMP) {
@@ -54,15 +57,16 @@ public class EntityEvents {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = LOWEST)
     public static void onLivingHurt(LivingHurtEvent event) {
         if(event.isCanceled()) return;
-        if(event.getSource()!=DamageSource.OUT_OF_WORLD) {
-            if(event.getEntityLiving() instanceof EntityFinalBoss) {
+        if(event.getSource()!=OUT_OF_WORLD) {
+            EntityLivingBase living = event.getEntityLiving();
+            if(living instanceof EntityFinalBoss) {
                 if(!(event.getSource() instanceof DamageSourceInfinitySword))
                     event.setCanceled(true);
-            } else if(event.getEntityLiving() instanceof EntityTameable) {
-                EntityTameable tameable = (EntityTameable)event.getEntityLiving();
+            } else if(living instanceof EntityTameable) {
+                EntityTameable tameable = (EntityTameable)living;
                 if(!tameable.world.isRemote && tameable.isTamed()) {
                     EntityLivingBase owner = tameable.getOwner();
                     if(owner instanceof EntityPlayer) {
@@ -74,12 +78,21 @@ public class EntityEvents {
                         }
                     }
                 }
+            } else if(living instanceof EntityPlayerMP) {
+                EntityPlayerMP player = (EntityPlayerMP)living;
+                double reduction = (SkillWrapper.getDifficultyFactor(player)-1d)*(40d/79d);
+                event.setAmount((float)((double)event.getAmount()*(1d-reduction)));
+            }
+            if(event.getSource().getTrueSource() instanceof EntityPlayerMP) {
+                EntityPlayerMP player = (EntityPlayerMP)event.getSource().getTrueSource();
+                double factor = (SkillWrapper.getDifficultyFactor(player)-1d)*(4d/79d);
+                event.setAmount((float)((double)event.getAmount()*(1d+factor)));
             }
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void onJump(LivingEvent.LivingJumpEvent event) {
+    @SubscribeEvent(priority = LOWEST)
+    public static void onJump(LivingJumpEvent event) {
         if(event.isCanceled()) return;
         if(event.getEntityLiving() instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP)event.getEntityLiving();
@@ -89,10 +102,11 @@ public class EntityEvents {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = LOWEST)
     public static void onDamage(LivingDamageEvent event) {
         if(event.isCanceled()) return;
-        if(!event.getEntityLiving().world.isRemote && Objects.nonNull(event.getSource()) && event.getSource()!=DamageSource.OUT_OF_WORLD) {
+        if(!event.getEntityLiving().world.isRemote && Objects.nonNull(event.getSource()) && event.getSource()!=
+                                                                                            OUT_OF_WORLD) {
             if(event.getSource().getTrueSource() instanceof EntityPlayerMP) {
                 EntityPlayerMP player = (EntityPlayerMP)event.getSource().getTrueSource();
                 if(Objects.nonNull(player)) {
@@ -128,7 +142,7 @@ public class EntityEvents {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = LOWEST)
     public static void onLivingKnockBack(LivingKnockBackEvent event) {
         if(event.isCanceled()) return;
         EntityLivingBase entity = event.getEntityLiving();
@@ -142,7 +156,7 @@ public class EntityEvents {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = LOWEST)
     public static void onDeath(LivingDeathEvent event) {
         if(event.isCanceled()) return;
         if(event.getSource().getTrueSource() instanceof EntityPlayerMP) {
@@ -163,7 +177,7 @@ public class EntityEvents {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = LOWEST)
     public static void onLivingFall(LivingFallEvent event) {
         if(event.isCanceled()) return;
         if(event.getEntityLiving() instanceof EntityPlayerMP) {
@@ -173,7 +187,7 @@ public class EntityEvents {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = LOWEST)
     public static void onTargetSet(LivingSetAttackTargetEvent event) {
         EntityLiving entity = (EntityLiving)event.getEntityLiving();
             if(!entity.world.isRemote && event.getTarget() instanceof EntityTameable) {
@@ -190,8 +204,8 @@ public class EntityEvents {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void onFinishUsingItem(LivingEntityUseItemEvent.Finish event) {
+    @SubscribeEvent(priority = LOWEST)
+    public static void onFinishUsingItem(Finish event) {
         if(event.getEntity() instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer)event.getEntity();
             PlayerData data = PlayerDataHandler.get(player);
@@ -203,7 +217,7 @@ public class EntityEvents {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = LOWEST)
     public static void onEnteringChunk(EnteringChunk event) {
         Entity entity = event.getEntity();
         if(entity instanceof EntityPlayer) {
@@ -214,7 +228,7 @@ public class EntityEvents {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = LOWEST)
     public static void onStruckByLightning(EntityStruckByLightningEvent event) {
         LightningStrikeRecipe.checkLightningStrike(event.getLightning(),event.getEntity());
     }

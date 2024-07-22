@@ -20,6 +20,7 @@ import mods.thecomputerizer.dimhoppertweaks.registry.traits.mining.ExpertMiner;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.research.LimbonicGenerator;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.research.TieredResearchTrait;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.research.TokenGamble;
+import mods.thecomputerizer.dimhoppertweaks.registry.traits.voidtraits.DifficultGamble;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.voidtraits.RefreshingPortals;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.voidtraits.VoidCheater;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.voidtraits.VoidWalker;
@@ -31,6 +32,7 @@ import java.util.List;
 public final class TraitRegistry {
 
     private static final List<Trait> ALL_TRAITS = new ArrayList<>();
+    public static final Trait DIFFICULT_GAMBLE = makeTrait(new DifficultGamble());
     public static final Trait EXPERT_MINER = makeTrait(new ExpertMiner());
     public static final Trait EXPLOSIVE_AURA = makeTrait(new ExplosiveAura());
     public static final Trait FACTORY_MK_ONE = makeTrait(new TieredResearchTrait("factory",1,0,1));

@@ -92,7 +92,6 @@ public class MixinItemDifficultyChanger extends Item {
                     }
                     if(!world.isRemote) {
                         data.incrementDifficulty(Math.min(maxIncrease,cursedHeartChange));
-                        data.incrementDifficulty(cursedHeartChange);
                         stack.shrink(1);
                     }
                     for(i=0;i<20-5*proxy.getParticleSettings();i++) {

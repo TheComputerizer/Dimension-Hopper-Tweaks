@@ -132,6 +132,9 @@ misc.dimhoppertweaks.sleep_warning=Warning, difficulty increases by %1$s from sl
 
 reskillable.skill.dimhoppertweaks.research=Research
 reskillable.skill.dimhoppertweaks.void=Void
+
+reskillable.unlock.dimhoppertweaks.difficult_gamble=A Difficult Gamble
+reskillable.unlock.dimhoppertweaks.difficult_gamble.desc=Removes the progression dependent difficulty cap while making high difficulty levels a lot more rewarding. All effects scale linearly with additional multipliers at 500, 1000, 2500, and 5000 difficulty. Does nothing if Masochist Mode is enabled.
 reskillable.unlock.dimhoppertweaks.expert_miner=Expert Miner
 reskillable.unlock.dimhoppertweaks.expert_miner.desc=Excessive mining has made your arms incredibly buff. You now mine twice as fast!
 reskillable.unlock.dimhoppertweaks.explosive_aura=Explosive Aura

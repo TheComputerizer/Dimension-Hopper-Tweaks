@@ -12,6 +12,7 @@ import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrappe
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
 import mods.thecomputerizer.dimhoppertweaks.util.WorldUtil;
 import net.darkhax.gamestages.GameStageHelper;
+import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -136,6 +137,21 @@ public class PlayerEvents {
                         else if(item instanceof ItemPotion || item instanceof ItemElixir)
                             trait.onShiftRightClickPotion(player,event.getItemStack());
                     }
+                });
+            }
+        }
+    }
+    
+    @SubscribeEvent(priority = LOWEST)
+    public static void onXPPickup(PlayerPickupXpEvent event) {
+        if(event.isCanceled()) return;
+        EntityPlayer player = event.getEntityPlayer();
+        EntityXPOrb xp = event.getOrb();
+        if(player instanceof EntityPlayerMP && Objects.nonNull(xp)) {
+            PlayerData data = PlayerDataHandler.get(player);
+            if(Objects.nonNull(data)) {
+                SkillWrapper.executeOnSkills(data,h -> {
+                    if(h instanceof ExtendedEventsTrait) ((ExtendedEventsTrait)h).onXPPickup(player,xp);
                 });
             }
         }
