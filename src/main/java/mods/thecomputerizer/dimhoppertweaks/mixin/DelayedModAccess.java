@@ -8,7 +8,6 @@ import cofh.thermalexpansion.item.ItemFlorb;
 import cofh.thermalexpansion.item.ItemMorb;
 import crazypants.enderio.base.item.soulvial.ItemSoulVial;
 import crazypants.enderio.base.item.spawner.ItemBrokenSpawner;
-import de.ellpeck.actuallyadditions.mod.blocks.InitBlocks;
 import de.ellpeck.actuallyadditions.mod.tile.TileEntityGiantChest;
 import de.ellpeck.naturesaura.blocks.tiles.TileEntityAutoCrafter;
 import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
@@ -63,6 +62,7 @@ import java.util.function.Function;
 
 import static androsa.gaiadimension.registry.GDBlocks.gaia_portal;
 import static androsa.gaiadimension.registry.GDBlocks.keystone_block;
+import static de.ellpeck.actuallyadditions.mod.blocks.InitBlocks.blockGiantChest;
 import static mariot7.xlfoodmod.init.ItemListxlfoodmod.cheese;
 import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.LOGGER;
 import static mods.thecomputerizer.dimhoppertweaks.integration.crafttweaker.CTPassthrough.SPECIALIZED_PARTS;
@@ -285,7 +285,29 @@ public class DelayedModAccess {
     }
 
     public static Block getCrateBlock() {
-        return InitBlocks.blockGiantChest;
+        return blockGiantChest;
+    }
+    
+    public static double getDifficultyMultiplier(EntityPlayer player) {
+        double original = 1d;
+        IStageData data = GameStageHelper.getPlayerData(player);
+        if(Objects.nonNull(data)) {
+            Collection<String> stages = data.getStages();
+            if(stages.contains("hardcore")) return 5000d;
+            if(stages.contains("bedrockfinal")) original*=20d;
+            else if(stages.contains("finalfrontier")) original*=18d;
+            else if(stages.contains("deepdown")) original*=16d;
+            else if(stages.contains("deepspace")) original*=14d;
+            else if(stages.contains("advent")) original*=12d;
+            else if(stages.contains("planets")) original*=10d;
+            else if(stages.contains("swamp")) original*=8d;
+            else if(stages.contains("cavern")) original*=6d;
+            else if(stages.contains("labyrinth")) original*=4d;
+            else if(stages.contains("overworld")) original*=2d;
+            if(stages.contains("shopper")) original*=1.5d;
+            if(stages.contains("emc")) original*=1.5d;
+        }
+        return original;
     }
 
     public static Collection<String> getGameStages(EntityPlayer player) {
@@ -302,10 +324,12 @@ public class DelayedModAccess {
         return gaia_portal;
     }
     
-    @SuppressWarnings("DataFlowIssue")
-    public static ItemStack getStack(String name, int count) {
-        ResourceLocation res = new ResourceLocation(name);
-        return ITEMS.containsKey(res) ? new ItemStack(ITEMS.getValue(res),count) : EMPTY;
+    public static double getMaxDifficulty(EntityPlayer player) {
+        return getDifficultyMultiplier(player)*50d;
+    }
+    
+    public static double getMinDifficulty(EntityPlayer player) {
+        return getDifficultyMultiplier(player)*25d;
     }
 
     public static Set<Class<?>> getPlacerTileClasses() {
@@ -314,6 +338,12 @@ public class DelayedModAccess {
             FOUND_PLACER_CLASSES = true;
         }
         return Collections.unmodifiableSet(BLOCK_PLACER_CLASSES);
+    }
+    
+    @SuppressWarnings("DataFlowIssue")
+    public static ItemStack getStack(String name, int count) {
+        ResourceLocation res = new ResourceLocation(name);
+        return ITEMS.containsKey(res) ? new ItemStack(ITEMS.getValue(res),count) : EMPTY;
     }
     
     public static String getStageForDimension(int dimension) {
@@ -353,23 +383,7 @@ public class DelayedModAccess {
     }
 
     public static double incrementDifficultyWithStageFactor(EntityPlayer player, double original) {
-        IStageData data = GameStageHelper.getPlayerData(player);
-        if(Objects.nonNull(data)) {
-            Collection<String> stages = data.getStages();
-            if(stages.contains("bedrockfinal")) original*=20d;
-            else if(stages.contains("finalfrontier")) original*=18d;
-            else if(stages.contains("deepdown")) original*=16d;
-            else if(stages.contains("deepspace")) original*=14d;
-            else if(stages.contains("advent")) original*=12d;
-            else if(stages.contains("planets")) original*=10d;
-            else if(stages.contains("swamp")) original*=8d;
-            else if(stages.contains("cavern")) original*=6d;
-            else if(stages.contains("labyrinth")) original*=4d;
-            else if(stages.contains("overworld")) original*=2d;
-            if(stages.contains("shopper")) original*=1.5d;
-            if(stages.contains("emc")) original*=1.5d;
-        }
-        return original;
+        return original*getDifficultyMultiplier(player);
     }
 
     public static @Nullable Object instantiateInaccessibleClass(

@@ -138,6 +138,7 @@
     "scalinghealth.MixinBlightHandler",
     "scalinghealth.MixinDifficultyHandler",
     "scalinghealth.MixinEntityBlightFire",
+    "scalinghealth.MixinItemDifficultyChanger",
     "scalinghealth.MixinScalingHealthCommonEvents",
     "sgcraft.MixinSGBaseTE",
     "silentlib.MixinGuideBookUtils",

@@ -1,8 +1,11 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.vanilla;
 
+import codersafterdark.reskillable.api.data.PlayerData;
+import codersafterdark.reskillable.api.data.PlayerDataHandler;
+import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.datasync.DataParameter;
@@ -15,6 +18,12 @@ import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
+
+import java.util.Objects;
+
+import static java.lang.Integer.MAX_VALUE;
+import static mods.thecomputerizer.dimhoppertweaks.registry.TraitRegistry.UNSTOPPABLE;
+import static net.minecraft.entity.SharedMonsterAttributes.MAX_HEALTH;
 
 @Mixin(EntityPlayer.class)
 public abstract class MixinEntityPlayer extends EntityLivingBase {
@@ -36,7 +45,7 @@ public abstract class MixinEntityPlayer extends EntityLivingBase {
      */
     @Overwrite
     public void addExperience(int amount) {
-        int max = Integer.MAX_VALUE-this.experienceTotal;
+        int max = MAX_VALUE-this.experienceTotal;
         if(amount>max) amount = max;
         int min = -this.experienceTotal;
         if(amount<min) amount = min;
@@ -66,7 +75,14 @@ public abstract class MixinEntityPlayer extends EntityLivingBase {
      */
     @Overwrite
     public void addScore(int score) {
-        this.dataManager.set(PLAYER_SCORE,MathHelper.clamp(this.getScore()+score,0,Integer.MAX_VALUE));
+        this.dataManager.set(PLAYER_SCORE,MathHelper.clamp(this.getScore()+score,0,MAX_VALUE));
+    }
+    
+    @Override
+    public void setInWeb() {
+        PlayerData data = PlayerDataHandler.get((EntityPlayer)(Object)this);
+        if(Objects.isNull(data) || !data.getSkillInfo(SkillWrapper.getSkill("agility")).isUnlocked(UNSTOPPABLE))
+            super.setInWeb();
     }
 
     @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;"+
@@ -78,9 +94,20 @@ public abstract class MixinEntityPlayer extends EntityLivingBase {
             boolean wasTamed = tameable.isTamed();
             boolean ret = entity.processInitialInteract(player,hand);
             if(!wasTamed && tameable.isTamed())
-                tameable.setHealth((float)this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).getAttributeValue());
+                tameable.setHealth((float)this.getEntityAttribute(MAX_HEALTH).getAttributeValue());
             return ret;
         }
-        return entity.processInitialInteract(player, hand);
+        return entity.processInitialInteract(player,hand);
+    }
+    
+    @Redirect(at =@At(value="INVOKE", target="Lnet/minecraft/entity/ai/attributes/IAttributeInstance;setBaseValue(D)V"),
+            method = "onLivingUpdate")
+    private void dimhoppertweaks$applySwimSpeed(IAttributeInstance instance, double v) {
+        if(this.inWater) {
+            PlayerData data = PlayerDataHandler.get((EntityPlayer)(Object)this);
+            if(Objects.nonNull(data) && !data.getSkillInfo(SkillWrapper.getSkill("agility")).isUnlocked(UNSTOPPABLE))
+                v*=2d;
+        }
+        instance.setBaseValue(v);
     }
 }

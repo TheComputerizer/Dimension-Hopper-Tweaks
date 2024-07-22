@@ -1,12 +1,10 @@
 package mods.thecomputerizer.dimhoppertweaks.recipes;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.InvincibleEntityItem;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -16,6 +14,10 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Supplier;
+
+import static java.lang.Integer.MAX_VALUE;
+import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.LOGGER;
+import static net.minecraft.init.Items.AIR;
 
 public class LightningStrikeRecipe {
 
@@ -101,26 +103,26 @@ public class LightningStrikeRecipe {
 
     public boolean isValid() {
         if(this.range<=0d) {
-            DHTRef.LOGGER.error("Range `{}` for lightning strike recipe cannot be set to 0 or less! Recipe will be ignored.",this.range);
+            LOGGER.error("Range `{}` for lightning strike recipe cannot be set to 0 or less! Recipe will be ignored.",this.range);
             return false;
         }
         if(this.inputs.isEmpty()) {
-            DHTRef.LOGGER.error("Lightning strike recipe must have at least 1 valid input! Recipe will be ignored.");
+            LOGGER.error("Lightning strike recipe must have at least 1 valid input! Recipe will be ignored.");
             return false;
         }
         for(ItemRef input : this.inputs) {
-            if(!input.isValid()) {
-                DHTRef.LOGGER.error("Failed to validate input for lightning strike recipe! Recipe will be ignored.");
+            if(input.invalid()) {
+                LOGGER.error("Failed to validate input for lightning strike recipe! Recipe will be ignored.");
                 return false;
             }
         }
         if(this.outputs.isEmpty()) {
-            DHTRef.LOGGER.error("Lightning strike recipe must have at least 1 valid output! Recipe will be ignored.");
+            LOGGER.error("Lightning strike recipe must have at least 1 valid output! Recipe will be ignored.");
             return false;
         }
         for(ItemRef output : this.outputs) {
-            if(!output.isValid()) {
-                DHTRef.LOGGER.error("Failed to validate output for lightning strike recipe! Recipe will be ignored.");
+            if(output.invalid()) {
+                LOGGER.error("Failed to validate output for lightning strike recipe! Recipe will be ignored.");
                 return false;
             }
         }
@@ -134,7 +136,7 @@ public class LightningStrikeRecipe {
     }
 
     public void verifyInputs(World world, Vec3d strikePos, List<EntityItem> entities) {
-        if(this.dimension!=Integer.MAX_VALUE && this.dimension!=world.provider.getDimension()) return;
+        if(this.dimension!=MAX_VALUE && this.dimension!=world.provider.getDimension()) return;
         for(ItemRef input : this.inputs)
             if(!inputMatches(input,strikePos,entities)) return;
         spawnOutputs(world,strikePos);
@@ -157,28 +159,28 @@ public class LightningStrikeRecipe {
             this.count = count;
         }
 
-        private boolean isValid() {
+        private boolean invalid() {
             if(Objects.isNull(this.item)) {
-                DHTRef.LOGGER.error("Item in item reference cannot be null!");
-                return false;
+                LOGGER.error("Item in item reference cannot be null!");
+                return true;
             }
-            if(this.item==Items.AIR) {
-                DHTRef.LOGGER.error("Item in item reference cannot be set to air!");
-                return false;
+            if(this.item==AIR) {
+                LOGGER.error("Item in item reference cannot be set to air!");
+                return true;
             }
             if(this.meta<0) {
-                DHTRef.LOGGER.error("Meta value `{}` in item reference cannot be less than 0!",this.meta);
-                return false;
+                LOGGER.error("Meta value `{}` in item reference cannot be less than 0!",this.meta);
+                return true;
             }
             if(this.meta>Short.MAX_VALUE) {
-                DHTRef.LOGGER.error("Meta value `{}` in item reference cannot be greater than {}!",this.meta,Short.MAX_VALUE);
-                return false;
+                LOGGER.error("Meta value `{}` in item reference cannot be greater than {}!",this.meta,Short.MAX_VALUE);
+                return true;
             }
             if(this.count<0) {
-                DHTRef.LOGGER.error("Count value `{}` in item reference cannot be less than 0!",this.count);
-                return false;
+                LOGGER.error("Count value `{}` in item reference cannot be less than 0!",this.count);
+                return true;
             }
-            return true;
+            return false;
         }
 
         private boolean matches(ItemStack stack) {
@@ -199,6 +201,7 @@ public class LightningStrikeRecipe {
         }
     }
 
+    @SuppressWarnings("unused")
     public static class Builder {
 
         private final Map<Integer,Supplier<?>> catalystSuppliers;
@@ -249,7 +252,7 @@ public class LightningStrikeRecipe {
         }
 
         public Builder setAnyDimension() {
-            this.dimension = Integer.MAX_VALUE;
+            this.dimension = MAX_VALUE;
             return this;
         }
 
@@ -275,8 +278,8 @@ public class LightningStrikeRecipe {
             return this;
         }
 
-        public LightningStrikeRecipe build() {
-            return new LightningStrikeRecipe(this.dimension,this.range,buildItemRef(this.catalystSuppliers),
+        public void build() {
+            new LightningStrikeRecipe(this.dimension,this.range,buildItemRef(this.catalystSuppliers),
                     buildItemRefs(this.inputSuppliers),buildItemRefs(this.outputSuppliers));
         }
 
@@ -304,7 +307,7 @@ public class LightningStrikeRecipe {
 
         private Item supplyItem(@Nullable Supplier<?> supplier) {
             Object supplied = Objects.nonNull(supplier) ? supplier.get() : null;
-            return supplied instanceof Item ? (Item)supplied : Items.AIR;
+            return supplied instanceof Item ? (Item)supplied : AIR;
         }
     }
 }

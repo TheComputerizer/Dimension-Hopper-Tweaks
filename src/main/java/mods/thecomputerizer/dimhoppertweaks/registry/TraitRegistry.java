@@ -1,6 +1,8 @@
 package mods.thecomputerizer.dimhoppertweaks.registry;
 
 import codersafterdark.reskillable.api.unlockable.Trait;
+import mods.thecomputerizer.dimhoppertweaks.registry.traits.agility.SwimmingLessons;
+import mods.thecomputerizer.dimhoppertweaks.registry.traits.agility.Unstoppable;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.attack.LookAtMe;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.attack.NoCooldowns;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.attack.SuperPets;
@@ -58,7 +60,9 @@ public final class TraitRegistry {
     public static final Trait REFRESHING_PORTALS = makeTrait(new RefreshingPortals());
     public static final Trait RESISTIVE_BUILDER = makeTrait(new ResistiveBuilder());
     public static final Trait SUPER_PETS = makeTrait(new SuperPets());
+    public static final Trait SWIMMING_LESSONS = makeTrait(new SwimmingLessons());
     public static final Trait TOKEN_GAMBLE = makeTrait(new TokenGamble());
+    public static final Trait UNSTOPPABLE = makeTrait(new Unstoppable());
     public static final Trait VOID_CHEATER = makeTrait(new VoidCheater());
     public static final Trait VOID_WALKER = makeTrait(new VoidWalker());
 

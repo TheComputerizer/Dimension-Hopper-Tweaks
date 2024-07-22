@@ -12,7 +12,6 @@ import codersafterdark.reskillable.api.unlockable.Unlockable;
 import com.google.common.collect.ImmutableList;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.CommonCapability;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
-import mods.thecomputerizer.dimhoppertweaks.registry.ItemRegistry;
 import mods.thecomputerizer.dimhoppertweaks.registry.SoundRegistry;
 import mods.thecomputerizer.dimhoppertweaks.registry.TraitRegistry;
 import mods.thecomputerizer.dimhoppertweaks.registry.items.SkillToken;
@@ -39,6 +38,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
+
+import static mods.thecomputerizer.dimhoppertweaks.registry.ItemRegistry.SKILL_TOKEN;
+import static mods.thecomputerizer.dimhoppertweaks.registry.TraitRegistry.TOKEN_GAMBLE;
 
 @SuppressWarnings("ConstantValue")
 @ParametersAreNonnullByDefault
@@ -319,10 +321,10 @@ public class SkillWrapper {
     private int checkSkillEvent(EntityPlayerMP player, int amount, boolean fromXP) {
         if(fromXP && amount==1) return amount;
         PlayerData data = PlayerDataHandler.get(player);
-        if(Objects.nonNull(data) && data.getSkillInfo(getSkill("research")).isUnlocked(TraitRegistry.TOKEN_GAMBLE)) {
+        if(Objects.nonNull(data) && data.getSkillInfo(getSkill("research")).isUnlocked(TOKEN_GAMBLE)) {
             boolean foundToken = false;
             for(ItemStack stack : player.inventory.mainInventory) {
-                if(stack.getItem()==ItemRegistry.SKILL_TOKEN) {
+                if(stack.getItem()==SKILL_TOKEN) {
                     if(foundToken) {
                         foundToken = false;
                         break;

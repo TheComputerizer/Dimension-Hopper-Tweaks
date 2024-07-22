@@ -3,14 +3,12 @@ package mods.thecomputerizer.dimhoppertweaks.common.events;
 import codersafterdark.reskillable.api.data.PlayerData;
 import codersafterdark.reskillable.api.data.PlayerDataHandler;
 import codersafterdark.reskillable.api.event.LevelUpEvent;
-import codersafterdark.reskillable.api.event.UnlockUnlockableEvent;
+import codersafterdark.reskillable.api.event.UnlockUnlockableEvent.Post;
 import gcewing.sg.block.SGBlock;
 import mods.thecomputerizer.dimhoppertweaks.client.render.ClientEffects;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
-import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
-import mods.thecomputerizer.dimhoppertweaks.registry.TraitRegistry;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
 import mods.thecomputerizer.dimhoppertweaks.util.WorldUtil;
 import net.darkhax.gamestages.GameStageHelper;
@@ -29,17 +27,20 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem;
 import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import thebetweenlands.common.item.herblore.ItemElixir;
 
 import java.util.Objects;
 
-@Mod.EventBusSubscriber(modid = DHTRef.MODID)
+import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.MODID;
+import static mods.thecomputerizer.dimhoppertweaks.registry.TraitRegistry.NATURES_AURA;
+import static net.minecraftforge.fml.common.eventhandler.EventPriority.LOWEST;
+
+@EventBusSubscriber(modid = MODID)
 public class PlayerEvents {
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = LOWEST)
     public static void breakSpeed(BreakSpeed event) {
         if(event.isCanceled()) return;
         if(event.getState().getBlock() instanceof SGBlock<?>) event.setCanceled(true);
@@ -56,7 +57,7 @@ public class PlayerEvents {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = LOWEST)
     public static void onPlayerClone(Clone event) {
         if(event.isCanceled()) return;
         if(event.getEntityPlayer() instanceof EntityPlayerMP) {
@@ -70,22 +71,22 @@ public class PlayerEvents {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = LOWEST)
     public static void onLevelUp(LevelUpEvent.Post event) {
         if(event.isCanceled()) return;
         if(event.getEntityPlayer() instanceof EntityPlayerMP)
             SkillWrapper.updateTokens((EntityPlayerMP)event.getEntityPlayer());
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void onTraitToggled(UnlockUnlockableEvent.Post event) {
+    @SubscribeEvent(priority = LOWEST)
+    public static void onTraitToggled(Post event) {
         if(event.isCanceled()) return;
         EntityPlayer player = event.getEntityPlayer();
-        if(event.getUnlockable()==TraitRegistry.NATURES_AURA)
+        if(event.getUnlockable()==NATURES_AURA)
             WorldUtil.setFastChunk(player.getEntityWorld(),player.chunkCoordX,player.chunkCoordZ,player);
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = LOWEST)
     public static void pickupXP(PlayerPickupXpEvent event) {
         if(event.isCanceled()) return;
         if(event.getEntityPlayer() instanceof EntityPlayerMP) {
@@ -94,7 +95,7 @@ public class PlayerEvents {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = LOWEST)
     public static void onLootingLevel(LootingLevelEvent event) {
         if(event.isCanceled()) return;
         if(event.getDamageSource().getTrueSource() instanceof EntityPlayer) {
@@ -111,14 +112,14 @@ public class PlayerEvents {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = LOWEST)
     public static void onAdvancement(AdvancementEvent event) {
         if(event.isCanceled()) return;
         if(event.getEntityPlayer() instanceof EntityPlayerMP)
             SkillWrapper.addActionSP((EntityPlayerMP)event.getEntityPlayer(),"research",5f);
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = LOWEST)
     public static void onFoodRightClick(PlayerInteractEvent event) {
         if(event.isCanceled()) return;
         Item item = event.getItemStack().getItem();
