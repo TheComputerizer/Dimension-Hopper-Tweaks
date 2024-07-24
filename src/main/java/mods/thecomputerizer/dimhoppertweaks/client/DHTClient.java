@@ -1,12 +1,9 @@
 package mods.thecomputerizer.dimhoppertweaks.client;
 
-import codechicken.lib.texture.TextureUtils;
-import codechicken.lib.util.TransformUtils;
 import mods.thecomputerizer.dimhoppertweaks.client.render.RenderFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.client.render.RenderHomingProjectile;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.mixin.vanilla.access.EntityRendererAccess;
-import mods.thecomputerizer.dimhoppertweaks.registry.ItemRegistry;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.HomingProjectile;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.registry.items.RecipeFunction;
@@ -14,16 +11,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.settings.GameSettings;
-import net.minecraft.init.MobEffects;
 import net.minecraft.item.Item;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.WorldProvider;
 import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.client.model.obj.OBJModel.OBJBakedModel;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -36,10 +30,24 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+
+import static codechicken.lib.texture.TextureUtils.bakedTextureGetter;
+import static codechicken.lib.util.TransformUtils.DEFAULT_BLOCK;
+import static java.lang.Float.MAX_VALUE;
+import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.LOGGER;
+import static mods.thecomputerizer.dimhoppertweaks.registry.ItemRegistry.*;
+import static net.minecraft.init.MobEffects.BLINDNESS;
+import static net.minecraftforge.client.model.obj.OBJLoader.INSTANCE;
+import static net.minecraft.client.renderer.vertex.DefaultVertexFormats.BLOCK;
+import static org.lwjgl.opengl.GL11.GL_FOG_DENSITY;
+import static org.lwjgl.opengl.GL11.GL_FOG_END;
+import static org.lwjgl.opengl.GL11.GL_FOG_MODE;
+import static org.lwjgl.opengl.GL11.GL_FOG_START;
+
 @SuppressWarnings("deprecation")
 public final class DHTClient {
-    public final static ResourceLocation FORCEFIELD = new ResourceLocation(DHTRef.MODID,"textures/models/forcefield.png");
-    public final static ResourceLocation ATTACK = new ResourceLocation(DHTRef.MODID,"textures/models/attack.png");
+    public final static ResourceLocation FORCEFIELD = DHTRef.res("textures/models/forcefield.png");
+    public final static ResourceLocation ATTACK = DHTRef.res("textures/models/attack.png");
     public static OBJModel FORCEFIELD_MODEL;
     public static OBJBakedModel BAKED_FORCEFIELD;
     public static float FOG_DENSITY_OVERRIDE = -1f;
@@ -47,8 +55,7 @@ public final class DHTClient {
 
     public static OBJBakedModel getBakedForcefield() {
         if(Objects.isNull(BAKED_FORCEFIELD))
-            BAKED_FORCEFIELD = (OBJBakedModel)DHTClient.FORCEFIELD_MODEL.bake(TransformUtils.DEFAULT_BLOCK,
-                    DefaultVertexFormats.BLOCK,TextureUtils.bakedTextureGetter);
+            BAKED_FORCEFIELD = (OBJBakedModel)FORCEFIELD_MODEL.bake(DEFAULT_BLOCK,BLOCK,bakedTextureGetter);
         return BAKED_FORCEFIELD;
     }
 
@@ -57,24 +64,19 @@ public final class DHTClient {
     }
 
     public static void registerItemModels() {
-        ModelLoader.setCustomModelResourceLocation(ItemRegistry.PRESTIGE_TOKEN,0,
-                getModelRes(ItemRegistry.STARGATE_ADDRESSER));
-        ModelLoader.setCustomModelResourceLocation(ItemRegistry.RECIPE_FUNCTION,0,
-                getModelRes(ItemRegistry.STARGATE_ADDRESSER));
-        ModelLoader.setCustomModelResourceLocation(ItemRegistry.SKILL_CREDIT,0,
-                getModelRes(ItemRegistry.STARGATE_ADDRESSER));
-        ModelLoader.setCustomModelResourceLocation(ItemRegistry.SKILL_TOKEN,0,
-                getModelRes(ItemRegistry.SKILL_TOKEN));
-        ModelLoader.setCustomModelResourceLocation(ItemRegistry.STARGATE_ADDRESSER,0,
-                getModelRes(ItemRegistry.STARGATE_ADDRESSER));
-        ModelLoader.setCustomMeshDefinition(ItemRegistry.RECIPE_FUNCTION,RecipeFunction::getModelLocation);
+        ModelLoader.setCustomModelResourceLocation(PRESTIGE_TOKEN,0,getModelRes(STARGATE_ADDRESSER));
+        ModelLoader.setCustomModelResourceLocation(RECIPE_FUNCTION,0,getModelRes(STARGATE_ADDRESSER));
+        ModelLoader.setCustomModelResourceLocation(SKILL_CREDIT,0,getModelRes(STARGATE_ADDRESSER));
+        ModelLoader.setCustomModelResourceLocation(SKILL_TOKEN,0,getModelRes(SKILL_TOKEN));
+        ModelLoader.setCustomModelResourceLocation(STARGATE_ADDRESSER,0,getModelRes(STARGATE_ADDRESSER));
+        ModelLoader.setCustomMeshDefinition(RECIPE_FUNCTION,RecipeFunction::getModelLocation);
     }
 
     private static void registerEntityRenderers() {
         RenderingRegistry.registerEntityRenderingHandler(EntityFinalBoss.class,RenderFinalBoss::new);
         RenderingRegistry.registerEntityRenderingHandler(HomingProjectile.class,RenderHomingProjectile::new);
         try {
-            FORCEFIELD_MODEL = (OBJModel)OBJLoader.INSTANCE.loadModel(getModelRes("models/boss/forcefield.obj"));
+            FORCEFIELD_MODEL = (OBJModel)INSTANCE.loadModel(getModelRes("models/boss/forcefield.obj"));
         } catch(Exception ex) {
             throw new RuntimeException("Failed to load obj model!",ex);
         }
@@ -97,24 +99,24 @@ public final class DHTClient {
 
     public static void fixFog(Minecraft mc) {
         mc.addScheduledTask(() -> {
-            float density = tryOrDef(() -> GL11.glGetFloat(GL11.GL_FOG_DENSITY),Float.MAX_VALUE,"Unable to query fog density");
-            if(density>=0 && density<Float.MAX_VALUE) {
+            float density = tryOrDef(() -> GL11.glGetFloat(GL_FOG_DENSITY),MAX_VALUE,"Unable to query fog density");
+            if(density>=0 && density<MAX_VALUE) {
                 float farplane = ((EntityRendererAccess)Minecraft.getMinecraft().entityRenderer).getFarPlaneDistance();
                 GlStateManager.setFogStart(farplane*0.75f);
                 GlStateManager.setFogEnd(farplane);
                 if(GLContext.getCapabilities().GL_NV_fog_distance) GlStateManager.glFogi(34138,34139);
-                DHTRef.LOGGER.info("Set fog to ({},{})",farplane*0.75f,farplane);
+                LOGGER.info("Set fog to ({},{})",farplane*0.75f,farplane);
             }
         });
     }
 
     public static void queryFog(Minecraft mc) {
         mc.addScheduledTask(() -> {
-            int fogMode = tryOrDef(() -> GL11.glGetInteger(GL11.GL_FOG_MODE),Integer.MAX_VALUE,"Unable to query fog mode");
-            float fogStart = tryOrDef(() -> GL11.glGetFloat(GL11.GL_FOG_START),Float.MAX_VALUE,"Unable to query fog start");
-            float fogEnd = tryOrDef(() -> GL11.glGetFloat(GL11.GL_FOG_END),Float.MAX_VALUE,"Unable to query fog end");
-            float fogDensity = tryOrDef(() -> GL11.glGetFloat(GL11.GL_FOG_DENSITY),Float.MAX_VALUE,"Unable to query fog density");
-            DHTRef.LOGGER.error("FOG INFO: `MODE {} | START {} | END {} | DENSITY {}`",fogMode,fogStart,fogEnd,fogDensity);
+            int fogMode = tryOrDef(() -> GL11.glGetInteger(GL_FOG_MODE),Integer.MAX_VALUE,"Unable to query fog mode");
+            float fogStart = tryOrDef(() -> GL11.glGetFloat(GL_FOG_START),MAX_VALUE,"Unable to query fog start");
+            float fogEnd = tryOrDef(() -> GL11.glGetFloat(GL_FOG_END),MAX_VALUE,"Unable to query fog end");
+            float fogDensity = tryOrDef(() -> GL11.glGetFloat(GL_FOG_DENSITY),MAX_VALUE, "Unable to query fog density");
+            LOGGER.error("FOG INFO: `MODE {} | START {} | END {} | DENSITY {}`",fogMode,fogStart,fogEnd,fogDensity);
         });
     }
 
@@ -122,11 +124,11 @@ public final class DHTClient {
         mc.addScheduledTask(() -> {
             GameSettings settings = Minecraft.getMinecraft().gameSettings;
             int renderDist = getOrDef(settings,s -> s.renderDistanceChunks,Integer.MAX_VALUE);
-            float farPlaneDist = getOrDef(Minecraft.getMinecraft().entityRenderer,r -> ((EntityRendererAccess)r).getFarPlaneDistance(),Float.MAX_VALUE);
-            PotionEffect blindness = Minecraft.getMinecraft().player.getActivePotionEffect(MobEffects.BLINDNESS);
+            float farPlaneDist = getOrDef(Minecraft.getMinecraft().entityRenderer, r -> ((EntityRendererAccess)r).getFarPlaneDistance(), MAX_VALUE);
+            PotionEffect blindness = Minecraft.getMinecraft().player.getActivePotionEffect(BLINDNESS);
             boolean isBlind = Objects.nonNull(blindness);
             int blindLevel = isBlind ? blindness.getAmplifier() : Integer.MAX_VALUE;
-            DHTRef.LOGGER.error("GAME INFO: `RENDER DISTANCE (CHUNKS) {} | FARPLANE DISTANCE {} | "+
+            LOGGER.error("GAME INFO: `RENDER DISTANCE (CHUNKS) {} | FARPLANE DISTANCE {} | "+
                             "BLINDNESS {}` | BLINDNESS LEVEL {}",renderDist,farPlaneDist,isBlind,blindLevel);
         });
     }
@@ -134,7 +136,7 @@ public final class DHTClient {
     public static void queryShader(Minecraft mc) {
         mc.addScheduledTask(() -> {
             Minecraft.getMinecraft().entityRenderer.switchUseShader();
-            DHTRef.LOGGER.error("SWITCH SHADER USAGE");
+            LOGGER.error("SWITCH SHADER USAGE");
         });
     }
 
@@ -146,7 +148,7 @@ public final class DHTClient {
             IRenderHandler cloudRender = getOrNull(provider,WorldProvider::getCloudRenderer);
             IRenderHandler skyRender = getOrNull(provider,WorldProvider::getSkyRenderer);
             IRenderHandler weatherRender = getOrNull(provider,WorldProvider::getWeatherRenderer);
-            DHTRef.LOGGER.error("WORLD INFO: `PROVIDER {} | DIMENSION {} | CLOUD RENDER {} | SKY RENDER {} | " +
+            LOGGER.error("WORLD INFO: `PROVIDER {} | DIMENSION {} | CLOUD RENDER {} | SKY RENDER {} | " +
                             "WEATHER RENDER {}`",getClassName(provider),dimension,getClassName(cloudRender),getClassName(skyRender),
                     getClassName(weatherRender));
         });
@@ -168,7 +170,7 @@ public final class DHTClient {
         try {
             return dangerousSupplier.get();
         } catch(Exception ex) {
-            DHTRef.LOGGER.error(msg,ex);
+            LOGGER.error(msg,ex);
             return defVal;
         }
     }

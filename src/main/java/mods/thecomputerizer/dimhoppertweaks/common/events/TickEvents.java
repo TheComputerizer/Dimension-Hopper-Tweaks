@@ -1,61 +1,63 @@
 package mods.thecomputerizer.dimhoppertweaks.common.events;
 
-import bedrockcraft.ModWorlds;
-import lumien.randomthings.item.ModItems;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.common.commands.DHDebugCommands;
-import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.mixin.api.IItemTimeInABottle;
 import mods.thecomputerizer.dimhoppertweaks.util.ItemUtil;
 import mods.thecomputerizer.dimhoppertweaks.util.WorldUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.*;
-import net.minecraftforge.fml.relauncher.Side;
 import org.apache.commons.lang3.mutable.MutableInt;
-import zollerngalaxy.core.dimensions.ZGDimensions;
 
 import java.util.Objects;
 
-@Mod.EventBusSubscriber(modid = DHTRef.MODID)
+import static bedrockcraft.ModItems.blackTotem;
+import static bedrockcraft.ModWorlds.VOID_WORLD;
+import static lumien.randomthings.item.ModItems.timeInABottle;
+import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.MODID;
+import static net.minecraft.init.MobEffects.SPEED;
+import static net.minecraftforge.fml.common.eventhandler.EventPriority.LOWEST;
+import static net.minecraftforge.fml.common.gameevent.TickEvent.Phase.END;
+import static net.minecraftforge.fml.relauncher.Side.SERVER;
+import static zollerngalaxy.core.dimensions.ZGDimensions.CALIGRO;
+
+@EventBusSubscriber(modid = MODID)
 public class TickEvents {
 
     private static final MutableInt TICK_DELAY = new MutableInt();
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void playerTick(TickEvent.PlayerTickEvent event) {
+    @SubscribeEvent(priority = LOWEST)
+    public static void playerTick(PlayerTickEvent event) {
         if(event.isCanceled()) return;
-        if(event.phase==TickEvent.Phase.END) {
-            if(event.side==Side.SERVER) {
+        if(event.phase==END) {
+            if(event.side==SERVER) {
                 if(TICK_DELAY.getAndAdd(1)>=20) {
                     EntityPlayerMP player = (EntityPlayerMP) event.player;
                     if(player.isSprinting()) {
-                        int speedFactor = player.isPotionActive(MobEffects.SPEED) ? Objects.requireNonNull(
-                                player.getActivePotionEffect(MobEffects.SPEED)).getAmplifier()+2 : 1;
+                        int speedFactor = player.isPotionActive(SPEED) ? Objects.requireNonNull(
+                                player.getActivePotionEffect(SPEED)).getAmplifier()+2 : 1;
                         SkillWrapper.addActionSP(player,"agility",speedFactor);
                     }
                     ISkillCapability cap = SkillWrapper.getSkillCapability(player);
                     if(Objects.nonNull(cap)) cap.decrementGatheringItems(20);
-                    if(player.dimension==ZGDimensions.CALIGRO.getId() && player.posY<0 &&
-                            ItemUtil.isHolding(player,bedrockcraft.ModItems.blackTotem))
-                        WorldUtil.teleportDimY(player,ModWorlds.VOID_WORLD.getId(),256d);
+                    if(player.dimension==CALIGRO.getId() && player.posY<0 &&
+                            ItemUtil.isHolding(player,blackTotem))
+                        WorldUtil.teleportDimY(player,VOID_WORLD.getId(),256d);
                     TICK_DELAY.setValue(0);
                 }
             }
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = LOWEST)
     public static void worldTick(WorldTickEvent event) {
         if(event.isCanceled()) return;
         if(event.phase.ordinal()==1) {
@@ -79,7 +81,7 @@ public class TickEvents {
     }
 
     private static boolean checkTime(ItemStack stack) {
-        return stack.getItem()== ModItems.timeInABottle &&
+        return stack.getItem()==timeInABottle &&
                 ((IItemTimeInABottle)stack.getItem()).dimhoppertweaks$hasTime(stack);
     }
 

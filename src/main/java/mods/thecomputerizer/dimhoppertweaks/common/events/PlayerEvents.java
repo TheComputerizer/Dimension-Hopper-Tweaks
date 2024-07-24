@@ -5,7 +5,6 @@ import codersafterdark.reskillable.api.data.PlayerDataHandler;
 import codersafterdark.reskillable.api.event.LevelUpEvent;
 import codersafterdark.reskillable.api.event.UnlockUnlockableEvent.Post;
 import gcewing.sg.block.SGBlock;
-import mods.thecomputerizer.dimhoppertweaks.client.render.ClientEffects;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
@@ -34,6 +33,7 @@ import thebetweenlands.common.item.herblore.ItemElixir;
 
 import java.util.Objects;
 
+import static mods.thecomputerizer.dimhoppertweaks.client.render.ClientEffects.MINING_SPEED;
 import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.MODID;
 import static mods.thecomputerizer.dimhoppertweaks.registry.TraitRegistry.NATURES_AURA;
 import static net.minecraftforge.fml.common.eventhandler.EventPriority.LOWEST;
@@ -53,7 +53,7 @@ public class PlayerEvents {
                     ISkillCapability cap = SkillWrapper.getSkillCapability(player);
                     if(Objects.nonNull(cap)) speedFactor = 1f+cap.getBreakSpeedMultiplier();
                 }
-            } else speedFactor = ClientEffects.MINING_SPEED;
+            } else speedFactor = MINING_SPEED;
             event.setNewSpeed(event.getNewSpeed()*speedFactor);
         }
     }

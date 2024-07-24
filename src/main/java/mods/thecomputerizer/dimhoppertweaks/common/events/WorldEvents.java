@@ -6,7 +6,6 @@ import gcewing.sg.block.SGBlock;
 import mekanism.common.security.ISecurityTile;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
-import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.mixin.DelayedModAccess;
 import mods.thecomputerizer.dimhoppertweaks.mixin.api.ITileEntity;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
@@ -15,7 +14,6 @@ import net.minecraft.block.BlockFarmland;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemTool;
 import net.minecraft.tileentity.TileEntity;
@@ -25,8 +23,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.world.BlockEvent.*;
 import net.minecraftforge.event.world.ExplosionEvent.Detonate;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import slimeknights.tconstruct.library.tools.TinkerToolCore;
 
@@ -34,10 +31,14 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
 
-@Mod.EventBusSubscriber(modid = DHTRef.MODID)
+import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.MODID;
+import static net.minecraft.init.Blocks.COAL_ORE;
+import static net.minecraftforge.fml.common.eventhandler.EventPriority.LOWEST;
+
+@EventBusSubscriber(modid = MODID)
 public class WorldEvents {
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = LOWEST)
     public static void blockBreak(BreakEvent event) {
         if(event.isCanceled()) return;
         if(event.getState().getBlock() instanceof SGBlock<?>) event.setCanceled(true);
@@ -48,7 +49,7 @@ public class WorldEvents {
                 Item heldItem = player.getHeldItemMainhand().getItem();
                 if (heldItem instanceof ItemTool || heldItem instanceof TinkerToolCore) {
                     IBlockState state = event.getState();
-                    int harvestLevel = state.getBlock()==Blocks.COAL_ORE ? 1 : state.getBlock().getHarvestLevel(state);
+                    int harvestLevel = state.getBlock()==COAL_ORE ? 1 : state.getBlock().getHarvestLevel(state);
                     harvestLevel = harvestLevel<=0 && player.world.rand.nextFloat()<=((float)(((int)(Math.log(
                             cap.getSkillLevel("mining"))/Math.log(2)))+1))/10f ? 1 : harvestLevel;
                     if(harvestLevel>0) {
@@ -62,7 +63,7 @@ public class WorldEvents {
     }
 
     @SuppressWarnings("deprecation")
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = LOWEST)
     public static void blockPlace(PlaceEvent event) {
         if(event.isCanceled()) return;
         EntityPlayer player = event.getPlayer();
@@ -83,7 +84,7 @@ public class WorldEvents {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = LOWEST)
     public static void onExplosionDetonate(Detonate event) {
         if(event.isCanceled()) return;
         if(!event.getWorld().isRemote) {

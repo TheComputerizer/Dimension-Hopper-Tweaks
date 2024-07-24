@@ -1,6 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.mods.fluidloggedapi;
 
 import git.jbredwards.fluidlogged_api.api.asm.impl.IChunkProvider;
+import git.jbredwards.fluidlogged_api.api.util.FluidState;
 import git.jbredwards.fluidlogged_api.mod.asm.plugins.forge.PluginBlockFluidBase.Hooks;
 import mods.thecomputerizer.dimhoppertweaks.mixin.DelayedModAccess;
 import net.minecraft.util.math.BlockPos;
@@ -21,7 +22,6 @@ public class MixinPluginBlockFluidBaseHooks {
      * @reason Fix null crash
      */
     @Overwrite
-    @SuppressWarnings("unchecked")
     public static <T> T getFromCache(Chunk[][] chunks, IBlockAccess world, BlockPos pos, int originX, int originZ,
             BiFunction<Chunk,BlockPos,T> func) {
         int x = (pos.getX()>>4)-originX+1;
@@ -31,6 +31,7 @@ public class MixinPluginBlockFluidBaseHooks {
             chunks[x][z] = IChunkProvider.getChunk(world,pos);
             chunk = chunks[x][z];
         }
-        return Objects.nonNull(chunk) ? func.apply(chunk,pos) : (T)DelayedModAccess.water();
+        //noinspection unchecked
+        return Objects.nonNull(chunk) ? func.apply(chunk,pos) : (T)FluidState.of(DelayedModAccess.water());
     }
 }

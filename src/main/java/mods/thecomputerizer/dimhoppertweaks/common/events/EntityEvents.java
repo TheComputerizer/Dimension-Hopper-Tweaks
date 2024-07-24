@@ -5,7 +5,6 @@ import codersafterdark.reskillable.api.data.PlayerDataHandler;
 import com.google.common.collect.Iterables;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
-import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.mixin.api.IEntityPixie;
 import mods.thecomputerizer.dimhoppertweaks.recipes.LightningStrikeRecipe;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
@@ -18,7 +17,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
@@ -30,7 +28,7 @@ import net.minecraftforge.event.entity.EntityStruckByLightningEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent.Finish;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.silentchaos512.scalinghealth.event.BlightHandler;
 import vazkii.botania.common.entity.EntityPixie;
@@ -38,11 +36,14 @@ import vazkii.botania.common.item.equipment.tool.elementium.ItemElementiumSword;
 
 import java.util.Objects;
 
+import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.MODID;
+import static net.minecraft.init.MobEffects.JUMP_BOOST;
+import static net.minecraft.item.ItemStack.EMPTY;
 import static net.minecraft.util.DamageSource.OUT_OF_WORLD;
 import static net.minecraftforge.fml.common.eventhandler.EventPriority.LOWEST;
 
 @SuppressWarnings("SpellCheckingInspection")
-@Mod.EventBusSubscriber(modid = DHTRef.MODID)
+@EventBusSubscriber(modid = MODID)
 public class EntityEvents {
 
     @SubscribeEvent(priority = LOWEST)
@@ -96,8 +97,8 @@ public class EntityEvents {
         if(event.isCanceled()) return;
         if(event.getEntityLiving() instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP)event.getEntityLiving();
-            int jumpFactor = player.isPotionActive(MobEffects.JUMP_BOOST) ?
-                    Objects.requireNonNull(player.getActivePotionEffect(MobEffects.JUMP_BOOST)).getAmplifier()+2 : 1;
+            int jumpFactor = player.isPotionActive(JUMP_BOOST) ?
+                    Objects.requireNonNull(player.getActivePotionEffect(JUMP_BOOST)).getAmplifier()+2 : 1;
             SkillWrapper.addActionSP((EntityPlayerMP)event.getEntityLiving(),"agility",jumpFactor);
         }
     }
@@ -105,8 +106,8 @@ public class EntityEvents {
     @SubscribeEvent(priority = LOWEST)
     public static void onDamage(LivingDamageEvent event) {
         if(event.isCanceled()) return;
-        if(!event.getEntityLiving().world.isRemote && Objects.nonNull(event.getSource()) && event.getSource()!=
-                                                                                            OUT_OF_WORLD) {
+        if(!event.getEntityLiving().world.isRemote &&
+           Objects.nonNull(event.getSource()) && event.getSource()!=OUT_OF_WORLD) {
             if(event.getSource().getTrueSource() instanceof EntityPlayerMP) {
                 EntityPlayerMP player = (EntityPlayerMP)event.getSource().getTrueSource();
                 if(Objects.nonNull(player)) {
@@ -162,7 +163,7 @@ public class EntityEvents {
         if(event.getSource().getTrueSource() instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP)event.getSource().getTrueSource();
             if(Objects.nonNull(player) && Objects.nonNull(SkillWrapper.getSkillCapability(player))) {
-                NonNullList<ItemStack> armorList = NonNullList.from(ItemStack.EMPTY,
+                NonNullList<ItemStack> armorList = NonNullList.from(EMPTY,
                         Iterables.toArray(event.getEntityLiving().getArmorInventoryList(),ItemStack.class));
                 float armor = (25f-ISpecialArmor.ArmorProperties.applyArmor(
                         event.getEntityLiving(),armorList,event.getSource(),25f))*2f;
