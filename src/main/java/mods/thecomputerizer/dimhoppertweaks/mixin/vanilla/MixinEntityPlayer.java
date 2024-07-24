@@ -1,7 +1,5 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.vanilla;
 
-import codersafterdark.reskillable.api.data.PlayerData;
-import codersafterdark.reskillable.api.data.PlayerDataHandler;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -16,14 +14,12 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import java.util.Objects;
-
 import static java.lang.Integer.MAX_VALUE;
 import static mods.thecomputerizer.dimhoppertweaks.registry.TraitRegistry.SWIMMING_LESSONS;
-import static mods.thecomputerizer.dimhoppertweaks.registry.TraitRegistry.UNSTOPPABLE;
 import static net.minecraft.entity.SharedMonsterAttributes.MAX_HEALTH;
 
 @Mixin(EntityPlayer.class)
@@ -38,6 +34,10 @@ public abstract class MixinEntityPlayer extends EntityLivingBase {
 
     public MixinEntityPlayer(World world) {
         super(world);
+    }
+    
+    @Unique private EntityPlayer dimhoppertweaks$cast() {
+        return (EntityPlayer)(Object)this;
     }
 
     /**
@@ -81,9 +81,7 @@ public abstract class MixinEntityPlayer extends EntityLivingBase {
     
     @Override
     public void setInWeb() {
-        PlayerData data = PlayerDataHandler.get((EntityPlayer)(Object)this);
-        if(Objects.isNull(data) || !data.getSkillInfo(SkillWrapper.getSkill("agility")).isUnlocked(UNSTOPPABLE))
-            super.setInWeb();
+        if(!SkillWrapper.isUnstoppable(dimhoppertweaks$cast())) super.setInWeb();
     }
 
     @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;"+
@@ -104,11 +102,7 @@ public abstract class MixinEntityPlayer extends EntityLivingBase {
     @Redirect(at =@At(value="INVOKE", target="Lnet/minecraft/entity/ai/attributes/IAttributeInstance;setBaseValue(D)V"),
             method = "onLivingUpdate")
     private void dimhoppertweaks$applySwimSpeed(IAttributeInstance instance, double v) {
-        if(this.inWater) {
-            PlayerData data = PlayerDataHandler.get((EntityPlayer)(Object)this);
-            if(Objects.nonNull(data) && data.getSkillInfo(SkillWrapper.getSkill("agility")).isUnlocked(SWIMMING_LESSONS))
-                v*=2d;
-        }
+        if(this.inWater && SkillWrapper.hasTrait(dimhoppertweaks$cast(),"agility",SWIMMING_LESSONS)) v*=2d;
         instance.setBaseValue(v);
     }
 }

@@ -10,6 +10,7 @@ import mods.thecomputerizer.dimhoppertweaks.mixin.DelayedModAccess;
 import mods.thecomputerizer.dimhoppertweaks.mixin.api.ITileEntity;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
 import mods.thecomputerizer.dimhoppertweaks.util.WorldUtil;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockFarmland;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,6 +18,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemTool;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -32,6 +34,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.MODID;
+import static mods.thecomputerizer.dimhoppertweaks.registry.TraitRegistry.BLOCK_FOR_BLOCK;
 import static net.minecraft.init.Blocks.COAL_ORE;
 import static net.minecraftforge.fml.common.eventhandler.EventPriority.LOWEST;
 
@@ -74,8 +77,18 @@ public class WorldEvents {
                     if(h instanceof ExtendedEventsTrait) ((ExtendedEventsTrait)h).onBlockPlaced(event);
                 });
             }
-            if(!(event.getState().getBlock() instanceof BlockFarmland))
+            IBlockState state = event.getState();
+            Block block = state.getBlock();
+            if(!(block instanceof BlockFarmland))
                 SkillWrapper.addActionSP((EntityPlayerMP)event.getPlayer(),"building",1f);
+            ResourceLocation res = block.getRegistryName();
+            if(Objects.nonNull(res) && SkillWrapper.hasTrait(player,"building",BLOCK_FOR_BLOCK)) {
+                int time = 0;
+                String path = res.getPath();
+                if(path.contains("obsidian")) time = 1;
+                if(res.getPath().equals("compressed_obsidian")) time+=(block.getMetaFromState(state)+1)*2;
+                if(time>0) TickEvents.addInfernalDistractor(player,time);
+            }
         }
         if(Objects.nonNull(player)) {
             TileEntity tile = event.getWorld().getTileEntity(event.getPos());

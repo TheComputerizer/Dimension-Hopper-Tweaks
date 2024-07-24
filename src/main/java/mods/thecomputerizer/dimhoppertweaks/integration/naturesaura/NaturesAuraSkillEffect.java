@@ -1,20 +1,19 @@
 package mods.thecomputerizer.dimhoppertweaks.integration.naturesaura;
 
-import codersafterdark.reskillable.api.data.PlayerDataHandler;
 import de.ellpeck.naturesaura.api.aura.chunk.IAuraChunk;
 import de.ellpeck.naturesaura.api.aura.chunk.IDrainSpotEffect;
 import de.ellpeck.naturesaura.api.aura.type.IAuraType;
-import de.ellpeck.naturesaura.items.ModItems;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.config.DHTConfigHelper;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
-import mods.thecomputerizer.dimhoppertweaks.registry.TraitRegistry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
+
+import static de.ellpeck.naturesaura.items.ModItems.AURA_TROVE;
 
 public class NaturesAuraSkillEffect implements IDrainSpotEffect {
 
@@ -27,7 +26,7 @@ public class NaturesAuraSkillEffect implements IDrainSpotEffect {
 
     @Override
     public ItemStack getDisplayIcon() {
-        return new ItemStack(ModItems.AURA_TROVE);
+        return new ItemStack(AURA_TROVE);
     }
 
     @Override
@@ -37,8 +36,7 @@ public class NaturesAuraSkillEffect implements IDrainSpotEffect {
 
     @Override
     public int isActiveHere(EntityPlayer player, Chunk chunk, IAuraChunk auraChunk, BlockPos pos, Integer spot) {
-        boolean isActive = SkillWrapper.hasTrait(PlayerDataHandler.get(player),"magic",TraitRegistry.NATURES_AURA);
-        return isActive ? 1 : -1;
+        return SkillWrapper.makesChunksFast(player) ? 1 : -1;
     }
 
     @Override

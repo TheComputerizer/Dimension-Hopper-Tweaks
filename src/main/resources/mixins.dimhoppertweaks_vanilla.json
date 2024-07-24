@@ -7,6 +7,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinAnvilChunkLoader",
+    "MixinBlockSlime",
     "MixinBlockSoulSand",
     "MixinChunkProviderServer",
     "MixinCombatRules",
@@ -18,6 +19,7 @@
     "MixinEntityTrackerEntry",
     "MixinEntityWolf",
     "MixinInventoryCrafting",
+    "MixinItem",
     "MixinItemDye",
     "MixinItemStack",
     "MixinSize",

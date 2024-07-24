@@ -1,6 +1,5 @@
 package mods.thecomputerizer.dimhoppertweaks.common.capability.player;
 
-import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketGrayScaleTimer;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketSyncCapabilityData;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -28,6 +27,10 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper.SKILLS;
+import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.LOGGER;
+import static net.minecraftforge.fml.common.registry.ForgeRegistries.ITEMS;
+
 public class SkillCapability implements ISkillCapability {
 
     private final MutableInt dreamTimer = new MutableInt();
@@ -44,9 +47,9 @@ public class SkillCapability implements ISkillCapability {
     private int fanUsage = 0;
 
     public SkillCapability() {
-        for(String skill : SkillWrapper.SKILLS)
+        for(String skill : SKILLS)
             this.skillMap.put(skill,SkillWrapper.getNewInstance(skill,"Empty Skill"));
-        DHTRef.LOGGER.debug("Initializing skill capability with skills {}",this.skillMap.keySet());
+        LOGGER.debug("Initializing skill capability with skills {}",this.skillMap.keySet());
     }
 
     private SkillWrapper addWrapper(String skill, String initFailMsg) {
@@ -59,7 +62,7 @@ public class SkillCapability implements ISkillCapability {
         String name = skill.toLowerCase();
         SkillWrapper wrapper = this.skillMap.get(skill);
         if(Objects.isNull(wrapper)) {
-            DHTRef.LOGGER.warn("Could not find skill with name `{}`! Substituting with a new level 1 skill :)",name);
+            LOGGER.warn("Could not find skill with name `{}`! Substituting with a new level 1 skill :)",name);
             wrapper = addWrapper(name,"Missing Skill");
         }
         applier.accept(wrapper);
@@ -69,7 +72,7 @@ public class SkillCapability implements ISkillCapability {
         String name = skill.toLowerCase();
         SkillWrapper wrapper = this.skillMap.get(skill);
         if(Objects.isNull(wrapper)) {
-            DHTRef.LOGGER.warn("Could not find skill with name `{}`! Substituting with a new level 1 skill :)",name);
+            LOGGER.warn("Could not find skill with name `{}`! Substituting with a new level 1 skill :)",name);
             wrapper = addWrapper(name,"Missing Skill");
         }
         return getter.apply(wrapper);
@@ -89,7 +92,7 @@ public class SkillCapability implements ISkillCapability {
 
     @Override
     public void initWrappers() {
-        for(String skill : SkillWrapper.SKILLS)
+        for(String skill : SKILLS)
             if(!this.skillMap.containsKey(skill))
                 addWrapper(skill,"New Instance");
     }
@@ -469,7 +472,7 @@ public class SkillCapability implements ISkillCapability {
     private @Nullable Item readItem(String itemString) {
         if(itemString.isEmpty()) return null;
         ResourceLocation itemRes = new ResourceLocation(itemString);
-        return ForgeRegistries.ITEMS.containsKey(itemRes) ? ForgeRegistries.ITEMS.getValue(itemRes) : null;
+        return ITEMS.containsKey(itemRes) ? ITEMS.getValue(itemRes) : null;
     }
 
     private <E> void readCollection(NBTBase tag, Collection<E> collection, Function<NBTBase,E> toElement) {

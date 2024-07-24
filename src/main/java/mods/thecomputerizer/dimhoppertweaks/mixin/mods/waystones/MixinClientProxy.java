@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Mixin(value = ClientProxy.class, remap = false)
-public class MixinClientProxy {
+public abstract class MixinClientProxy {
     
     /**
      * @author The_Computerizer

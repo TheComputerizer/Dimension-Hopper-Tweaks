@@ -6,8 +6,10 @@ import mods.thecomputerizer.dimhoppertweaks.registry.traits.agility.Unstoppable;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.attack.LookAtMe;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.attack.NoCooldowns;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.attack.SuperPets;
+import mods.thecomputerizer.dimhoppertweaks.registry.traits.building.BlockForBlock;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.building.ResistiveBuilder;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.defense.KnockbackImmunity;
+import mods.thecomputerizer.dimhoppertweaks.registry.traits.defense.ReallyThickSkin;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.farming.GreenThumb;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.farming.HungryFarmer;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.farming.PotionMaster;
@@ -16,6 +18,7 @@ import mods.thecomputerizer.dimhoppertweaks.registry.traits.gathering.LuckyAura;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.gathering.LuckyFisherman;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.magic.LivingBattery;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.magic.NaturesAura;
+import mods.thecomputerizer.dimhoppertweaks.registry.traits.mining.ArbitraryUpgrade;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.mining.ExpertMiner;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.research.LimbonicGenerator;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.research.TieredResearchTrait;
@@ -32,6 +35,8 @@ import java.util.List;
 public final class TraitRegistry {
 
     private static final List<Trait> ALL_TRAITS = new ArrayList<>();
+    public static final Trait ARBITRARY_UPGRADE = makeTrait(new ArbitraryUpgrade());
+    public static final Trait BLOCK_FOR_BLOCK = makeTrait(new BlockForBlock());
     public static final Trait DIFFICULT_GAMBLE = makeTrait(new DifficultGamble());
     public static final Trait EXPERT_MINER = makeTrait(new ExpertMiner());
     public static final Trait EXPLOSIVE_AURA = makeTrait(new ExplosiveAura());
@@ -59,6 +64,7 @@ public final class TraitRegistry {
     public static final Trait PSIONIC_MK_ONE = makeTrait(new TieredResearchTrait("psionic",1,0,2));
     public static final Trait PSIONIC_MK_TWO = makeTrait(new TieredResearchTrait("psionic",2,0,2));
     public static final Trait PSIONIC_MK_THREE = makeTrait(new TieredResearchTrait("psionic",3,0,2));
+    public static final Trait REALLY_THICK_SKIN = makeTrait(new ReallyThickSkin());
     public static final Trait REFRESHING_PORTALS = makeTrait(new RefreshingPortals());
     public static final Trait RESISTIVE_BUILDER = makeTrait(new ResistiveBuilder());
     public static final Trait SUPER_PETS = makeTrait(new SuperPets());

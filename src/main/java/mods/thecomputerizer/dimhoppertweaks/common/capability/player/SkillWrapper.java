@@ -13,7 +13,6 @@ import com.google.common.collect.ImmutableList;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.CommonCapability;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.registry.SoundRegistry;
-import mods.thecomputerizer.dimhoppertweaks.registry.TraitRegistry;
 import mods.thecomputerizer.dimhoppertweaks.registry.items.SkillToken;
 import net.darkhax.gamestages.GameStageHelper;
 import net.minecraft.entity.Entity;
@@ -42,8 +41,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static mods.thecomputerizer.dimhoppertweaks.registry.ItemRegistry.SKILL_TOKEN;
-import static mods.thecomputerizer.dimhoppertweaks.registry.TraitRegistry.DIFFICULT_GAMBLE;
-import static mods.thecomputerizer.dimhoppertweaks.registry.TraitRegistry.TOKEN_GAMBLE;
+import static mods.thecomputerizer.dimhoppertweaks.registry.TraitRegistry.*;
 
 @SuppressWarnings("ConstantValue")
 @ParametersAreNonnullByDefault
@@ -137,6 +135,25 @@ public class SkillWrapper {
     public static <T> T getOrDefault(EntityPlayerMP player, Function<ISkillCapability,T> getter, T defVal) {
         return CommonCapability.getOrDefault(player,SkillCapabilityProvider.SKILL_CAPABILITY,getter,defVal);
     }
+    
+    public static double getPrestigeFactor(EntityPlayer player, String skill) {
+        return getOrDefault((EntityPlayerMP)player,cap -> 1d+(((double)cap.getSkillLevel(skill))/32d),1d);
+    }
+    
+    public static @Nullable Skill getSkill(String name) {
+        if(StringUtils.isBlank(name) || !isValidSkill(name)) return null;
+        ResourceLocation skillRes =  name.matches("research") || name.matches("void") ? DHTRef.res(name) :
+                new ResourceLocation("reskillable",name);
+        return ReskillableRegistries.SKILLS.containsKey(skillRes) ? ReskillableRegistries.SKILLS.getValue(skillRes) : null;
+    }
+    
+    public static @Nullable ISkillCapability getSkillCapability(EntityPlayer player) {
+        return CommonCapability.getCapability(player,SkillCapabilityProvider.SKILL_CAPABILITY);
+    }
+    
+    public static @Nullable PlayerData getSkillData(@Nullable Entity entity) {
+        return entity instanceof EntityPlayer ? PlayerDataHandler.get((EntityPlayer)entity) : null;
+    }
 
     public static @Nullable SkillWrapper getTagInstance(NBTTagCompound skillTag) {
         String name = skillTag.getString("skillName");
@@ -156,25 +173,23 @@ public class SkillWrapper {
         int prestige = oldSkillTag.getInteger(name+"_prestige");
         return getInstance(name,sp,level,prestige,oldSkillTag.toString());
     }
-
-    public static @Nullable Skill getSkill(String name) {
-        if(StringUtils.isBlank(name) || !isValidSkill(name)) return null;
-        ResourceLocation skillRes =  name.matches("research") || name.matches("void") ? DHTRef.res(name) :
-                new ResourceLocation("reskillable",name);
-        return ReskillableRegistries.SKILLS.containsKey(skillRes) ? ReskillableRegistries.SKILLS.getValue(skillRes) : null;
+    
+    public static boolean hasMiningLevelUprade(@Nullable Entity entity) {
+        return hasTrait(entity,"mining",ARBITRARY_UPGRADE);
     }
-
-    public static @Nullable ISkillCapability getSkillCapability(EntityPlayer player) {
-        return CommonCapability.getCapability(player,SkillCapabilityProvider.SKILL_CAPABILITY);
-    }
-
-    public static double getPrestigeFactor(EntityPlayer player, String skill) {
-        return getOrDefault((EntityPlayerMP)player,cap -> 1d+(((double)cap.getSkillLevel(skill))/32d),1d);
+    
+    public static boolean hasTrait(@Nullable Entity entity, String skillName, Unlockable trait) {
+        return hasTrait(getSkillData(entity),skillName,trait);
     }
 
     public static boolean hasTrait(@Nullable PlayerData data, String skillName, Unlockable trait) {
         Skill skill = getSkill(skillName);
         return Objects.nonNull(data) && Objects.nonNull(skill) && data.getSkillInfo(skill).isUnlocked(trait);
+    }
+    
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public static boolean isUnstoppable(@Nullable Entity entity) {
+        return hasTrait(entity,"agility",UNSTOPPABLE);
     }
 
     public static boolean isValidSkill(String skill) {
@@ -182,7 +197,7 @@ public class SkillWrapper {
     }
 
     public static boolean makesChunksFast(EntityPlayer player) {
-        return hasTrait(PlayerDataHandler.get(player),"magic",TraitRegistry.NATURES_AURA);
+        return hasTrait(PlayerDataHandler.get(player),"magic",NATURES_AURA);
     }
 
     public static void onPlayerJoin(EntityPlayerMP player) {

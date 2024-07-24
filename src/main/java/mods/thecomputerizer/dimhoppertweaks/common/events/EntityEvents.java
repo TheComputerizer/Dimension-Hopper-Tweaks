@@ -18,6 +18,8 @@ import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -37,9 +39,10 @@ import vazkii.botania.common.item.equipment.tool.elementium.ItemElementiumSword;
 import java.util.Objects;
 
 import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.MODID;
+import static mods.thecomputerizer.dimhoppertweaks.registry.TraitRegistry.REALLY_THICK_SKIN;
 import static net.minecraft.init.MobEffects.JUMP_BOOST;
 import static net.minecraft.item.ItemStack.EMPTY;
-import static net.minecraft.util.DamageSource.OUT_OF_WORLD;
+import static net.minecraft.util.DamageSource.*;
 import static net.minecraftforge.fml.common.eventhandler.EventPriority.LOWEST;
 
 @SuppressWarnings("SpellCheckingInspection")
@@ -61,7 +64,8 @@ public class EntityEvents {
     @SubscribeEvent(priority = LOWEST)
     public static void onLivingHurt(LivingHurtEvent event) {
         if(event.isCanceled()) return;
-        if(event.getSource()!=OUT_OF_WORLD) {
+        DamageSource source = event.getSource();
+        if(source!=OUT_OF_WORLD) {
             EntityLivingBase living = event.getEntityLiving();
             if(living instanceof EntityFinalBoss) {
                 if(!(event.getSource() instanceof DamageSourceInfinitySword))
@@ -81,13 +85,21 @@ public class EntityEvents {
                 }
             } else if(living instanceof EntityPlayerMP) {
                 EntityPlayerMP player = (EntityPlayerMP)living;
-                double reduction = (SkillWrapper.getDifficultyFactor(player)-1d)*(40d/79d);
+                if(SkillWrapper.hasTrait(player,"defense",REALLY_THICK_SKIN)) {
+                    if(source==CACTUS) event.setCanceled(true);
+                    float amount = event.getAmount();
+                    if(source==IN_FIRE || source==ON_FIRE || source==ANVIL || source==HOT_FLOOR || source==LAVA ||
+                       source==FALLING_BLOCK || source==FLY_INTO_WALL || source.isProjectile() ||
+                       (source instanceof EntityDamageSource && ((EntityDamageSource)source).getIsThornsDamage()))
+                        event.setAmount(amount/2f);
+                }
+                double reduction = (SkillWrapper.getDifficultyFactor(player)/2d)/100d;
                 event.setAmount((float)((double)event.getAmount()*(1d-reduction)));
             }
             if(event.getSource().getTrueSource() instanceof EntityPlayerMP) {
                 EntityPlayerMP player = (EntityPlayerMP)event.getSource().getTrueSource();
-                double factor = (SkillWrapper.getDifficultyFactor(player)-1d)*(4d/79d);
-                event.setAmount((float)((double)event.getAmount()*(1d+factor)));
+                double factor = (SkillWrapper.getDifficultyFactor(player)+1d)/2d;
+                event.setAmount((float)((double)event.getAmount()*factor));
             }
         }
     }

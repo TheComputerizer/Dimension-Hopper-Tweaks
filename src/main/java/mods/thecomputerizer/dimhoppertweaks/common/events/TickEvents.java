@@ -6,6 +6,7 @@ import mods.thecomputerizer.dimhoppertweaks.common.commands.DHDebugCommands;
 import mods.thecomputerizer.dimhoppertweaks.mixin.api.IItemTimeInABottle;
 import mods.thecomputerizer.dimhoppertweaks.util.ItemUtil;
 import mods.thecomputerizer.dimhoppertweaks.util.WorldUtil;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -17,6 +18,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.*;
 import org.apache.commons.lang3.mutable.MutableInt;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import static bedrockcraft.ModItems.blackTotem;
@@ -33,6 +36,16 @@ import static zollerngalaxy.core.dimensions.ZGDimensions.CALIGRO;
 public class TickEvents {
 
     private static final MutableInt TICK_DELAY = new MutableInt();
+    public static final Map<EntityLivingBase,MutableInt> INFERNAL_DISTRACTION = new HashMap<>();
+    
+    public static void addInfernalDistractor(EntityLivingBase entity, int ticks) {
+        if(!INFERNAL_DISTRACTION.containsKey(entity)) INFERNAL_DISTRACTION.put(entity,new MutableInt());
+        INFERNAL_DISTRACTION.get(entity).setValue(ticks);
+    }
+    
+    public static boolean isInfernalDistractedFor(EntityLivingBase entity) {
+        return INFERNAL_DISTRACTION.containsKey(entity);
+    }
 
     @SubscribeEvent(priority = LOWEST)
     public static void playerTick(PlayerTickEvent event) {
@@ -60,7 +73,8 @@ public class TickEvents {
     @SubscribeEvent(priority = LOWEST)
     public static void worldTick(WorldTickEvent event) {
         if(event.isCanceled()) return;
-        if(event.phase.ordinal()==1) {
+        if(event.phase==END) {
+            INFERNAL_DISTRACTION.entrySet().removeIf(entry -> entry.getValue().addAndGet(-1)<0);
             int dim = event.world.provider.getDimension();
             if(dim==44 || dim==45) {
                 synchronized(event.world.playerEntities) {

@@ -15,6 +15,7 @@ import de.ellpeck.naturesaura.blocks.tiles.TileEntityAutoCrafter;
 import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.chunk.ExtraChunkData;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
+import mods.thecomputerizer.dimhoppertweaks.common.events.TickEvents;
 import mods.thecomputerizer.dimhoppertweaks.config.DHTConfigHelper;
 import mods.thecomputerizer.dimhoppertweaks.mixin.api.IInventoryCrafting;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketSendKeyPressed;
@@ -25,6 +26,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemEnchantedBook;
@@ -424,6 +426,10 @@ public class DelayedModAccess {
 
     public static boolean isFastChunk(Chunk chunk) {
         return ExtraChunkData.isChunkFast(chunk);
+    }
+    
+    public static boolean isInfernalDistracted(Entity entity) {
+        return entity instanceof EntityLivingBase && TickEvents.isInfernalDistractedFor((EntityLivingBase)entity);
     }
 
     public static ITeleporter makeGaiaTeleporter(int dim) {

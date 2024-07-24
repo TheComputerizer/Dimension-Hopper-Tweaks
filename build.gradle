@@ -114,6 +114,7 @@ dependencies {
 
     //cf dependencies
     compileOnly(fg.deobf("curse.maven:aa-228404:${aa_version}"))
+    compileOnly(fg.deobf("curse.maven:acrobatics-321792:${acrobatics_version}"))
     compileOnly(fg.deobf("curse.maven:ae2uel-570458:${ae2_verion}"))
     compileOnly(fg.deobf("curse.maven:aether2-917199:${aether_version}"))
     compileOnly(fg.deobf("curse.maven:aoa-311054:${aoa_version}"))
@@ -141,6 +142,7 @@ dependencies {
     compileOnly(fg.deobf("curse.maven:dropt-284973:${dropt_version}"))
     compileOnly(fg.deobf("curse.maven:enderio-64578:${eio_version}"))
     compileOnly(fg.deobf("curse.maven:environmentaltech-245453:${et_version}"))
+    compileOnly(fg.deobf("curse.maven:erebus-220698:${erebus_version}"))
     compileOnly(fg.deobf("curse.maven:extendedcrafting-398267:${excrafting_version}"))
     compileOnly(fg.deobf("curse.maven:extraplanets-241291:${extraplanets_version}"))
     compileOnly(fg.deobf("curse.maven:forestry-59751:${forestry_version}"))
@@ -173,6 +175,7 @@ dependencies {
     compileOnly(fg.deobf("curse.maven:mobends-231347:${mobends_version}"))
     compileOnly(fg.deobf("curse.maven:moretweaker-336569:${moretweaker_version}"))
     compileOnly(fg.deobf("curse.maven:moreplanets-261990:${moreplanets_version}"))
+    compileOnly(fg.deobf("curse.maven:multipart-258426:${multipart_version}"))
     compileOnly(fg.deobf("curse.maven:naturesaura-306626:${na_version}"))
     compileOnly(fg.deobf("curse.maven:neat-238372:${neat_version}"))
     compileOnly(fg.deobf("curse.maven:netherex-248039:${netherex_version}"))
