@@ -42,7 +42,6 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.IItemHandler;
 import openblocks.common.item.ItemTankBlock;
@@ -71,8 +70,10 @@ import static mods.thecomputerizer.dimhoppertweaks.integration.crafttweaker.CTPa
 import static mods.thecomputerizer.dimhoppertweaks.registry.TraitRegistry.DIFFICULT_GAMBLE;
 import static net.darkhax.dimstages.DimensionStages.DIMENSION_MAP;
 import static net.minecraft.init.Blocks.AIR;
+import static net.minecraft.init.Blocks.WATER;
 import static net.minecraft.item.ItemStack.EMPTY;
 import static net.minecraftforge.fml.common.registry.ForgeRegistries.ITEMS;
+import static net.minecraftforge.fml.relauncher.Side.CLIENT;
 import static slimeknights.tconstruct.library.materials.Material.UNKNOWN;
 
 @SuppressWarnings({"unused", "SameParameterValue"})
@@ -119,9 +120,8 @@ public class DelayedModAccess {
     
     public static boolean canTravelToDimension(Entity entity, int dimension) {
         if(!(entity instanceof EntityPlayer)) return true;
-        int entityDim = entity.dimension;
-        return hasStageForDimension(entity,dimension) &&
-               (dimensionHatesDoors(dimension) || dimensionHatesDoors(entityDim) && dimension!=entityDim);
+        if(dimensionHatesDoors(dimension)) return false;
+        return dimension==entity.dimension || hasStageForDimension(entity,dimension);
     }
 
     public static ItemStack cheese() {
@@ -458,10 +458,10 @@ public class DelayedModAccess {
                     return;
                 }
                 IItemHandler handler = crate.getItemHandler(null);
-                double ratio = ((double) handler.getSlots()) / 27d;
-                for (Map.Entry<ItemStack, Integer> slotEntry : slotMap.entrySet()) {
+                double ratio = ((double)handler.getSlots())/27d;
+                for(Map.Entry<ItemStack, Integer> slotEntry : slotMap.entrySet()) {
                     int crateSlot = Math.min((int)(((double)slotEntry.getValue())*ratio),handler.getSlots()-1);
-                    handler.insertItem(crateSlot, slotEntry.getKey(), false);
+                    handler.insertItem(crateSlot,slotEntry.getKey(),false);
                 }
             });
         }
@@ -516,8 +516,12 @@ public class DelayedModAccess {
         if(Objects.nonNull(player)) GameStageHelper.addStage(player,stage);
     }
 
-    @SideOnly(Side.CLIENT)
+    @SideOnly(CLIENT)
     public static void sendKeyPress(int type) {
         new PacketSendKeyPressed(type).send();
+    }
+    
+    public static IBlockState water() {
+        return WATER.getDefaultState();
     }
 }

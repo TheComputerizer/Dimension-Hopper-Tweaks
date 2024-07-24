@@ -6,7 +6,6 @@ import net.minecraft.block.*;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.*;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.stats.StatList;
@@ -34,6 +33,9 @@ import stevekung.mods.moreplanets.utils.blocks.BlockFarmlandMP;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Objects;
+
+import static net.minecraft.init.Blocks.SAND;
+import static net.minecraft.util.EnumActionResult.SUCCESS;
 
 @SuppressWarnings({"deprecation", "DataFlowIssue"})
 @ParametersAreNonnullByDefault
@@ -74,7 +76,7 @@ public abstract class MixinForgeHooks {
         boolean isPlantableItem = dimhoppertweaks$verifyPlantableItem(stack);
         EnumActionResult ret = stack.getItem().onItemUse(player,world,pos,hand,side,hitX,hitY,hitZ);
         world.captureBlockSnapshots = false;
-        if(ret==EnumActionResult.SUCCESS) {
+        if(ret==SUCCESS) {
             // save new item data
             int newMeta = stack.getItemDamage();
             int newSize = stack.getCount();
@@ -141,6 +143,6 @@ public abstract class MixinForgeHooks {
     @Unique
     private static boolean dimhoppertweaks$verifyPlantedBlock(Block block) {
         return block instanceof IGrowable || block instanceof BlockFarmland || block instanceof BlockFarmlandMP ||
-                block==Blocks.SAND;
+                block==SAND;
     }
 }

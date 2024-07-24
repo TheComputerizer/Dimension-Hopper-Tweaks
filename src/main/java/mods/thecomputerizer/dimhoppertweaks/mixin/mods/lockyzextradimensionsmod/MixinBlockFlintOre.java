@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(targets = "mod.mcreator.mcreator_flintOre$BlockFlintOre", remap = false)
 public abstract class MixinBlockFlintOre extends Block implements IBlockFlintOre {
+    
     public MixinBlockFlintOre(Material material, MapColor color) {
         super(material, color);
     }

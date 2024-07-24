@@ -39,7 +39,7 @@ public abstract class MixinTileEntityEntranceRift extends TileEntityRift {
             DimDoors.chat(entity,"The murky aura of the swamp has rejected your presence.");
             return false;
         }
-        if(DelayedModAccess.hasStageForDimension(entity,targetDimension)) {
+        if(!DelayedModAccess.hasStageForDimension(entity,targetDimension)) {
             String stage = DelayedModAccess.getStageForDimension(targetDimension);
             DimDoors.chat(entity,"The rift rejects your lack of knowledge (Missing stage "+stage+")");
             return false;
@@ -52,7 +52,6 @@ public abstract class MixinTileEntityEntranceRift extends TileEntityRift {
         }
         else TeleportUtils.teleport(entity,targetDimension,targetPos.x,targetPos.y,targetPos.z,
                                    this.orientation.getHorizontalAngle(),0f);
-        
         return true;
     }
 }

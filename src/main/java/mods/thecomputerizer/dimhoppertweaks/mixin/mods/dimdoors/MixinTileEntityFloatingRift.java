@@ -31,7 +31,7 @@ public abstract class MixinTileEntityFloatingRift extends TileEntityRift {
             DimDoors.chat(entity,"The murky aura of the swamp has rejected your presence.");
             return false;
         }
-        if(DelayedModAccess.hasStageForDimension(entity, targetDimension)) {
+        if(!DelayedModAccess.hasStageForDimension(entity, targetDimension)) {
             String stage = DelayedModAccess.getStageForDimension(targetDimension);
             DimDoors.chat(entity,"The rift rejects your lack of knowledge (Missing stage "+stage+")");
             return false;
