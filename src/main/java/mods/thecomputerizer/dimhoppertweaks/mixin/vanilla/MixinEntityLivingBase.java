@@ -104,7 +104,7 @@ public abstract class MixinEntityLivingBase extends Entity implements IEntityLiv
     @Redirect(at = @At(value="INVOKE", target="Lnet/minecraft/block/Block;getSlipperiness("+
                                    "Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/world/IBlockAccess;"+
                                    "Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/Entity;)F",
-            ordinal = 0), method = "travel")
+            ordinal = 0, remap = false), method = "travel")
     private float dimhoppertweaks$checkSlip1(
             Block block, IBlockState state, IBlockAccess world, BlockPos pos, Entity entity) {
         return dimhoppertweaks$getSlipperiness(block,state,world,pos,entity);
@@ -113,7 +113,7 @@ public abstract class MixinEntityLivingBase extends Entity implements IEntityLiv
     @Redirect(at = @At(value="INVOKE", target="Lnet/minecraft/block/Block;getSlipperiness("+
                                               "Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/world/IBlockAccess;"+
                                               "Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/Entity;)F",
-            ordinal = 1), method = "travel")
+            ordinal = 1, remap = false), method = "travel")
     private float dimhoppertweaks$checkSlip2(
             Block block, IBlockState state, IBlockAccess world, BlockPos pos, Entity entity) {
         return dimhoppertweaks$getSlipperiness(block,state,world,pos,entity);

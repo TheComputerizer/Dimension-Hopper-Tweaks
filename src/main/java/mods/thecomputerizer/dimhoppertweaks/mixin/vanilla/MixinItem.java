@@ -15,7 +15,7 @@ import static mods.thecomputerizer.dimhoppertweaks.registry.TraitRegistry.ARBITR
 @Mixin(Item.class)
 public abstract class MixinItem {
     
-    @Inject(at = @At("RETURN"), method = "getHarvestLevel", cancellable = true)
+    @Inject(at = @At("RETURN"), method = "getHarvestLevel", cancellable = true, remap = false)
     private void dimhoppertweaks$getHarvestLevel(
             ItemStack stack, String tool, EntityPlayer player, IBlockState state, CallbackInfoReturnable<Integer> cir) {
         int val = cir.getReturnValueI();
