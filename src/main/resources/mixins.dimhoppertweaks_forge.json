@@ -9,6 +9,7 @@
     "MixinArmorProperties",
     "MixinCraftingHelper",
     "MixinDimensionManager",
+    "MixinEnumHelper",
     "MixinFakePlayer",
     "MixinFMLModContainer",
     "MixinForgeHooks",
