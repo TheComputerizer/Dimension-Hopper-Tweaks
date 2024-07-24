@@ -66,7 +66,6 @@
     "extraplanets.MixinExtraPlanetsJEI",
     "extrautils2.MixinItemUnstableIngots",
     "extrautils2.MixinTileMine",
-    "fluidloggedapi.MixinPluginBlockFluidBaseHooks",
     "forestry.MixinStorageJeiPlugin",
     "forestry.MixinTileWorktable",
     "gaiadimension.MixinGDGaiaPortal",
