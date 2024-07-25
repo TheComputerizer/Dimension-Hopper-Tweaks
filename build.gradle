@@ -176,6 +176,7 @@ dependencies {
     compileOnly(fg.deobf("curse.maven:moretweaker-336569:${moretweaker_version}"))
     compileOnly(fg.deobf("curse.maven:moreplanets-261990:${moreplanets_version}"))
     compileOnly(fg.deobf("curse.maven:multipart-258426:${multipart_version}"))
+    compileOnly(fg.deobf("curse.maven:musictriggers-518410:${mt_version}"))
     compileOnly(fg.deobf("curse.maven:naturesaura-306626:${na_version}"))
     compileOnly(fg.deobf("curse.maven:neat-238372:${neat_version}"))
     compileOnly(fg.deobf("curse.maven:netherex-248039:${netherex_version}"))
