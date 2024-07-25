@@ -6,7 +6,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.silentchaos512.scalinghealth.event.BlightHandler;
@@ -18,10 +17,12 @@ import net.silentchaos512.scalinghealth.utils.SHPlayerDataHandler.PlayerData;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Objects;
 
-import static net.minecraft.item.ItemStack.EMPTY;
 import static net.silentchaos512.scalinghealth.ScalingHealth.LOGGER;
 import static net.silentchaos512.scalinghealth.config.Config.Debug.debugMode;
 import static net.silentchaos512.scalinghealth.config.Config.Difficulty.DIFFICULTY_PER_KILL_BY_MOB;
@@ -64,21 +65,9 @@ public abstract class MixinDifficultyHandler {
         }
     }
     
-    /**
-     * @author The_Computerizer
-     * @reason Copy the reference stacks so enchantments can be rerolled
-     */
-    @Overwrite
-    private ItemStack selectEquipmentForSlot(EntityEquipmentSlot slot, int tier) {
-        tier = MathHelper.clamp(tier,0,4);
-        switch(slot) {
-            case CHEST: return this.mapChestplates.getRandom(tier).copy();
-            case FEET: return this.mapBoots.getRandom(tier).copy();
-            case HEAD: return this.mapHelmets.getRandom(tier).copy();
-            case LEGS: return this.mapLeggings.getRandom(tier).copy();
-            case MAINHAND: return this.mapMainhands.getRandom(tier).copy();
-            case OFFHAND: return this.mapOffhands.getRandom(tier).copy();
-            default: return EMPTY;
-        }
+    
+    @Inject(at = @At("RETURN"), method = "selectEquipmentForSlot", cancellable = true)
+    private void selectEquipmentForSlot(EntityEquipmentSlot slot, int tier, CallbackInfoReturnable<ItemStack> cir) {
+        cir.setReturnValue(cir.getReturnValue().copy());
     }
 }
