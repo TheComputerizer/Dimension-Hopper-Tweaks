@@ -83,23 +83,6 @@ public class EntityEvents {
                         }
                     }
                 }
-            } else if(living instanceof EntityPlayerMP) {
-                EntityPlayerMP player = (EntityPlayerMP)living;
-                if(SkillWrapper.hasTrait(player,"defense",REALLY_THICK_SKIN)) {
-                    if(source==CACTUS) event.setCanceled(true);
-                    float amount = event.getAmount();
-                    if(source==IN_FIRE || source==ON_FIRE || source==ANVIL || source==HOT_FLOOR || source==LAVA ||
-                       source==FALLING_BLOCK || source==FLY_INTO_WALL || source.isProjectile() ||
-                       (source instanceof EntityDamageSource && ((EntityDamageSource)source).getIsThornsDamage()))
-                        event.setAmount(amount/2f);
-                }
-                double reduction = (SkillWrapper.getDifficultyFactor(player)/2d)/100d;
-                event.setAmount((float)((double)event.getAmount()*(1d-reduction)));
-            }
-            if(event.getSource().getTrueSource() instanceof EntityPlayerMP) {
-                EntityPlayerMP player = (EntityPlayerMP)event.getSource().getTrueSource();
-                double factor = (SkillWrapper.getDifficultyFactor(player)+1d)/2d;
-                event.setAmount((float)((double)event.getAmount()*factor));
             }
         }
     }
@@ -118,18 +101,33 @@ public class EntityEvents {
     @SubscribeEvent(priority = LOWEST)
     public static void onDamage(LivingDamageEvent event) {
         if(event.isCanceled()) return;
-        if(!event.getEntityLiving().world.isRemote &&
-           Objects.nonNull(event.getSource()) && event.getSource()!=OUT_OF_WORLD) {
-            if(event.getSource().getTrueSource() instanceof EntityPlayerMP) {
+        EntityLivingBase living = event.getEntityLiving();
+        DamageSource source = event.getSource();
+        Entity entitySource = Objects.nonNull(source) ? source.getTrueSource() : null;
+        if(!living.world.isRemote && Objects.nonNull(source) && source!=OUT_OF_WORLD) {
+            if(living instanceof EntityPlayerMP) {
+                EntityPlayerMP player = (EntityPlayerMP)living;
+                if(SkillWrapper.hasTrait(player,"defense",REALLY_THICK_SKIN)) {
+                    if(source==CACTUS) event.setCanceled(true);
+                    float amount = event.getAmount();
+                    if(source==IN_FIRE || source==ON_FIRE || source==ANVIL || source==HOT_FLOOR || source==LAVA ||
+                       source==FALLING_BLOCK || source==FLY_INTO_WALL || source.isProjectile() ||
+                       (source instanceof EntityDamageSource && ((EntityDamageSource)source).getIsThornsDamage()))
+                        event.setAmount(amount/2f);
+                }
+                double reduction = (SkillWrapper.getDifficultyFactor(player)/2d)/100d;
+                event.setAmount((float)((double)event.getAmount()*(1d-reduction)));
+            }
+            if(entitySource instanceof EntityPlayerMP) {
                 EntityPlayerMP player = (EntityPlayerMP)event.getSource().getTrueSource();
                 if(Objects.nonNull(player)) {
                     ISkillCapability cap = SkillWrapper.getSkillCapability(player);
-                    float amount = event.getAmount();
+                    float amount = (float)((double)event.getAmount()*(SkillWrapper.getDifficultyFactor(player)+1d)/2d);
                     if(Objects.nonNull(cap)) {
                         amount+=(float)(3d*SkillWrapper.getPrestigeFactor(player,"attack"));
-                        event.setAmount(amount);
                         SkillWrapper.addActionSP(player,"attack",Math.max(0.5f,(amount/2f)));
                     }
+                    event.setAmount(amount);
                     if(amount>=50f && player.getHeldItemMainhand().getItem() instanceof ItemElementiumSword) {
                         EntityPixie pixie = new EntityPixie(player.getServerWorld());
                         ((IEntityPixie)pixie).dimhoppertweaks$setBypassesTarget(true);
@@ -138,8 +136,8 @@ public class EntityEvents {
                         player.getServerWorld().spawnEntity(pixie);
                     }
                 }
-            } else if(event.getSource().getTrueSource() instanceof EntityTameable) {
-                EntityTameable tameable = (EntityTameable)event.getSource().getTrueSource();
+            } else if(entitySource instanceof EntityTameable) {
+                EntityTameable tameable = (EntityTameable)entitySource;
                 if(!tameable.world.isRemote && tameable.isTamed()) {
                     EntityLivingBase owner = tameable.getOwner();
                     if(owner instanceof EntityPlayer) {
