@@ -38,6 +38,7 @@ import vazkii.botania.common.item.equipment.tool.elementium.ItemElementiumSword;
 
 import java.util.Objects;
 
+import static com.rwtema.extrautils2.blocks.BlockSpike.spike;
 import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.MODID;
 import static mods.thecomputerizer.dimhoppertweaks.registry.TraitRegistry.REALLY_THICK_SKIN;
 import static net.minecraft.init.MobEffects.JUMP_BOOST;
@@ -111,7 +112,7 @@ public class EntityEvents {
                     if(source==CACTUS) event.setCanceled(true);
                     float amount = event.getAmount();
                     if(source==IN_FIRE || source==ON_FIRE || source==ANVIL || source==HOT_FLOOR || source==LAVA ||
-                       source==FALLING_BLOCK || source==FLY_INTO_WALL || source.isProjectile() ||
+                       source==FALLING_BLOCK || source==FLY_INTO_WALL || source==spike || source.isProjectile() ||
                        (source instanceof EntityDamageSource && ((EntityDamageSource)source).getIsThornsDamage()))
                         event.setAmount(amount/2f);
                 }

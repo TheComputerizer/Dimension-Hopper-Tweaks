@@ -26,10 +26,7 @@ public abstract class MixinBlockSlime extends Block {
      */
     @Overwrite
     public void onEntityWalk(World world, BlockPos pos, Entity entity) {
-        if(SkillWrapper.isUnstoppable(entity)) {
-            super.onEntityWalk(world,pos,entity);
-            return;
-        }
+        if(SkillWrapper.isUnstoppable(entity)) return;
         double absMotionY = Math.abs(entity.motionY);
         if(absMotionY<0.1d && !entity.isSneaking()) {
             double motionFactor = 0.4d+absMotionY*0.2d;
