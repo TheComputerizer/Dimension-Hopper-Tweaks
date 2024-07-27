@@ -1,6 +1,5 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.vanilla;
 
-import mods.thecomputerizer.dimhoppertweaks.mixin.DelayedModAccess;
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemSword;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,7 +13,6 @@ public class MixinItemSword {
             method = "<init>")
     private float dimhoppertweaks$fixDamage(ToolMaterial material) {
         float damage = material.getAttackDamage();
-        if(DelayedModAccess.isBedrockMaterial(material)) damage = (damage*4f)-3f;
-        return damage;
+        return damage==250f ? 1000f : damage+3f; //Kinda dumb check
     }
 }
