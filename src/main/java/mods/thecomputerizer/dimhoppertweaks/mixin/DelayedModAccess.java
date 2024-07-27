@@ -29,6 +29,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemEnchantedBook;
 import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
@@ -65,6 +66,7 @@ import java.util.function.Function;
 
 import static androsa.gaiadimension.registry.GDBlocks.gaia_portal;
 import static androsa.gaiadimension.registry.GDBlocks.keystone_block;
+import static bedrockcraft.tool.BedrockTool.toolMaterial;
 import static de.ellpeck.actuallyadditions.mod.blocks.InitBlocks.blockGiantChest;
 import static mariot7.xlfoodmod.init.ItemListxlfoodmod.cheese;
 import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.LOGGER;
@@ -394,6 +396,10 @@ public class DelayedModAccess {
 
     public static double incrementDifficultyWithStageFactor(EntityPlayer player, double original) {
         return original*getDifficultyMultiplier(player);
+    }
+    
+    public static boolean isBedrockMaterial(ToolMaterial material) {
+        return material==toolMaterial;
     }
 
     public static @Nullable Object instantiateInaccessibleClass(
