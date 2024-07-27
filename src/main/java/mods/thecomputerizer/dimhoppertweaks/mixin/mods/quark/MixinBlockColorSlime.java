@@ -1,30 +1,31 @@
-package mods.thecomputerizer.dimhoppertweaks.mixin.vanilla;
+package mods.thecomputerizer.dimhoppertweaks.mixin.mods.quark;
 
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockSlime;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
+import vazkii.arl.block.BlockMetaVariants;
+import vazkii.quark.automation.block.BlockColorSlime;
+import vazkii.quark.automation.block.BlockColorSlime.Variants;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-@Mixin(BlockSlime.class)
+@Mixin(value = BlockColorSlime.class, remap = false)
 @ParametersAreNonnullByDefault
-public abstract class MixinBlockSlime extends Block {
+public abstract class MixinBlockColorSlime extends BlockMetaVariants<Variants> {
     
-    public MixinBlockSlime(Material material) {
-        super(material);
+    public MixinBlockColorSlime(String name, Material material, Class<Variants> variants) {
+        super(name,material,variants);
     }
     
     /**
      * @author The_Computerizer
      * @reason Unstoppable trait
      */
-    @Overwrite
+    @Overwrite(remap = true)
     public void onEntityWalk(World world, BlockPos pos, Entity entity) {
         if(SkillWrapper.isUnstoppable(entity)) {
             super.onEntityWalk(world,pos,entity);

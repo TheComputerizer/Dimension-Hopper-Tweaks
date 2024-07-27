@@ -5,7 +5,6 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
@@ -14,6 +13,8 @@ import org.spongepowered.asm.mixin.Unique;
 import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.Random;
+
+import static net.minecraftforge.fml.common.registry.ForgeRegistries.ENCHANTMENTS;
 
 @Mixin(value = InfernalMobsCore.class, remap = false)
 public abstract class MixinInfernalMobsCore {
@@ -45,6 +46,6 @@ public abstract class MixinInfernalMobsCore {
     @Unique
     private @Nullable Enchantment dimhoppertweaks$getShimmerEnchant() {
         ResourceLocation res = new ResourceLocation("enderio","shimmer");
-        return ForgeRegistries.ENCHANTMENTS.containsKey(res) ? ForgeRegistries.ENCHANTMENTS.getValue(res) : null;
+        return ENCHANTMENTS.containsKey(res) ? ENCHANTMENTS.getValue(res) : null;
     }
 }

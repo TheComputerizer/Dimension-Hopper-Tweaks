@@ -70,7 +70,7 @@ public class WorldEvents {
     public static void blockPlace(PlaceEvent event) {
         if(event.isCanceled()) return;
         EntityPlayer player = event.getPlayer();
-        if(player instanceof EntityPlayerMP) {
+        if(player instanceof EntityPlayerMP && !(player instanceof FakePlayer)) {
             PlayerData data = PlayerDataHandler.get(player);
             if(Objects.nonNull(data)) {
                 SkillWrapper.executeOnSkills(data,h -> {
@@ -87,6 +87,7 @@ public class WorldEvents {
                 String path = res.getPath();
                 if(path.contains("obsidian")) time = 1;
                 if(res.getPath().equals("compressed_obsidian")) time+=(block.getMetaFromState(state)+1)*2;
+                time*=20;
                 if(time>0) TickEvents.addInfernalDistractor(player,time);
             }
         }

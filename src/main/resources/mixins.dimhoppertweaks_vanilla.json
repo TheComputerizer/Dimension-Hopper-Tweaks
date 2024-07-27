@@ -12,6 +12,7 @@
     "MixinChunkProviderServer",
     "MixinCombatRules",
     "MixinCommandTP",
+    "MixinEnchantmentHelper",
     "MixinEntity",
     "MixinEntityItem",
     "MixinEntityLivingBase",

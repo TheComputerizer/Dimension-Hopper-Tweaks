@@ -187,6 +187,10 @@ public class SkillWrapper {
         return Objects.nonNull(data) && Objects.nonNull(skill) && data.getSkillInfo(skill).isUnlocked(trait);
     }
     
+    public static boolean isGoodSwimmer(@Nullable Entity entity) {
+        return hasTrait(entity,"agility",SWIMMING_LESSONS);
+    }
+    
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean isUnstoppable(@Nullable Entity entity) {
         return hasTrait(entity,"agility",UNSTOPPABLE);

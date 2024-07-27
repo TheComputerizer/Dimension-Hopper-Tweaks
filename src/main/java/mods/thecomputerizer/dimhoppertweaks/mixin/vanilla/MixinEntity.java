@@ -19,6 +19,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -47,7 +48,8 @@ public abstract class MixinEntity implements IEntity {
     @Shadow public abstract int getMaxInPortalTime();
     @Shadow @Nullable public abstract Entity changeDimension(int dimension);
     @Shadow @Nullable public abstract MinecraftServer getServer();
-
+    @Shadow public abstract boolean isInWater();
+    
     @Unique
     private Entity dimhoppertweaks$cast() {
         return (Entity)(Object)this;
@@ -56,6 +58,55 @@ public abstract class MixinEntity implements IEntity {
     @Override
     public double dimhoppertweaks$getGravityFactor() {
         return this.dimhoppertweaks$gravityFactor;
+    }
+    
+    @ModifyVariable(at = @At("HEAD"), method = "move", ordinal = 1, argsOnly = true)
+    private double dimhoppertweaks$moveX(double x) {
+        return isInWater() && SkillWrapper.isGoodSwimmer(dimhoppertweaks$cast()) ? x*2d : x;
+    }
+    
+    @ModifyVariable(at = @At("HEAD"), method = "move", ordinal = 2, argsOnly = true)
+    private double dimhoppertweaks$moveY(double y) {
+        return isInWater() && SkillWrapper.isGoodSwimmer(dimhoppertweaks$cast()) ? y*1.5d : y;
+    }
+    
+    @ModifyVariable(at = @At("HEAD"), method = "move", ordinal = 3, argsOnly = true)
+    private double dimhoppertweaks$moveZ(double z) {
+        return isInWater() && SkillWrapper.isGoodSwimmer(dimhoppertweaks$cast()) ? z*2d : z;
+    }
+    
+    @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/profiler/Profiler;startSection(Ljava/lang/String;)V",
+            ordinal = 1), method = "onEntityUpdate")
+    private void dimhoppertweaks$onPortalProfile(Profiler profiler, String name) {
+        profiler.startSection(name);
+        if(this.dimhoppertweaks$inGaiaPortal) {
+            if(!this.isRiding()) {
+                int i = this.getMaxInPortalTime();
+                if(this.dimhoppertweaks$gaiaPortalCounter++>=i) {
+                    this.dimhoppertweaks$gaiaPortalCounter = i;
+                    this.dimhoppertweaks$gaiaTimeUntilPortal = this.getPortalCooldown();
+                    int dim;
+                    if(this.world.provider.getDimensionType().getId()==-2) dim = this.dimhoppertweaks$dimFrom;
+                    else {
+                        this.dimhoppertweaks$dimFrom = this.world.provider.getDimension();
+                        dim = -2;
+                    }
+                    if(!this.world.isRemote && !this.isDead)
+                        dimhoppertweaks$cast().changeDimension(dim,DelayedModAccess.makeGaiaTeleporter(dim));
+                }
+            }
+            this.dimhoppertweaks$inGaiaPortal = false;
+        }
+        else {
+            if(this.dimhoppertweaks$gaiaPortalCounter>0) this.dimhoppertweaks$gaiaPortalCounter-=4;
+            if(this.dimhoppertweaks$gaiaPortalCounter<0) this.dimhoppertweaks$gaiaPortalCounter = 0;
+        }
+        if(this.dimhoppertweaks$gaiaTimeUntilPortal>0) this.dimhoppertweaks$gaiaTimeUntilPortal--;
+    }
+    
+    @Inject(at = @At("RETURN"), method = "onEntityUpdate")
+    private void setDimhoppertweaks$onEntityUpdate(CallbackInfo ci) {
+        if(!this.world.isRemote && this.onGround) SkillWrapper.resetFanUsage(dimhoppertweaks$cast());
     }
 
     @Override
@@ -90,40 +141,6 @@ public abstract class MixinEntity implements IEntity {
             }
             this.dimhoppertweaks$inGaiaPortal = true;
         }
-    }
-
-    @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/profiler/Profiler;startSection(Ljava/lang/String;)V",
-            ordinal = 1), method = "onEntityUpdate")
-    private void dimhoppertweaks$onPortalProfile(Profiler profiler, String name) {
-        profiler.startSection(name);
-        if(this.dimhoppertweaks$inGaiaPortal) {
-            if(!this.isRiding()) {
-                int i = this.getMaxInPortalTime();
-                if(this.dimhoppertweaks$gaiaPortalCounter++>=i) {
-                    this.dimhoppertweaks$gaiaPortalCounter = i;
-                    this.dimhoppertweaks$gaiaTimeUntilPortal = this.getPortalCooldown();
-                    int dim;
-                    if(this.world.provider.getDimensionType().getId()==-2) dim = this.dimhoppertweaks$dimFrom;
-                    else {
-                        this.dimhoppertweaks$dimFrom = this.world.provider.getDimension();
-                        dim = -2;
-                    }
-                    if(!this.world.isRemote && !this.isDead)
-                        dimhoppertweaks$cast().changeDimension(dim,DelayedModAccess.makeGaiaTeleporter(dim));
-                }
-            }
-            this.dimhoppertweaks$inGaiaPortal = false;
-        }
-        else {
-            if(this.dimhoppertweaks$gaiaPortalCounter>0) this.dimhoppertweaks$gaiaPortalCounter-=4;
-            if(this.dimhoppertweaks$gaiaPortalCounter<0) this.dimhoppertweaks$gaiaPortalCounter = 0;
-        }
-        if(this.dimhoppertweaks$gaiaTimeUntilPortal>0) this.dimhoppertweaks$gaiaTimeUntilPortal--;
-    }
-
-    @Inject(at = @At("RETURN"), method = "onEntityUpdate")
-    private void setDimhoppertweaks$onEntityUpdate(CallbackInfo ci) {
-        if(!this.world.isRemote && this.onGround) SkillWrapper.resetFanUsage(dimhoppertweaks$cast());
     }
 
     @Inject(at = @At("RETURN"), method = "writeToNBT")

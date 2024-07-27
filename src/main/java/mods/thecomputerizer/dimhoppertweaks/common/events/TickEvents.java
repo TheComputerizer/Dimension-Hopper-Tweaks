@@ -50,23 +50,19 @@ public class TickEvents {
     @SubscribeEvent(priority = LOWEST)
     public static void playerTick(PlayerTickEvent event) {
         if(event.isCanceled()) return;
-        if(event.phase==END) {
-            if(event.side==SERVER) {
-                if(TICK_DELAY.getAndAdd(1)>=20) {
-                    EntityPlayerMP player = (EntityPlayerMP) event.player;
-                    if(player.isSprinting()) {
-                        int speedFactor = player.isPotionActive(SPEED) ? Objects.requireNonNull(
-                                player.getActivePotionEffect(SPEED)).getAmplifier()+2 : 1;
-                        SkillWrapper.addActionSP(player,"agility",speedFactor);
-                    }
-                    ISkillCapability cap = SkillWrapper.getSkillCapability(player);
-                    if(Objects.nonNull(cap)) cap.decrementGatheringItems(20);
-                    if(player.dimension==CALIGRO.getId() && player.posY<0 &&
-                            ItemUtil.isHolding(player,blackTotem))
-                        WorldUtil.teleportDimY(player,VOID_WORLD.getId(),256d);
-                    TICK_DELAY.setValue(0);
-                }
+        if(event.phase==END && event.side==SERVER && TICK_DELAY.getAndAdd(1)>=20) {
+            EntityPlayerMP player = (EntityPlayerMP) event.player;
+            if(player.isSprinting()) {
+                int speedFactor = player.isPotionActive(SPEED) ? Objects.requireNonNull(
+                        player.getActivePotionEffect(SPEED)).getAmplifier()+2 : 1;
+                SkillWrapper.addActionSP(player,"agility",speedFactor);
             }
+            ISkillCapability cap = SkillWrapper.getSkillCapability(player);
+            if(Objects.nonNull(cap)) cap.decrementGatheringItems(20);
+            if(player.dimension==CALIGRO.getId() && player.posY<0 &&
+               ItemUtil.isHolding(player,blackTotem))
+                WorldUtil.teleportDimY(player,VOID_WORLD.getId(),256d);
+            TICK_DELAY.setValue(0);
         }
     }
 
@@ -74,7 +70,10 @@ public class TickEvents {
     public static void worldTick(WorldTickEvent event) {
         if(event.isCanceled()) return;
         if(event.phase==END) {
-            INFERNAL_DISTRACTION.entrySet().removeIf(entry -> entry.getValue().addAndGet(-1)<0);
+            INFERNAL_DISTRACTION.entrySet().removeIf(entry -> {
+                if(entry.getKey().getEntityWorld()!=event.world) return false;
+                return entry.getValue().addAndGet(-1)<=0;
+            });
             int dim = event.world.provider.getDimension();
             if(dim==44 || dim==45) {
                 synchronized(event.world.playerEntities) {
@@ -107,7 +106,7 @@ public class TickEvents {
         BlockPos respawnPos = player.getBedLocation(respawnDim);
         if(Objects.isNull(respawnPos)) respawnPos = player.getPosition();
         MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-        server.getCommandManager().executeCommand(server, DHDebugCommands.buildRawCommand("tpx",player.getName(),
+        server.getCommandManager().executeCommand(server,DHDebugCommands.buildRawCommand("tpx",player.getName(),
                 respawnPos.getX(),respawnPos.getY(),respawnPos.getZ(),respawnDim));
     }
 }
