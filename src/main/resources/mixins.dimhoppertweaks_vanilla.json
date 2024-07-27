@@ -23,6 +23,7 @@
     "MixinItem",
     "MixinItemDye",
     "MixinItemStack",
+    "MixinItemSword",
     "MixinSize",
     "MixinSPacketEntityEffect",
     "MixinStatisticManager",

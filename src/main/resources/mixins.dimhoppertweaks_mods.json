@@ -38,7 +38,6 @@
     "avaritia.MixinDamageSourceInfinitySword",
     "avaritia.MixinInfinitySword",
     "avaritia.MixinShaderHelper",
-    "bedrockcraft.MixinBedrockSword",
     "bedrockcraft.MixinTheJeiPlugin",
     "betterquesting.MixinPanelEntityPreview",
     "blueskies.MixinBrightlandsBiomeDecorator",

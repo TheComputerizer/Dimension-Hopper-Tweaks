@@ -69,7 +69,7 @@ public class EntityEvents {
         if(source!=OUT_OF_WORLD) {
             EntityLivingBase living = event.getEntityLiving();
             if(living instanceof EntityFinalBoss) {
-                if(!(event.getSource() instanceof DamageSourceInfinitySword))
+                if(!(source instanceof DamageSourceInfinitySword))
                     event.setCanceled(true);
             } else if(living instanceof EntityTameable) {
                 EntityTameable tameable = (EntityTameable)living;
@@ -84,7 +84,8 @@ public class EntityEvents {
                         }
                     }
                 }
-            }
+            } else if(SkillWrapper.hasTrait(living,"defense",REALLY_THICK_SKIN) &&
+                   (source==CACTUS || source==spike)) event.setCanceled(true);
         }
     }
 
@@ -109,10 +110,9 @@ public class EntityEvents {
             if(living instanceof EntityPlayerMP) {
                 EntityPlayerMP player = (EntityPlayerMP)living;
                 if(SkillWrapper.hasTrait(player,"defense",REALLY_THICK_SKIN)) {
-                    if(source==CACTUS) event.setCanceled(true);
                     float amount = event.getAmount();
                     if(source==IN_FIRE || source==ON_FIRE || source==ANVIL || source==HOT_FLOOR || source==LAVA ||
-                       source==FALLING_BLOCK || source==FLY_INTO_WALL || source==spike || source.isProjectile() ||
+                       source==FALLING_BLOCK || source==FLY_INTO_WALL || source.isProjectile() ||
                        (source instanceof EntityDamageSource && ((EntityDamageSource)source).getIsThornsDamage()))
                         event.setAmount(amount/2f);
                 }
