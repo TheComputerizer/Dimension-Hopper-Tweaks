@@ -39,6 +39,7 @@ import vazkii.botania.common.item.equipment.tool.elementium.ItemElementiumSword;
 import java.util.Objects;
 
 import static com.rwtema.extrautils2.blocks.BlockSpike.spike;
+import static mob_grinding_utils.MobGrindingUtils.SPIKE_DAMAGE;
 import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.MODID;
 import static mods.thecomputerizer.dimhoppertweaks.registry.TraitRegistry.REALLY_THICK_SKIN;
 import static net.minecraft.init.MobEffects.JUMP_BOOST;
@@ -53,7 +54,11 @@ public class EntityEvents {
     @SubscribeEvent(priority = LOWEST)
     public static void onLivingAttack(LivingAttackEvent event) {
         if(event.isCanceled()) return;
-        if(event.getEntityLiving() instanceof EntityPlayerMP) {
+        EntityLivingBase living = event.getEntityLiving();
+        DamageSource source = event.getSource();
+        if(SkillWrapper.hasTrait(living,"defense",REALLY_THICK_SKIN) &&
+           (source==CACTUS || source==spike || source==SPIKE_DAMAGE)) event.setCanceled(true);
+        else if(living instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP)event.getEntityLiving();
             if(!player.isEntityInvulnerable(event.getSource()) && player.canBlockDamageSource(event.getSource())) {
                 ISkillCapability cap = SkillWrapper.getSkillCapability(player);
@@ -84,8 +89,7 @@ public class EntityEvents {
                         }
                     }
                 }
-            } else if(SkillWrapper.hasTrait(living,"defense",REALLY_THICK_SKIN) &&
-                   (source==CACTUS || source==spike)) event.setCanceled(true);
+            }
         }
     }
 

@@ -5,24 +5,16 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import stevekung.mods.moreplanets.planets.chalos.blocks.BlockCheeseSlime;
 
 @Mixin(value = BlockCheeseSlime.class, remap = false)
 public abstract class MixinBlockCheeseSlime {
     
-    /**
-     * @author The_Computerizer
-     * @reason Unstoppable trait
-     */
-    @Overwrite(remap = true)
-    public void onEntityWalk(World world, BlockPos pos, Entity entity) {
-        if(SkillWrapper.isUnstoppable(entity)) return;
-        double absMotionY = Math.abs(entity.motionY);
-        if(absMotionY<0.1d && !entity.isSneaking()) {
-            double motionFactor = 0.4d+absMotionY*0.2d;
-            entity.motionX*=motionFactor;
-            entity.motionZ*=motionFactor;
-        }
+    @Inject(at = @At("HEAD"), method = "onEntityWalk", remap = true, cancellable = true)
+    private void dimhoppertweaks$checkWalk(World world, BlockPos pos, Entity entity, CallbackInfo ci) {
+        if(SkillWrapper.isUnstoppable(entity)) ci.cancel();
     }
 }

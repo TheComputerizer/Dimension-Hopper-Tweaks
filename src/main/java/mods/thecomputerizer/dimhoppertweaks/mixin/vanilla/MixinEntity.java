@@ -60,17 +60,17 @@ public abstract class MixinEntity implements IEntity {
         return this.dimhoppertweaks$gravityFactor;
     }
     
-    @ModifyVariable(at = @At("HEAD"), method = "move", ordinal = 1, argsOnly = true)
+    @ModifyVariable(at = @At("HEAD"), method = "move", ordinal = 0, argsOnly = true)
     private double dimhoppertweaks$moveX(double x) {
         return isInWater() && SkillWrapper.isGoodSwimmer(dimhoppertweaks$cast()) ? x*2d : x;
     }
     
-    @ModifyVariable(at = @At("HEAD"), method = "move", ordinal = 2, argsOnly = true)
+    @ModifyVariable(at = @At("HEAD"), method = "move", ordinal = 1, argsOnly = true)
     private double dimhoppertweaks$moveY(double y) {
         return isInWater() && SkillWrapper.isGoodSwimmer(dimhoppertweaks$cast()) ? y*1.5d : y;
     }
     
-    @ModifyVariable(at = @At("HEAD"), method = "move", ordinal = 3, argsOnly = true)
+    @ModifyVariable(at = @At("HEAD"), method = "move", ordinal = 2, argsOnly = true)
     private double dimhoppertweaks$moveZ(double z) {
         return isInWater() && SkillWrapper.isGoodSwimmer(dimhoppertweaks$cast()) ? z*2d : z;
     }

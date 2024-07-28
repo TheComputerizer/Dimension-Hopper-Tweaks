@@ -48,18 +48,18 @@ public abstract class MixinEntityLivingBase extends Entity implements IEntityLiv
     }
     
     @Redirect(at = @At(value="INVOKE", target="Lnet/minecraft/entity/ai/attributes/IAttributeInstance;"+
-                                   "getAttributeValue()D"), method = "handleJumpLava")
+                                              "getAttributeValue()D"), method = "handleJumpLava")
     private double dimhoppertweaks$handleJumpLava(IAttributeInstance instance) {
         double value = instance.getAttributeValue();
-        if(SkillWrapper.isUnstoppable(dimhoppertweaks$cast())) value*=2d;
+        if(SkillWrapper.isGoodSwimmer(dimhoppertweaks$cast())) value*=2d;
         return value;
     }
     
     @Redirect(at = @At(value="INVOKE", target="Lnet/minecraft/entity/ai/attributes/IAttributeInstance;"+
-                                   "getAttributeValue()D"), method = "handleJumpWater")
+                                              "getAttributeValue()D"), method = "handleJumpWater")
     private double dimhoppertweaks$handleJumpWater(IAttributeInstance instance) {
         double value = instance.getAttributeValue();
-        if(SkillWrapper.isUnstoppable(dimhoppertweaks$cast())) value*=2d;
+        if(SkillWrapper.isGoodSwimmer(dimhoppertweaks$cast())) value*=2d;
         return value;
     }
 
@@ -75,25 +75,25 @@ public abstract class MixinEntityLivingBase extends Entity implements IEntityLiv
     
     @Redirect(at = @At(value="INVOKE", target="Lnet/minecraft/entity/ai/attributes/IAttributeInstance;"+
                                    "getAttributeValue()D", ordinal = 0), method = "moveRelative")
-    private double dimhoppertweaks$moleRelative1(IAttributeInstance instance) {
+    private double dimhoppertweaks$moveRelative1(IAttributeInstance instance) {
         double value = instance.getAttributeValue();
-        if(SkillWrapper.isUnstoppable(dimhoppertweaks$cast())) value*=2d;
+        if(SkillWrapper.isGoodSwimmer(dimhoppertweaks$cast())) value*=2d;
         return value;
     }
     
     @Redirect(at = @At(value="INVOKE", target="Lnet/minecraft/entity/ai/attributes/IAttributeInstance;"+
                                               "getAttributeValue()D", ordinal = 1), method = "moveRelative")
-    private double dimhoppertweaks$moleRelative2(IAttributeInstance instance) {
+    private double dimhoppertweaks$moveRelative2(IAttributeInstance instance) {
         double value = instance.getAttributeValue();
-        if(SkillWrapper.isUnstoppable(dimhoppertweaks$cast())) value*=2d;
+        if(SkillWrapper.isGoodSwimmer(dimhoppertweaks$cast())) value*=2d;
         return value;
     }
     
     @Redirect(at = @At(value="INVOKE", target="Lnet/minecraft/entity/ai/attributes/IAttributeInstance;"+
                                               "getAttributeValue()D", ordinal = 2), method = "moveRelative")
-    private double dimhoppertweaks$moleRelative3(IAttributeInstance instance) {
+    private double dimhoppertweaks$moveRelative3(IAttributeInstance instance) {
         double value = instance.getAttributeValue();
-        if(SkillWrapper.isUnstoppable(dimhoppertweaks$cast())) value*=2d;
+        if(SkillWrapper.isGoodSwimmer(dimhoppertweaks$cast())) value*=2d;
         return value;
     }
     

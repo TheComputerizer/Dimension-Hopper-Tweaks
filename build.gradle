@@ -81,29 +81,21 @@ dependencies {
     minecraft("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
 
     //mixin
-    annotationProcessor("zone.rong:mixinbooter:${mixinbooter_version}") {
-        transitive = false
-    }
-    implementation("zone.rong:mixinbooter:${mixinbooter_version}") {
-        transitive = false
-    }
+    annotationProcessor("org.ow2.asm:asm-debug-all:${asm_version}")
+    annotationProcessor("zone.rong:mixinbooter:${mixinbooter_version}") { transitive = false }
+    implementation("zone.rong:mixinbooter:${mixinbooter_version}") { transitive = false }
 
-    //annotation processors
-    annotationProcessor("com.google.code.gson:gson:${gson_version}")
-    annotationProcessor("com.google.guava:guava:${guava_version}")
-    annotationProcessor("org.ow2.asm:asm-debug-all:${asm_debug_version}")
+    //lombok
     annotationProcessor("org.projectlombok:lombok:${lombok_version}")
+    compileOnly("org.projectlombok:lombok:${lombok_version}")
 
     //non cf dependencies
     compileOnly("CraftTweaker2:CraftTweaker2-MC1120-Mod-JEI:1.12-${project.ct_version}") {
-        exclude group: 'com.google.code.gson'
-        exclude group: 'deobf.mezz.jei'
-        exclude group: 'org.ow2.asm'
+        [ 'com.google.code.gson', 'deobf.mezz.jei', 'org.ow2.asm' ].forEach { exclude group: it }
     }
-    compileOnly('org.projectlombok:lombok:1.+')
-
     compileOnly(fg.deobf("com.mod-buildcraft:buildcraft-api:${buildcraft_version}"))
     compileOnly(fg.deobf("maven.modrinth:fluidlogged-api:${fluidlogged_version}"))
+    compileOnly(fg.deobf("maven.modrinth:ledm:${ledm_version}"))
     compileOnly(fg.deobf("maven.modrinth:travelersbackpack:${backpack_version}"))
 
     //cf dependencies
@@ -131,7 +123,6 @@ dependencies {
     compileOnly(fg.deobf("curse.maven:ccl-242818:${ccl_version}"))
     compileOnly(fg.deobf("curse.maven:compactmachines-224218:${cm3_version}"))
     compileOnly(fg.deobf("curse.maven:cofhcore-69162:${cofhcore_version}"))
-    compileOnly(fg.deobf("curse.maven:ctm-267602:${ctm_version}"))
     compileOnly(fg.deobf("curse.maven:darkutils-242195:${darkutils_version}"))
     compileOnly(fg.deobf("curse.maven:de-223565:${de_version}"))
     compileOnly(fg.deobf("curse.maven:dimdoors-284876:${dimdoors_version}"))
@@ -162,13 +153,13 @@ dependencies {
     compileOnly(fg.deobf("curse.maven:lib9-322344:${libnine_version}"))
     compileOnly(fg.deobf("curse.maven:libraryex-298965:${libex_version}"))
     compileOnly(fg.deobf("curse.maven:lightningcraft-237422:${lightningcraft_version}"))
-    compileOnly(fg.deobf("curse.maven:lockyz-283789:${lockyz_version}"))
     compileOnly(fg.deobf("curse.maven:loottweaker-255257:${lt_version}"))
     compileOnly(fg.deobf("curse.maven:mantle-74924:${mantle_version}"))
     compileOnly(fg.deobf("curse.maven:mbd-604054:${mbd_version}"))
     compileOnly(fg.deobf("curse.maven:mcjtylib-233105:${mcjl_version}"))
     compileOnly(fg.deobf("curse.maven:mekanism-399904:${mce_version}"))
     compileOnly(fg.deobf("curse.maven:mekanismtools-813407:${mcetools_version}"))
+    compileOnly(fg.deobf("curse.maven:mgu-254241:${mgu_version}"))
     compileOnly(fg.deobf("curse.maven:mobends-231347:${mobends_version}"))
     compileOnly(fg.deobf("curse.maven:moretweaker-336569:${moretweaker_version}"))
     compileOnly(fg.deobf("curse.maven:moreplanets-261990:${moreplanets_version}"))
