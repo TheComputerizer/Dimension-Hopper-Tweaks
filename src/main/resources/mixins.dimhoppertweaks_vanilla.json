@@ -24,6 +24,7 @@
     "MixinItemDye",
     "MixinItemStack",
     "MixinItemSword",
+    "MixinNetHandlerPlayServer",
     "MixinSize",
     "MixinSPacketEntityEffect",
     "MixinStatisticManager",

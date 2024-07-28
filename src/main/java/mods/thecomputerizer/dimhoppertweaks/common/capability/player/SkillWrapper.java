@@ -10,6 +10,8 @@ import codersafterdark.reskillable.api.toast.ToastHelper;
 import codersafterdark.reskillable.api.unlockable.IAbilityEventHandler;
 import codersafterdark.reskillable.api.unlockable.Unlockable;
 import com.google.common.collect.ImmutableList;
+import lombok.Getter;
+import lombok.Setter;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.CommonCapability;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.registry.SoundRegistry;
@@ -242,14 +244,14 @@ public class SkillWrapper {
         });
     }
 
-    private final String name;
-    private final Skill skill;
+    @Getter private final String name;
+    @Getter private final Skill skill;
     private final int maxLevel;
     private final double levelFactor;
     private int sp;
-    private int level;
-    private int levelSP;
-    private int prestigeLevel;
+    @Getter private int level;
+    @Getter private int levelSP;
+    @Setter @Getter private int prestigeLevel;
 
     private SkillWrapper(String name, Skill skill) {
         this.name = name;
@@ -291,35 +293,11 @@ public class SkillWrapper {
     public int getSP() {
         return this.sp;
     }
-
-    public int getLevel() {
-        return this.level;
-    }
-
-    public int getLevelSP() {
-        return this.levelSP;
-    }
-
+    
     public int getMaxLevel() {
         return Math.min(this.maxLevel,(this.prestigeLevel+1)*32);
     }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public int getPrestigeLevel() {
-        return this.prestigeLevel;
-    }
-
-    public void setPrestigeLevel(int level) {
-        this.prestigeLevel = level;
-    }
-
-    public Skill getSkill() {
-        return this.skill;
-    }
-
+    
     private boolean canLevelUp() {
         if(isCapped()) {
             this.sp = 0;

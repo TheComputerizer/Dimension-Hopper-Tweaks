@@ -8,7 +8,7 @@ pluginManagement {
                   'org.apache.commons', 'org.apache.httpcomponents', 'org.apache.maven', 'org.checkerframework',
                   'org.codehaus.plexus', 'org.gradle.toolchains', 'org.gradle.toolchains.foojay-resolver-convention',
                   'org.junit', 'org.jetbrains', 'org.jetbrains.kotlin', 'org.ow2', 'org.ow2.asm', 'org.slf4j',
-                  'org.tukaani' ].forEach { includeGroup it }
+                  'org.sonatype.oss', 'org.tukaani' ].forEach { includeGroup it }
             }
         }
         maven {

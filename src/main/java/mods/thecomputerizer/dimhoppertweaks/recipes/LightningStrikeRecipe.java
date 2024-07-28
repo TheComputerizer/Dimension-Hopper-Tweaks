@@ -1,6 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.recipes;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import lombok.Getter;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.InvincibleEntityItem;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.EntityLightningBolt;
@@ -46,8 +47,8 @@ public class LightningStrikeRecipe {
         return Collections.unmodifiableList(RECIPES);
     }
 
-    private final int dimension;
-    private final double range;
+    @Getter private final int dimension;
+    @Getter private final double range;
     private final ItemRef catalyst;
     private final List<ItemRef> inputs;
     private final List<ItemRef> outputs;
@@ -67,15 +68,7 @@ public class LightningStrikeRecipe {
     public boolean checkCatalyst(EntityItem item, Vec3d strikePos) {
         return strikePos.distanceTo(item.getPositionVector())<=this.range && this.catalyst.matches(item.getItem());
     }
-
-    public int getDimension() {
-        return this.dimension;
-    }
-
-    public double getRange() {
-        return this.range;
-    }
-
+    
     public ItemStack getCatalystStack() {
         return this.catalyst.toStack();
     }
