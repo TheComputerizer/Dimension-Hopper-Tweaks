@@ -1,16 +1,30 @@
 pluginManagement {
     repositories {
+        gradlePluginPortal() {
+            content {
+                [ 'com.google.code.findbugs', 'com.google.code.gson', 'com.google.errorprone', 'com.google.guava',
+                  'com.google.j2objc', 'com.machinezoo.noexception', 'commons-codec', 'commons-io', 'commons-logging',
+                  'de.siegmar', 'it.unimi.dsi', 'net.sf.jopt-simple', 'org.apache', 'org.apache.commons',
+                  'org.apache.httpcomponents', 'org.apache.maven', 'org.checkerframework', 'org.codehaus.plexus',
+                  'org.gradle.toolchains', 'org.gradle.toolchains.foojay-resolver-convention', 'org.junit',
+                  'org.jetbrains', 'org.jetbrains.kotlin', 'org.ow2', 'org.ow2.asm', 'org.slf4j',
+                  'org.tukaani' ].forEach { includeGroup it }
+            }
+        }
         maven {
             name = 'MinecraftForge'
             url = uri('https://maven.minecraftforge.net/')
+            content { [ 'net.minecraftforge', 'net.minecraftforge.gradle' ].forEach{ includeGroup it } }
         }
         maven {
             name = 'Garden of Fancy'
             url = uri('https://maven.gofancy.wtf/releases')
+            content { includeGroup 'wtf.gofancy.fancygradle' }
         }
         maven {
             name = 'SpongePowered'
             url = uri('https://repo.spongepowered.org/repository/maven-public/')
+            content { [ 'org.spongepowered' ].forEach { includeGroup it } }
         }
     }
     resolutionStrategy {
@@ -20,4 +34,8 @@ pluginManagement {
             }
         }
     }
+}
+
+plugins {
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.+'
 }

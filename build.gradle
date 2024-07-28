@@ -1,4 +1,3 @@
-//file:noinspection GroovyAssignabilityCheck
 plugins {
     id 'net.minecraftforge.gradle' version '6.+'
     id 'wtf.gofancy.fancygradle' version '1.+'
@@ -46,43 +45,34 @@ minecraft {
 repositories {
     mavenCentral() {
         content {
-            [ 'com.google.code.gson', 'com.google.guava', 'org.ow2.asm' ].forEach { includeGroup it }
+            [ 'com.google.code.gson', 'com.google.guava', 'org.ow2.asm',
+              'org.projectlombok' ].forEach {includeGroup it }
         }
     }
     maven {
         name = 'CurseForge'
         url = uri('https://www.cursemaven.com')
-        content {
-            includeGroup 'curse.maven'
-        }
+        content { includeGroup 'curse.maven' }
     }
     maven {
         name = 'Cleanroom'
         url = uri('https://maven.cleanroommc.com')
-        content {
-            includeGroup 'zone.rong'
-        }
+        content { includeGroup 'zone.rong' }
     }
     maven {
         name = 'BlameJared'
         url = uri('https://maven.blamejared.com')
-        content {
-            includeGroup 'CraftTweaker2'
-        }
+        content { includeGroup 'CraftTweaker2' }
     }
     maven {
         name = 'Modrinth'
         url = uri('https://api.modrinth.com/maven')
-        content {
-            includeGroup 'maven.modrinth'
-        }
+        content { includeGroup 'maven.modrinth' }
     }
     maven {
         name = 'BuildCraft'
         url = uri('https://mod-buildcraft.com/maven')
-        content {
-            includeGroup 'com.mod-buildcraft'
-        }
+        content { includeGroup 'com.mod-buildcraft' }
     }
 }
 
@@ -90,27 +80,31 @@ dependencies {
     //noinspection VulnerableLibrariesLocal
     minecraft("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
 
-    //annotation processors
-    annotationProcessor("com.google.code.gson:gson:${gson_annotation}")
-    annotationProcessor("com.google.guava:guava:${guava_annotation}")
-    annotationProcessor("org.ow2.asm:asm-debug-all:${asm_debug_annotation}")
+    //mixin
     annotationProcessor("zone.rong:mixinbooter:${mixinbooter_version}") {
         transitive = false
     }
+    implementation("zone.rong:mixinbooter:${mixinbooter_version}") {
+        transitive = false
+    }
+
+    //annotation processors
+    annotationProcessor("com.google.code.gson:gson:${gson_version}")
+    annotationProcessor("com.google.guava:guava:${guava_version}")
+    annotationProcessor("org.ow2.asm:asm-debug-all:${asm_debug_version}")
+    annotationProcessor("org.projectlombok:lombok:${lombok_version}")
 
     //non cf dependencies
-    compileOnly(fg.deobf("com.mod-buildcraft:buildcraft-api:${buildcraft_version}"))
-    compileOnly(fg.deobf("maven.modrinth:fluidlogged-api:${fluidlogged_version}"))
-    compileOnly(fg.deobf("maven.modrinth:travelersbackpack:${backpack_version}"))
     compileOnly("CraftTweaker2:CraftTweaker2-MC1120-Mod-JEI:1.12-${project.ct_version}") {
         exclude group: 'com.google.code.gson'
         exclude group: 'deobf.mezz.jei'
         exclude group: 'org.ow2.asm'
     }
+    compileOnly('org.projectlombok:lombok:1.+')
 
-    implementation("zone.rong:mixinbooter:${mixinbooter_version}") {
-        transitive = false
-    }
+    compileOnly(fg.deobf("com.mod-buildcraft:buildcraft-api:${buildcraft_version}"))
+    compileOnly(fg.deobf("maven.modrinth:fluidlogged-api:${fluidlogged_version}"))
+    compileOnly(fg.deobf("maven.modrinth:travelersbackpack:${backpack_version}"))
 
     //cf dependencies
     compileOnly(fg.deobf("curse.maven:aa-228404:${aa_version}"))
@@ -132,6 +126,7 @@ dependencies {
     compileOnly(fg.deobf("curse.maven:bop-220318:${bop_verison}"))
     compileOnly(fg.deobf("curse.maven:botania-225643:${botania_version}"))
     compileOnly(fg.deobf("curse.maven:bq-629629:${bq_version}"))
+    compileOnly(fg.deobf("curse.maven:brandon-231382:${brandoncore_version}"))
     compileOnly(fg.deobf("curse.maven:cavern-285628:${cavern_version}"))
     compileOnly(fg.deobf("curse.maven:ccl-242818:${ccl_version}"))
     compileOnly(fg.deobf("curse.maven:compactmachines-224218:${cm3_version}"))
@@ -186,7 +181,6 @@ dependencies {
     compileOnly(fg.deobf("curse.maven:nyx-349214:${nyx_version}"))
     compileOnly(fg.deobf("curse.maven:openblocks-228816:${openblocks_version}"))
     compileOnly(fg.deobf("curse.maven:openmodslib-228815:${openlib_version}"))
-    compileOnly(fg.deobf("curse.maven:overloaded-264601:${overloaded_version}"))
     compileOnly(fg.deobf("curse.maven:packagedauto-308380:${packagedauto_version}"))
     compileOnly(fg.deobf("curse.maven:packagedex-322861:${packagedex_version}"))
     compileOnly(fg.deobf("curse.maven:plustic-376903:${plustic_version}"))
@@ -206,7 +200,6 @@ dependencies {
     compileOnly(fg.deobf("curse.maven:sgcraft-289115:${sgcraft_version}"))
     compileOnly(fg.deobf("curse.maven:silentgems-220311:${sgems_version}"))
     compileOnly(fg.deobf("curse.maven:silentlib-242998:${slib_version}"))
-    compileOnly(fg.deobf("curse.maven:stevekungslib-296019:${sglib_version}"))
     compileOnly(fg.deobf("curse.maven:tcon-74072:${tconstruct_version}"))
     compileOnly(fg.deobf("curse.maven:tconarmor-287683:${conarm_version}"))
     compileOnly(fg.deobf("curse.maven:tconio-229503:${tio_version}"))

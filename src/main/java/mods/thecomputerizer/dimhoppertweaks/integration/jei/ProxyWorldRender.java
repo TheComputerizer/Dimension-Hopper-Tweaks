@@ -8,11 +8,9 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
-import net.minecraft.init.Biomes;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
@@ -24,12 +22,21 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import org.dave.compactmachines3.world.ProxyWorld;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
+
+import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.LOGGER;
+import static net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher.instance;
+import static net.minecraft.client.renderer.vertex.DefaultVertexFormats.BLOCK;
+import static net.minecraft.init.Biomes.PLAINS;
+import static net.minecraft.init.Blocks.AIR;
+import static net.minecraft.item.ItemStack.EMPTY;
+import static net.minecraft.util.BlockRenderLayer.*;
+import static net.minecraft.world.WorldType.FLAT;
+import static net.minecraftforge.fml.common.registry.ForgeRegistries.ITEMS;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -58,7 +65,7 @@ public abstract class ProxyWorldRender {
                 IBlockState state = this.getBlockState(pos);
                 if (!state.getBlock().hasTileEntity(state)) return null;
                 else {
-                    TileEntity tile = state.getBlock().createTileEntity(proxyWorld, state);
+                    TileEntity tile = state.getBlock().createTileEntity(proxyWorld,state);
                     if(Objects.nonNull(tile))
                         tile.setWorld(proxyWorld);
                     return tile;
@@ -70,7 +77,7 @@ public abstract class ProxyWorldRender {
             }
 
             public IBlockState getBlockState(BlockPos pos) {
-                return ProxyWorldRender.this.relativePosMap.getOrDefault(pos,Blocks.AIR.getDefaultState());
+                return ProxyWorldRender.this.relativePosMap.getOrDefault(pos,AIR.getDefaultState());
             }
 
             public boolean isAirBlock(BlockPos pos) {
@@ -79,7 +86,7 @@ public abstract class ProxyWorldRender {
             }
 
             public Biome getBiome(BlockPos pos) {
-                return Biomes.PLAINS;
+                return PLAINS;
             }
 
             public int getStrongPower(BlockPos pos, EnumFacing direction) {
@@ -87,22 +94,26 @@ public abstract class ProxyWorldRender {
             }
 
             public WorldType getWorldType() {
-                return WorldType.FLAT;
+                return FLAT;
             }
 
             public boolean isSideSolid(BlockPos pos, EnumFacing side, boolean _default) {
-                return this.getBlockState(pos).isSideSolid(this, pos, side);
+                return this.getBlockState(pos).isSideSolid(this,pos,side);
             }
         };
     }
 
     protected IBlockState getState(String res, int meta) {
-        Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(res));
+        Item item = ITEMS.getValue(new ResourceLocation(res));
         return getState(item,meta);
+    }
+    
+    protected IBlockState getState(ItemStack stack) {
+        return stack==EMPTY ? getState((Item)null,0) : getState(stack.getItem(),stack.getMetadata());
     }
 
     protected IBlockState getState(@Nullable Item item, int meta) {
-        return Objects.nonNull(item) ? Block.getBlockFromItem(item).getStateFromMeta(meta) : Blocks.AIR.getDefaultState();
+        return Objects.nonNull(item) ? Block.getBlockFromItem(item).getStateFromMeta(meta) : AIR.getDefaultState();
     }
 
     protected void addRenderableEntity(Entity entity) {
@@ -116,8 +127,8 @@ public abstract class ProxyWorldRender {
     public void render(float partialTick) {
         if(this.glListId==-1) initializeDisplayList();
         GlStateManager.callList(this.glListId);
-        ForgeHooksClient.setRenderLayer(BlockRenderLayer.SOLID);
-        TileEntityRendererDispatcher renderer = TileEntityRendererDispatcher.instance;
+        ForgeHooksClient.setRenderLayer(SOLID);
+        TileEntityRendererDispatcher renderer = instance;
         renderer.renderEngine = Minecraft.getMinecraft().renderEngine;
         for(BlockPos relativePos : this.relativePosMap.keySet()) {
             TileEntity tile = this.proxyWorld.getTileEntity(relativePos);
@@ -150,20 +161,20 @@ public abstract class ProxyWorldRender {
         BlockPos pos = new BlockPos(0,1,0);
         setUpState(this.relativePosMap.get(pos),pos);
         this.glListId = GLAllocation.generateDisplayLists(1);
-        GlStateManager.glNewList(this.glListId, 4864);
+        GlStateManager.glNewList(this.glListId,4864);
         GlStateManager.pushAttrib();
         GlStateManager.pushMatrix();
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
         BlockRendererDispatcher dispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
-        buffer.begin(7, DefaultVertexFormats.BLOCK);
+        buffer.begin(7,BLOCK);
         GlStateManager.disableAlpha();
-        this.renderLayer(dispatcher, buffer, BlockRenderLayer.SOLID);
+        this.renderLayer(dispatcher,buffer,SOLID);
         GlStateManager.enableAlpha();
-        this.renderLayer(dispatcher, buffer, BlockRenderLayer.CUTOUT_MIPPED);
-        this.renderLayer(dispatcher, buffer, BlockRenderLayer.CUTOUT);
+        this.renderLayer(dispatcher,buffer,CUTOUT_MIPPED);
+        this.renderLayer(dispatcher,buffer,CUTOUT);
         GlStateManager.shadeModel(7424);
-        this.renderLayer(dispatcher, buffer, BlockRenderLayer.TRANSLUCENT);
+        this.renderLayer(dispatcher,buffer,TRANSLUCENT);
         tessellator.draw();
         GlStateManager.popMatrix();
         GlStateManager.popAttrib();
@@ -181,7 +192,7 @@ public abstract class ProxyWorldRender {
                 try {
                     dispatcher.renderBlock(state,relativePos,this.blockAccess,buffer);
                 } catch (Exception ex) {
-                    DHTRef.LOGGER.error("Caught unknown error while rendering ancient stargate preview!",ex);
+                    LOGGER.error("Caught unknown error while rendering ancient stargate preview!",ex);
                 }
                 ForgeHooksClient.setRenderLayer(null);
             }

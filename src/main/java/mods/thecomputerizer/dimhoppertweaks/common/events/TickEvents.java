@@ -65,15 +65,18 @@ public class TickEvents {
             TICK_DELAY.setValue(0);
         }
     }
+    
+    @SubscribeEvent(priority = LOWEST)
+    public static void serverTick(ServerTickEvent event) {
+        if(event.isCanceled()) return;
+        if(event.phase==END)
+            INFERNAL_DISTRACTION.entrySet().removeIf(entry -> entry.getValue().addAndGet(-1)<=0);
+    }
 
     @SubscribeEvent(priority = LOWEST)
     public static void worldTick(WorldTickEvent event) {
         if(event.isCanceled()) return;
         if(event.phase==END) {
-            INFERNAL_DISTRACTION.entrySet().removeIf(entry -> {
-                if(entry.getKey().getEntityWorld()!=event.world) return false;
-                return entry.getValue().addAndGet(-1)<=0;
-            });
             int dim = event.world.provider.getDimension();
             if(dim==44 || dim==45) {
                 synchronized(event.world.playerEntities) {

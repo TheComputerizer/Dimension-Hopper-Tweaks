@@ -61,6 +61,7 @@
     "dimdoors.MixinBaseGateway",
     "dimdoors.MixinChunkGeneratorLimbo",
     "dimdoors.MixinGatewayGenerator",
+    "dimdoors.MixinTeleportUtils",
     "dimdoors.MixinTileEntityEntranceRift",
     "dimdoors.MixinTileEntityFloatingRift",
     "erebus.MixinBlockQuickSand",

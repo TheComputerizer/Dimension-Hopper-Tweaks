@@ -6,17 +6,20 @@ import mods.thecomputerizer.dimhoppertweaks.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DimensionType;
-import org.dave.compactmachines3.misc.RenderTickCounter;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Objects;
+
+import static net.minecraft.client.renderer.GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA;
+import static net.minecraft.client.renderer.GlStateManager.SourceFactor.SRC_ALPHA;
+import static net.minecraft.client.renderer.OpenGlHelper.defaultTexUnit;
+import static net.minecraft.client.renderer.OpenGlHelper.lightmapTexUnit;
+import static net.minecraft.client.renderer.texture.TextureMap.LOCATION_BLOCKS_TEXTURE;
+import static org.dave.compactmachines3.misc.RenderTickCounter.renderTicks;
 
 @SuppressWarnings("deprecation")
 @ParametersAreNonnullByDefault
@@ -38,8 +41,7 @@ public class StargatePreviewWrapper implements IRecipeWrapper {
     
     @Override
     public void drawInfo(Minecraft mc, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
-        AncientStargateRenderer renderer = AncientStargateRenderer.getForDimension(this.recipe.getDimension());
-        if(Objects.isNull(renderer)) return;
+        AncientStargateRenderer renderer = AncientStargateRenderer.fromRecipe(this.recipe);
         GlStateManager.pushMatrix();
         GlStateManager.translate(0f, 0f, 216.5f);
         FontRenderer font = mc.fontRenderer;
@@ -48,16 +50,16 @@ public class StargatePreviewWrapper implements IRecipeWrapper {
         String dimName = getDimensionName(this.recipe.getDimension());
         font.drawString(dimName,0,105,4473924);
         GlStateManager.popMatrix();
-        float angle = (float)RenderTickCounter.renderTicks*25f/128f;
+        float angle = (float)renderTicks*25f/128f;
         TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
-        textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-        textureManager.getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);
-        GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-        GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
+        textureManager.bindTexture(LOCATION_BLOCKS_TEXTURE);
+        textureManager.getTexture(LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);
+        GlStateManager.setActiveTexture(lightmapTexUnit);
+        GlStateManager.setActiveTexture(defaultTexUnit);
         GlStateManager.enableAlpha();
         GlStateManager.alphaFunc(516, 0.1f);
         GlStateManager.enableBlend();
-        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA,GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        GlStateManager.blendFunc(SRC_ALPHA,ONE_MINUS_SRC_ALPHA);
         GlStateManager.color(1f,1f,1f,1f);
         GlStateManager.disableFog();
         GlStateManager.disableLighting();
@@ -80,8 +82,8 @@ public class StargatePreviewWrapper implements IRecipeWrapper {
         GlStateManager.enableCull();
         GlStateManager.scale(scale,scale,scale);
         renderer.render(0f);
-        textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-        textureManager.getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).restoreLastBlurMipmap();
+        textureManager.bindTexture(LOCATION_BLOCKS_TEXTURE);
+        textureManager.getTexture(LOCATION_BLOCKS_TEXTURE).restoreLastBlurMipmap();
         GlStateManager.popMatrix();
     }
 

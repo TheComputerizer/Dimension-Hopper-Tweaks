@@ -1,22 +1,23 @@
 package mods.thecomputerizer.dimhoppertweaks.integration.jei;
 
-import bedrockcraft.ModItems;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;
 import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
-import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.recipes.LightningStrikeRecipe;
-import mods.thecomputerizer.dimhoppertweaks.registry.ItemRegistry;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import static bedrockcraft.ModItems.components;
+import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.MODID;
+import static mods.thecomputerizer.dimhoppertweaks.registry.ItemRegistry.STARGATE_ADDRESSER;
+import static net.minecraft.init.Items.AIR;
+import static net.minecraftforge.fml.common.registry.ForgeRegistries.ITEMS;
 
 @JEIPlugin
 public class DHTJeiPlugin implements IModPlugin {
@@ -45,8 +46,8 @@ public class DHTJeiPlugin implements IModPlugin {
 
     private static ItemStack getItemStack(String regName, int meta) {
         ResourceLocation itemRes = new ResourceLocation(regName);
-        Item item = ForgeRegistries.ITEMS.containsKey(itemRes) ? ForgeRegistries.ITEMS.getValue(itemRes) : Items.AIR;
-        return new ItemStack(Objects.nonNull(item) ? item : Items.AIR,1,meta);
+        Item item = ITEMS.containsKey(itemRes) ? ITEMS.getValue(itemRes) : AIR;
+        return new ItemStack(Objects.nonNull(item) ? item : AIR,1,meta);
     }
 
     @Override
@@ -57,15 +58,15 @@ public class DHTJeiPlugin implements IModPlugin {
 
     @Override
     public void register(IModRegistry registry) {
-        String stargateID = DHTRef.MODID+".ancientStargate";
-        registry.addRecipeCatalyst(new ItemStack(ItemRegistry.STARGATE_ADDRESSER),stargateID);
+        String stargateID = MODID+".ancientStargate";
+        registry.addRecipeCatalyst(new ItemStack(STARGATE_ADDRESSER),stargateID);
         registry.handleRecipes(StargateRecipe.class,StargatePreviewWrapper::new,stargateID);
         registry.addRecipes(getStargateRecipes(),stargateID);
-        String lightningID = DHTRef.MODID+".lightningStrike";
-        registry.addRecipeCatalyst(new ItemStack(ModItems.components,1,9),lightningID);
+        String lightningID = MODID+".lightningStrike";
+        registry.addRecipeCatalyst(new ItemStack(components,1,9),lightningID);
         registry.handleRecipes(LightningStrikeRecipe.class,LightningStrikeWrapper::new,lightningID);
         registry.addRecipes(LightningStrikeRecipe.getRecipes(),lightningID);
-        String tileworkerID = DHTRef.MODID+".tileWorker";
+        String tileworkerID = MODID+".tileWorker";
     }
 
     private List<StargateRecipe> getStargateRecipes() {
@@ -98,7 +99,7 @@ public class DHTJeiPlugin implements IModPlugin {
         inputs.add(heavyDutyStack);
         ItemStack cornerStack = getCornerStack(dimension);
         cornerStack.setCount(4);
-        inputs.add(getCornerStack(dimension));
+        inputs.add(cornerStack);
         list.add(new StargateRecipe(dimension,inputs));
     }
 
