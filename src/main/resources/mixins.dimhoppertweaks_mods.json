@@ -142,6 +142,7 @@
     "packagedexcrafting.MixinRecipeInfoBasic",
     "packagedexcrafting.MixinRecipeInfoElite",
     "packagedexcrafting.MixinRecipeInfoUltimate",
+    "projecte.MixinMatter",
     "psi.MixinModSpellPieces",
     "quark.MixinBlockColorSlime",
     "randomthings.MixinItemTimeInABottle",

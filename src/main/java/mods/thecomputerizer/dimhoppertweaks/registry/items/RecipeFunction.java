@@ -5,7 +5,6 @@ import mods.thecomputerizer.dimhoppertweaks.util.ItemUtil;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
@@ -16,8 +15,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.lang3.StringUtils;
@@ -28,20 +25,26 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+import static net.minecraft.init.Items.IRON_AXE;
+import static net.minecraft.init.Items.WATER_BUCKET;
+import static net.minecraft.item.ItemStack.EMPTY;
+import static net.minecraftforge.fml.common.registry.ForgeRegistries.ENCHANTMENTS;
+import static net.minecraftforge.fml.relauncher.Side.CLIENT;
+
 @SuppressWarnings("DataFlowIssue")
 @ParametersAreNonnullByDefault
 public class RecipeFunction extends EpicItem {
 
-    @SideOnly(Side.CLIENT)
+    @SideOnly(CLIENT)
     public static ModelResourceLocation getModelLocation(ItemStack stack) {
         String id = null;
-        String varient = "";
+        String variant = "";
         if(stack.hasTagCompound() && stack.getItem() instanceof RecipeFunction) {
             NBTTagCompound tag = stack.getTagCompound();
             if(tag.hasKey("display")) {
                 NBTTagCompound displayTag = tag.getCompoundTag("display");
                 id = displayTag.getString("id");
-                varient = displayTag.getString("varient");
+                variant = displayTag.getString("variant");
             } else {
                 RecipeFunction item = (RecipeFunction)stack.getItem();
                 switch(tag.getString("type")) {
@@ -51,23 +54,23 @@ public class RecipeFunction extends EpicItem {
                         break;
                     }
                     case "oredict": {
-                        id = Items.IRON_AXE.getRegistryName().toString();
+                        id = IRON_AXE.getRegistryName().toString();
                         break;
                     }
                     case "liquid": {
-                        id = Items.WATER_BUCKET.getRegistryName().toString();
+                        id = WATER_BUCKET.getRegistryName().toString();
                         break;
                     }
                 }
             }
         }
         ResourceLocation res = StringUtils.isNotBlank(id) ? new ResourceLocation(id) : ItemRegistry.STARGATE_ADDRESSER.getRegistryName();
-        if(StringUtils.isBlank(varient)) varient = "inventory";
-        return getModelLocation(res,varient);
+        if(StringUtils.isBlank(variant)) variant = "inventory";
+        return getModelLocation(res,variant);
     }
 
-    private static @Nullable ModelResourceLocation getModelLocation(@Nullable ResourceLocation res, String varient) {
-        return Objects.nonNull(res) ? new ModelResourceLocation(res,varient) : null;
+    private static @Nullable ModelResourceLocation getModelLocation(@Nullable ResourceLocation res, String variant) {
+        return Objects.nonNull(res) ? new ModelResourceLocation(res,variant) : null;
     }
 
     public void addInputs(ItemStack stack, Collection<ItemStack> inputs) {
@@ -91,13 +94,13 @@ public class RecipeFunction extends EpicItem {
     public ItemStack transformStack(ItemStack stack) {
         if(!(stack.getItem() instanceof RecipeFunction)) return stack;
         NBTTagCompound tag = stack.getTagCompound();
-        if(Objects.isNull(tag)) return ItemStack.EMPTY;
+        if(Objects.isNull(tag)) return EMPTY;
         switch(tag.getString("type")) {
             case "item": return transformToItem(tag.getCompoundTag("item"));
             case "oredict": return transformToOredict(tag);
             case "liquid": return transformToLiquid(tag);
         }
-        return ItemStack.EMPTY;
+        return EMPTY;
     }
 
     private NBTTagList convertDelayedEnchTag(ItemStack stack, NBTTagList delayedTag, int maxEnchants) {
@@ -117,18 +120,18 @@ public class RecipeFunction extends EpicItem {
 
     private @Nullable NBTTagCompound convertEnchTagElement(NBTTagCompound delayedElement) {
         ResourceLocation enchRes = new ResourceLocation(delayedElement.getString("name"));
-        if(ForgeRegistries.ENCHANTMENTS.containsKey(enchRes)) {
+        if(ENCHANTMENTS.containsKey(enchRes)) {
             NBTTagCompound enchTag = new NBTTagCompound();
             int level = delayedElement.getInteger("level");
             enchTag.setInteger("lvl",level);
-            enchTag.setInteger("id",Enchantment.getEnchantmentID(ForgeRegistries.ENCHANTMENTS.getValue(enchRes)));
+            enchTag.setInteger("id",Enchantment.getEnchantmentID(ENCHANTMENTS.getValue(enchRes)));
             return enchTag;
         }
         return null;
     }
 
     protected ItemStack transformToItem(NBTTagCompound itemTag) {
-        ItemStack stack = ItemStack.EMPTY;
+        ItemStack stack = EMPTY;
         Item item = ItemUtil.getItem(itemTag.getString("id"));
         if(Objects.nonNull(item)) {
             int amount = itemTag.hasKey("amount") ? itemTag.getInteger("amount") : 1;
@@ -159,7 +162,7 @@ public class RecipeFunction extends EpicItem {
     }
 
     private ItemStack findMatchingOredictItem(String oredict, NBTTagList list) {
-        ItemStack stack = ItemStack.EMPTY;
+        ItemStack stack = EMPTY;
         int oreID = OreDictionary.getOreID(oredict);
         match: {
             for(NBTBase based : list) {
@@ -173,7 +176,7 @@ public class RecipeFunction extends EpicItem {
     }
 
     private ItemStack transformToOredict(NBTTagCompound tag) {
-        ItemStack stack = ItemStack.EMPTY;
+        ItemStack stack = EMPTY;
         String oredict = tag.getString("oredict");
         if(StringUtils.isNotBlank(oredict) && tag.hasKey("inputs")) {
             stack = findMatchingOredictItem(oredict,tag.getTagList("inputs",10));
@@ -191,7 +194,7 @@ public class RecipeFunction extends EpicItem {
     }
 
     private ItemStack transformToLiquid(NBTTagCompound tag) {
-        ItemStack container = tag.hasKey("container") ? transformToItem(tag.getCompoundTag("container")) : ItemStack.EMPTY;
+        ItemStack container = tag.hasKey("container") ? transformToItem(tag.getCompoundTag("container")) : EMPTY;
         FluidStack stack = null;
         NBTTagCompound fluidTag = tag.getCompoundTag("fluid");
         Fluid fluid = FluidRegistry.getFluid(fluidTag.getString("name"));
@@ -201,7 +204,7 @@ public class RecipeFunction extends EpicItem {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @SideOnly(CLIENT)
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
         if(stack.hasTagCompound()) {
             NBTTagCompound tag = stack.getTagCompound();
@@ -229,7 +232,7 @@ public class RecipeFunction extends EpicItem {
                     for(NBTBase based : enchTagList) {
                         NBTTagCompound enchTag = (NBTTagCompound)based;
                         ResourceLocation enchRes = new ResourceLocation(enchTag.getString("name"));
-                        Enchantment enchantment = ForgeRegistries.ENCHANTMENTS.getValue(enchRes);
+                        Enchantment enchantment = ENCHANTMENTS.getValue(enchRes);
                         if(Objects.nonNull(enchantment))
                             tooltip.add("Enchantment: " +enchantment.getTranslatedName(enchTag.getInteger("level")));
                     }
