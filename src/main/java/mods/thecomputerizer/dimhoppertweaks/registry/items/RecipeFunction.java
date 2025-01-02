@@ -1,6 +1,5 @@
 package mods.thecomputerizer.dimhoppertweaks.registry.items;
 
-import mods.thecomputerizer.dimhoppertweaks.registry.ItemRegistry;
 import mods.thecomputerizer.dimhoppertweaks.util.ItemUtil;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.util.ITooltipFlag;
@@ -25,6 +24,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+import static mods.thecomputerizer.dimhoppertweaks.registry.ItemRegistry.STARGATE_ADDRESSER;
 import static net.minecraft.init.Items.IRON_AXE;
 import static net.minecraft.init.Items.WATER_BUCKET;
 import static net.minecraft.item.ItemStack.EMPTY;
@@ -64,7 +64,7 @@ public class RecipeFunction extends EpicItem {
                 }
             }
         }
-        ResourceLocation res = StringUtils.isNotBlank(id) ? new ResourceLocation(id) : ItemRegistry.STARGATE_ADDRESSER.getRegistryName();
+        ResourceLocation res = StringUtils.isNotBlank(id) ? new ResourceLocation(id) : STARGATE_ADDRESSER.getRegistryName();
         if(StringUtils.isBlank(variant)) variant = "inventory";
         return getModelLocation(res,variant);
     }
@@ -234,7 +234,7 @@ public class RecipeFunction extends EpicItem {
                         ResourceLocation enchRes = new ResourceLocation(enchTag.getString("name"));
                         Enchantment enchantment = ENCHANTMENTS.getValue(enchRes);
                         if(Objects.nonNull(enchantment))
-                            tooltip.add("Enchantment: " +enchantment.getTranslatedName(enchTag.getInteger("level")));
+                            tooltip.add("Enchantment: "+enchantment.getTranslatedName(enchTag.getInteger("level")));
                     }
                 }
             }
