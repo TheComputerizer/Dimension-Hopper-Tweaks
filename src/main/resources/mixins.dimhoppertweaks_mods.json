@@ -92,6 +92,8 @@
     "jei.MixinVanillaPlugin",
     "jei.MixinVanillaRecipeFactory",
     "jeresources.MixinJEIConfig",
+    "lightningcraft.MixinBlockAirTerminal",
+    "lightningcraft.MixinBlockAirTerminalEnumType",
     "lightningcraft.MixinBlockEnergyProvider",
     "lightningcraft.MixinBlockEnergyReceiver",
     "lightningcraft.MixinEnergyStorage",

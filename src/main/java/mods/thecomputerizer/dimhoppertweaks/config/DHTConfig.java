@@ -46,11 +46,86 @@ public final class DHTConfig {
     }
 
     public static final class Mods {
+        
+        @Name("airTerminalEfficiency")
+        @LangKey("config.dimhoppertweaks.mods.airTerminalEfficiency")
+        @Comment("Determines the base percentage efficiency for air terminals. Material efficiencies are be applied on top of this.")
+        public double airTerminalEfficiency = 2.0;
 
         @Name("lastStandCooldown")
         @LangKey("config.dimhoppertweaks.mods.lastStandMaxCooldown")
         @Comment("The cooldown in ticks for the last stand enchantment at level 1. Each additional level subtracts a tick to the cooldown with a minimum possible cooldown of 2 ticks")
         public int lastStandCooldown = 5;
+        
+        @Name("lightningEfficiencyIron")
+        @LangKey("config.dimhoppertweaks.mods.lightningEfficiencyIron")
+        @Comment("Determines the percentage efficiency of iron as a material when working with LE")
+        public double lightningEfficiencyIron = 0.2d;
+        
+        @Name("lightningEfficiencySteel")
+        @LangKey("config.dimhoppertweaks.mods.lightningEfficiencySteel")
+        @Comment("Determines the percentage efficiency of steel as a material when working with LE")
+        public double lightningEfficiencySteel = 0.3d;
+        
+        @Name("lightningEfficiencyLead")
+        @LangKey("config.dimhoppertweaks.mods.lightningEfficiencyLead")
+        @Comment("Determines the percentage efficiency of lead as a material when working with LE")
+        public double lightningEfficiencyLead = 0.4d;
+        
+        @Name("lightningEfficiencyTin")
+        @LangKey("config.dimhoppertweaks.mods.lightningEfficiencyTin")
+        @Comment("Determines the percentage efficiency of tin as a material when working with LE")
+        public double lightningEfficiencyTin = 0.5d;
+        
+        @Name("lightningEfficiencyAluminum")
+        @LangKey("config.dimhoppertweaks.mods.lightningEfficiencyAluminum")
+        @Comment("Determines the percentage efficiency of aluminum as a material when working with LE")
+        public double lightningEfficiencyAluminum = 0.6d;
+        
+        @Name("lightningEfficiencyGold")
+        @LangKey("config.dimhoppertweaks.mods.lightningEfficiencyGold")
+        @Comment("Determines the percentage efficiency of gold as a material when working with LE")
+        public double lightningEfficiencyGold = 0.7d;
+        
+        @Name("lightningEfficiencyCopper")
+        @LangKey("config.dimhoppertweaks.mods.lightningEfficiencyCopper")
+        @Comment("Determines the percentage efficiency of copper as a material when working with LE")
+        public double lightningEfficiencyCopper = 0.8d;
+        
+        @Name("lightningEfficiencyElectricium")
+        @LangKey("config.dimhoppertweaks.mods.lightningEfficiencyElectricium")
+        @Comment("Determines the percentage efficiency of electricium as a material when working with LE")
+        public double lightningEfficiencyElectricium = 1d;
+        
+        @Name("lightningEfficiencySkyfather")
+        @LangKey("config.dimhoppertweaks.mods.lightningEfficiencySkyfather")
+        @Comment("Determines the percentage efficiency of skyfather as a material when working with LE")
+        public double lightningEfficiencySkyfather = 1.5d;
+        
+        @Name("lightningEfficiencyMystic")
+        @LangKey("config.dimhoppertweaks.mods.lightningEfficiencyMystic")
+        @Comment("Determines the percentage efficiency of mystic as a material when working with LE")
+        public double lightningEfficiencyMystic = 2d;
+        
+        @Name("lightningEfficiencyAwakenedDraconium")
+        @LangKey("config.dimhoppertweaks.mods.lightningEfficiencyAwakenedDraconium")
+        @Comment("Determines the percentage efficiency of awakened draconium as a material when working with LE")
+        public double lightningEfficiencyAwakenedDraconium = 3d;
+        
+        @Name("lightningEfficiencyInsanium")
+        @LangKey("config.dimhoppertweaks.mods.lightningEfficiencyInsanium")
+        @Comment("Determines the percentage efficiency of insanium as a material when working with LE")
+        public double lightningEfficiencyInsanium = 4d;
+        
+        @Name("lightningEfficiencyUltimate")
+        @LangKey("config.dimhoppertweaks.mods.lightningEfficiencyUltimate")
+        @Comment("Determines the percentage efficiency of ultimate as a material when working with LE")
+        public double lightningEfficiencyUltimate = 5d;
+        
+        @Name("lightningEfficiencyInfinity")
+        @LangKey("config.dimhoppertweaks.mods.lightningEfficiencyInfinity")
+        @Comment("Determines the percentage efficiency of infinity as a material when working with LE")
+        public double lightningEfficiencyInfinity = 10d;
 
         @Name("xpLossMasochist")
         @LangKey("config.dimhoppertweaks.mods.xpLossMasochist")
