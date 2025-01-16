@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("AddedMixinMembersNamePattern")
-@Mixin(value = EnumType.class)
+@Mixin(value = EnumType.class, remap = false)
 public class MixinBlockAirTerminalEnumType {
     
     @Shadow @Final @Mutable private static EnumType[] $VALUES;
