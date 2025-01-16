@@ -7,9 +7,9 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.gen.Invoker;
 import sblectric.lightningcraft.blocks.BlockAirTerminal.EnumType;
-import scala.actors.threadpool.Arrays;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @SuppressWarnings("AddedMixinMembersNamePattern")
@@ -28,9 +28,9 @@ public class MixinBlockAirTerminalEnumType {
         throw new AssertionError();
     }
     
-    @SuppressWarnings({"unchecked","DataFlowIssue"}) @Unique
+    @SuppressWarnings("DataFlowIssue") @Unique
     private static EnumType dimhoppertweaks$addTerminalType() {
-        List<EnumType> variants = new ArrayList<EnumType>(Arrays.asList($VALUES));
+        List<EnumType> variants = new ArrayList<>(Arrays.asList($VALUES));
         EnumType type = dimhoppertweaks$invokeInit(variants.size());
         variants.add(type);
         $VALUES = variants.toArray(new EnumType[0]);
