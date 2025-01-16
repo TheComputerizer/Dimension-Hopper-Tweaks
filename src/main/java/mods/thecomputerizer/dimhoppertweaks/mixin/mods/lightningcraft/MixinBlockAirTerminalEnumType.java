@@ -18,20 +18,22 @@ public class MixinBlockAirTerminalEnumType {
     
     @Shadow @Final @Mutable private static EnumType[] $VALUES;
     
-    @Unique private static final EnumType AWAKENED_DRACONIUM = dimhoppertweaks$addTerminalType();
-    @Unique private static final EnumType INSANIUM = dimhoppertweaks$addTerminalType();
-    @Unique private static final EnumType ULTIMATE = dimhoppertweaks$addTerminalType();
-    @Unique private static final EnumType INFINITY = dimhoppertweaks$addTerminalType();
+    @Unique private static final EnumType AWAKENED_DRACONIUM = dimhoppertweaks$addTerminalType("AWAKENED_DRACONIUM");
+    @Unique private static final EnumType INSANIUM = dimhoppertweaks$addTerminalType("INSANIUM");
+    @Unique private static final EnumType ULTIMATE = dimhoppertweaks$addTerminalType("ULTIMATE");
+    @Unique private static final EnumType INFINITY = dimhoppertweaks$addTerminalType("INFINITY");
     
-    @SuppressWarnings("MixinAnnotationTarget") @Invoker("<init>")
-    public static EnumType dimhoppertweaks$invokeInit(int meta) {
+    @Invoker("<init>")
+    private static EnumType dimhoppertweaks$invokeInit(String internalName, int ordinal, int meta) {
         throw new AssertionError();
     }
     
     @SuppressWarnings("DataFlowIssue") @Unique
-    private static EnumType dimhoppertweaks$addTerminalType() {
+    private static EnumType dimhoppertweaks$addTerminalType(String internalName) {
         List<EnumType> variants = new ArrayList<>(Arrays.asList($VALUES));
-        EnumType type = dimhoppertweaks$invokeInit(variants.size());
+        int size = variants.size();
+        int ordinal = variants.get(size-1).ordinal()+1; //probably the same but just in case
+        EnumType type = dimhoppertweaks$invokeInit(internalName,ordinal,size);
         variants.add(type);
         $VALUES = variants.toArray(new EnumType[0]);
         return type;
