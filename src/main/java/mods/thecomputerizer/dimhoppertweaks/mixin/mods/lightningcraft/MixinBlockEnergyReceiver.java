@@ -3,7 +3,8 @@ package mods.thecomputerizer.dimhoppertweaks.mixin.mods.lightningcraft;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import sblectric.lightningcraft.blocks.BlockEnergyReceiver;
-import sblectric.lightningcraft.config.LCConfig;
+
+import static sblectric.lightningcraft.config.LCConfig.RFtoLEConversion;
 
 @Mixin(value = BlockEnergyReceiver.class, remap = false)
 public abstract class MixinBlockEnergyReceiver {
@@ -14,6 +15,6 @@ public abstract class MixinBlockEnergyReceiver {
      */
     @Overwrite
     public int getMaxRFPerTick() {
-        return LCConfig.RFtoLEConversion;
+        return RFtoLEConversion;
     }
 }

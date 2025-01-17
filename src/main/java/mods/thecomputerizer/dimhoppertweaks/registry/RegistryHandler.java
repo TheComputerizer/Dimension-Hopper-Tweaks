@@ -11,6 +11,7 @@ import mods.thecomputerizer.dimhoppertweaks.recipes.LightningStrikeRecipe;
 import mods.thecomputerizer.dimhoppertweaks.recipes.LightningStrikeRecipe.Builder;
 import mods.thecomputerizer.dimhoppertweaks.registry.structures.AbstractStructure;
 import mods.thecomputerizer.dimhoppertweaks.registry.tiles.LightningEnhancerEntity;
+import mods.thecomputerizer.dimhoppertweaks.util.ItemUtil;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -81,6 +82,10 @@ public final class RegistryHandler {
         addFunnySolarPanelRecipe(5,"pladium");
         addFunnySolarPanelRecipe(6,"ionite");
         addFunnySolarPanelRecipe(7,"aethium");
+        addTerminalRecipe(9,"moreplates:awakened_draconium_plate","minecraft:dragon_egg");
+        addTerminalRecipe(10,"moreplates:insanium_plate","zollerngalaxy:perddiamondblock");
+        addTerminalRecipe(11,"extendedcrafting:material",19,"mysticalagradditions:dragon_egg_essence");
+        addTerminalRecipe(12,"moreplates:infinity_plate","minecraft:dragon_egg");
         LOGGER.info("Registered {} lightning strike recipe(s)",LightningStrikeRecipe.getRecipes().size());
     }
     
@@ -97,6 +102,19 @@ public final class RegistryHandler {
                 .addInput(() -> new ItemStack(ITEMS.getValue(crystalRes)))
                 .addOutput(() -> new ItemStack(ITEMS.getValue(solarRes)))
                 .setRange(5d).setDimension(dimension).build();
+    }
+    
+    private static void addTerminalRecipe(int metaIn, String plate, String extra) {
+        addTerminalRecipe(metaIn,plate,0,extra);
+    }
+    
+    private static void addTerminalRecipe(int metaIn, String plate, int plateMeta, String extra) {
+        ResourceLocation terminalRes = new ResourceLocation("lightningcraft","air_terminal");
+        new Builder().setCatalyst(() -> ItemUtil.getStack(terminalRes,metaIn))
+                .addInput(() -> ItemUtil.getItem(plate),() -> plateMeta,() -> 5)
+                .addInput(() -> ItemUtil.getItem(extra),() -> 0,() -> 1)
+                .addOutput(() -> ItemUtil.getStack(terminalRes,metaIn+1))
+                .setRange(5d).setDimension(0).build();
     }
 
     @SubscribeEvent

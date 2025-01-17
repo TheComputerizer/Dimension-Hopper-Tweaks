@@ -30,6 +30,12 @@ public class ItemUtil {
         Item item = getItem(itemRes);
         return Objects.nonNull(item) ? new ItemStack(item,1,meta) : ItemStack.EMPTY;
     }
+    
+    public static ItemStack getStack(@Nullable ResourceLocation itemRes, int meta) {
+        if(Objects.isNull(itemRes)) return ItemStack.EMPTY;
+        Item item = getItem(itemRes);
+        return Objects.nonNull(item) ? new ItemStack(item,1,meta) : ItemStack.EMPTY;
+    }
 
     public static NBTTagCompound getOrCreateTag(ItemStack stack) {
         if(!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
