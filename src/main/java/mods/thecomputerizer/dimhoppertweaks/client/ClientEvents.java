@@ -76,6 +76,7 @@ public class ClientEvents {
     private static Tuple<LightningEnhancerEntity,Double> getNearbyEnhancer(EntityPlayerSP player) {
         for(TileEntity entity : player.world.loadedTileEntityList) {
             if(entity instanceof LightningEnhancerEntity) {
+                if(!((LightningEnhancerEntity)entity).isEnabled()) continue;
                 double distance = entity.getPos().getDistance((int)player.posX,(int)player.posY,(int)player.posZ);
                 if(distance<=32) return new Tuple<>((LightningEnhancerEntity)entity,distance);
             }

@@ -29,16 +29,16 @@ public class LightningStrikeRecipe {
         if(RECIPES.isEmpty() || !(entity instanceof EntityItem)) return ;
         World world = bolt.getEntityWorld();
         Vec3d strikePos = bolt.getPositionVector();
-        List<EntityItem> entites = null;
+        List<EntityItem> entities = null;
         for(LightningStrikeRecipe recipe : RECIPES) {
             EntityItem eItem = (EntityItem)entity;
             if(recipe.checkCatalyst(eItem,strikePos)) {
-                if(Objects.isNull(entites)) {
-                    entites = world.getEntitiesWithinAABB(EntityItem.class,new AxisAlignedBB(
+                if(Objects.isNull(entities)) {
+                    entities = world.getEntitiesWithinAABB(EntityItem.class,new AxisAlignedBB(
                             strikePos.subtract(maxRange,maxRange,maxRange),strikePos.add(maxRange,maxRange,maxRange)));
-                    entites.removeIf(item -> item==entity);
+                    entities.removeIf(item -> item==entity);
                 }
-                recipe.verifyInputs(world,strikePos,entites);
+                recipe.verifyInputs(world,strikePos,entities);
             }
         }
     }

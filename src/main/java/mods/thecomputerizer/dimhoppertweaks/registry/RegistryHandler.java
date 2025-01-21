@@ -82,10 +82,21 @@ public final class RegistryHandler {
         addFunnySolarPanelRecipe(5,"pladium");
         addFunnySolarPanelRecipe(6,"ionite");
         addFunnySolarPanelRecipe(7,"aethium");
+        addIronTerminalRecipe();
+        addTerminalRecipe(0,"moreplates:electrical_steel_plate","immersiveengineering:material",2);
+        addTerminalRecipe(1,"thermalfoundation:material",323,"moreplates:lead_stick");
+        addTerminalRecipe(2,"thermalfoundation:material",321,"moreplates:tin_stick");
+        addTerminalRecipe(3,"thermalfoundation:material",324,"lightningcraft:rod",4);
+        addTerminalRecipe(4,"moreplates:enriched_gold_plate","silentgems:craftingmaterial",8);
+        addTerminalRecipe(5,"thermalfoundation:material",320,"moreplates:copper_stick");
+        addTerminalRecipe(6,"lightningcraft:plate",7,"lightningcraft:rod",7);
+        addTerminalRecipe(7,"lightningcraft:plate",8,"lightningcraft:rod",8);
+        addTerminalRecipe(8,"lightningcraft:plate",9,"lightningcraft:rod",9);
         addTerminalRecipe(9,"moreplates:awakened_draconium_plate","minecraft:dragon_egg");
         addTerminalRecipe(10,"moreplates:insanium_plate","zollerngalaxy:perddiamondblock");
         addTerminalRecipe(11,"extendedcrafting:material",19,"mysticalagradditions:dragon_egg_essence");
-        addTerminalRecipe(12,"moreplates:infinity_plate","minecraft:dragon_egg");
+        addTerminalRecipe(12,"moreplates:infinity_plate","projectex:final_star_shard");
+        
         LOGGER.info("Registered {} lightning strike recipe(s)",LightningStrikeRecipe.getRecipes().size());
     }
     
@@ -104,15 +115,32 @@ public final class RegistryHandler {
                 .setRange(5d).setDimension(dimension).build();
     }
     
+    private static void addIronTerminalRecipe() {
+        ResourceLocation terminalRes = new ResourceLocation("lightningcraft","air_terminal");
+        new Builder().setCatalyst(() -> ItemUtil.getStack("calculator:conductormast"))
+                .addInput(() -> ItemUtil.getItem("moreplates:conductive_iron_plate"),() -> 0,() -> 5)
+                .addInput(() -> ItemUtil.getItem("extendedcrafting:material"),() -> 3,() -> 1)
+                .addOutput(() -> ItemUtil.getStack(terminalRes,0))
+                .setRange(5d).setDimension(0).build();
+    }
+    
     private static void addTerminalRecipe(int metaIn, String plate, String extra) {
-        addTerminalRecipe(metaIn,plate,0,extra);
+        addTerminalRecipe(metaIn,plate,0,extra,0);
+    }
+    
+    private static void addTerminalRecipe(int metaIn, String plate, String extra, int extraMeta) {
+        addTerminalRecipe(metaIn,plate,0,extra,extraMeta);
     }
     
     private static void addTerminalRecipe(int metaIn, String plate, int plateMeta, String extra) {
+        addTerminalRecipe(metaIn,plate,plateMeta,extra,0);
+    }
+    
+    private static void addTerminalRecipe(int metaIn, String plate, int plateMeta, String extra, int extraMeta) {
         ResourceLocation terminalRes = new ResourceLocation("lightningcraft","air_terminal");
         new Builder().setCatalyst(() -> ItemUtil.getStack(terminalRes,metaIn))
                 .addInput(() -> ItemUtil.getItem(plate),() -> plateMeta,() -> 5)
-                .addInput(() -> ItemUtil.getItem(extra),() -> 0,() -> 1)
+                .addInput(() -> ItemUtil.getItem(extra),() -> extraMeta,() -> 1)
                 .addOutput(() -> ItemUtil.getStack(terminalRes,metaIn+1))
                 .setRange(5d).setDimension(0).build();
     }

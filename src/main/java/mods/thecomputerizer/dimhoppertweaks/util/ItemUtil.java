@@ -24,6 +24,10 @@ public class ItemUtil {
     public static @Nullable Item getItem(ResourceLocation res) {
         return ForgeRegistries.ITEMS.containsKey(res) ? ForgeRegistries.ITEMS.getValue(res) : null;
     }
+    
+    public static ItemStack getStack(@Nullable String itemRes) {
+        return getStack(itemRes,0);
+    }
 
     public static ItemStack getStack(@Nullable String itemRes, int meta) {
         if(StringUtils.isBlank(itemRes)) return ItemStack.EMPTY;
