@@ -6,6 +6,8 @@ import net.minecraft.block.state.IBlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.Constant;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import sblectric.lightningcraft.blocks.BlockAirTerminal;
 import sblectric.lightningcraft.blocks.base.BlockMeta;
 
@@ -25,5 +27,10 @@ public abstract class MixinBlockAirTerminal extends BlockMeta {
     @Overwrite
     public double getEfficiency(IBlockState state) {
         return DHTConfigHelper.airTerminalEfficiency(getMetaFromState(state));
+    }
+    
+    @ModifyConstant(constant = @Constant(intValue = 10), method = "<init>(FF)V")
+    private static int dimhoppertweaks$addMoreAirTerminals(int constant) {
+        return constant+4;
     }
 }

@@ -97,6 +97,7 @@
     "lightningcraft.MixinBlockEnergyProvider",
     "lightningcraft.MixinBlockEnergyReceiver",
     "lightningcraft.MixinEnergyStorage",
+    "lightningcraft.MixinItemBlockAirTerminal",
     "lightningcraft.MixinJEIPlugin",
     "lightningcraft.MixinMetalRod",
     "lightningcraft.MixinTileEntityEnergyProvider",
