@@ -4,28 +4,32 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
-import net.silentchaos512.lib.event.ClientTicks;
-import net.silentchaos512.scalinghealth.ScalingHealth;
-import net.silentchaos512.scalinghealth.lib.module.ModuleAprilTricks;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.util.Color;
 
 import java.util.Objects;
 
+import static net.minecraft.client.renderer.vertex.DefaultVertexFormats.POSITION_TEX;
+import static net.minecraftforge.fml.relauncher.Side.CLIENT;
+import static net.silentchaos512.lib.event.ClientTicks.ticksInGame;
+import static net.silentchaos512.scalinghealth.ScalingHealth.MOD_ID_LOWER;
+import static net.silentchaos512.scalinghealth.lib.module.ModuleAprilTricks.instance;
+
+@SideOnly(CLIENT)
 public class BetterBlightFireRenderer {
 
     public static final ResourceLocation TEXTURE = new ResourceLocation(
-            ScalingHealth.MOD_ID_LOWER,"textures/entity/blightfire.png");
+            MOD_ID_LOWER,"textures/entity/blightfire.png");
     public static final ResourceLocation TEXTURE_GRAY = new ResourceLocation(
-            ScalingHealth.MOD_ID_LOWER,"textures/entity/blightfire_gray.png");
+            MOD_ID_LOWER,"textures/entity/blightfire_gray.png");
 
     public static void render(RenderManager manager, EntityLivingBase parent, double x, double y, double z) {
         if(Objects.nonNull(parent) && !parent.isDead && parent.getHealth()>0f) {
-            boolean tomfoolery = ModuleAprilTricks.instance.isEnabled() && ModuleAprilTricks.instance.isRightDay();
+            boolean tomfoolery = instance.isEnabled() && instance.isRightDay();
             AxisAlignedBB box = parent.getEntityBoundingBox();
             float width = averageBoxWidth(box);
             double height = Math.abs(box.maxY-box.minY);
@@ -34,10 +38,10 @@ public class BetterBlightFireRenderer {
             if(tomfoolery) {
                 float entityID = parent.getEntityId();
                 float hueOffset = 40f+entityID%80f;
-                float hue = (ClientTicks.ticksInGame+entityID)%hueOffset/hueOffset;
-                color.fromHSB(hue, 1f,1f);
+                float hue = (ticksInGame+entityID)%hueOffset/hueOffset;
+                color.fromHSB(hue,1f,1f);
             }
-            int frame = ClientTicks.ticksInGame % 64;
+            int frame = ticksInGame%64;
             boolean isOffset = frame>31;
             if(isOffset) frame-=32;
             double minU = isOffset ? 0.5f : 0;
@@ -59,7 +63,7 @@ public class BetterBlightFireRenderer {
     private static void draw(double xMin, double xMax, double yMin, double yMax, double minU, double maxU, double minV, double maxV) {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(7, DefaultVertexFormats.POSITION_TEX);
+        buffer.begin(7,POSITION_TEX);
         buffer.pos(xMax,yMin,0d).tex(maxU,maxV).endVertex();
         buffer.pos(xMin,yMin,0d).tex(minU,maxV).endVertex();
         buffer.pos(xMin,yMax,0d).tex(minU,minV).endVertex();

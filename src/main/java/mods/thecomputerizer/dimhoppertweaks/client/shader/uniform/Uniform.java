@@ -1,8 +1,10 @@
 package mods.thecomputerizer.dimhoppertweaks.client.shader.uniform;
 
+import lombok.Getter;
+
 public abstract class Uniform<U> {
 
-    private final String name;
+    @Getter private final String name;
     private int uniformID;
 
     protected Uniform(String name) {
@@ -12,11 +14,7 @@ public abstract class Uniform<U> {
     public int getID() {
         return this.uniformID;
     }
-
-    public String getName() {
-        return this.name;
-    }
-
+    
     public void setID(int id) {
         this.uniformID = id;
     }

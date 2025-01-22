@@ -8,18 +8,19 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.vecmath.Point4f;
 
+import static net.minecraftforge.fml.relauncher.Side.CLIENT;
+
 @ParametersAreNonnullByDefault
-@SideOnly(Side.CLIENT)
+@SideOnly(CLIENT)
 public class ParticleAscii extends Particle {
 
-    private static final String  POTENTIAL_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private static final String POTENTIAL_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private final double rangeFactor;
     private char curChar;
     private Point4f charUV;

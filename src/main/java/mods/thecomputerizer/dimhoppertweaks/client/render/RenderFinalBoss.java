@@ -7,15 +7,16 @@ import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBo
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraftforge.client.model.obj.OBJModel.OBJBakedModel;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 
@@ -23,7 +24,13 @@ import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Random;
 
+import static mods.thecomputerizer.dimhoppertweaks.client.DHTClient.FORCEFIELD;
+import static net.minecraft.client.renderer.GlStateManager.SourceFactor.ONE;
+import static net.minecraft.util.EnumParticleTypes.PORTAL;
+import static net.minecraftforge.fml.relauncher.Side.CLIENT;
+
 @SuppressWarnings("DataFlowIssue")
+@SideOnly(CLIENT)
 public class RenderFinalBoss extends GeoEntityRenderer<EntityFinalBoss> {
 
     public RenderFinalBoss(RenderManager renderManager) {
@@ -40,7 +47,7 @@ public class RenderFinalBoss extends GeoEntityRenderer<EntityFinalBoss> {
             GlStateManager.disableAlpha();
             GlStateManager.enableBlend();
             GlStateManager.disableLighting();
-            GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
+            GlStateManager.blendFunc(ONE,DestFactor.ONE);
             EntityPlayer viewingPlayer = Minecraft.getMinecraft().player;
             double translationXLT = entity.posX-viewingPlayer.prevPosX;
             double translationYLT = entity.posY-viewingPlayer.prevPosY;
@@ -49,7 +56,7 @@ public class RenderFinalBoss extends GeoEntityRenderer<EntityFinalBoss> {
             double translationY = translationYLT+(((entity.posY-viewingPlayer.posY)-translationYLT)*partialTicks);
             double translationZ = translationZLT+(((entity.posZ-viewingPlayer.posZ)-translationZLT)*partialTicks);
             GlStateManager.translate(translationX,translationY+1.1d,translationZ);
-            Minecraft.getMinecraft().getTextureManager().bindTexture(DHTClient.FORCEFIELD);
+            Minecraft.getMinecraft().getTextureManager().bindTexture(FORCEFIELD);
             GlStateManager.scale(8f,8f,8f);
             GlStateManager.color(0f,0.5f,0.9f,0.1f);
             renderOBJ(bakedForceField.getQuads(null,null,0),new ColourRGBA(0f,0.5f,0.9f,0.1f).argb());
@@ -66,7 +73,7 @@ public class RenderFinalBoss extends GeoEntityRenderer<EntityFinalBoss> {
             GlStateManager.disableAlpha();
             GlStateManager.enableBlend();
             GlStateManager.disableLighting();
-            GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE,GlStateManager.DestFactor.ONE);
+            GlStateManager.blendFunc(ONE,DestFactor.ONE);
             EntityPlayer viewingPlayer = Minecraft.getMinecraft().player;
             Vec3d eyePos = entity.getPositionEyes(partialTicks);
             Vec3d lookVec = entity.getLook(partialTicks);
@@ -78,7 +85,7 @@ public class RenderFinalBoss extends GeoEntityRenderer<EntityFinalBoss> {
             double translationY = translationYLT+(((chargeVec.y-viewingPlayer.posY)-translationYLT)*partialTicks);
             double translationZ = translationZLT+(((chargeVec.z-viewingPlayer.posZ)-translationZLT)*partialTicks);
             GlStateManager.translate(translationX, translationY, translationZ);
-            Minecraft.getMinecraft().getTextureManager().bindTexture(DHTClient.FORCEFIELD);
+            Minecraft.getMinecraft().getTextureManager().bindTexture(FORCEFIELD);
             float alpha = entity.getProjectileChargePercent();
             GlStateManager.scale(0.5f*alpha, 0.5f*alpha, 0.5f*alpha);
             GlStateManager.color(1f,1f,1f, alpha);
@@ -96,7 +103,7 @@ public class RenderFinalBoss extends GeoEntityRenderer<EntityFinalBoss> {
                         chargeVec.z+(rand.nextDouble()-0.5d));
                 Vec3d toCenter = spawned.subtract(chargeVec).normalize();
                 float velocity = entity.getProjectileChargePercent()*2f;
-                viewingPlayer.world.spawnParticle(EnumParticleTypes.PORTAL,spawned.x,spawned.y,spawned.z,
+                viewingPlayer.world.spawnParticle(PORTAL,spawned.x,spawned.y,spawned.z,
                         toCenter.x*velocity,toCenter.y*velocity,toCenter.z*velocity);
             }
         }

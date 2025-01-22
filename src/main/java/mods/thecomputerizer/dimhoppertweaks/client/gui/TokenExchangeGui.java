@@ -1,6 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.client.gui;
 
-import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
+import lombok.Setter;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketSyncGuiData;
 import mods.thecomputerizer.dimhoppertweaks.util.TextUtil;
 import net.minecraft.client.Minecraft;
@@ -8,8 +8,6 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,12 +16,16 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.MODID;
+import static net.minecraft.client.renderer.vertex.DefaultVertexFormats.POSITION_COLOR;
+import static org.lwjgl.opengl.GL11.GL_QUADS;
+
 @SuppressWarnings("NullableProblems")
 public class TokenExchangeGui extends GuiScreen {
     private final List<String> skills;
     private final List<CircularScrollableElement> scrollables;
-    private String currentSkill;
-    private int conversionRate;
+    @Setter private String currentSkill;
+    @Setter private int conversionRate;
 
     public TokenExchangeGui(List<String> skills, String currentSkill, int conversionRate) {
         this.skills = skills;
@@ -37,23 +39,15 @@ public class TokenExchangeGui extends GuiScreen {
         super.setWorldAndResolution(mc, width, height);
         synchronized (this.scrollables) {
             this.scrollables.clear();
-            this.scrollables.add(new ScrollableInteger(this, 3 * (this.width / 4), this.height / 4, 50, 72,
-                    this.conversionRate, String.valueOf(this.conversionRate), "level"));
-            this.scrollables.add(new ScrollableList(this, this.width / 4, this.height / 4, 50, 72,
-                    getSkillTranslation(this.currentSkill), this.currentSkill, this.skills, getListTranslation(), "current_skill"));
+            this.scrollables.add(new ScrollableInteger(this,3*(this.width/4),this.height/4,50,72,
+                    this.conversionRate, String.valueOf(this.conversionRate),"level"));
+            this.scrollables.add(new ScrollableList(this,this.width/4,this.height/4,50,72,
+                    getSkillTranslation(this.currentSkill),this.currentSkill,this.skills,getListTranslation(),"current_skill"));
         }
     }
-
-    public void setConversionRate(int level) {
-        this.conversionRate = level;
-    }
-
-    public void setCurrentSkill(String skill) {
-        this.currentSkill = skill;
-    }
-
+    
     private String getSkillTranslation(String skill) {
-        return TextUtil.getTranslated("skill."+ DHTRef.MODID+"."+skill);
+        return TextUtil.getTranslated("skill."+MODID+"."+skill);
     }
 
     private List<String> getListTranslation() {
@@ -66,15 +60,15 @@ public class TokenExchangeGui extends GuiScreen {
         if(Objects.isNull(this.fontRenderer)) this.fontRenderer = this.mc.fontRenderer;
         try {
             this.drawDefaultBackground();
-            synchronized (this.scrollables) {
+            synchronized(this.scrollables) {
                 for (CircularScrollableElement circle : this.scrollables)
                     circle.render(Minecraft.getMinecraft(),mouseX,mouseY,0,0,0,64);
             }
-            this.drawCenteredString(this.fontRenderer,TextUtil.getTranslated("gui."+ DHTRef.MODID+"."+"skill_drain"),
+            this.drawCenteredString(this.fontRenderer,TextUtil.getTranslated("gui."+MODID+"."+"skill_drain"),
                     this.width/2,8,10526880);
             this.renderSmallCircleOnCursor(Minecraft.getMinecraft(),mouseX,mouseY);
             super.drawScreen(mouseX, mouseY, partialTicks);
-        } catch (NullPointerException ignored) {
+        } catch(NullPointerException ignored) {
             this.currentSkill = Objects.nonNull(this.currentSkill) && this.currentSkill.length()>1 ? this.currentSkill : "mining";
             Minecraft.getMinecraft().displayGuiScreen(null);
             Minecraft.getMinecraft().setIngameFocus();
@@ -105,8 +99,8 @@ public class TokenExchangeGui extends GuiScreen {
         float startAngle = (float) Math.toRadians(180);
         float endAngle = (float) Math.toRadians(540);
         float angle = endAngle-startAngle;
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-        for (int i=0; i<72; i++) {
+        buffer.begin(GL_QUADS,POSITION_COLOR);
+        for(int i=0;i<72;i++) {
             float angle1 = startAngle+(i/72f)*angle;
             float angle2 = startAngle+((i+1)/72f)*angle;
             float xOut = mouseX+5*(float)Math.cos(angle1);

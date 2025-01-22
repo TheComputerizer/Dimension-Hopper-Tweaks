@@ -1,16 +1,17 @@
 package mods.thecomputerizer.dimhoppertweaks.client.gui;
 
-import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import org.lwjgl.opengl.GL11;
 
 import java.util.Objects;
+
+import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.MODID;
+import static net.minecraft.client.renderer.vertex.DefaultVertexFormats.POSITION_COLOR;
+import static org.lwjgl.opengl.GL11.GL_QUADS;
 
 public abstract class CircularScrollableElement extends Gui {
 
@@ -65,13 +66,13 @@ public abstract class CircularScrollableElement extends Gui {
         GlStateManager.disableAlpha();
         GlStateManager.enableBlend();
         GlStateManager.disableTexture2D();
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color(1f,1f,1f,1f);
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
-        float startAngle = (float) Math.toRadians(180);
-        float endAngle = (float) Math.toRadians(540);
-        float angle = endAngle - startAngle;
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+        float startAngle = (float)Math.toRadians(180);
+        float endAngle = (float)Math.toRadians(540);
+        float angle = endAngle-startAngle;
+        buffer.begin(GL_QUADS,POSITION_COLOR);
         for(int i=0;i<this.resolution;i++) {
             float angle1 = startAngle+(i/(float)this.resolution)*angle;
             float angle2 = startAngle+((i+1)/(float)this.resolution)*angle;
@@ -79,10 +80,10 @@ public abstract class CircularScrollableElement extends Gui {
             float yOut = this.centerY+this.radius*(float)Math.sin(angle1);
             float xOut2 = this.centerX+this.radius*(float)Math.cos(angle2);
             float yOut2 = this.centerY+this.radius*(float)Math.sin(angle2);
-            buffer.pos(xOut, yOut, this.zLevel).color(r, g, b, a).endVertex();
-            buffer.pos(this.centerX, this.centerY, this.zLevel).color(r, g, b, a).endVertex();
-            buffer.pos(this.centerX, this.centerY, this.zLevel).color(r, g, b, a).endVertex();
-            buffer.pos(xOut2, yOut2, this.zLevel).color(r, g, b, a).endVertex();
+            buffer.pos(xOut,yOut,this.zLevel).color(r,g,b,a).endVertex();
+            buffer.pos(this.centerX,this.centerY,this.zLevel).color(r,g,b,a).endVertex();
+            buffer.pos(this.centerX,this.centerY,this.zLevel).color(r,g,b,a).endVertex();
+            buffer.pos(xOut2,yOut2,this.zLevel).color(r,g,b,a).endVertex();
         }
         tessellator.draw();
         GlStateManager.enableAlpha();
@@ -92,6 +93,6 @@ public abstract class CircularScrollableElement extends Gui {
         int color = this.hover ? 16777120 : 14737632;
         this.drawCenteredString(mc.fontRenderer,this.displayString,this.centerX,this.centerY,color);
         if(this.hover && Objects.nonNull(this.hoverText))
-            parentScreen.drawHoveringText(TextUtil.getTranslated("gui."+ DHTRef.MODID+"."+this.hoverText),mouseX,mouseY);
+            parentScreen.drawHoveringText(TextUtil.getTranslated("gui."+MODID+"."+this.hoverText),mouseX,mouseY);
     }
 }

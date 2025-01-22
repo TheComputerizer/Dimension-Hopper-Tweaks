@@ -6,17 +6,23 @@ import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBo
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.mutable.MutableInt;
-import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 import java.util.Objects;
+
+import static mods.thecomputerizer.dimhoppertweaks.client.DHTClient.ATTACK;
+import static net.minecraft.client.renderer.GlStateManager.SourceFactor.ONE;
+import static net.minecraft.client.renderer.vertex.DefaultVertexFormats.ITEM;
+import static net.minecraftforge.fml.relauncher.Side.CLIENT;
+import static org.lwjgl.opengl.GL11.GL_QUADS;
 
 @SuppressWarnings("DataFlowIssue")
 public class RenderDelayedAOE {
@@ -57,7 +63,8 @@ public class RenderDelayedAOE {
         float curSize = (1f-(curTime/scaleTime))*(max-min);
         return prevSize+((curSize-prevSize)*partialTicks);
     }
-
+    
+    @SideOnly(CLIENT)
     public void render(float partialTicks) {
         if(this.canRender()) {
             GlStateManager.pushMatrix();
@@ -65,7 +72,7 @@ public class RenderDelayedAOE {
             GlStateManager.disableAlpha();
             GlStateManager.enableBlend();
             GlStateManager.disableLighting();
-            GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE,GlStateManager.DestFactor.ONE);
+            GlStateManager.blendFunc(ONE,DestFactor.ONE);
             EntityPlayer viewingPlayer = Minecraft.getMinecraft().player;
             double translationXLT = this.posVec.x-viewingPlayer.prevPosX;
             double translationYLT = this.posVec.y-viewingPlayer.prevPosY;
@@ -74,7 +81,7 @@ public class RenderDelayedAOE {
             double translationY = translationYLT+(((this.posVec.y-viewingPlayer.posY)-translationYLT)*partialTicks);
             double translationZ = translationZLT+(((this.posVec.z-viewingPlayer.posZ)-translationZLT)*partialTicks);
             GlStateManager.translate(translationX,translationY,translationZ);
-            Minecraft.getMinecraft().getTextureManager().bindTexture(DHTClient.ATTACK);
+            Minecraft.getMinecraft().getTextureManager().bindTexture(ATTACK);
             float scale = getRenderSize(partialTicks);
             GlStateManager.scale(scale,scale,scale);
             GlStateManager.color(1f,1f,1f,1f);
@@ -89,7 +96,7 @@ public class RenderDelayedAOE {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
         for(BakedQuad quad : listQuads) {
-            buffer.begin(GL11.GL_QUADS,DefaultVertexFormats.ITEM);
+            buffer.begin(GL_QUADS,ITEM);
             buffer.addVertexData(quad.getVertexData());
             buffer.putColor4(ARGB);
             Vec3i vec3i = quad.getFace().getDirectionVec();

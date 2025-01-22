@@ -1,5 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.client.shader;
 
+import lombok.Getter;
 import mods.thecomputerizer.dimhoppertweaks.client.shader.uniform.Uniform;
 import mods.thecomputerizer.dimhoppertweaks.client.shader.uniform.UniformFloat;
 import mods.thecomputerizer.dimhoppertweaks.client.shader.uniform.UniformInt;
@@ -10,7 +11,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.*;
-import thebetweenlands.client.render.shader.ShaderHelper;
 
 import javax.annotation.Nullable;
 import java.nio.FloatBuffer;
@@ -19,11 +19,16 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static org.lwjgl.opengl.ARBFragmentShader.GL_FRAGMENT_SHADER_ARB;
+import static org.lwjgl.opengl.ARBVertexShader.GL_VERTEX_SHADER_ARB;
+import static org.lwjgl.opengl.GL11.GL_LIGHTING;
+import static thebetweenlands.client.render.shader.ShaderHelper.INSTANCE;
+
 public abstract class Shader {
 
     private final List<Uniform<?>> uniforms;
-    private final ResourceLocation fragmentLocation;
-    private final ResourceLocation vertexLocation;
+    @Getter private final ResourceLocation fragmentLocation;
+    @Getter private final ResourceLocation vertexLocation;
     private int programID;
     private int fragmentID;
     private int vertexID;
@@ -66,16 +71,12 @@ public abstract class Shader {
     public void delete() {
         if(this.programID!=-1) OpenGlHelper.glDeleteProgram(this.programID);
     }
-
-    public ResourceLocation getFragmentLocation() {
-        return this.fragmentLocation;
-    }
-
+    
     public int getProgramID() {
         if(this.programID==-1) {
             this.programID = ARBShaderObjects.glCreateProgramObjectARB();
-            this.vertexID = ShaderManager.getInstance().createShader(this.vertexLocation,ARBVertexShader.GL_VERTEX_SHADER_ARB);
-            this.fragmentID = ShaderManager.getInstance().createShader(this.fragmentLocation,ARBFragmentShader.GL_FRAGMENT_SHADER_ARB);
+            this.vertexID = ShaderManager.getInstance().createShader(this.vertexLocation,GL_VERTEX_SHADER_ARB);
+            this.fragmentID = ShaderManager.getInstance().createShader(this.fragmentLocation,GL_FRAGMENT_SHADER_ARB);
             OpenGlHelper.glAttachShader(this.programID,this.vertexID);
             OpenGlHelper.glAttachShader(this.programID,this.fragmentID);
             OpenGlHelper.glLinkProgram(this.programID);
@@ -98,11 +99,7 @@ public abstract class Shader {
             DHTRef.LOGGER.error("Failed to validate shader from resources {} {}!",this.vertexLocation,this.fragmentLocation);
         }
     }
-
-    public ResourceLocation getVertexLocation() {
-        return this.vertexLocation;
-    }
-
+    
     public Collection<Uniform<?>> getUniforms() {
         return this.uniforms;
     }
@@ -124,8 +121,8 @@ public abstract class Shader {
     }
 
     public void use(float partialTicks) {
-        if(ShaderHelper.INSTANCE.isShaderSupported()) {
-            this.previousLighting = GL11.glGetBoolean(GL11.GL_LIGHTING);
+        if(INSTANCE.isShaderSupported()) {
+            this.previousLighting = GL11.glGetBoolean(GL_LIGHTING);
             GlStateManager.disableLighting();
             OpenGlHelper.glUseProgram(this.programID);
             if(this.programID>0) upload(partialTicks);

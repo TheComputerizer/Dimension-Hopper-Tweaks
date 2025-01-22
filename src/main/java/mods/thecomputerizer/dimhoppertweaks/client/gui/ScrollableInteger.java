@@ -6,9 +6,10 @@ public class ScrollableInteger extends CircularScrollableElement {
 
     private int currentLevel;
 
-    public ScrollableInteger(TokenExchangeGui parent, int centerX, int centerY, int radius, int resolution,
-                             int conversionRate, String displayString, String hoverKey) {
-       super(parent, centerX, centerY, radius, resolution, displayString, hoverKey);
+    public ScrollableInteger(
+            TokenExchangeGui parent, int centerX, int centerY, int radius, int resolution, int conversionRate,
+            String displayString, String hoverKey) {
+       super(parent,centerX,centerY,radius,resolution,displayString,hoverKey);
        this.currentLevel = conversionRate;
     }
 
@@ -21,8 +22,8 @@ public class ScrollableInteger extends CircularScrollableElement {
 
     private int translateScroll(int original) {
         int mouseScroll = Mouse.getEventDWheel();
-        if (mouseScroll == 0 || !this.hover) return original;
-        if (mouseScroll > 0) return Math.min(100, original + 1);
-        return Math.max(1, original - 1);
+        if(mouseScroll==0 || !this.hover) return original;
+        if(mouseScroll>0) return Math.min(100,original+1);
+        return Math.max(1,original-1);
     }
 }

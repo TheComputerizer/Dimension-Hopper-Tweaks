@@ -1,13 +1,11 @@
 package mods.thecomputerizer.dimhoppertweaks.client;
 
 import mods.thecomputerizer.dimhoppertweaks.client.render.ClientEffects;
-import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.registry.tiles.LightningEnhancerEntity;
 import mods.thecomputerizer.dimhoppertweaks.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -17,21 +15,30 @@ import net.minecraft.potion.PotionUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.client.event.EntityViewRenderEvent;
+import net.minecraftforge.client.event.EntityViewRenderEvent.FogColors;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import org.lwjgl.opengl.GL11;
+import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 
 import javax.annotation.Nullable;
 import java.util.*;
 
-@Mod.EventBusSubscriber(modid = DHTRef.MODID, value = Side.CLIENT)
+import static mods.thecomputerizer.dimhoppertweaks.client.render.ClientEffects.COLOR_CORRECTION;
+import static mods.thecomputerizer.dimhoppertweaks.client.render.ClientEffects.GRAYSCALE_SHADER;
+import static mods.thecomputerizer.dimhoppertweaks.client.render.ClientEffects.SCREEN_SHAKE;
+import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.MODID;
+import static net.minecraft.client.renderer.OpenGlHelper.defaultTexUnit;
+import static net.minecraft.client.renderer.OpenGlHelper.lightmapTexUnit;
+import static net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType.TEXT;
+import static net.minecraftforge.fml.common.eventhandler.EventPriority.LOWEST;
+import static net.minecraftforge.fml.common.gameevent.TickEvent.Phase.END;
+import static net.minecraftforge.fml.relauncher.Side.CLIENT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+
+@Mod.EventBusSubscriber(modid = MODID, value = CLIENT)
 public class ClientEvents {
 
     public static Set<Item> autoFeedItems = new HashSet<>();
@@ -44,26 +51,26 @@ public class ClientEvents {
         DHTClient.registerItemModels();
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void onFogColors(EntityViewRenderEvent.FogColors event) {
+    @SubscribeEvent(priority = LOWEST)
+    public static void onFogColors(FogColors event) {
         //event.setRed(0.5f);
         //event.setGreen(0.5f);
         //event.setBlue(1f);
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void screenShakeUpdate(TickEvent.PlayerTickEvent event) {
+    @SubscribeEvent(priority = LOWEST)
+    public static void screenShakeUpdate(PlayerTickEvent event) {
         if(event.isCanceled()) return;
         Minecraft mc = Minecraft.getMinecraft();
-        if(event.phase==TickEvent.Phase.END && event.player==mc.player) {
+        if(event.phase==END && event.player==mc.player) {
             Tuple<LightningEnhancerEntity,Double> entityTuple = getNearbyEnhancer(mc.player);
             float distanceFactor = Objects.nonNull(entityTuple) ?
                     (float)MathHelper.clamp(1d-(entityTuple.getSecond()/32),0d,1d) : 0f;
             distanceFactor = 1f-distanceFactor;
-            ClientEffects.COLOR_CORRECTION = distanceFactor;
-            ClientEffects.SCREEN_SHAKE = distanceFactor;
+            COLOR_CORRECTION = distanceFactor;
+            SCREEN_SHAKE = distanceFactor;
             if(!shaderLoaded) {
-                mc.entityRenderer.loadShader(ClientEffects.GRAYSCALE_SHADER);
+                mc.entityRenderer.loadShader(GRAYSCALE_SHADER);
                 shaderLoaded = true;
             }
             if(ClientEffects.isScreenShaking()) {
@@ -84,30 +91,30 @@ public class ClientEvents {
         return null;
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = LOWEST)
     public static void onRenderBossBars(RenderGameOverlayEvent.BossInfo event) {
         if(event.isCanceled()) return;
         if(event.getY()>12 && event.getY() >= event.getResolution().getScaledHeight()/5) event.setCanceled(true);
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = LOWEST)
     public static void onPreTextRender(RenderGameOverlayEvent.Pre event) {
         if(event.isCanceled()) return;
-        if(event.getType()==RenderGameOverlayEvent.ElementType.TEXT) {
+        if(event.getType()==TEXT) {
             RenderHelper.disableStandardItemLighting();
             GlStateManager.disableRescaleNormal();
             GlStateManager.color(1f,1f,1f,1f);
             GlStateManager.disableLighting();
             GlStateManager.enableDepth();
             GlStateManager.disableColorMaterial();
-            GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+            GlStateManager.setActiveTexture(lightmapTexUnit);
             GlStateManager.disableTexture2D();
-            GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
-            GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);
+            GlStateManager.setActiveTexture(defaultTexUnit);
+            GlStateManager.clear(GL_DEPTH_BUFFER_BIT);
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = LOWEST)
     public static void onGetTooltip(ItemTooltipEvent event) {
         if(event.isCanceled()) return;
         if(autoFeedItems.contains(event.getItemStack().getItem()))

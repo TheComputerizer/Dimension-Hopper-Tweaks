@@ -3,15 +3,21 @@ package mods.thecomputerizer.dimhoppertweaks.client.render;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IRenderHandler;
-import org.lwjgl.opengl.ARBVertexShader;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL45;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.function.Consumer;
 
+import static net.minecraft.client.renderer.GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA;
+import static net.minecraft.client.renderer.GlStateManager.DestFactor.ZERO;
+import static net.minecraft.client.renderer.GlStateManager.SourceFactor.ONE;
+import static net.minecraft.client.renderer.GlStateManager.SourceFactor.SRC_ALPHA;
+import static net.minecraft.client.renderer.vertex.DefaultVertexFormats.POSITION_TEX_COLOR;
+import static net.minecraftforge.fml.relauncher.Side.CLIENT;
+import static org.lwjgl.opengl.GL11.GL_QUADS;
+
+@SideOnly(CLIENT)
 public class SkyShaderRenderer extends IRenderHandler {
 
     private static final ResourceLocation END_SKY_TEXTURES = new ResourceLocation("textures/environment/end_sky.png");
@@ -37,7 +43,7 @@ public class SkyShaderRenderer extends IRenderHandler {
         GlStateManager.disableFog();
         GlStateManager.disableAlpha();
         GlStateManager.enableBlend();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.tryBlendFuncSeparate(SRC_ALPHA,ONE_MINUS_SRC_ALPHA,ONE,ZERO);
         RenderHelper.disableStandardItemLighting();
         GlStateManager.depthMask(false);
         Tessellator tessellator = Tessellator.getInstance();
@@ -49,7 +55,7 @@ public class SkyShaderRenderer extends IRenderHandler {
             else if(k1==3) GlStateManager.rotate(180f,1f,0f,0f);
             else if(k1==4) GlStateManager.rotate(90f,0f,0f,1f);
             else if(k1==5) GlStateManager.rotate(-90f,0f,0f,1f);
-            buffer.begin(GL11.GL_QUADS,DefaultVertexFormats.POSITION_TEX_COLOR);
+            buffer.begin(GL_QUADS,POSITION_TEX_COLOR);
             buffer.pos(-100d,-100d,-100d).tex(0d,0d).color(40,40,40,255).endVertex();
             buffer.pos(-100d,-100d,100d).tex(0d,16d).color(40,40,40,255).endVertex();
             buffer.pos(100d,-100d,100d).tex(16d,16d).color(40,40,40,255).endVertex();

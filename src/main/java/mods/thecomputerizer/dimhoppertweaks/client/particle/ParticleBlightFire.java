@@ -1,6 +1,5 @@
 package mods.thecomputerizer.dimhoppertweaks.client.particle;
 
-import mods.thecomputerizer.dimhoppertweaks.client.render.BetterBlightFireRenderer;
 import mods.thecomputerizer.dimhoppertweaks.registry.ParticleRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.IParticleFactory;
@@ -10,18 +9,21 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.silentchaos512.lib.event.ClientTicks;
-import net.silentchaos512.scalinghealth.lib.module.ModuleAprilTricks;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.vecmath.Point4f;
 import java.util.Objects;
 
+import static mods.thecomputerizer.dimhoppertweaks.client.render.BetterBlightFireRenderer.TEXTURE;
+import static mods.thecomputerizer.dimhoppertweaks.client.render.BetterBlightFireRenderer.TEXTURE_GRAY;
+import static net.minecraftforge.fml.relauncher.Side.CLIENT;
+import static net.silentchaos512.scalinghealth.lib.module.ModuleAprilTricks.instance;
+
 @ParametersAreNonnullByDefault
-@SideOnly(Side.CLIENT)
+@SideOnly(CLIENT)
 public class ParticleBlightFire extends Particle {
 
     private final double rangeFactor;
@@ -34,7 +36,7 @@ public class ParticleBlightFire extends Particle {
         super(world, x, y, z, velocityX, velocityY, velocityZ);
         this.rangeFactor = rangeFactor;
         if(shouldRandomize) randomizeInitialPos();
-        this.tomfoolery = ModuleAprilTricks.instance.isEnabled() && ModuleAprilTricks.instance.isRightDay();
+        this.tomfoolery = instance.isEnabled() && instance.isRightDay();
         this.particleTexture = tomfoolery ? ParticleRegistry.getGrayFireAtlas() : ParticleRegistry.getFireAtlas();
         this.particleScale = (0.2f+(this.rand.nextFloat()/(1f/(0.2f/2f))))*scale;
         this.particleMaxAge = (int)(maxAge-(this.rand.nextFloat()*maxAge));
@@ -110,8 +112,8 @@ public class ParticleBlightFire extends Particle {
     public void renderParticle(BufferBuilder buffer, Entity entity, float partialTicks, float rotationX, float rotationZ,
                                float rotationYZ, float rotationXY, float rotationXZ) {
         TextureManager manager = Minecraft.getMinecraft().getTextureManager();
-        if(this.tomfoolery) manager.bindTexture(BetterBlightFireRenderer.TEXTURE_GRAY);
-        else manager.bindTexture(BetterBlightFireRenderer.TEXTURE);
+        if(this.tomfoolery) manager.bindTexture(TEXTURE_GRAY);
+        else manager.bindTexture(TEXTURE);
         double minU = particleTexture.getMinU()+this.frameUV.x;
         double maxU = particleTexture.getMinU()+this.frameUV.y;
         double minV = particleTexture.getMinV()+this.frameUV.z;

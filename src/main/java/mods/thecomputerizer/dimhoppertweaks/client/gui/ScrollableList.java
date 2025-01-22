@@ -10,15 +10,14 @@ public class ScrollableList extends CircularScrollableElement {
     private final List<String> translatedElements;
     private int index;
 
-    public ScrollableList(TokenExchangeGui parent, int centerX, int centerY, int radius, int resolution,
-                          String displayString, String originalSkill, List<String> originalElements,
-                          List<String> translatedElements, String hoverKey) {
-        super(parent, centerX, centerY, radius, resolution, displayString, hoverKey);
+    public ScrollableList(
+            TokenExchangeGui parent, int centerX, int centerY, int radius, int resolution, String displayString,
+            String originalSkill, List<String> originalElements, List<String> translatedElements, String hoverKey) {
+        super(parent,centerX,centerY,radius,resolution,displayString,hoverKey);
         this.originalElements = originalElements;
         this.translatedElements = translatedElements;
         this.index = 0;
-        if(originalElements.contains(originalSkill))
-            this.index = originalElements.indexOf(originalSkill);
+        if(originalElements.contains(originalSkill)) this.index = originalElements.indexOf(originalSkill);
     }
 
     @Override

@@ -2,10 +2,11 @@ package mods.thecomputerizer.dimhoppertweaks.client.render;
 
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
+import static net.minecraftforge.fml.relauncher.Side.CLIENT;
+
+@SideOnly(CLIENT)
 public class ClientEffects {
     public static final ResourceLocation GRAYSCALE_SHADER = DHTRef.res("shaders/post/dynamic_color_overlay.json");
     public static float FOV_ADJUST = 0f;

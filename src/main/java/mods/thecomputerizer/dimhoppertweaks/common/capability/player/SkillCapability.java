@@ -292,6 +292,7 @@ public class SkillCapability implements ISkillCapability {
     public void setTwilightRespawn(BlockPos pos) {
         this.twilightRespawn = pos;
     }
+    
     @Override
     public BlockPos getTwilightRespawn() {
         return this.twilightRespawn;

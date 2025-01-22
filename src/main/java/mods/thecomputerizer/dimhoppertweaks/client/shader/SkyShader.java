@@ -34,6 +34,5 @@ public class SkyShader extends Shader {
     }
 
     @Override
-    public void render(float partialTicks) {
-    }
+    public void render(float partialTicks) {}
 }

@@ -59,8 +59,7 @@ public class TickEvents {
             }
             ISkillCapability cap = SkillWrapper.getSkillCapability(player);
             if(Objects.nonNull(cap)) cap.decrementGatheringItems(20);
-            if(player.dimension==CALIGRO.getId() && player.posY<0 &&
-               ItemUtil.isHolding(player,blackTotem))
+            if(player.dimension==CALIGRO.getId() && player.posY<0 && ItemUtil.isHolding(player,blackTotem))
                 WorldUtil.teleportDimY(player,VOID_WORLD.getId(),256d);
             TICK_DELAY.setValue(0);
         }

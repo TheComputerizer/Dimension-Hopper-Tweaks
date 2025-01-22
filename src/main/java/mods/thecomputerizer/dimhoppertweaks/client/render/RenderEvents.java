@@ -1,30 +1,32 @@
 package mods.thecomputerizer.dimhoppertweaks.client.render;
 
-import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 
 import java.util.*;
 
+import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.MODID;
+import static net.minecraftforge.fml.common.gameevent.TickEvent.Phase.END;
+import static net.minecraftforge.fml.relauncher.Side.CLIENT;
+
 @SuppressWarnings("ConstantConditions")
-@Mod.EventBusSubscriber(modid = DHTRef.MODID, value = Side.CLIENT)
+@EventBusSubscriber(modid = MODID,value = CLIENT)
 public class RenderEvents {
     public static final List<RenderDelayedAOE> ATTACKS = Collections.synchronizedList(new ArrayList<>());
 
     @SubscribeEvent
     public static void renderAttacks(RenderWorldLastEvent event) {
-        synchronized (ATTACKS) {
+        synchronized(ATTACKS) {
             for(RenderDelayedAOE attack : ATTACKS) attack.render(event.getPartialTicks());
         }
     }
 
     @SubscribeEvent
-    public static void tickTimers(TickEvent.ClientTickEvent event) {
-        synchronized (ATTACKS) {
-            if(event.phase==TickEvent.Phase.END) ATTACKS.removeIf(RenderDelayedAOE::tick);
+    public static void tickTimers(ClientTickEvent event) {
+        synchronized(ATTACKS) {
+            if(event.phase==END) ATTACKS.removeIf(RenderDelayedAOE::tick);
         }
     }
 }

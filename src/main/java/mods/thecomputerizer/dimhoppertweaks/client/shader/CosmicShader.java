@@ -1,7 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.client.shader;
 
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
-import morph.avaritia.client.AvaritiaClientEventHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,6 +9,8 @@ import org.lwjgl.BufferUtils;
 import javax.annotation.Nullable;
 import java.nio.FloatBuffer;
 import java.util.Objects;
+
+import static morph.avaritia.client.AvaritiaClientEventHandler.cosmicUVs;
 
 public class CosmicShader extends Shader {
 
@@ -30,7 +31,7 @@ public class CosmicShader extends Shader {
         addUniformFloat("pitch",() -> 0f);
         addUniformFloatBuffer("lightlevel",3,() -> LIGHT_BUFFER);
         addUniformFloat("lightmix",() -> 0.2f);
-        addUniformMatrix("cosmicuvs",() -> AvaritiaClientEventHandler.cosmicUVs);
+        addUniformMatrix("cosmicuvs",() -> cosmicUVs);
         addUniformFloat("externalScale",() -> 1f);
         addUniformFloat("opacity",() -> 1f);
     }

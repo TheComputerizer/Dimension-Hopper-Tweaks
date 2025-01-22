@@ -1,7 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.client.shader;
 
 import mods.thecomputerizer.dimhoppertweaks.client.shader.uniform.Uniform;
-import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -21,6 +20,8 @@ import java.nio.IntBuffer;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Predicate;
+
+import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.LOGGER;
 
 @ParametersAreNonnullByDefault
 public class ShaderManager implements ISelectiveResourceReloadListener {
@@ -58,7 +59,7 @@ public class ShaderManager implements ISelectiveResourceReloadListener {
             OpenGlHelper.glCompileShader(shaderID);
             return shaderID;
         } catch(Exception ex) {
-            DHTRef.LOGGER.error("Failed to create shader from resource {}!",shaderLocation);
+            LOGGER.error("Failed to create shader from resource {}!",shaderLocation);
         }
         return 0;
     }

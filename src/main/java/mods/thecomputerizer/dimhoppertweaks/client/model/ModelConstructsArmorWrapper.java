@@ -10,6 +10,7 @@ import goblinbob.mobends.standard.client.model.armor.*;
 import goblinbob.mobends.standard.data.BipedEntityData;
 import goblinbob.mobends.standard.data.PlayerData;
 import goblinbob.mobends.standard.previewer.PlayerPreviewer;
+import lombok.Getter;
 import mods.thecomputerizer.dimhoppertweaks.mixin.api.IHumanoidPart;
 import mods.thecomputerizer.dimhoppertweaks.mixin.api.IModelConstructsArmor;
 import net.minecraft.client.model.ModelBiped;
@@ -21,6 +22,9 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 import java.util.function.Supplier;
+
+import static net.minecraft.inventory.EntityEquipmentSlot.FEET;
+import static net.minecraft.inventory.EntityEquipmentSlot.LEGS;
 
 @ParametersAreNonnullByDefault
 public class ModelConstructsArmorWrapper extends ModelBiped {
@@ -50,7 +54,7 @@ public class ModelConstructsArmorWrapper extends ModelBiped {
     private final Map<String,Supplier<ModelRenderer>> partSuppliers;
     private final List<String> visibleParts;
     private final List<IPartWrapper> wrappers;
-    protected ModelConstructsArmor original;
+    @Getter protected ModelConstructsArmor original;
     protected EntityEquipmentSlot slot;
     protected boolean mutated = true;
     protected boolean isActive = false;
@@ -62,13 +66,13 @@ public class ModelConstructsArmorWrapper extends ModelBiped {
         this.partSuppliers = new HashMap<>();
         this.bipedHead = initPart("head",original.headAnchor,() -> this.bipedHead);
         this.bipedHeadwear = initPart("headwear",original.bipedHeadwear,() -> this.bipedHeadwear);
-        this.bipedBody = initPart("body",slot==EntityEquipmentSlot.LEGS ? original.pantsAnchor :
+        this.bipedBody = initPart("body",slot==LEGS ? original.pantsAnchor :
                 original.chestAnchor,() -> this.bipedBody);
         this.bipedLeftArm = initPart("leftarm",original.armLeftAnchor,() -> this.bipedLeftArm);
         this.bipedRightArm = initPart("rightarm",original.armRightAnchor,() -> this.bipedRightArm);
-        this.bipedLeftLeg = initPart("leftleg",slot==EntityEquipmentSlot.FEET ? original.bootLeftAnchor :
+        this.bipedLeftLeg = initPart("leftleg",slot==FEET ? original.bootLeftAnchor :
                 original.legLeftAnchor,() -> this.bipedLeftLeg);
-        this.bipedRightLeg = initPart("rightleg",slot==EntityEquipmentSlot.FEET ? original.bootRightAnchor :
+        this.bipedRightLeg = initPart("rightleg",slot==FEET ? original.bootRightAnchor :
                 original.legRightAnchor,() -> this.bipedRightLeg);
         this.bodyTransform = new ModelPartTransform();
         this.visibleParts = new ArrayList<>();
@@ -84,8 +88,8 @@ public class ModelConstructsArmorWrapper extends ModelBiped {
     private void registerSlotBasedWrappers() {
         boolean isHead = this.slot==EntityEquipmentSlot.HEAD;
         boolean isChest = this.slot==EntityEquipmentSlot.CHEST;
-        boolean isLegs = this.slot==EntityEquipmentSlot.LEGS;
-        boolean isFeet = this.slot==EntityEquipmentSlot.FEET;
+        boolean isLegs = this.slot==LEGS;
+        boolean isFeet = this.slot==FEET;
         if(isHead)
             this.registerWrapper(this.original,this.bipedHead,headSetter,data -> data.head,"head")
                     .setParent(this.bodyTransform);
@@ -186,9 +190,5 @@ public class ModelConstructsArmorWrapper extends ModelBiped {
                 ((IHumanoidPart)wrapper).dimhoppertweaks$deapply(this);
             this.isActive = false;
         }
-    }
-
-    public ModelConstructsArmor getOriginal() {
-        return this.original;
     }
 }

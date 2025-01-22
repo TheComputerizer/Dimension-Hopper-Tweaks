@@ -1,7 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.mods.bedrockcraft;
 
 import bedrockcraft.voidworld.WorldProviderVoid;
-import mods.thecomputerizer.dimhoppertweaks.client.DHTClient;
 import mods.thecomputerizer.dimhoppertweaks.client.render.SkyShaderRenderer;
 import mods.thecomputerizer.dimhoppertweaks.client.shader.ShaderManager;
 import org.spongepowered.asm.mixin.Mixin;

@@ -16,9 +16,9 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Function;
 
-@MethodsReturnNonnullByDefault
-@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault @ParametersAreNonnullByDefault
 public class RedirectedItemModel implements IModel {
+    
     @Override
     public Collection<ResourceLocation> getDependencies() {
         return IModel.super.getDependencies();

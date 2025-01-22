@@ -1,5 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.client;
 
+import codechicken.lib.texture.TextureUtils;
 import mods.thecomputerizer.dimhoppertweaks.client.render.RenderFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.client.render.RenderHomingProjectile;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
@@ -31,7 +32,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 
-import static codechicken.lib.texture.TextureUtils.bakedTextureGetter;
 import static codechicken.lib.util.TransformUtils.DEFAULT_BLOCK;
 import static java.lang.Float.MAX_VALUE;
 import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.LOGGER;
@@ -55,7 +55,7 @@ public final class DHTClient {
 
     public static OBJBakedModel getBakedForcefield() {
         if(Objects.isNull(BAKED_FORCEFIELD))
-            BAKED_FORCEFIELD = (OBJBakedModel)FORCEFIELD_MODEL.bake(DEFAULT_BLOCK,BLOCK,bakedTextureGetter);
+            BAKED_FORCEFIELD = (OBJBakedModel)FORCEFIELD_MODEL.bake(DEFAULT_BLOCK,BLOCK,TextureUtils.bakedTextureGetter);
         return BAKED_FORCEFIELD;
     }
 
