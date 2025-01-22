@@ -45,6 +45,6 @@ public class MixinPlugin implements IEarlyMixinLoader, IFMLLoadingPlugin {
     }
     
     @Override public List<String> getMixinConfigs() {
-        return Arrays.asList(DHTRef.modIDs("mixins.%s_vanilla.json","mixins.%s_forge.json"));
+        return Arrays.asList(DHTRef.modIDs("mixins.%s_vanilla_access.json","mixins.%s_vanilla.json","mixins.%s_forge.json"));
     }
 }

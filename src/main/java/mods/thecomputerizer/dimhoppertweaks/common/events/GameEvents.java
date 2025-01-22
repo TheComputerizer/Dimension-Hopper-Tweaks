@@ -9,7 +9,7 @@ import mods.thecomputerizer.dimhoppertweaks.common.capability.chunk.ExtraChunkDa
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillCapabilityProvider;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
-import mods.thecomputerizer.dimhoppertweaks.mixin.mods.access.ItemBioticSensorAccess;
+import mods.thecomputerizer.dimhoppertweaks.mixin.mod_access.ItemBioticSensorAccess;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketQueryGenericClient;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
 import mods.thecomputerizer.dimhoppertweaks.util.WorldUtil;

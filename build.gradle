@@ -4,6 +4,8 @@ plugins {
     id 'org.spongepowered.mixin' version '0.7.+'
 }
 
+apply from: rootProject.file('shared.gradle')
+
 fancyGradle {
     patches {
         resources
@@ -14,20 +16,11 @@ fancyGradle {
     }
 }
 
-group = mod_package
-version = "${mod_version}+${minecraft_version}"
-
-java.toolchain.getLanguageVersion().set(JavaLanguageVersion.of(8))
-
 minecraft {
     mappings channel: 'stable', version: mappings_version
     accessTransformer = file("src/main/resources/META-INF/${mod_accesstransformer}")
     runs {
-        def args = [
-                '-Dmixin.debug.export=true',
-                '-Dmixin.hotSwap=true',
-                '-Dmixin.checks.interfaces=true'
-        ]
+        def args = [ '-Dmixin.debug.export=true', '-Dmixin.hotSwap=true', '-Dmixin.checks.interfaces=true' ]
         client {
             workingDirectory file('run')
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
@@ -45,8 +38,7 @@ minecraft {
 repositories {
     mavenCentral() {
         content {
-            [ 'com.google.code.gson', 'com.google.guava', 'org.ow2.asm',
-              'org.projectlombok' ].forEach {includeGroup it }
+            [ 'com.google.code.gson', 'com.google.guava', 'org.ow2.asm' ].forEach {includeGroup it }
         }
     }
     maven {
@@ -76,6 +68,13 @@ repositories {
     }
 }
 
+configurations {
+    dev {
+        canBeResolved = false
+        canBeConsumed = true
+    }
+}
+
 dependencies {
     //noinspection VulnerableLibrariesLocal
     minecraft("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
@@ -84,10 +83,6 @@ dependencies {
     annotationProcessor("org.ow2.asm:asm-debug-all:${asm_version}")
     annotationProcessor("zone.rong:mixinbooter:${mixinbooter_version}") { transitive = false }
     implementation("zone.rong:mixinbooter:${mixinbooter_version}") { transitive = false }
-
-    //lombok
-    annotationProcessor("org.projectlombok:lombok:${lombok_version}")
-    compileOnly("org.projectlombok:lombok:${lombok_version}")
 
     //non cf dependencies
     compileOnly("CraftTweaker2:CraftTweaker2-MC1120-Mod-JEI:1.12-${project.ct_version}") {
@@ -109,7 +104,6 @@ dependencies {
     compileOnly(fg.deobf("curse.maven:arl-250363:${arl_version}"))
     compileOnly(fg.deobf("curse.maven:atum-59621:${atum_version}"))
     compileOnly(fg.deobf("curse.maven:avaritia-261348:${avaritia_version}"))
-    compileOnly(fg.deobf("curse.maven:baubles-227083:${baubles_version}"))
     compileOnly(fg.deobf("curse.maven:bedrockcraft-363794:${bedrockcraft_version}"))
     compileOnly(fg.deobf("curse.maven:betweenalnds-243363:${betweenlands_version}"))
     compileOnly(fg.deobf("curse.maven:binnies-899182:${binnies_version}"))
@@ -119,6 +113,7 @@ dependencies {
     compileOnly(fg.deobf("curse.maven:botania-225643:${botania_version}"))
     compileOnly(fg.deobf("curse.maven:bq-629629:${bq_version}"))
     compileOnly(fg.deobf("curse.maven:brandon-231382:${brandoncore_version}"))
+    compileOnly(fg.deobf("curse.maven:bubbles-995393:${bubbles_version}"))
     compileOnly(fg.deobf("curse.maven:cavern-285628:${cavern_version}"))
     compileOnly(fg.deobf("curse.maven:ccl-242818:${ccl_version}"))
     compileOnly(fg.deobf("curse.maven:compactmachines-224218:${cm3_version}"))
@@ -232,20 +227,4 @@ processResources {
 
 mixin {
     add sourceSets.main, mod_refmap
-}
-
-jar {
-    setArchiveBaseName(mod_id)
-    manifest {
-        attributes([
-                'DHT_DEPENDENCIES': mod_dependencies,
-                'DHT_NAME' : mod_name,
-                'DHT_VERSION' : mod_version,
-                'FMLAT': mod_accesstransformer,
-                'FMLCorePlugin': "${mod_package}.${mod_plugin}",
-                'FMLCorePluginContainsFMLMod': true,
-                'ForceLoadAsMod': true,
-                'TweakClass': mod_tweakclass
-        ])
-    }
 }

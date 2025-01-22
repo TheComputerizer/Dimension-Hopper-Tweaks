@@ -411,7 +411,7 @@ public class DelayedModAccess {
                 if(!constructor.isAccessible()) constructor.setAccessible(true);
                 return constructor.newInstance(args);
             } catch(InvocationTargetException | InstantiationException | IllegalAccessException ex) {
-                LOGGER.error("Failed to instantiate inaccessible class {} using arge `{}`",
+                LOGGER.error("Failed to instantiate inaccessible class {} using args `{}`",
                         className,args,ex);
             }
         } else LOGGER.error("The constructor for class {} seems to be null",className);

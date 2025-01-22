@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "mods.thecomputerizer.dimhoppertweaks.mixin.mod_access",
+  "refmap": "dimhoppertweaks.refmap.json",
+  "target": "@env(DEFAULT)",
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "ItemBioticSensorAccess"
+  ],
+  "client": [
+    "ModelArmorInfinityAccess"
+  ]
+}
