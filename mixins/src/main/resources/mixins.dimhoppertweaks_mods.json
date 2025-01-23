@@ -55,6 +55,7 @@
     "cavern.MixinEntityCrazySkeleton",
     "cavern.MixinEntityCrazySpider",
     "cavern.MixinEntityCrazyZombie",
+    "chambers.MixinTileEntityEnchantChamber",
     "compactmachines3.MixinMultiblockRecipeCategory",
     "compactmachines3.MixinMultiblockRecipeWrapper",
     "crafttweaker.MixinAddItemAction",
