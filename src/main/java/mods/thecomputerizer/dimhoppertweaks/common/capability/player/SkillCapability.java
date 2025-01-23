@@ -301,14 +301,15 @@ public class SkillCapability implements ISkillCapability {
     @Override
     public boolean incrementDreamTimer(EntityPlayerMP player, int time) {
         int val = this.dreamTimer.addAndGet(time);
-        if(val<0) resetDreamTimer();
+        if(val<0) resetDreamTimer(player);
         if(val%5==0) new PacketGrayScaleTimer(((float)val)/18000f).addPlayers(player).send();
         return val>=18000;
     }
 
     @Override
-    public void resetDreamTimer() {
+    public void resetDreamTimer(EntityPlayerMP player) {
         this.dreamTimer.setValue(0);
+        new PacketGrayScaleTimer(0f).addPlayers(player).send();
     }
 
     @Override

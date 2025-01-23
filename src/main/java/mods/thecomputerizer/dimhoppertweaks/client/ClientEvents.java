@@ -94,14 +94,14 @@ public class ClientEvents {
     @SubscribeEvent(priority = LOWEST)
     public static void onClientLeave(ClientDisconnectionFromServerEvent event) {
         shaderLoaded = false;
-        COLOR_CORRECTION_OVERRIDE = 1f;
+        COLOR_CORRECTION_OVERRIDE = 0f;
         COLOR_CORRECTION = 1f;
     }
 
     @SubscribeEvent(priority = LOWEST)
     public static void onRenderBossBars(RenderGameOverlayEvent.BossInfo event) {
         if(event.isCanceled()) return;
-        if(event.getY()>12 && event.getY() >= event.getResolution().getScaledHeight()/5) event.setCanceled(true);
+        if(event.getY()>12 && event.getY()>=event.getResolution().getScaledHeight()/5) event.setCanceled(true);
     }
 
     @SubscribeEvent(priority = LOWEST)

@@ -40,7 +40,7 @@ public interface ISkillCapability extends ICommonCapability {
     void setTwilightRespawn(BlockPos pos);
     BlockPos getTwilightRespawn();
     boolean incrementDreamTimer(EntityPlayerMP player, int time);
-    void resetDreamTimer();
+    void resetDreamTimer(EntityPlayerMP player);
     void markSkillKeyPressed();
     void markResourcesKeyPressed();
     int getFanUsage();

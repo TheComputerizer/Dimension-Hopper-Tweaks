@@ -102,8 +102,6 @@ public class TickEvents {
 
     @SuppressWarnings("ConstantValue")
     private static void wakeUp(EntityPlayerMP player) {
-        ISkillCapability cap = SkillWrapper.getSkillCapability(player);
-        if(Objects.nonNull(cap)) cap.resetDreamTimer();
         int respawnDim = player.getSpawnDimension();
         BlockPos respawnPos = player.getBedLocation(respawnDim);
         if(Objects.isNull(respawnPos)) respawnPos = player.getPosition();

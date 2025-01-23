@@ -86,7 +86,7 @@ public class GameEvents {
             checkDimStage(player,true,false,"finalfrontier",-19);
             SkillWrapper.addActionSP(player,"void",5f);
             ISkillCapability cap = SkillWrapper.getSkillCapability(player);
-            if(Objects.nonNull(cap)) cap.resetDreamTimer();
+            if(Objects.nonNull(cap)) cap.resetDreamTimer(player);
             NyxWorld world = NyxWorld.get(player.getEntityWorld());
             if(Objects.nonNull(world.currentEvent)) PacketHandler.sendTo(player,new PacketNyxWorld(world));
         }
@@ -124,6 +124,10 @@ public class GameEvents {
             WorldUtil.iterateChunks(world,player.chunkCoordX,player.chunkCoordZ,1,
                                     chunk -> WorldUtil.setFastChunk(world,chunk.x,chunk.z,player));
             new PacketQueryGenericClient("fix").addPlayers(player).send();
+            if(player.dimension!=44 && player.dimension!=45) {
+                ISkillCapability cap = SkillWrapper.getSkillCapability(player);
+                if(Objects.nonNull(cap)) cap.resetDreamTimer(player);
+            }
         }
     }
     
