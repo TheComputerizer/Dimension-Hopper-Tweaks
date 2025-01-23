@@ -34,6 +34,7 @@ import java.util.function.Supplier;
 
 import static codechicken.lib.util.TransformUtils.DEFAULT_BLOCK;
 import static java.lang.Float.MAX_VALUE;
+import static mods.thecomputerizer.dimhoppertweaks.client.render.ClientEffects.*;
 import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.LOGGER;
 import static mods.thecomputerizer.dimhoppertweaks.registry.ItemRegistry.*;
 import static net.minecraft.init.MobEffects.BLINDNESS;
@@ -109,6 +110,13 @@ public final class DHTClient {
             }
         });
     }
+    
+    public static void queryClientEffects(Minecraft mc) {
+        mc.addScheduledTask(() -> LOGGER.error(
+                                "COLOR_CORRECTION = {} | COLOR_CORRECTION_OVERRIDE = {} | FOV_ADJUST = {} | "+
+                                "MINING_SPEED = {} | SCREEN_SHAKE = {}", COLOR_CORRECTION, COLOR_CORRECTION_OVERRIDE,
+                                FOV_ADJUST, MINING_SPEED, SCREEN_SHAKE));
+    }
 
     public static void queryFog(Minecraft mc) {
         mc.addScheduledTask(() -> {
@@ -164,6 +172,14 @@ public final class DHTClient {
 
     public static <T,V> V getOrDef(@Nullable T obj, Function<T,V> converter, V defVal) {
         return Objects.nonNull(obj) ? converter.apply(obj) : defVal;
+    }
+    
+    public static void setColorCorrection(Minecraft mc, float color) {
+        mc.addScheduledTask(() -> COLOR_CORRECTION = color);
+    }
+    
+    public static void setColorOverride(Minecraft mc, float color) {
+        mc.addScheduledTask(() -> COLOR_CORRECTION_OVERRIDE = color);
     }
 
     public static <V> V tryOrDef(Supplier<V> dangerousSupplier, V defVal, String msg) {

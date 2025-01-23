@@ -83,7 +83,7 @@ public class TickEvents {
                     for(EntityPlayer p : event.world.playerEntities) {
                         EntityPlayerMP player = (EntityPlayerMP) p;
                         int ticks = checkTime(player.getHeldItemOffhand()) || checkTime(player.getHeldItemMainhand()) ? -1 : 1;
-                        if(SkillWrapper.ticKDreamer(player, ticks)) {
+                        if(SkillWrapper.tickDreamer(player, ticks)) {
                             wakingUp = player;
                             break;
                         }

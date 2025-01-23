@@ -9,11 +9,11 @@ import static net.minecraftforge.fml.relauncher.Side.CLIENT;
 @SideOnly(CLIENT)
 public class ClientEffects {
     public static final ResourceLocation GRAYSCALE_SHADER = DHTRef.res("shaders/post/dynamic_color_overlay.json");
+    public static float COLOR_CORRECTION = 1f;
+    public static float COLOR_CORRECTION_OVERRIDE = 1f;
     public static float FOV_ADJUST = 0f;
-    public static float COLOR_CORRECTION = 0f;
-    public static float COLOR_CORRECTION_OVERRIDE = 0f;
-    public static float SCREEN_SHAKE = 0f;
     public static float MINING_SPEED = 1f;
+    public static float SCREEN_SHAKE = 0f;
 
     public static float getFOVAdjustment(float fov) {
         return fov*((FOV_ADJUST/2f)+0.5f);

@@ -59,8 +59,9 @@ public class ClientPacketHandlers {
     }
 
     @SideOnly(CLIENT)
-    public static void handleCapData(float miningSpeed, boolean skillKey, boolean resourcesKey, Set<Item> autoFeedItems,
-                                     List<Tuple<Potion,Integer>> autoPotionItems) {
+    public static void handleCapData(
+            float miningSpeed, boolean skillKey, boolean resourcesKey, Set<Item> autoFeedItems,
+            List<Tuple<Potion,Integer>> autoPotionItems) {
         MINING_SPEED = miningSpeed;
         statusSkillGuiMessage = !skillKey;
         statusResourceGuiMessage = !resourcesKey;
@@ -85,6 +86,21 @@ public class ClientPacketHandlers {
     public static void handleGenericClientQuery(String type) {
         Minecraft mc = Minecraft.getMinecraft();
         switch(type) {
+            case "client":
+                DHTClient.queryClientEffects(mc);
+                break;
+            case "color_0":
+                DHTClient.setColorCorrection(mc,0f);
+                break;
+            case "color_1":
+                DHTClient.setColorCorrection(mc,1f);
+                break;
+            case "color_override_0":
+                DHTClient.setColorOverride(mc,0f);
+                break;
+            case "color_override_1":
+                DHTClient.setColorOverride(mc,1f);
+                break;
             case "fix":
                 DHTClient.fixFog(mc);
                 break;

@@ -14,7 +14,6 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Tuple;
-import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.EntityViewRenderEvent.FogColors;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -30,7 +29,6 @@ import java.util.*;
 import static mods.thecomputerizer.dimhoppertweaks.client.render.ClientEffects.COLOR_CORRECTION;
 import static mods.thecomputerizer.dimhoppertweaks.client.render.ClientEffects.COLOR_CORRECTION_OVERRIDE;
 import static mods.thecomputerizer.dimhoppertweaks.client.render.ClientEffects.GRAYSCALE_SHADER;
-import static mods.thecomputerizer.dimhoppertweaks.client.render.ClientEffects.SCREEN_SHAKE;
 import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.MODID;
 import static net.minecraft.client.renderer.OpenGlHelper.defaultTexUnit;
 import static net.minecraft.client.renderer.OpenGlHelper.lightmapTexUnit;
@@ -67,7 +65,7 @@ public class ClientEvents {
         if(event.phase==END && event.player==mc.player) {
             //Tuple<LightningEnhancerEntity,Double> entityTuple = getNearbyEnhancer(mc.player);
             //float distanceFactor = Objects.nonNull(entityTuple) ?
-            //        (float)MathHelper.clamp(1d-(entityTuple.getSecond()/32),0d,1d) : 1f;
+            //        (float)MathHelper.clamp(1d-(entityTuple.getSecond()/32),0d,1d) : 0f;
             //distanceFactor = 1f-distanceFactor;
             //COLOR_CORRECTION = distanceFactor;
             //SCREEN_SHAKE = distanceFactor;
@@ -96,8 +94,8 @@ public class ClientEvents {
     @SubscribeEvent(priority = LOWEST)
     public static void onClientLeave(ClientDisconnectionFromServerEvent event) {
         shaderLoaded = false;
-        COLOR_CORRECTION_OVERRIDE = 0f;
-        COLOR_CORRECTION = 0f;
+        COLOR_CORRECTION_OVERRIDE = 1f;
+        COLOR_CORRECTION = 1f;
     }
 
     @SubscribeEvent(priority = LOWEST)

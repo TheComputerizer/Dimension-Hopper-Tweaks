@@ -7,6 +7,8 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 
+import static net.minecraftforge.fml.relauncher.Side.CLIENT;
+
 public class PacketQueryGenericClient extends MessageImpl {
 
     private String type;
@@ -25,7 +27,7 @@ public class PacketQueryGenericClient extends MessageImpl {
 
     @Override
     public Side getSide() {
-        return Side.CLIENT;
+        return CLIENT;
     }
 
     @Override

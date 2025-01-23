@@ -227,7 +227,7 @@ public class SkillWrapper {
         });
     }
 
-    public static boolean ticKDreamer(EntityPlayerMP player, int ticks) {
+    public static boolean tickDreamer(EntityPlayerMP player, int ticks) {
         return getOrDefault(player,cap -> cap.incrementDreamTimer(player,ticks),false);
     }
 
