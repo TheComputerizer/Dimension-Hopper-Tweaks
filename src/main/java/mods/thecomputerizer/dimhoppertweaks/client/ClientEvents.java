@@ -22,11 +22,13 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientDisconnectionFromServerEvent;
 
 import javax.annotation.Nullable;
 import java.util.*;
 
 import static mods.thecomputerizer.dimhoppertweaks.client.render.ClientEffects.COLOR_CORRECTION;
+import static mods.thecomputerizer.dimhoppertweaks.client.render.ClientEffects.COLOR_CORRECTION_OVERRIDE;
 import static mods.thecomputerizer.dimhoppertweaks.client.render.ClientEffects.GRAYSCALE_SHADER;
 import static mods.thecomputerizer.dimhoppertweaks.client.render.ClientEffects.SCREEN_SHAKE;
 import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.MODID;
@@ -63,12 +65,12 @@ public class ClientEvents {
         if(event.isCanceled()) return;
         Minecraft mc = Minecraft.getMinecraft();
         if(event.phase==END && event.player==mc.player) {
-            Tuple<LightningEnhancerEntity,Double> entityTuple = getNearbyEnhancer(mc.player);
-            float distanceFactor = Objects.nonNull(entityTuple) ?
-                    (float)MathHelper.clamp(1d-(entityTuple.getSecond()/32),0d,1d) : 1f;
-            distanceFactor = 1f-distanceFactor;
-            COLOR_CORRECTION = distanceFactor;
-            SCREEN_SHAKE = distanceFactor;
+            //Tuple<LightningEnhancerEntity,Double> entityTuple = getNearbyEnhancer(mc.player);
+            //float distanceFactor = Objects.nonNull(entityTuple) ?
+            //        (float)MathHelper.clamp(1d-(entityTuple.getSecond()/32),0d,1d) : 1f;
+            //distanceFactor = 1f-distanceFactor;
+            //COLOR_CORRECTION = distanceFactor;
+            //SCREEN_SHAKE = distanceFactor;
             if(!shaderLoaded) {
                 mc.entityRenderer.loadShader(GRAYSCALE_SHADER);
                 shaderLoaded = true;
@@ -89,6 +91,13 @@ public class ClientEvents {
             }
         }
         return null;
+    }
+    
+    @SubscribeEvent(priority = LOWEST)
+    public static void onClientLeave(ClientDisconnectionFromServerEvent event) {
+        shaderLoaded = false;
+        COLOR_CORRECTION_OVERRIDE = 0f;
+        COLOR_CORRECTION = 0f;
     }
 
     @SubscribeEvent(priority = LOWEST)

@@ -226,5 +226,5 @@ processResources {
 }
 
 mixin {
-    add sourceSets.main, mod_refmap
+    add sourceSets.main, mod_refmap_access
 }
