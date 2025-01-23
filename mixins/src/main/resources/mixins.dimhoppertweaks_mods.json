@@ -31,6 +31,7 @@
     "apotheosis.MixinEnchJEIPlugin",
     "appliedenergistics2.MixinApiGrid",
     "aquaculture.MixinItemTreasureChest",
+    "artisanautomation.MixinAutomatorCraftingContext",
     "atum.MixinJEIIntegration",
     "avaritia.MixinAvaritiaJEIPlugin",
     "avaritia.MixinAvaritiaRecipeManager",
