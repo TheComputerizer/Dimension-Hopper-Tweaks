@@ -31,7 +31,7 @@ import static com.codetaylor.mc.dropt.modules.dropt.ModuleDropt.RULE_PATH;
 import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.LOGGER;
 import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.MODID;
 import static net.minecraftforge.fml.common.eventhandler.EventPriority.LOWEST;
-import static thebetweenlands.common.registries.ItemRegistry.ITEMS;
+import static net.minecraftforge.fml.common.registry.ForgeRegistries.ITEMS;
 
 @SuppressWarnings("SameParameterValue")
 @EventBusSubscriber(modid = MODID)
