@@ -65,7 +65,7 @@ public class ClientEvents {
         if(event.phase==END && event.player==mc.player) {
             Tuple<LightningEnhancerEntity,Double> entityTuple = getNearbyEnhancer(mc.player);
             float distanceFactor = Objects.nonNull(entityTuple) ?
-                    (float)MathHelper.clamp(1d-(entityTuple.getSecond()/32),0d,1d) : 0f;
+                    (float)MathHelper.clamp(1d-(entityTuple.getSecond()/32),0d,1d) : 1f;
             distanceFactor = 1f-distanceFactor;
             COLOR_CORRECTION = distanceFactor;
             SCREEN_SHAKE = distanceFactor;
@@ -74,7 +74,7 @@ public class ClientEvents {
                 shaderLoaded = true;
             }
             if(ClientEffects.isScreenShaking()) {
-                event.player.rotationPitch += ClientEffects.getScreenShake(screenShakePositive);
+                event.player.rotationPitch+=ClientEffects.getScreenShake(screenShakePositive);
                 screenShakePositive = !screenShakePositive;
             }
         }
