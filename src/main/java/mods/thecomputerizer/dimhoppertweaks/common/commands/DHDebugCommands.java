@@ -2,12 +2,10 @@ package mods.thecomputerizer.dimhoppertweaks.common.commands;
 
 import mcp.MethodsReturnNonnullByDefault;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
-import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketQueryGenericClient;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketTileEntityClassQuery;
 import mods.thecomputerizer.dimhoppertweaks.util.WorldUtil;
 import net.darkhax.gamestages.GameStageHelper;
-import net.darkhax.gamestages.data.GameStageSaveHandler;
 import net.darkhax.gamestages.data.IStageData;
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandException;
@@ -18,8 +16,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
@@ -30,7 +26,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.apache.commons.lang3.StringUtils;
@@ -40,9 +35,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 import java.util.function.Consumer;
 
+import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.LOGGER;
+import static net.darkhax.gamestages.data.GameStageSaveHandler.EMPTY_STAGE_DATA;
+import static net.minecraft.init.Items.SPAWN_EGG;
+import static net.minecraft.init.Blocks.AIR;
+import static net.minecraftforge.fml.common.registry.ForgeRegistries.BLOCKS;
+
 @SuppressWarnings("unused")
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault @MethodsReturnNonnullByDefault
 public class DHDebugCommands extends DHTCommand {
 
     public DHDebugCommands() {
@@ -57,39 +57,41 @@ public class DHDebugCommands extends DHTCommand {
         } catch (NumberFormatException ex) {
             sendMessage(sender,true,"number",args[0]);
         }
-        if(option==1) {
-            executeBlockData(server,sender,getOrNull(1,args),getOrNull(2,args));
-            return;
+        switch(option) {
+            case 1: {
+                executeBlockData(server,sender,getOrNull(1,args),getOrNull(2,args));
+                return;
+            }
+            case 2: {
+                executeTileClass(server,sender,getOrNull(1,args));
+                return;
+            }
+            case 3: {
+                executeGamestage(server,sender,getOrNull(1,args));
+                return;
+            }
+            case 4: {
+                executeGive(server,sender,getOrNull(1,args),getOrNull(2,args));
+                return;
+            }
+            case 5: {
+                executeQuery(server,sender,getOrNull(1,args));
+                return;
+            }
+            case 6: {
+                executeFill(server,sender,getOrNull(1,args),getOrNull(2,args),getOrNull(3,args));
+                return;
+            }
+            case 7: {
+                executeChunkInfo(server,sender);
+                return;
+            }
+            case 8: {
+                executeDimensions(server,sender);
+                return;
+            }
+            default: sendMessage(sender,true,"options."+(sender instanceof Entity ? "entity" : "server"));
         }
-        if(option==2) {
-            executeTileClass(server,sender,getOrNull(1,args));
-            return;
-        }
-        if(option==3) {
-            executeGamestage(server,sender,getOrNull(1,args));
-            return;
-        }
-        if(option==4) {
-            executeGive(server,sender,getOrNull(1,args),getOrNull(2,args));
-            return;
-        }
-        if(option==5) {
-            executeQuery(server,sender,getOrNull(1,args));
-            return;
-        }
-        if(option==6) {
-            executeFill(server,sender,getOrNull(1,args),getOrNull(2,args),getOrNull(3,args));
-            return;
-        }
-        if(option==7) {
-            executeChunkInfo(server,sender);
-            return;
-        }
-        if(option==8) {
-            executeDimensions(server,sender);
-            return;
-        }
-        sendMessage(sender,true,"options."+(sender instanceof Entity ? "entity" : "server"));
     }
 
     private void executeBlockData(MinecraftServer server, ICommandSender sender, @Nullable String arg1,
@@ -149,7 +151,7 @@ public class DHDebugCommands extends DHTCommand {
             return;
         }
         IStageData data = GameStageHelper.getPlayerData(player);
-        if(Objects.isNull(data) || data==GameStageSaveHandler.EMPTY_STAGE_DATA) {
+        if(Objects.isNull(data) || data==EMPTY_STAGE_DATA) {
             sendMessage(sender, true, "gamestage.data",player.getName());
             return;
         }
@@ -173,20 +175,20 @@ public class DHDebugCommands extends DHTCommand {
                 World world = sender.getEntityWorld();
                 if(!world.isRemote) {
                     Vec3d posVec = sender.getPositionVector();
-                    EntityItem item = new EntityItem(sender.getEntityWorld(), posVec.x, posVec.y, posVec.z, stack);
+                    EntityItem item = new EntityItem(sender.getEntityWorld(),posVec.x,posVec.y,posVec.z,stack);
                     item.setNoPickupDelay();
                     item.setOwner(sender.getName());
                     world.spawnEntity(item);
                 }
             },qualifier);
-        } else if(type.equals("enchant")) {
+        } //else if(type.equals("enchant")) {
 
-        }
+        //}
     }
 
     private void giveMob(Consumer<ItemStack> itemEntityCreator, String mob) {
         if(!mob.contains(":")) mob = "minecraft:"+mob;
-        ItemStack stack = new ItemStack(Items.SPAWN_EGG);
+        ItemStack stack = new ItemStack(SPAWN_EGG);
         ItemMonsterPlacer.applyEntityIdToItemStack(stack,new ResourceLocation(mob));
         itemEntityCreator.accept(stack);
     }
@@ -215,11 +217,11 @@ public class DHDebugCommands extends DHTCommand {
         BlockPos min = getRoundedPos(posVec,-range);
         BlockPos max = getRoundedPos(posVec,range);
         insertMatchingBlocks(replaced,toReplace);
-        Block replacement = getEntry(ForgeRegistries.BLOCKS,replaceWith);
-        if(Objects.isNull(replacement)) replacement = Blocks.AIR;
+        Block replacement = getEntry(BLOCKS,replaceWith);
+        if(Objects.isNull(replacement)) replacement = AIR;
         ResourceLocation replacementRes = replacement.getRegistryName();
         int totalCount = count(min,max);
-        DHTRef.LOGGER.info("Beginning block replacements for {} block from set `{}` with replacement `{}`. "+
+        LOGGER.info("Beginning block replacements for {} block from set `{}` with replacement `{}`. "+
                 "This could take a while!",totalCount,replaced,replacementRes);
         int replacementCount = WorldUtil.replaceBlocks(sender.getEntityWorld(),replaced,replacement.getDefaultState(),min,max);
         sendMessage(sender,false,"fill",replacementCount,totalCount,replacementRes);
@@ -236,7 +238,7 @@ public class DHDebugCommands extends DHTCommand {
 
     private void executeDimensions(MinecraftServer server, ICommandSender sender) throws CommandException {
         try {
-            DHTRef.LOGGER.info("Querying load status of dimensions");
+            LOGGER.info("Querying load status of dimensions");
             List<Integer> loadedIDs = Arrays.asList(DimensionManager.getIDs());
             List<Integer> unloadedIDS = new ArrayList<>();
             for (Set<Integer> ids : DimensionManager.getRegisteredDimensions().values())
@@ -245,25 +247,24 @@ public class DHDebugCommands extends DHTCommand {
             logDimensionSet("Loaded", loadedIDs);
             logDimensionSet("Unloaded", unloadedIDS);
         } catch(Exception ex) {
-            DHTRef.LOGGER.error("FAILED TO QUERY 1 OR MORE DIMENSIONS",ex);
+            LOGGER.error("FAILED TO QUERY 1 OR MORE DIMENSIONS",ex);
             sendMessage(sender,true,"dimension",ex);
         }
     }
 
     private void logDimensionSet(String prefix, Collection<Integer> ids) {
-        DHTRef.LOGGER.info(prefix+" dimension IDs:");
+        LOGGER.info("{} dimension IDs:",prefix);
         for(Integer id : ids) {
             String str = String.valueOf(id);
             DimensionType type = null;
             try {
                 type = DimensionManager.getProviderType(id);
             } catch(Exception ex) {
-                DHTRef.LOGGER.error("Failed to get type for dimension ID {}!",id);
+                LOGGER.error("Failed to get type for dimension ID {}!",id);
             }
-            if(Objects.nonNull(type)) {
+            if(Objects.nonNull(type))
                 str = String.format("ID: `%s` | NAME: `%s` | SUFFIX `%s`",str,type.getName(),type.getSuffix());
-            }
-            DHTRef.LOGGER.info("Dimension Info ({})",str);
+            LOGGER.info("Dimension Info ({})",str);
         }
     }
 
@@ -288,15 +289,16 @@ public class DHDebugCommands extends DHTCommand {
         if(equalsAnyOrBlank(matcher,"air","all","any","minecraft:air")) return;
         if(Objects.nonNull(matcher)) {
             if(matcher.contains(":")) {
-                Block matched = getEntry(ForgeRegistries.BLOCKS,matcher);
+                Block matched = getEntry(BLOCKS, matcher);
                 if(Objects.nonNull(matched)) blocks.add(matched);
             } else {
-                for(Block block : ForgeRegistries.BLOCKS)
+                for(Block block : BLOCKS)
                     if(entryMatches(block,matcher)) blocks.add(block);
             }
         }
     }
 
+    @SuppressWarnings("SameParameterValue")
     private <V extends IForgeRegistryEntry<V>> @Nullable V getEntry(IForgeRegistry<V> registry, @Nullable String keyStr) {
         return Objects.nonNull(keyStr) ? getEntry(registry,new ResourceLocation(keyStr)) : null;
     }

@@ -1,27 +1,27 @@
 package mods.thecomputerizer.dimhoppertweaks.common.commands;
 
 import mcp.MethodsReturnNonnullByDefault;
-import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.biome.Biome;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.MODID;
+import static net.minecraftforge.fml.common.registry.ForgeRegistries.BIOMES;
+
+@ParametersAreNonnullByDefault @MethodsReturnNonnullByDefault
 public abstract class DHTCommand extends CommandBase {
 
     private static final List<String> DIMENSION_TAB_NAMES = Arrays.stream(DimensionType.values())
             .filter(Objects::nonNull).map(DimensionType::getId).map(Objects::toString).collect(Collectors.toList());
-    private static final List<String> BIOME_TAB_NAMES = ForgeRegistries.BIOMES.getValuesCollection().stream()
+    private static final List<String> BIOME_TAB_NAMES = BIOMES.getValuesCollection().stream()
             .map(Biome::getRegistryName).filter(Objects::nonNull).map(Objects::toString).collect(Collectors.toList());
 
     public static String buildRawCommand(Object ... args) {
@@ -50,7 +50,7 @@ public abstract class DHTCommand extends CommandBase {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "commands."+ DHTRef.MODID+"."+this.commandName+"."+"usage";
+        return "commands."+MODID+"."+this.commandName+"."+"usage";
     }
 
     protected @Nullable String getOrNull(int index, String[] args) {
@@ -77,7 +77,7 @@ public abstract class DHTCommand extends CommandBase {
     }
 
     private String buildLangKey(boolean isError, @Nullable String extraLang) {
-        String lang = "commands."+ DHTRef.MODID+"."+this.commandName+"."+(isError ? "error" : "success");
+        String lang = "commands."+MODID+"."+this.commandName+"."+(isError ? "error" : "success");
         return Objects.nonNull(extraLang) && !extraLang.isEmpty() ? lang+"."+extraLang : lang;
     }
 
