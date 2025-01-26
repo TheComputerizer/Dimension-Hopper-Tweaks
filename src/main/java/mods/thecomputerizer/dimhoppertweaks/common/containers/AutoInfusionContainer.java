@@ -20,7 +20,7 @@ import static mcjty.lib.container.SlotType.SLOT_INPUT;
 @ParametersAreNonnullByDefault
 public class AutoInfusionContainer extends GenericContainer {
     
-    public static final ContainerFactory FACTORY = new ContainerFactory(DHTRef.res("gui/auto_infision.gui"));
+    public static final ContainerFactory FACTORY = new ContainerFactory(DHTRef.res("gui/auto_infusion.gui"));
     
     private final AutoInfusionTableEntity crafterEntity;
     

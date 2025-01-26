@@ -1,0 +1,218 @@
+plugins {
+    id 'net.minecraftforge.gradle' version '6.+'
+    id 'wtf.gofancy.fancygradle' version '1.+'
+    id 'org.spongepowered.mixin' version '0.7.+'
+}
+
+apply from: rootProject.file('shared.gradle')
+
+fancyGradle {
+    patches {
+        resources
+        coremods
+        codeChickenLib
+        asm
+        mergetool
+    }
+}
+
+def mainProject = project(':')
+
+minecraft {
+    mappings channel: 'stable', version: mappings_version
+    accessTransformer = file("src/main/resources/META-INF/${mod_accesstransformer}")
+    runs {
+        def args = [ '-Dmixin.debug.export=true', '-Dmixin.hotSwap=true', '-Dmixin.checks.interfaces=true' ]
+        client {
+            workingDirectory file('run_mixins')
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.console.level', 'trace'
+            jvmArgs args
+        }
+        server {
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.console.level', 'trace'
+            jvmArgs args
+        }
+    }
+}
+
+
+
+repositories {
+    mavenCentral() {
+        content {
+            [ 'com.google.code.gson', 'com.google.guava', 'org.ow2.asm' ].forEach {includeGroup it }
+        }
+    }
+    maven {
+        name = 'CurseForge'
+        url = uri('https://www.cursemaven.com')
+        content { includeGroup 'curse.maven' }
+    }
+    maven {
+        name = 'Cleanroom'
+        url = uri('https://maven.cleanroommc.com')
+        content { includeGroup 'zone.rong' }
+    }
+    maven {
+        name = 'BlameJared'
+        url = uri('https://maven.blamejared.com')
+        content { includeGroup 'CraftTweaker2' }
+    }
+    maven {
+        name = 'Modrinth'
+        url = uri('https://api.modrinth.com/maven')
+        content { includeGroup 'maven.modrinth' }
+    }
+    maven {
+        name = 'BuildCraft'
+        url = uri('https://mod-buildcraft.com/maven')
+        content { includeGroup 'com.mod-buildcraft' }
+    }
+}
+
+dependencies {
+    //noinspection VulnerableLibrariesLocal
+    minecraft("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
+
+    //mixin
+    annotationProcessor("org.ow2.asm:asm-debug-all:${asm_version}")
+    annotationProcessor("zone.rong:mixinbooter:${mixinbooter_version}") { transitive = false }
+    implementation("zone.rong:mixinbooter:${mixinbooter_version}") { transitive = false }
+
+    //main project
+    //noinspection DependencyNotationArgument
+    compileOnlyApi(project(':'))
+
+    //non cf dependencies
+    compileOnly("CraftTweaker2:CraftTweaker2-MC1120-Mod-JEI:1.12-${project.ct_version}") {
+        [ 'com.google.code.gson', 'deobf.mezz.jei', 'org.ow2.asm' ].forEach { exclude group: it }
+    }
+    compileOnly(fg.deobf("com.mod-buildcraft:buildcraft-api:${buildcraft_version}"))
+    compileOnly(fg.deobf("maven.modrinth:ledm:${ledm_version}"))
+    compileOnly(fg.deobf("maven.modrinth:travelersbackpack:${backpack_version}"))
+
+    //cf dependencies
+    compileOnly(fg.deobf("curse.maven:aa-228404:${aa_version}"))
+    compileOnly(fg.deobf("curse.maven:ae2uel-570458:${ae2_version}"))
+    compileOnly(fg.deobf("curse.maven:aether2-917199:${aether_version}"))
+    compileOnly(fg.deobf("curse.maven:aoa-311054:${aoa_version}"))
+    compileOnly(fg.deobf("curse.maven:apotheosis-313970:${apotheosis_version}"))
+    compileOnly(fg.deobf("curse.maven:aquaculture-60028:${aquaculture_version}"))
+    compileOnly(fg.deobf("curse.maven:arl-250363:${arl_version}"))
+    compileOnly(fg.deobf("curse.maven:artauto-373329:${artauto_version}"))
+    compileOnly(fg.deobf("curse.maven:artint-330466:${artint_version}"))
+    compileOnly(fg.deobf("curse.maven:artisan-284351:${artisan_version}"))
+    compileOnly(fg.deobf("curse.maven:atum-59621:${atum_version}"))
+    compileOnly(fg.deobf("curse.maven:avaritia-261348:${avaritia_version}"))
+    compileOnly(fg.deobf("curse.maven:bedrockcraft-363794:${bedrockcraft_version}"))
+    compileOnly(fg.deobf("curse.maven:betweenalnds-243363:${betweenlands_version}"))
+    compileOnly(fg.deobf("curse.maven:binnies-899182:${binnies_version}"))
+    compileOnly(fg.deobf("curse.maven:blueskies-312918:${blueskies_version}"))
+    compileOnly(fg.deobf("curse.maven:botania-225643:${botania_version}"))
+    compileOnly(fg.deobf("curse.maven:bq-629629:${bq_version}"))
+    compileOnly(fg.deobf("curse.maven:brandon-231382:${brandoncore_version}"))
+    compileOnly(fg.deobf("curse.maven:bubbles-995393:${bubbles_version}"))
+    compileOnly(fg.deobf("curse.maven:cavern-285628:${cavern_version}"))
+    compileOnly(fg.deobf("curse.maven:chambers-404264:${chambers_version}"))
+    compileOnly(fg.deobf("curse.maven:compactmachines-224218:${cm3_version}"))
+    compileOnly(fg.deobf("curse.maven:dimdoors-284876:${dimdoors_version}"))
+    compileOnly(fg.deobf("curse.maven:erebus-220698:${erebus_version}"))
+    compileOnly(fg.deobf("curse.maven:extendedcrafting-398267:${excrafting_version}"))
+    compileOnly(fg.deobf("curse.maven:extraplanets-241291:${extraplanets_version}"))
+    compileOnly(fg.deobf("curse.maven:forestry-59751:${forestry_version}"))
+    compileOnly(fg.deobf("curse.maven:gaia-302529:${gaia_version}"))
+    compileOnly(fg.deobf("curse.maven:galacticraft-564236:${galacticraft_version}"))
+    compileOnly(fg.deobf("curse.maven:geckolib-388172:${gecko_version}"))
+    compileOnly(fg.deobf("curse.maven:gns-61461:${gn_version}"))
+    compileOnly(fg.deobf("curse.maven:ie-231951:${ie_version}"))
+    compileOnly(fg.deobf("curse.maven:iforgoing-266515:${if_version}"))
+    compileOnly(fg.deobf("curse.maven:infernalmobs-227875:${aim_version}"))
+    compileOnly(fg.deobf("curse.maven:itemstages-280316:${itemstages_version}"))
+    compileOnly(fg.deobf("curse.maven:jaopca-266936:${jaopca_version}"))
+    compileOnly(fg.deobf("curse.maven:jec-242223:${jec_version}"))
+    compileOnly(fg.deobf("curse.maven:jei-557549:${hei_version}"))
+    compileOnly(fg.deobf("curse.maven:jer-240630:${jer_version}"))
+    compileOnly(fg.deobf("curse.maven:lightningcraft-237422:${lightningcraft_version}"))
+    compileOnly(fg.deobf("curse.maven:mantle-74924:${mantle_version}"))
+    compileOnly(fg.deobf("curse.maven:mbd-604054:${mbd_version}"))
+    compileOnly(fg.deobf("curse.maven:mekanism-399904:${mce_version}"))
+    compileOnly(fg.deobf("curse.maven:mekanismtools-813407:${mcetools_version}"))
+    compileOnly(fg.deobf("curse.maven:mobends-231347:${mobends_version}"))
+    compileOnly(fg.deobf("curse.maven:moreplanets-261990:${moreplanets_version}"))
+    compileOnly(fg.deobf("curse.maven:multipart-258426:${multipart_version}"))
+    compileOnly(fg.deobf("curse.maven:musictriggers-518410:${mt_version}"))
+    compileOnly(fg.deobf("curse.maven:naturesaura-306626:${na_version}"))
+    compileOnly(fg.deobf("curse.maven:netherex-248039:${netherex_version}"))
+    compileOnly(fg.deobf("curse.maven:nodami-377815:${nodami_version}"))
+    compileOnly(fg.deobf("curse.maven:openblocks-228816:${openblocks_version}"))
+    compileOnly(fg.deobf("curse.maven:openmodslib-228815:${openlib_version}"))
+    compileOnly(fg.deobf("curse.maven:packagedauto-308380:${packagedauto_version}"))
+    compileOnly(fg.deobf("curse.maven:packagedex-322861:${packagedex_version}"))
+    compileOnly(fg.deobf("curse.maven:projecte-226410:${projecte_version}"))
+    compileOnly(fg.deobf("curse.maven:psi-241665:${psi_version}"))
+    compileOnly(fg.deobf("curse.maven:quark-243121:${quark_version}"))
+    compileOnly(fg.deobf("curse.maven:randomthings-59816:${randomthings_version}"))
+    compileOnly(fg.deobf("curse.maven:recipestages-280554:${recipestages_version}"))
+    compileOnly(fg.deobf("curse.maven:reliquary-241319:${xreliquary_version}"))
+    compileOnly(fg.deobf("curse.maven:reskillable-286382:${reskillable_version}"))
+    compileOnly(fg.deobf("curse.maven:rftools-224641:${rftools_version}"))
+    compileOnly(fg.deobf("curse.maven:scalinghealth-248027:${scalinghealth_version}"))
+    compileOnly(fg.deobf("curse.maven:sgcraft-289115:${sgcraft_version}"))
+    compileOnly(fg.deobf("curse.maven:silentgems-220311:${sgems_version}"))
+    compileOnly(fg.deobf("curse.maven:silentlib-242998:${slib_version}"))
+    compileOnly(fg.deobf("curse.maven:ss-904946:${ss_version}"))
+    compileOnly(fg.deobf("curse.maven:tcon-74072:${tconstruct_version}"))
+    compileOnly(fg.deobf("curse.maven:tconarmor-287683:${conarm_version}"))
+    compileOnly(fg.deobf("curse.maven:tconio-229503:${tio_version}"))
+    compileOnly(fg.deobf("curse.maven:tesla-244651:${tesla_version}"))
+    compileOnly(fg.deobf("curse.maven:teslacore-254602:${tclib_version}"))
+    compileOnly(fg.deobf("curse.maven:together-285968:${together_version}"))
+    compileOnly(fg.deobf("curse.maven:tombstone-243707:${ctombstone_version}"))
+    compileOnly(fg.deobf("curse.maven:toolprog-266550:${toolprog_version}"))
+    compileOnly(fg.deobf("curse.maven:tp-250850:${tp_version}"))
+    compileOnly(fg.deobf("curse.maven:translocators-247695:${translocators_version}"))
+    compileOnly(fg.deobf("curse.maven:twilight-227639:${tf_version}"))
+    compileOnly(fg.deobf("curse.maven:unidict-244258:${unidict_version}"))
+    compileOnly(fg.deobf("curse.maven:valkyrie-245480:${valklib_version}"))
+    compileOnly(fg.deobf("curse.maven:vintagefix-871198:${vf_version}"))
+    compileOnly(fg.deobf("curse.maven:wanionlib-253043:${wlib_version}"))
+    compileOnly(fg.deobf("curse.maven:waystones-245755:${waystones_version}"))
+    compileOnly(fg.deobf("curse.maven:xu2-225561:${xu2_version}"))
+    compileOnly(fg.deobf("curse.maven:zollern-241940:${zollern_version}"))
+}
+
+mixin {
+    add sourceSets.main, mod_refmap
+}
+
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from(sourceSets.main.resources.srcDirs) {
+        exclude mod_accesstransformer
+    }
+    from(mainProject.processResources.outputs)
+}
+
+processTestResources {
+    from(mainProject.processTestResources.outputs)
+}
+
+jar {
+    from(mainProject.jar.archiveFile.collect { zipTree(it) })
+    manifest {
+        attributes([
+                'DHT_DEPENDENCIES': mod_dependencies,
+                'DHT_NAME' : mod_name,
+                'DHT_VERSION' : mod_version,
+                'FMLAT': mod_accesstransformer,
+                'FMLCorePlugin': "${mod_package}.${mod_plugin}",
+                'FMLCorePluginContainsFMLMod': true,
+                'ForceLoadAsMod': true,
+                'TweakClass': mod_tweakclass
+        ])
+    }
+}
+
+tasks.jar.dependsOn(mainProject.build)

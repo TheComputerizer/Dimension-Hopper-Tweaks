@@ -1,8 +1,10 @@
 package mods.thecomputerizer.dimhoppertweaks.registry.blocks;
 
+import mcjty.lib.api.IModuleSupport;
 import mcjty.lib.api.Infusable;
 import mcjty.lib.crafting.INBTPreservingIngredient;
 import mcjty.lib.gui.GenericGuiContainer;
+import mcjty.lib.varia.ModuleSupport;
 import mcjty.rftools.blocks.GenericRFToolsBlock;
 import mcjty.rftools.blocks.crafter.CrafterBaseTE;
 import mods.thecomputerizer.dimhoppertweaks.client.gui.GuiAutoInfusion;
@@ -33,6 +35,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
 
+import static mcjty.rftools.blocks.storage.ModularStorageSetup.storageFilterItem;
+import static mcjty.rftools.setup.GuiProxy.GUI_CRAFTER;
 import static net.minecraft.block.material.Material.IRON;
 import static net.minecraft.item.ItemStack.EMPTY;
 import static net.minecraft.util.SoundCategory.BLOCKS;
@@ -99,6 +103,25 @@ public class AutoInfusionTable extends GenericRFToolsBlock<AutoInfusionTableEnti
     @SideOnly(CLIENT)
     public BiFunction<AutoInfusionTableEntity,AutoInfusionContainer,GenericGuiContainer<? super AutoInfusionTableEntity>> getGuiFactory() {
         return GuiAutoInfusion::new;
+    }
+    
+    @Override
+    public int getGuiID() {
+        return GUI_CRAFTER;
+    }
+    
+    @Override
+    protected IModuleSupport getModuleSupport() {
+        return new ModuleSupport(41) {
+            public boolean isModule(ItemStack itemStack) {
+                return itemStack.getItem()==storageFilterItem;
+            }
+        };
+    }
+    
+    @Override
+    public boolean needsRedstoneCheck() {
+        return true;
     }
     
     @Override //Same as what the normal infusion table does just without the GUI call
