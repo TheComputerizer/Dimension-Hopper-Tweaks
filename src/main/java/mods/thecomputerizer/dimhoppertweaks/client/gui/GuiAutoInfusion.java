@@ -15,11 +15,11 @@ import mcjty.lib.gui.widgets.WidgetList;
 import mcjty.lib.tileentity.GenericEnergyStorageTileEntity;
 import mcjty.lib.varia.BlockTools;
 import mcjty.lib.varia.ItemStackList;
-import mcjty.rftools.blocks.crafter.PacketCrafter;
 import mcjty.rftools.craftinggrid.CraftingRecipe;
 import mcjty.rftools.craftinggrid.CraftingRecipe.CraftMode;
 import mods.thecomputerizer.dimhoppertweaks.common.containers.InventoryAutoInfusion;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
+import mods.thecomputerizer.dimhoppertweaks.network.PacketAutoInfusion;
 import mods.thecomputerizer.dimhoppertweaks.registry.tiles.AutoInfusionTableEntity;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -94,8 +94,8 @@ public class GuiAutoInfusion extends GenericGuiContainer<AutoInfusionTableEntity
                 ItemStack old = this.inventorySlots.getSlot(10).getStack();
                 if(!itemStacksEqual(old,result)) this.inventorySlots.getSlot(10).putStack(result);
                 craftingRecipe.setResult(result);
-                this.updateRecipe();
-                this.populateList();
+                updateRecipe();
+                populateList();
             }
         }
     }
@@ -210,7 +210,7 @@ public class GuiAutoInfusion extends GenericGuiContainer<AutoInfusionTableEntity
     }
     
     private void sendChangeToServer(int index, InventoryCrafting inv, ItemStack result, boolean keepOne, CraftMode mode) {
-        INSTANCE.sendToServer(new PacketCrafter(this.tileEntity.getPos(),index,inv,result,keepOne,mode));
+        INSTANCE.sendToServer(new PacketAutoInfusion(this.tileEntity.getPos(),index,inv,result,keepOne,mode));
     }
     
     private void testRecipe() {
@@ -238,23 +238,15 @@ public class GuiAutoInfusion extends GenericGuiContainer<AutoInfusionTableEntity
     private void updateRecipe() {
         int selected = this.recipeList.getSelected();
         if(selected!=-1) {
-            CraftingRecipe craftingRecipe = this.tileEntity.getRecipe(selected);
+            CraftingRecipe recipe = this.tileEntity.getRecipe(selected);
             boolean keepOne = "Keep".equals(this.keepItem.getCurrentChoice());
-            CraftMode mode;
-            switch(this.internalRecipe.getCurrentChoice()) {
-                case "Int": {
-                    mode = INT;
-                    break;
-                }
-                case "Ext": {
-                    mode = EXT;
-                    break;
-                }
-                default: mode = EXTC;
-            }
-            craftingRecipe.setKeepOne(keepOne);
-            craftingRecipe.setCraftMode(mode);
-            sendChangeToServer(selected,craftingRecipe.getInventory(),craftingRecipe.getResult(),keepOne,mode);
+            CraftMode mode = EXTC;
+            String choice = this.internalRecipe.getCurrentChoice();
+            if("Int".equals(choice)) mode = INT;
+            else if("Ext".equals(choice)) mode = EXT;
+            recipe.setKeepOne(keepOne);
+            recipe.setCraftMode(mode);
+            sendChangeToServer(selected,recipe.getInventory(),recipe.getResult(),keepOne,mode);
         }
     }
 }

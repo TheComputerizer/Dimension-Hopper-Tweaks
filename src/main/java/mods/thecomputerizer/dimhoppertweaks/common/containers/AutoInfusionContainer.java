@@ -5,7 +5,6 @@ import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.SlotFactory;
 import mcjty.lib.container.SlotType;
-import mcjty.rftools.blocks.crafter.CrafterBaseTE;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.registry.tiles.AutoInfusionTableEntity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,7 +23,7 @@ public class AutoInfusionContainer extends GenericContainer {
     
     private final AutoInfusionTableEntity crafterEntity;
     
-    public CrafterBaseTE getCrafterTE() {
+    public AutoInfusionTableEntity getCrafterTile() {
         return this.crafterEntity;
     }
     

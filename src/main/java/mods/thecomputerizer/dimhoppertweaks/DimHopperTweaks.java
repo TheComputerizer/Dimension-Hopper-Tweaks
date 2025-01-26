@@ -24,7 +24,8 @@ import static net.minecraftforge.common.capabilities.CapabilityManager.INSTANCE;
 public class DimHopperTweaks {
 
     public DimHopperTweaks() {
-        NetworkHandler.queueServerPacketRegistries(PacketSendKeyPressed.class,PacketSyncGuiData.class);
+        NetworkHandler.queueServerPacketRegistries(PacketAutoInfusion.class,PacketSendKeyPressed.class,
+                PacketSyncGuiData.class);
         NetworkHandler.queueClientPacketRegistries(PacketBossClientEffects.class,PacketGrayScaleTimer.class,
                 PacketOpenGui.class,PacketQueryGenericClient.class,PacketRenderBossAttack.class,
                 PacketSyncCapabilityData.class,PacketSyncExtraChunkData.class,PacketSyncPlayerHealth.class,

@@ -10,6 +10,8 @@ import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.Objects;
 
+import static net.minecraftforge.fml.relauncher.Side.SERVER;
+
 public class PacketSendKeyPressed extends MessageImpl {
 
     private int keyType;
@@ -19,6 +21,7 @@ public class PacketSendKeyPressed extends MessageImpl {
     public PacketSendKeyPressed(int keyType) {
         this.keyType = keyType;
     }
+    
     @Override
     public IMessage handle(MessageContext ctx) {
         ISkillCapability cap = SkillWrapper.getSkillCapability(ctx.getServerHandler().player);
@@ -31,7 +34,7 @@ public class PacketSendKeyPressed extends MessageImpl {
 
     @Override
     public Side getSide() {
-        return Side.SERVER;
+        return SERVER;
     }
 
     @Override

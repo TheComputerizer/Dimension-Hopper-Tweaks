@@ -15,6 +15,7 @@ import java.util.Objects;
 
 import static bedrockcraft.ModItems.components;
 import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.MODID;
+import static mods.thecomputerizer.dimhoppertweaks.registry.BlockRegistry.AUTO_INFUSION_TABLE;
 import static mods.thecomputerizer.dimhoppertweaks.registry.ItemRegistry.STARGATE_ADDRESSER;
 import static net.minecraft.init.Items.AIR;
 import static net.minecraftforge.fml.common.registry.ForgeRegistries.ITEMS;
@@ -43,6 +44,14 @@ public class DHTJeiPlugin implements IModPlugin {
             default: return getItemStack("minecraft:stone",0); //overworld
         }
     }
+    
+    private static String getID(String name) {
+        return getID(MODID,name);
+    }
+    
+    private static String getID(String namespace, String name) {
+        return namespace+"."+name;
+    }
 
     private static ItemStack getItemStack(String regName, int meta) {
         ResourceLocation itemRes = new ResourceLocation(regName);
@@ -58,16 +67,17 @@ public class DHTJeiPlugin implements IModPlugin {
 
     @Override
     public void register(IModRegistry registry) {
-        String stargateID = MODID+".ancientStargate";
+        String stargateID = getID("ancientStargate");
         registry.addRecipeCatalyst(new ItemStack(STARGATE_ADDRESSER),stargateID);
         registry.handleRecipes(StargateRecipe.class,StargatePreviewWrapper::new,stargateID);
         registry.addRecipes(getStargateRecipes(),stargateID);
-        String lightningID = MODID+".lightningStrike";
+        String lightningID = getID("lightningStrike");
         registry.addRecipeCatalyst(new ItemStack(components,1,9),lightningID);
         registry.handleRecipes(LightningStrikeRecipe.class,LightningStrikeWrapper::new,lightningID);
         registry.addRecipes(LightningStrikeRecipe.getRecipes(),lightningID);
-        String tileworkerID = MODID+".tileWorker";
-        AutoInfusionRecipeTransferHandle.register(registry.getRecipeTransferRegistry());
+        String infusionID = getID("aoa3","infusion");
+        registry.addRecipeCatalyst(new ItemStack(AUTO_INFUSION_TABLE),infusionID);
+        AutoInfusionRecipeTransferHandle.register(registry.getRecipeTransferRegistry(),infusionID);
     }
 
     private List<StargateRecipe> getStargateRecipes() {

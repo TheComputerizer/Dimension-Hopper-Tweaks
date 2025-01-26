@@ -1,5 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.registry.tiles;
 
+import lombok.Getter;
 import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.RedstoneMode;
@@ -29,6 +30,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 
 import static mcjty.lib.gui.widgets.ImageChoiceLabel.PARAM_CHOICE_IDX;
@@ -49,7 +51,7 @@ public class AutoInfusionTableEntity extends CrafterBaseTE {
     private final AutoInfusionRecipe[] recipes;
     private StorageFilterCache filterCache;
     public boolean noRecipesWork;
-    private int infusionCap;
+    @Getter private int infusionCap;
     
     public AutoInfusionTableEntity() {
         super(4);
@@ -96,9 +98,9 @@ public class AutoInfusionTableEntity extends CrafterBaseTE {
         if(Objects.isNull(recipe)) return false;
         else {
             Map<Integer,ItemStack> undo = new HashMap<>();
-            if(!this.testAndConsumeCraftingItems(craftingRecipe,undo,true)) {
+            if(!testAndConsumeCraftingItems(craftingRecipe,undo,true)) {
                 undo(undo);
-                if(!this.testAndConsumeCraftingItems(craftingRecipe,undo,false)) {
+                if(!testAndConsumeCraftingItems(craftingRecipe,undo,false)) {
                     undo(undo);
                     return false;
                 }
@@ -265,7 +267,7 @@ public class AutoInfusionTableEntity extends CrafterBaseTE {
     @Override
     public ItemStack removeStackFromSlot(int index) {
         this.noRecipesWork = false;
-        if(index==40) this.filterCache = null;
+        if(index==41) this.filterCache = null;
         return this.helper.removeStackFromSlot(index);
     }
     
@@ -286,6 +288,13 @@ public class AutoInfusionTableEntity extends CrafterBaseTE {
     }
     
     @Override
+    public void setGridContents(List<ItemStack> stacks) {
+        setInventorySlotContents(10,stacks.get(0));
+        for(int i=1;i<stacks.size();i++)
+            setInventorySlotContents(i-1,stacks.get(i));
+    }
+    
+    @Override
     public boolean setOwner(EntityPlayer player) {
         PlayerDataManager manager = PlayerUtil.getAdventPlayer(player);
         this.infusionCap = player.capabilities.isCreativeMode ? 999 : manager.stats().getLevel(INFUSION);
@@ -302,16 +311,16 @@ public class AutoInfusionTableEntity extends CrafterBaseTE {
             else {
                 int count = stack.getCount();
                 for(int j=0;j<26;j++) {
-                    int slotIdx = 11+j;
-                    ItemStack input = this.helper.getStackInSlot(slotIdx);
+                    int slotId = 11+j;
+                    ItemStack input = this.helper.getStackInSlot(slotId);
                     if(!input.isEmpty() && input.getCount()>keep && match(stack,input,strictDamage)) {
                         this.infusionInventory.setInventorySlotContents(i,input.copy());
                         int ss = count;
                         if(input.getCount()-count<keep) ss = input.getCount()-keep;
                         count-=ss;
-                        if(!undo.containsKey(slotIdx)) undo.put(slotIdx,input.copy());
+                        if(!undo.containsKey(slotId)) undo.put(slotId,input.copy());
                         input.splitStack(ss);
-                        if(input.isEmpty()) this.helper.setStackInSlot(slotIdx,EMPTY);
+                        if(input.isEmpty()) this.helper.setStackInSlot(slotId,EMPTY);
                     }
                     if(count==0) break;
                 }
@@ -323,7 +332,7 @@ public class AutoInfusionTableEntity extends CrafterBaseTE {
     }
     
     private void undo(Map<Integer, ItemStack> undo) {
-        for(Map.Entry<Integer,ItemStack> entry : undo.entrySet())
+        for(Entry<Integer,ItemStack> entry : undo.entrySet())
             this.helper.setStackInSlot(entry.getKey(),entry.getValue());
         undo.clear();
     }
