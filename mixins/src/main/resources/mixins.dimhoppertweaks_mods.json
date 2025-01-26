@@ -74,6 +74,7 @@
     "extraplanets.MixinExtraPlanetsJEI",
     "extrautils2.MixinItemUnstableIngots",
     "extrautils2.MixinTileMine",
+    "forestry.MixinItemStackUtil",
     "forestry.MixinStorageJeiPlugin",
     "forestry.MixinTileWorktable",
     "gaiadimension.MixinGDGaiaPortal",

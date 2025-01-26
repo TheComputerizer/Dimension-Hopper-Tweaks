@@ -1,5 +1,5 @@
 container {
-    slot('ghostcatalyst') {
+    slot('ghost') {
         pos(175,43)
     }
     slot('ghost') {
