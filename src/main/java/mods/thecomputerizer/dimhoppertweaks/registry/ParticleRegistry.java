@@ -14,10 +14,11 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Objects;
+
+import static net.minecraftforge.fml.relauncher.Side.CLIENT;
 
 @Mod.EventBusSubscriber(modid = DHTRef.MODID)
 public final class ParticleRegistry {
@@ -44,7 +45,7 @@ public final class ParticleRegistry {
     }
 
     @SubscribeEvent
-    @SideOnly(Side.CLIENT)
+    @SideOnly(CLIENT)
     public static void stitchEvent(TextureStitchEvent.Pre ev) {
         String texPath = Minecraft.getMinecraft().fontRenderer.locationFontTexture.getPath();
         texPath = texPath.substring(0,texPath.lastIndexOf(".")).replace("textures/","");
@@ -53,24 +54,24 @@ public final class ParticleRegistry {
         GRAY_BLIGHT_FIRE_ATLAS = ev.getMap().registerSprite(BetterBlightFireRenderer.TEXTURE_GRAY);
     }
 
-    @SideOnly(Side.CLIENT)
+    @SideOnly(CLIENT)
     public static void postInit() {
         ParticleManager manager = Minecraft.getMinecraft().effectRenderer;
         manager.registerParticle(RANDOM_ASCII.getParticleID(),new ParticleAscii.Factory());
         manager.registerParticle(BLIGHT_FIRE.getParticleID(),new ParticleBlightFire.Factory());
     }
 
-    @SideOnly(Side.CLIENT)
+    @SideOnly(CLIENT)
     public static TextureAtlasSprite getFontAtlas() {
         return FONT_ATLAS;
     }
 
-    @SideOnly(Side.CLIENT)
+    @SideOnly(CLIENT)
     public static TextureAtlasSprite getFireAtlas() {
         return BLIGHT_FIRE_ATLAS;
     }
 
-    @SideOnly(Side.CLIENT)
+    @SideOnly(CLIENT)
     public static TextureAtlasSprite getGrayFireAtlas() {
         return GRAY_BLIGHT_FIRE_ATLAS;
     }

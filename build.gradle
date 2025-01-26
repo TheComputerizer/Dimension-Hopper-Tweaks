@@ -177,6 +177,7 @@ dependencies {
     compileOnly(fg.deobf("curse.maven:reliquary-241319:${xreliquary_version}"))
     compileOnly(fg.deobf("curse.maven:reskillable-286382:${reskillable_version}"))
     compileOnly(fg.deobf("curse.maven:rf-270789:${rf_version}"))
+    compileOnly(fg.deobf("curse.maven:rftools-224641:${rftools_version}"))
     compileOnly(fg.deobf("curse.maven:rpsi-302313:${rpsi_version}"))
     compileOnly(fg.deobf("curse.maven:scalinghealth-248027:${scalinghealth_version}"))
     compileOnly(fg.deobf("curse.maven:sgcraft-289115:${sgcraft_version}"))

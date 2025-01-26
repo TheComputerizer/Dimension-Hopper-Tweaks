@@ -65,6 +65,8 @@ public final class DHTClient {
     }
 
     public static void registerItemModels() {
+        ModelLoader.setCustomModelResourceLocation(AUTO_INFUSION_TABLE,0,getModelRes(AUTO_INFUSION_TABLE));
+        ModelLoader.setCustomModelResourceLocation(LIGHTNING_ENHANCER,0,getModelRes(LIGHTNING_ENHANCER));
         ModelLoader.setCustomModelResourceLocation(PRESTIGE_TOKEN,0,getModelRes(STARGATE_ADDRESSER));
         ModelLoader.setCustomModelResourceLocation(RECIPE_FUNCTION,0,getModelRes(STARGATE_ADDRESSER));
         ModelLoader.setCustomModelResourceLocation(SKILL_CREDIT,0,getModelRes(STARGATE_ADDRESSER));

@@ -1,0 +1,12 @@
+{
+  "parent": "rftools:block/rftoolsblock",
+  "textures": {
+    "bottom": "dimhoppertweaks:item/stargate_addresser",
+    "east": "dimhoppertweaks:item/stargate_addresser",
+    "front": "dimhoppertweaks:item/stargate_addresser",
+    "particle": "dimhoppertweaks:item/stargate_addresser",
+    "south": "dimhoppertweaks:item/stargate_addresser",
+    "top": "dimhoppertweaks:item/stargate_addresser",
+    "west": "dimhoppertweaks:item/stargate_addresser"
+  }
+}

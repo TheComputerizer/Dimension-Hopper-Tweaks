@@ -1,6 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.mods.forestry;
 
 import forestry.core.recipes.RecipeUtil;
+import forestry.core.tiles.TileBase;
 import forestry.worktable.inventory.InventoryCraftingForestry;
 import forestry.worktable.tiles.TileWorktable;
 import mods.thecomputerizer.dimhoppertweaks.mixin.api.IInventoryCrafting;
@@ -18,7 +19,7 @@ import java.util.Objects;
 
 @SuppressWarnings("SpellCheckingInspection")
 @Mixin(value = TileWorktable.class, remap = false)
-public abstract class MixinTileWorktable {
+public abstract class MixinTileWorktable extends TileBase {
 
     @Redirect(at = @At(value = "INVOKE", target = "Lforestry/core/recipes/RecipeUtil;"+
             "getCraftRecipe(Lnet/minecraft/inventory/InventoryCrafting;Lnet/minecraft/util/NonNullList;"+

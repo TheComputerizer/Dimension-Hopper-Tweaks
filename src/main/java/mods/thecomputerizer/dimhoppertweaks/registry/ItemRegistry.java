@@ -1,6 +1,5 @@
 package mods.thecomputerizer.dimhoppertweaks.registry;
 
-import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.registry.items.*;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -14,6 +13,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.MODID;
 import static mods.thecomputerizer.dimhoppertweaks.registry.RegistryHandler.DIM_HOPPER_TAB;
 
 @SuppressWarnings({"unused","SameParameterValue"})
@@ -29,6 +29,7 @@ public final class ItemRegistry {
     public static final PrestigeToken PRESTIGE_TOKEN = makeItem("prestige_token",PrestigeToken::new,
             item -> item.setMaxStackSize(10));
     public static final ItemBlock LIGHTNING_ENHANCER = makeEpicItemBlock(BlockRegistry.LIGHTNING_ENHANCER);
+    public static final ItemBlock AUTO_INFUSION_TABLE = makeEpicItemBlock(BlockRegistry.AUTO_INFUSION_TABLE);
 
     private static <I extends Item> I makeItem(final String name, final Supplier<I> constructor) {
         return makeItem(name,constructor,null);
@@ -39,8 +40,8 @@ public final class ItemRegistry {
         final I item = constructor.get();
         item.setCreativeTab(DIM_HOPPER_TAB);
         item.setMaxStackSize(1);
-        item.setTranslationKey(DHTRef.MODID+"."+name);
-        item.setRegistryName(DHTRef.MODID, name);
+        item.setTranslationKey(MODID+"."+name);
+        item.setRegistryName(MODID, name);
         if(Objects.nonNull(config)) config.accept(item);
         ALL_ITEMS.add(item);
         return item;
