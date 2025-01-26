@@ -34,9 +34,9 @@ import java.util.Objects;
 import static mcjty.lib.gui.widgets.ImageChoiceLabel.PARAM_CHOICE_IDX;
 import static mcjty.rftools.blocks.crafter.CrafterConfiguration.rfPerOperation;
 import static mcjty.rftools.blocks.crafter.CrafterConfiguration.speedOperations;
-import static mcjty.rftools.blocks.crafter.CrafterContainer.CONTAINER_FACTORY;
 import static mcjty.rftools.craftinggrid.CraftingRecipe.CraftMode.EXTC;
 import static mcjty.rftools.craftinggrid.CraftingRecipe.CraftMode.INT;
+import static mods.thecomputerizer.dimhoppertweaks.common.containers.AutoInfusionContainer.FACTORY;
 import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.LOGGER;
 import static net.minecraft.item.ItemStack.EMPTY;
 import static net.tslat.aoa3.library.Enums.Skills.INFUSION;
@@ -53,7 +53,7 @@ public class AutoInfusionTableEntity extends CrafterBaseTE {
     
     public AutoInfusionTableEntity() {
         super(4);
-        this.helper = new InventoryHelper(this,CONTAINER_FACTORY,42);
+        this.helper = new InventoryHelper(this,FACTORY,42);
         this.filterCache = null;
         this.noRecipesWork = false;
         this.infusionInventory = new InventoryAutoInfusion(new Container() {

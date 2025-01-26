@@ -15,11 +15,11 @@ import mcjty.lib.gui.widgets.WidgetList;
 import mcjty.lib.tileentity.GenericEnergyStorageTileEntity;
 import mcjty.lib.varia.BlockTools;
 import mcjty.lib.varia.ItemStackList;
-import mcjty.rftools.blocks.crafter.CrafterBaseTE;
 import mcjty.rftools.blocks.crafter.PacketCrafter;
 import mcjty.rftools.craftinggrid.CraftingRecipe;
 import mcjty.rftools.craftinggrid.CraftingRecipe.CraftMode;
 import mods.thecomputerizer.dimhoppertweaks.common.containers.InventoryAutoInfusion;
+import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.registry.tiles.AutoInfusionTableEntity;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -54,8 +54,7 @@ public class GuiAutoInfusion extends GenericGuiContainer<AutoInfusionTableEntity
     private ChoiceLabel keepItem;
     private ChoiceLabel internalRecipe;
     private Button applyButton;
-    private static final ResourceLocation
-            iconGuiElements = new ResourceLocation("rftools", "textures/gui/guielements.png");
+    private static final ResourceLocation iconGuiElements = DHTRef.res("textures/gui/auto_infusion.png");
     private static int lastSelected = -1;
     
     public GuiAutoInfusion(AutoInfusionTableEntity tile, GenericContainer container) {
@@ -114,7 +113,7 @@ public class GuiAutoInfusion extends GenericGuiContainer<AutoInfusionTableEntity
         GlStateManager.enableDepth();
         GlStateManager.disableBlend();
         GlStateManager.enableLighting();
-        for(int i=0; i<ghostSlots.size();i++) {
+        for(int i=0;i<ghostSlots.size();i++) {
             ItemStack stack = ghostSlots.get(i);
             if(!stack.isEmpty()) {
                 int slotId = i<26 ? i+11 : i+37-26;
@@ -132,7 +131,6 @@ public class GuiAutoInfusion extends GenericGuiContainer<AutoInfusionTableEntity
                 }
             }
         }
-        
         this.itemRender.zLevel = 0f;
         this.zLevel = 0f;
         GlStateManager.popMatrix();
@@ -157,7 +155,7 @@ public class GuiAutoInfusion extends GenericGuiContainer<AutoInfusionTableEntity
     
     @Override
     public void initGui() {
-        this.window = new Window(this,this.tileEntity,INSTANCE,new ResourceLocation("rftools","gui/crafter.gui"));
+        this.window = new Window(this,this.tileEntity,INSTANCE,DHTRef.res("gui/auto_infusion.gui"));
         super.initGui();
         initializeFields();
         if(lastSelected!=-1 && lastSelected<this.tileEntity.getSizeInventory())
@@ -202,7 +200,7 @@ public class GuiAutoInfusion extends GenericGuiContainer<AutoInfusionTableEntity
             this.keepItem.setChoice("All");
             this.internalRecipe.setChoice("Ext");
         } else {
-            CraftingRecipe craftingRecipe = ((CrafterBaseTE)this.tileEntity).getRecipe(selected);
+            CraftingRecipe craftingRecipe = this.tileEntity.getRecipe(selected);
             InventoryCrafting inv = craftingRecipe.getInventory();
             for(int i=0;i<10;i++) this.inventorySlots.getSlot(i).putStack(inv.getStackInSlot(i));
             this.inventorySlots.getSlot(10).putStack(craftingRecipe.getResult());
@@ -223,7 +221,7 @@ public class GuiAutoInfusion extends GenericGuiContainer<AutoInfusionTableEntity
                     return false;
                 }
             });
-            for(int i=0;i<10;i++) inv.setInventorySlotContents(i, this.inventorySlots.getSlot(i).getStack());
+            for(int i=0;i<10;i++) inv.setInventorySlotContents(i,this.inventorySlots.getSlot(i).getStack());
             IRecipe recipe = CraftingRecipe.findRecipe(this.mc.world,inv);
             ItemStack result = Objects.nonNull(recipe) ? recipe.getCraftingResult(inv) : EMPTY;
             this.inventorySlots.getSlot(10).putStack(result);
@@ -254,7 +252,6 @@ public class GuiAutoInfusion extends GenericGuiContainer<AutoInfusionTableEntity
                 }
                 default: mode = EXTC;
             }
-            
             craftingRecipe.setKeepOne(keepOne);
             craftingRecipe.setCraftMode(mode);
             sendChangeToServer(selected,craftingRecipe.getInventory(),craftingRecipe.getResult(),keepOne,mode);

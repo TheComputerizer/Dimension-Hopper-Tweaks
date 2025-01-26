@@ -222,6 +222,7 @@ skill.dimhoppertweaks.void=Void
 skill.dimhoppertweaks.research=Research
 
 tile.dimhoppertweaks.lightning_enhancer.name=Lightning Enhancer
+tile.rftools.auto_infusion_table.name=Infusion Crafter
 
 trait.dimhoppertweaks.hungry_farmer.auto_feed_enabled=§aAuto-Feed is enabled for the Hungry Farmer trait on this item (%1$s)
 trait.dimhoppertweaks.potion_master.auto_drink_enabled=§aAuto-Drink is enabled for the Potion Master trait on this potion (%1$s,%2$s)

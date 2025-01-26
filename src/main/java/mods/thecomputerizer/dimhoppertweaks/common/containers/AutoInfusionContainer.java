@@ -16,12 +16,11 @@ import net.minecraft.item.ItemStack;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static mcjty.lib.container.SlotType.SLOT_INPUT;
-import static mcjty.rftools.blocks.crafter.CrafterContainer.CONTAINER_FACTORY;
 
 @ParametersAreNonnullByDefault
 public class AutoInfusionContainer extends GenericContainer {
     
-    public static final ContainerFactory FACTORY = new ContainerFactory(DHTRef.res("gui/auto_infusion.gui"));
+    public static final ContainerFactory FACTORY = new ContainerFactory(DHTRef.res("gui/auto_infision.gui"));
     
     private final AutoInfusionTableEntity crafterEntity;
     
@@ -30,7 +29,7 @@ public class AutoInfusionContainer extends GenericContainer {
     }
     
     public AutoInfusionContainer(EntityPlayer player, IInventory inventory) {
-        super(CONTAINER_FACTORY);
+        super(FACTORY);
         this.crafterEntity = (AutoInfusionTableEntity)inventory;
         addInventory("container",inventory);
         addInventory("player",player.inventory);

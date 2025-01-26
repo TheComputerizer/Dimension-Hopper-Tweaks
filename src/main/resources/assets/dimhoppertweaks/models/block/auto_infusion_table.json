@@ -1,11 +1,11 @@
 {
   "parent": "rftools:block/rftoolsblock",
   "textures": {
-    "bottom": "aoa3:blocks/functional/utility/infusion_table",
+    "down": "aoa3:blocks/functional/utility/infusion_table",
     "east": "aoa3:blocks/functional/utility/infusion_table_side",
     "front": "rftools:blocks/machinecrafter3",
-    "south": "aoa3:blocks/functional/utility/infusion_table_side",
-    "top": "aoa3:blocks/functional/utility/infusion_table_top",
+    "south": "rftools:blocks/machinecrafter3",
+    "up": "aoa3:blocks/functional/utility/infusion_table_top",
     "west": "aoa3:blocks/functional/utility/infusion_table_side"
   }
 }

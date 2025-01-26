@@ -8,15 +8,25 @@ import mcjty.rftools.blocks.crafter.CrafterBaseTE;
 import mods.thecomputerizer.dimhoppertweaks.client.gui.GuiAutoInfusion;
 import mods.thecomputerizer.dimhoppertweaks.common.containers.AutoInfusionContainer;
 import mods.thecomputerizer.dimhoppertweaks.registry.tiles.AutoInfusionTableEntity;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.tslat.aoa3.item.misc.InfusionStone;
+import net.tslat.aoa3.library.Enums.ArmourSets;
+import net.tslat.aoa3.utils.ItemUtil;
+import net.tslat.aoa3.utils.player.PlayerDataManager;
+import net.tslat.aoa3.utils.player.PlayerUtil;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
@@ -25,10 +35,14 @@ import java.util.function.BiFunction;
 
 import static net.minecraft.block.material.Material.IRON;
 import static net.minecraft.item.ItemStack.EMPTY;
+import static net.minecraft.util.SoundCategory.BLOCKS;
 import static net.minecraft.util.text.TextFormatting.GREEN;
 import static net.minecraft.util.text.TextFormatting.WHITE;
 import static net.minecraft.util.text.TextFormatting.YELLOW;
 import static net.minecraftforge.fml.relauncher.Side.CLIENT;
+import static net.tslat.aoa3.advent.AdventOfAscension.rand;
+import static net.tslat.aoa3.common.registration.SoundsRegister.INFUSION_SUCCESS;
+import static net.tslat.aoa3.library.Enums.Skills.INFUSION;
 
 public class AutoInfusionTable extends GenericRFToolsBlock<AutoInfusionTableEntity,AutoInfusionContainer>
         implements Infusable, INBTPreservingIngredient {
@@ -65,7 +79,7 @@ public class AutoInfusionTable extends GenericRFToolsBlock<AutoInfusionTableEnti
             }
             list.add(GREEN +"Recipes: "+rc+" recipes");
         }
-        if(!Keyboard.isKeyDown(42) && !Keyboard.isKeyDown(54)) list.add(WHITE + "<Press Shift>");
+        if(!Keyboard.isKeyDown(42) && !Keyboard.isKeyDown(54)) list.add(WHITE+"<Press Shift>");
         else {
             list.add(WHITE+"This machine can handle up to 4 recipes");
             list.add(WHITE+"at once and allows recipes to use the crafting results");
@@ -85,5 +99,34 @@ public class AutoInfusionTable extends GenericRFToolsBlock<AutoInfusionTableEnti
     @SideOnly(CLIENT)
     public BiFunction<AutoInfusionTableEntity,AutoInfusionContainer,GenericGuiContainer<? super AutoInfusionTableEntity>> getGuiFactory() {
         return GuiAutoInfusion::new;
+    }
+    
+    @Override //Same as what the normal infusion table does just without the GUI call
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand,
+            EnumFacing facing, float hitX, float hitY, float hitZ) {
+        if(super.onBlockActivated(world,pos,state,player,hand,facing,hitX,hitY,hitZ)) return true;
+        if(!world.isRemote) {
+            ItemStack stack = player.getHeldItem(hand);
+            Item item = stack.getItem();
+            if(item instanceof InfusionStone) {
+                PlayerDataManager manager = PlayerUtil.getAdventPlayer(player);
+                InfusionStone stone = (InfusionStone)item;
+                int count = stack.getCount();
+                if(player.capabilities.isCreativeMode || manager.stats().getLevel(INFUSION)>=stone.getLvl()) {
+                    manager.stats().addXp(INFUSION,stone.getXp()*(float)count,false,false);
+                    world.playSound(null,pos.getX(),pos.getY(),pos.getZ(),INFUSION_SUCCESS,BLOCKS,1f,1f);
+                    int chanceMod = manager.equipment().getCurrentFullArmourSet()==ArmourSets.INFUSION ? 33 : 100;
+                    int powerStoneCount = 0;
+                    for(int i=0;i<count;i++)
+                        if(rand.nextInt(chanceMod)==0) powerStoneCount++;
+                    if(!player.capabilities.isCreativeMode) {
+                        if(powerStoneCount>0)
+                            player.setHeldItem(hand,new ItemStack(stone.getPowerStone(),powerStoneCount));
+                        else player.setHeldItem(hand,EMPTY);
+                    } else ItemUtil.givePlayerItemOrDrop(player,new ItemStack(stone.getPowerStone(),powerStoneCount));
+                }
+            }
+        }
+        return true;
     }
 }
