@@ -67,6 +67,7 @@ public class DHTJeiPlugin implements IModPlugin {
         registry.handleRecipes(LightningStrikeRecipe.class,LightningStrikeWrapper::new,lightningID);
         registry.addRecipes(LightningStrikeRecipe.getRecipes(),lightningID);
         String tileworkerID = MODID+".tileWorker";
+        AutoInfusionRecipeTransferHandle.register(registry.getRecipeTransferRegistry());
     }
 
     private List<StargateRecipe> getStargateRecipes() {

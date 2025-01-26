@@ -1,4 +1,7 @@
 container {
+    slot('ghostcatalyst') {
+        pos(175,43)
+    }
     slot('ghost') {
         pos(193,7)
         dim(3,3)

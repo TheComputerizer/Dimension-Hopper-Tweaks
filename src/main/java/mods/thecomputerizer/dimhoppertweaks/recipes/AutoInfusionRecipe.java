@@ -1,26 +1,38 @@
 package mods.thecomputerizer.dimhoppertweaks.recipes;
 
 import mcjty.rftools.craftinggrid.CraftingRecipe;
+import mods.thecomputerizer.dimhoppertweaks.common.containers.InventoryAutoInfusion;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Objects;
 
 import static net.minecraft.item.ItemStack.EMPTY;
 
+@ParametersAreNonnullByDefault
 public class AutoInfusionRecipe extends CraftingRecipe {
     
     private ItemStack catalyst;
     private IRecipe recipe;
     private boolean recipePresent;
+    private final InventoryCrafting inventory;
     
     public AutoInfusionRecipe() {
         this.catalyst = EMPTY;
         this.recipe = null;
         this.recipePresent = false;
+        this.inventory = new InventoryAutoInfusion(new Container() {
+            public boolean canInteractWith(EntityPlayer player) {
+                return false;
+            }
+        });
     }
     
     @Override
@@ -30,6 +42,11 @@ public class AutoInfusionRecipe extends CraftingRecipe {
             this.recipe = findRecipe(world,getInventory());
         }
         return this.recipe;
+    }
+    
+    @Override
+    public InventoryCrafting getInventory() {
+        return this.inventory;
     }
     
     @SuppressWarnings("ConstantValue") @Override
@@ -45,7 +62,7 @@ public class AutoInfusionRecipe extends CraftingRecipe {
         if(Objects.nonNull(result)) setResult(new ItemStack(result));
         else setResult(EMPTY);
         setKeepOne(tag.getBoolean("Keep"));
-        setCraftMode(CraftingRecipe.CraftMode.values()[tag.getByte("Int")]);
+        setCraftMode(CraftMode.values()[tag.getByte("Int")]);
         this.recipePresent = false;
     }
     
