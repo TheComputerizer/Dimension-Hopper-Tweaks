@@ -1,10 +1,15 @@
 package mods.thecomputerizer.dimhoppertweaks.registry.tiles;
 
 import lombok.Getter;
+import lombok.Setter;
+import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
+import mcjty.lib.tileentity.GenericEnergyReceiverTileEntity;
 import mcjty.lib.typed.TypedMap;
+import mcjty.lib.varia.ItemStackList;
+import mcjty.lib.varia.NullSidedInvWrapper;
 import mcjty.lib.varia.RedstoneMode;
-import mcjty.rftools.blocks.crafter.CrafterBaseTE;
+import mcjty.rftools.compat.jei.JEIRecipeAcceptor;
 import mcjty.rftools.craftinggrid.CraftingRecipe;
 import mcjty.rftools.craftinggrid.CraftingRecipe.CraftMode;
 import mcjty.rftools.items.storage.StorageFilterCache;
@@ -20,11 +25,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.oredict.OreDictionary;
 import net.tslat.aoa3.common.containers.ContainerInfusionTable.InventoryInfusion;
 import net.tslat.aoa3.utils.player.PlayerDataManager;
 import net.tslat.aoa3.utils.player.PlayerUtil;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.HashMap;
@@ -34,30 +43,40 @@ import java.util.Map.Entry;
 import java.util.Objects;
 
 import static mcjty.lib.gui.widgets.ImageChoiceLabel.PARAM_CHOICE_IDX;
+import static mcjty.rftools.blocks.crafter.CrafterConfiguration.MAXENERGY;
+import static mcjty.rftools.blocks.crafter.CrafterConfiguration.RECEIVEPERTICK;
 import static mcjty.rftools.blocks.crafter.CrafterConfiguration.rfPerOperation;
 import static mcjty.rftools.blocks.crafter.CrafterConfiguration.speedOperations;
+import static mcjty.rftools.blocks.crafter.CrafterContainer.BUFFEROUT_SIZE;
+import static mcjty.rftools.blocks.crafter.CrafterContainer.BUFFER_SIZE;
 import static mcjty.rftools.craftinggrid.CraftingRecipe.CraftMode.EXTC;
 import static mcjty.rftools.craftinggrid.CraftingRecipe.CraftMode.INT;
 import static mods.thecomputerizer.dimhoppertweaks.common.containers.AutoInfusionContainer.FACTORY;
 import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.LOGGER;
 import static net.minecraft.item.ItemStack.EMPTY;
+import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 import static net.tslat.aoa3.library.Enums.Skills.INFUSION;
 
-@ParametersAreNonnullByDefault @MethodsReturnNonnullByDefault
-public class AutoInfusionTableEntity extends CrafterBaseTE {
+@SuppressWarnings("NullableProblems") @ParametersAreNonnullByDefault @MethodsReturnNonnullByDefault
+public class AutoInfusionTableEntity extends GenericEnergyReceiverTileEntity
+        implements ITickable, DefaultSidedInventory, JEIRecipeAcceptor {
     
     private final InventoryHelper helper;
     private final InventoryInfusion infusionInventory;
     private final AutoInfusionRecipe[] recipes;
     private StorageFilterCache filterCache;
+    @Getter private ItemStackList ghostSlots;
     public boolean noRecipesWork;
+    @Getter @Setter private int speedMode;
     @Getter private int infusionCap;
     
     public AutoInfusionTableEntity() {
-        super(4);
+        super(MAXENERGY.get(),RECEIVEPERTICK.get());
         this.helper = new InventoryHelper(this,FACTORY,42);
+        this.ghostSlots = ItemStackList.create(BUFFER_SIZE+BUFFEROUT_SIZE);
         this.filterCache = null;
         this.noRecipesWork = false;
+        this.speedMode = 0;
         this.infusionInventory = new InventoryAutoInfusion(new Container() {
             public boolean canInteractWith(EntityPlayer player) {
                 return false;
@@ -68,10 +87,20 @@ public class AutoInfusionTableEntity extends CrafterBaseTE {
     }
     
     @Override
+    public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
+        return FACTORY.isOutputSlot(index);
+    }
+    
+    @Override
+    public boolean canInsertItem(int index, ItemStack stack, EnumFacing direction) {
+        if(!isItemValidForSlot(index, stack)) return false;
+        return FACTORY.isInputSlot(index);
+    }
+    
     protected void checkStateServer() {
-        if(this.isMachineEnabled() && !this.noRecipesWork) {
+        if(isMachineEnabled() && !this.noRecipesWork) {
             int rf = (int)((float)rfPerOperation.get()*(2f-this.getInfusedFactor())/2f);
-            int steps = getSpeedMode()==1 ? speedOperations.get() : 1;
+            int steps = this.speedMode==1 ? speedOperations.get() : 1;
             if(rf>0) steps = (int)Math.min(steps,this.getStoredPower()/(long)rf);
             int i;
             for(i=0;i<steps;i++) {
@@ -111,11 +140,11 @@ public class AutoInfusionTableEntity extends CrafterBaseTE {
             } catch(RuntimeException ex) {
                 LOGGER.error("Problem with recipe!",ex);
             }
-            CraftingRecipe.CraftMode mode = craftingRecipe.getCraftMode();
+            CraftMode mode = craftingRecipe.getCraftMode();
             if(!result.isEmpty() && placeResult(mode,result,undo)) {
                 List<ItemStack> remaining = recipe.getRemainingItems(this.infusionInventory);
                 if(Objects.nonNull(remaining)) {
-                    CraftingRecipe.CraftMode remainingMode = mode==EXTC ? INT : mode;
+                    CraftMode remainingMode = mode==EXTC ? INT : mode;
                     for(ItemStack s : remaining) {
                         if(!s.isEmpty() && !placeResult(remainingMode,s,undo)) {
                             undo(undo);
@@ -135,7 +164,7 @@ public class AutoInfusionTableEntity extends CrafterBaseTE {
     public ItemStack decrStackSize(int index, int count) {
         this.noRecipesWork = false;
         if(index==41) this.filterCache = null;
-        return this.getInventoryHelper().decrStackSize(index,count);
+        return this.helper.decrStackSize(index,count);
     }
     
     @Override
@@ -144,25 +173,25 @@ public class AutoInfusionTableEntity extends CrafterBaseTE {
         if(rc) return true;
         switch(command) {
             case "crafter.setRsMode":
-                this.setRSMode(RedstoneMode.values()[params.get(PARAM_CHOICE_IDX)]);
+                setRSMode(RedstoneMode.values()[params.get(PARAM_CHOICE_IDX)]);
                 return true;
             case "crafter.setMode":
-                this.setSpeedMode(params.get(PARAM_CHOICE_IDX));
+                setSpeedMode(params.get(PARAM_CHOICE_IDX));
                 return true;
             case "crafter.remember":
-                this.rememberItems();
+                rememberItems();
                 return true;
             case "crafter.forget":
-                this.forgetItems();
+                forgetItems();
                 return true;
             default: return false;
         }
     }
     
     private void forgetItems() {
-        Collections.fill(getGhostSlots(),EMPTY);
+        Collections.fill(this.ghostSlots,EMPTY);
         this.noRecipesWork = false;
-        this.markDirtyClient();
+        markDirtyClient();
     }
     
     private void getFilterCache() {
@@ -175,14 +204,35 @@ public class AutoInfusionTableEntity extends CrafterBaseTE {
         return this.helper;
     }
     
-    @Override
     public CraftingRecipe getRecipe(int index) {
         return this.recipes[index];
     }
     
     @Override
+    public int[] getSlotsForFace(EnumFacing side) {
+        return FACTORY.getAccessibleSlots();
+    }
+    
     public int getSupportedRecipes() {
         return this.recipes.length;
+    }
+    
+    @Override
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+        return capability==ITEM_HANDLER_CAPABILITY || super.hasCapability(capability,facing);
+    }
+    
+    @SuppressWarnings("unchecked") @Override @Nullable
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+        if(capability==ITEM_HANDLER_CAPABILITY) {
+            if(Objects.isNull(this.invHandlerNull)) this.invHandlerNull = new NullSidedInvWrapper(this);
+            return (T)this.invHandlerNull;
+        }
+        return super.getCapability(capability,facing);
+    }
+    
+    @Override public boolean isEmpty() {
+        return false;
     }
     
     @Override
@@ -190,14 +240,14 @@ public class AutoInfusionTableEntity extends CrafterBaseTE {
         if(index>=0 && index<=10) return false;
         else {
             if(index>=11 && index<37) {
-                ItemStack ghostSlot = getGhostSlots().get(index-11);
+                ItemStack ghostSlot = this.ghostSlots.get(index-11);
                 if(!ghostSlot.isEmpty() && !ghostSlot.isItemEqual(stack)) return false;
                 if(this.helper.containsItem(41)) {
                     this.getFilterCache();
                     if(Objects.nonNull(this.filterCache)) return this.filterCache.match(stack);
                 }
             } else if(index>=37 && index<41) {
-                ItemStack ghostSlot = getGhostSlots().get(index-37+26);
+                ItemStack ghostSlot = this.ghostSlots.get(index-37+26);
                 return ghostSlot.isEmpty() || ghostSlot.isItemEqual(stack);
             }
             return true;
@@ -209,6 +259,16 @@ public class AutoInfusionTableEntity extends CrafterBaseTE {
         if((!input.isEmpty() || target.isEmpty()) && (input.isEmpty() || !target.isEmpty()))
             return target.getItem()==input.getItem();
         return false;
+    }
+    
+    @Override
+    protected boolean needsCustomInvWrapper() {
+        return true;
+    }
+    
+    @Override
+    protected boolean needsRedstoneMode() {
+        return true;
     }
     
     private boolean placeResult(CraftMode mode, ItemStack result, Map<Integer,ItemStack> undo) {
@@ -228,7 +288,7 @@ public class AutoInfusionTableEntity extends CrafterBaseTE {
         NBTTagList list = tag.getTagList("GItems",10);
         for(int i=0;i<list.tagCount();i++) {
             NBTTagCompound ghostTag = list.getCompoundTagAt(i);
-            getGhostSlots().set(i,new ItemStack(ghostTag));
+            this.ghostSlots.set(i,new ItemStack(ghostTag));
         }
     }
     
@@ -250,14 +310,14 @@ public class AutoInfusionTableEntity extends CrafterBaseTE {
     }
     
     private void rememberItems() {
-        for(int i=0;i<getGhostSlots().size();i++) {
+        for(int i=0;i<this.ghostSlots.size();i++) {
             int slotId;
             if(i<26) slotId = i+11;
             else slotId = i+37-26;
             if(this.helper.containsItem(slotId)) {
                 ItemStack stack = this.helper.getStackInSlot(slotId).copy();
                 stack.setCount(1);
-                getGhostSlots().set(i,stack);
+                this.ghostSlots.set(i,stack);
             }
         }
         this.noRecipesWork = false;
@@ -271,20 +331,23 @@ public class AutoInfusionTableEntity extends CrafterBaseTE {
         return this.helper.removeStackFromSlot(index);
     }
     
-    @Override
     public void selectRecipe(int index) {
         CraftingRecipe recipe = this.recipes[index];
-        this.setInventorySlotContents(11,recipe.getResult());
+        setInventorySlotContents(10,recipe.getResult());
         InventoryCrafting inv = recipe.getInventory();
         int size = inv.getSizeInventory();
-        for(int i=0;i<size;i++) this.setInventorySlotContents(i,inv.getStackInSlot(i));
+        for(int i=0;i<size;i++) setInventorySlotContents(i,inv.getStackInSlot(i));
     }
     
     @Override
     public void setInventorySlotContents(int index, ItemStack stack) {
         this.noRecipesWork = false;
         if(index==41) this.filterCache = null;
-        this.helper.setInventorySlotContents(this.getInventoryStackLimit(),index,stack);
+        this.helper.setInventorySlotContents(getInventoryStackLimit(),index,stack);
+    }
+    
+    @Override public boolean isUsableByPlayer(EntityPlayer player) {
+        return canPlayerAccess(player);
     }
     
     @Override
@@ -337,9 +400,14 @@ public class AutoInfusionTableEntity extends CrafterBaseTE {
         undo.clear();
     }
     
+    @Override
+    public void update() {
+        if(!getWorld().isRemote) checkStateServer();
+    }
+    
     private void writeGhostBufferToNBT(NBTTagCompound tag) {
         NBTTagList list = new NBTTagList();
-        for(ItemStack stack : getGhostSlots()) {
+        for(ItemStack stack : this.ghostSlots) {
             NBTTagCompound stackTag = new NBTTagCompound();
             if(!stack.isEmpty()) stack.writeToNBT(stackTag);
             list.appendTag(stackTag);
@@ -363,6 +431,6 @@ public class AutoInfusionTableEntity extends CrafterBaseTE {
         writeBufferToNBT(tagCompound,this.helper);
         writeGhostBufferToNBT(tagCompound);
         writeRecipesToNBT(tagCompound);
-        tagCompound.setByte("speedMode",(byte)getSpeedMode());
+        tagCompound.setByte("speedMode",(byte)this.speedMode);
     }
 }

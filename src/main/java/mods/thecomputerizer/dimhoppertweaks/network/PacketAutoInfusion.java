@@ -2,7 +2,6 @@ package mods.thecomputerizer.dimhoppertweaks.network;
 
 import io.netty.buffer.ByteBuf;
 import mcjty.lib.network.NetworkTools;
-import mcjty.lib.thirteen.Context;
 import mcjty.lib.varia.Logging;
 import mcjty.rftools.craftinggrid.CraftingRecipe;
 import mcjty.rftools.craftinggrid.CraftingRecipe.CraftMode;
@@ -18,7 +17,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.Objects;
-import java.util.function.Supplier;
 
 import static net.minecraft.item.ItemStack.EMPTY;
 import static net.minecraftforge.fml.relauncher.Side.SERVER;
@@ -31,9 +29,7 @@ public class PacketAutoInfusion extends MessageImpl {
     private boolean keepOne;
     private CraftMode mode;
     
-    public PacketAutoInfusion() {
-    
-    }
+    public PacketAutoInfusion() {}
     
     public PacketAutoInfusion(BlockPos pos, int index, InventoryCrafting inv, ItemStack result, boolean keepOne,
             CraftMode mode) {
@@ -87,25 +83,6 @@ public class PacketAutoInfusion extends MessageImpl {
         return SERVER;
     }
     
-    public void handle(Supplier<Context> supplier) {
-        Context ctx = supplier.get();
-        ctx.enqueueWork(() -> {
-            EntityPlayerMP player = ctx.getSender();
-            if(Objects.nonNull(player)) {
-                TileEntity te = player.getEntityWorld().getTileEntity(this.pos);
-                if (!(te instanceof AutoInfusionTableEntity)) {
-                    Logging.logError("Wrong type of tile entity (expected AutoInfusionTableEntity)!");
-                } else {
-                    AutoInfusionTableEntity entity = (AutoInfusionTableEntity)te;
-                    entity.noRecipesWork = false;
-                    if(this.index!=-1) updateRecipe(entity);
-                    
-                }
-            }
-        });
-        ctx.setPacketHandled(true);
-    }
-    
     @Override public void toBytes(ByteBuf buf) {
         NetworkTools.writePos(buf,this.pos);
         buf.writeBoolean(this.keepOne);
@@ -117,7 +94,7 @@ public class PacketAutoInfusion extends MessageImpl {
                 if(item.isEmpty()) buf.writeBoolean(false);
                 else {
                     buf.writeBoolean(true);
-                    NetworkTools.writeItemStack(buf, item);
+                    NetworkTools.writeItemStack(buf,item);
                 }
             }
         } else buf.writeByte(0);
@@ -125,7 +102,7 @@ public class PacketAutoInfusion extends MessageImpl {
     
     private void updateRecipe(AutoInfusionTableEntity entity) {
         CraftingRecipe recipe = entity.getRecipe(this.index);
-        recipe.setRecipe(this.items, this.items[9]);
+        recipe.setRecipe(this.items,this.items[10]);
         recipe.setKeepOne(this.keepOne);
         recipe.setCraftMode(this.mode);
         entity.selectRecipe(this.index);

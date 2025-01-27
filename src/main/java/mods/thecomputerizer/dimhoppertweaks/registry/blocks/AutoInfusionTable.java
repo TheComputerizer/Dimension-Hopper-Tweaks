@@ -6,7 +6,6 @@ import mcjty.lib.crafting.INBTPreservingIngredient;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.varia.ModuleSupport;
 import mcjty.rftools.blocks.GenericRFToolsBlock;
-import mcjty.rftools.blocks.crafter.CrafterBaseTE;
 import mods.thecomputerizer.dimhoppertweaks.client.gui.GuiAutoInfusion;
 import mods.thecomputerizer.dimhoppertweaks.common.containers.AutoInfusionContainer;
 import mods.thecomputerizer.dimhoppertweaks.registry.tiles.AutoInfusionTableEntity;
@@ -94,7 +93,7 @@ public class AutoInfusionTable extends GenericRFToolsBlock<AutoInfusionTableEnti
     
     @Override
     public Container createServerContainer(EntityPlayer player, TileEntity tile) {
-        CrafterBaseTE crafter = (CrafterBaseTE)tile;
+        AutoInfusionTableEntity crafter = (AutoInfusionTableEntity)tile;
         crafter.getInventoryHelper().setStackInSlot(10,EMPTY);
         for(int i=0;i<10;i++) crafter.getInventoryHelper().setStackInSlot(i,EMPTY);
         return super.createServerContainer(player,tile);
@@ -127,7 +126,6 @@ public class AutoInfusionTable extends GenericRFToolsBlock<AutoInfusionTableEnti
     @Override //Same as what the normal infusion table does just without the GUI call
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand,
             EnumFacing facing, float hitX, float hitY, float hitZ) {
-        if(super.onBlockActivated(world,pos,state,player,hand,facing,hitX,hitY,hitZ)) return true;
         if(!world.isRemote) {
             ItemStack stack = player.getHeldItem(hand);
             Item item = stack.getItem();
@@ -147,9 +145,10 @@ public class AutoInfusionTable extends GenericRFToolsBlock<AutoInfusionTableEnti
                             player.setHeldItem(hand,new ItemStack(stone.getPowerStone(),powerStoneCount));
                         else player.setHeldItem(hand,EMPTY);
                     } else ItemUtil.givePlayerItemOrDrop(player,new ItemStack(stone.getPowerStone(),powerStoneCount));
+                    return true;
                 }
             }
         }
-        return true;
+        return super.onBlockActivated(world,pos,state,player,hand,facing,hitX,hitY,hitZ);
     }
 }

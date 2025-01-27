@@ -210,7 +210,7 @@ public class GuiAutoInfusion extends GenericGuiContainer<AutoInfusionTableEntity
     }
     
     private void sendChangeToServer(int index, InventoryCrafting inv, ItemStack result, boolean keepOne, CraftMode mode) {
-        INSTANCE.sendToServer(new PacketAutoInfusion(this.tileEntity.getPos(),index,inv,result,keepOne,mode));
+        new PacketAutoInfusion(this.tileEntity.getPos(),index,inv,result,keepOne,mode).send();
     }
     
     private void testRecipe() {
