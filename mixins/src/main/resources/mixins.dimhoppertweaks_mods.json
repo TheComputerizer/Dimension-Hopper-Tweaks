@@ -42,7 +42,6 @@
     "avaritia.MixinInfinitySword",
     "avaritia.MixinShaderHelper",
     "bedrockcraft.MixinTheJeiPlugin",
-    "bedrockcraft.MixinWorldProviderVoid",
     "betterquesting.MixinPanelEntityPreview",
     "blueskies.MixinBrightlandsBiomeDecorator",
     "blueskies.MixinEntityAlchemist",
@@ -193,6 +192,7 @@
   ],
   "client": [
     "aoa3.MixinKeyBinder",
+    "bedrockcraft.MixinWorldProviderVoid",
     "conarm.MixinModelConstructsArmor",
     "mobends.MixinArmorWrapper",
     "mobends.MixinLayerCustomBipedArmor",
