@@ -1,5 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.common.capability.player;
 
+import mods.thecomputerizer.dimhoppertweaks.network.DHTNetwork;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketGrayScaleTimer;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketSyncCapabilityData;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -15,7 +16,6 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import org.apache.commons.lang3.mutable.MutableInt;
@@ -24,6 +24,8 @@ import thebetweenlands.common.item.herblore.ItemElixir;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.AbstractMap.SimpleImmutableEntry;
+import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -37,7 +39,7 @@ public class SkillCapability implements ISkillCapability {
     private Map<String,SkillWrapper> skillMap = new HashMap<>();
     private Map<Item,MutableInt> gatheringCooldown = new HashMap<>();
     private Set<Item> autoFeedWhitelist = new HashSet<>();
-    private List<Tuple<Potion,Integer>> autoPotionWhitelist = new ArrayList<>();
+    private List<Entry<Potion,Integer>> autoPotionWhitelist = new ArrayList<>();
     private String skillToDrain = "mining";
     private int drainLevels = 1;
     private float shieldDamage = 1f;
@@ -78,8 +80,7 @@ public class SkillCapability implements ISkillCapability {
         return getter.apply(wrapper);
     }
 
-    @Override
-    public void of(SkillCapability copy, EntityPlayerMP newPlayer) {
+    @Override public void of(SkillCapability copy, EntityPlayerMP newPlayer) {
         this.skillMap = copy.skillMap;
         this.gatheringCooldown = copy.gatheringCooldown;
         this.autoFeedWhitelist = copy.autoFeedWhitelist;
@@ -90,8 +91,7 @@ public class SkillCapability implements ISkillCapability {
         SkillWrapper.updateTokens(newPlayer);
     }
 
-    @Override
-    public void initWrappers() {
+    @Override public void initWrappers() {
         for(String skill : SKILLS)
             if(!this.skillMap.containsKey(skill))
                 addWrapper(skill,"New Instance");
@@ -100,8 +100,7 @@ public class SkillCapability implements ISkillCapability {
     /**
      * Returns the SP in regard to the input amount that was NOT added
      */
-    @Override
-    public int addSP(String skill, int amount, EntityPlayerMP player, boolean fromXP) {
+    @Override public int addSP(String skill, int amount, EntityPlayerMP player, boolean fromXP) {
         int ret = 0;
         if(amount>0) {
             ret = checkAndReturn(skill,wrapper -> wrapper.addSP(getActionFactor(amount),player,fromXP));
@@ -110,84 +109,70 @@ public class SkillCapability implements ISkillCapability {
         return ret;
     }
 
-    @Override
-    public boolean isCapped(String skill, EntityPlayerMP player) {
+    @Override public boolean isCapped(String skill, EntityPlayerMP player) {
         return checkAndReturn(skill,SkillWrapper::isCapped);
     }
 
-    @Override
-    public int getSkillSP(String skill) {
+    @Override public int getSkillSP(String skill) {
         return checkAndReturn(skill,SkillWrapper::getSP);
     }
 
-    @Override
-    public int getSkillLevel(String skill) {
+    @Override public int getSkillLevel(String skill) {
         return checkAndReturn(skill,SkillWrapper::getLevel);
     }
 
-    @Override
-    public int getSkillLevelSP(String skill) {
+    @Override public int getSkillLevelSP(String skill) {
         return checkAndReturn(skill,SkillWrapper::getLevelSP);
     }
 
-    @Override
-    public void setPrestigeLevel(String skill, int level) {
+    @Override public void setPrestigeLevel(String skill, int level) {
         checkAndApply(skill,wrapper -> wrapper.setPrestigeLevel(level));
     }
 
-    @Override
-    public int getPrestigeLevel(String skill) {
+    @Override public int getPrestigeLevel(String skill) {
         return checkAndReturn(skill,SkillWrapper::getPrestigeLevel);
     }
 
-    @Override
-    public float getBreakSpeedMultiplier() {
+    @Override public float getBreakSpeedMultiplier() {
         return checkAndReturn("mining",wrapper -> 0.2f*(((float)wrapper.getLevel())/32f));
     }
 
     private void syncClientData(EntityPlayerMP player) {
         float breakSpeed = 1f+getBreakSpeedMultiplier();
         if(Objects.nonNull(player.connection))
-            new PacketSyncCapabilityData(breakSpeed,this.pressedSkillKey,this.pressedResourcesKey,
-                    this.autoFeedWhitelist,this.autoPotionWhitelist).addPlayers(player).send();
+            DHTNetwork.sendToClient(new PacketSyncCapabilityData(breakSpeed,this.pressedSkillKey,this.pressedResourcesKey,
+                    this.autoFeedWhitelist,this.autoPotionWhitelist),player);
     }
 
-    @Override
-    public void setShieldedDamage(float amount) {
+    @Override public void setShieldedDamage(float amount) {
         this.shieldDamage = amount;
     }
 
-    @Override
-    public float getShieldedDamage() {
+    @Override public float getShieldedDamage() {
         float damage = Math.max(0f,this.shieldDamage);
         this.shieldDamage = 1f;
         return damage;
     }
 
-    @Override
-    public float getXPFactor() {
+    @Override public float getXPFactor() {
         return checkAndReturn("magic",wrapper -> Math.max(1f,0.2f*(((float)wrapper.getLevel())/32f)));
     }
 
-    @Override
-    public int getActionFactor(float initialAmount) {
+    @Override public int getActionFactor(float initialAmount) {
         return checkAndReturn("research",wrapper -> (int)(initialAmount*Math.max(1f,2f*(((float)wrapper.getLevel())/32f))));
     }
 
-    @Override
-    public void decrementGatheringItems(int amount) {
+    @Override public void decrementGatheringItems(int amount) {
         this.gatheringCooldown.entrySet().removeIf(entry -> entry.getValue().addAndGet(-1*amount)<=0);
     }
 
-    @Override
-    public boolean checkGatheringItem(Item item) {
+    @Override public boolean checkGatheringItem(Item item) {
         if(this.gatheringCooldown.containsKey(item)) return false;
         this.gatheringCooldown.put(item,new MutableInt(100));
         return true;
     }
 
-    @Override
-    public void togglePassiveFood(EntityPlayerMP player, Item item, boolean isEnable) {
+    @Override public void togglePassiveFood(EntityPlayerMP player, Item item, boolean isEnable) {
         if(item instanceof ItemFood) {
             if(isEnable) this.autoFeedWhitelist.add(item);
             else this.autoFeedWhitelist.remove(item);
@@ -195,13 +180,11 @@ public class SkillCapability implements ISkillCapability {
         } else this.autoFeedWhitelist.remove(item);
     }
 
-    @Override
-    public boolean canAutoFeed(Item item) {
+    @Override public boolean canAutoFeed(Item item) {
         return item instanceof ItemFood && this.autoFeedWhitelist.contains(item);
     }
 
-    @Override
-    public void togglePassivePotion(EntityPlayerMP player, ItemStack stack, boolean isEnable) {
+    @Override public void togglePassivePotion(EntityPlayerMP player, ItemStack stack, boolean isEnable) {
         Item item = stack.getItem();
         if(item instanceof ItemPotion) {
             for(PotionEffect effect : PotionUtils.getEffectsFromStack(stack)) {
@@ -209,7 +192,7 @@ public class SkillCapability implements ISkillCapability {
                 int amplifier = effect.getAmplifier();
                 if(containsPotion(potion,amplifier) && !isEnable) removePotion(potion,amplifier);
                 else if(isEnable && effect.getDuration()>20 && !potion.isInstant())
-                    this.autoPotionWhitelist.add(new Tuple<>(potion,amplifier));
+                    this.autoPotionWhitelist.add(new SimpleImmutableEntry<>(potion,amplifier));
             }
         } else if(item instanceof ItemElixir) {
             ItemElixir elixir = (ItemElixir)item;
@@ -218,18 +201,17 @@ public class SkillCapability implements ISkillCapability {
             int duration = elixir.getElixirDuration(stack);
             if(containsPotion(potion,amplifier) && !isEnable) removePotion(potion,amplifier);
             else if(isEnable && duration>20 && !potion.isInstant())
-                this.autoPotionWhitelist.add(new Tuple<>(potion,amplifier));
+                this.autoPotionWhitelist.add(new SimpleImmutableEntry<>(potion,amplifier));
         }
         syncClientData(player);
     }
 
     private void removePotion(Potion potion, int amplifier) {
-        this.autoPotionWhitelist.removeIf(validPotion -> potion==validPotion.getFirst() &&
-                amplifier==validPotion.getSecond());
+        this.autoPotionWhitelist.removeIf(validPotion -> potion==validPotion.getKey() &&
+                amplifier==validPotion.getValue());
     }
 
-    @Override
-    public boolean canAutoDrink(EntityPlayerMP player, ItemStack stack) {
+    @Override public boolean canAutoDrink(EntityPlayerMP player, ItemStack stack) {
         Item item = stack.getItem();
         if(item instanceof ItemPotion) {
             for(PotionEffect effect : PotionUtils.getEffectsFromStack(stack)) {
@@ -255,87 +237,73 @@ public class SkillCapability implements ISkillCapability {
     }
 
     private boolean containsPotion(Potion potion, int amplifier) {
-        for(Tuple<Potion,Integer> validPotion : this.autoPotionWhitelist)
-            if(potion==validPotion.getFirst() && amplifier==validPotion.getSecond()) return true;
+        for(Entry<Potion,Integer> validPotion : this.autoPotionWhitelist)
+            if(potion==validPotion.getKey() && amplifier==validPotion.getValue()) return true;
         return false;
     }
 
-    @Override
-    public Set<Map.Entry<String,SkillWrapper>> getCurrentValues() {
+    @Override public Set<Entry<String,SkillWrapper>> getCurrentValues() {
         return this.skillMap.entrySet();
     }
 
-    @Override
-    public void syncSkills(EntityPlayerMP player) {
+    @Override public void syncSkills(EntityPlayerMP player) {
         for(SkillWrapper wrapper : this.skillMap.values()) wrapper.syncLevel(player);
         syncClientData(player);
     }
 
-    @Override
-    public void setDrainSelection(String skill, int levels, EntityPlayerMP player) {
+    @Override public void setDrainSelection(String skill, int levels, EntityPlayerMP player) {
         this.skillToDrain = skill;
         this.drainLevels = levels;
         if(Objects.nonNull(player)) SkillWrapper.updateTokens(player);
     }
 
-    @Override
-    public String getDrainSelection() {
+    @Override public String getDrainSelection() {
         return this.skillToDrain;
     }
 
-    @Override
-    public int getDrainLevels() {
+    @Override public int getDrainLevels() {
         return this.drainLevels;
     }
 
-    @Override
-    public void setTwilightRespawn(BlockPos pos) {
+    @Override public void setTwilightRespawn(BlockPos pos) {
         this.twilightRespawn = pos;
     }
     
-    @Override
-    public BlockPos getTwilightRespawn() {
+    @Override public BlockPos getTwilightRespawn() {
         return this.twilightRespawn;
     }
 
-    @Override
-    public boolean incrementDreamTimer(EntityPlayerMP player, int time) {
+    @Override public boolean incrementDreamTimer(EntityPlayerMP player, int time) {
         int val = this.dreamTimer.addAndGet(time);
         if(val<0) resetDreamTimer(player);
-        if(val%5==0) new PacketGrayScaleTimer(((float)val)/18000f).addPlayers(player).send();
+        if(val%5==0) DHTNetwork.sendToClient(new PacketGrayScaleTimer(((float)val)/18000f),player);
         return val>=18000;
     }
 
-    @Override
-    public void resetDreamTimer(EntityPlayerMP player) {
+    @Override public void resetDreamTimer(EntityPlayerMP player) {
         this.dreamTimer.setValue(0);
-        new PacketGrayScaleTimer(0f).addPlayers(player).send();
+        DHTNetwork.sendToClient(new PacketGrayScaleTimer(0f),player);
     }
 
-    @Override
-    public void markSkillKeyPressed() {
+    @Override public void markSkillKeyPressed() {
         this.pressedSkillKey = true;
     }
 
-    @Override
-    public void markResourcesKeyPressed() {
+    @Override public void markResourcesKeyPressed() {
         this.pressedResourcesKey = true;
     }
 
-    @Override
-    public int getFanUsage() {
+    @Override public int getFanUsage() {
         int ret = this.fanUsage;
         this.fanUsage++;
         return ret;
     }
 
-    @Override
-    public void resetFanUsage() {
+    @Override public void resetFanUsage() {
         this.fanUsage = 0;
     }
 
-    @Override
-    public NBTTagCompound writeToNBT() {
+    @Override public NBTTagCompound writeToNBT() {
         NBTTagCompound tag = new NBTTagCompound();
         tag.setTag("skills",writeSkills());
         tag.setString("skillToDrain",this.skillToDrain);
@@ -384,12 +352,12 @@ public class SkillCapability implements ISkillCapability {
         return tag;
     }
 
-    private @Nullable NBTTagCompound writePotionTag(Tuple<Potion,Integer> potionTuple) {
-        ResourceLocation potionRes = potionTuple.getFirst().getRegistryName();
+    private @Nullable NBTTagCompound writePotionTag(Entry<Potion,Integer> potionEntry) {
+        ResourceLocation potionRes = potionEntry.getKey().getRegistryName();
         if(Objects.isNull(potionRes)) return null;
         NBTTagCompound tag = new NBTTagCompound();
         tag.setString("potionReg",potionRes.toString());
-        tag.setInteger("amplifier",potionTuple.getSecond());
+        tag.setInteger("amplifier",potionEntry.getValue());
         return tag;
     }
 
@@ -412,8 +380,7 @@ public class SkillCapability implements ISkillCapability {
         return tagList;
     }
 
-    @Override
-    public void readFromNBT(NBTTagCompound tag) {
+    @Override public void readFromNBT(NBTTagCompound tag) {
         if(tag.hasKey("skills_num")) readOldSkills(tag);
         else readSkills(tag.getTag("skills"));
         readGatheringTimers(tag.getTag("gatheringTimers"));
@@ -422,7 +389,7 @@ public class SkillCapability implements ISkillCapability {
             this.drainLevels = tag.getInteger("drainLevels");
         }
         readCollection(tag.getTag("autoFeedWhitelist"),this.autoFeedWhitelist,this::readItem);
-        readCollection(tag.getTag("autoPotionWhitelist"),this.autoPotionWhitelist,this::readPotionTuple);
+        readCollection(tag.getTag("autoPotionWhitelist"),this.autoPotionWhitelist,this::readPotionEntry);
         if(tag.hasKey("twilightRespawn")) this.setTwilightRespawn(BlockPos.fromLong(tag.getLong("twilightRespawn")));
         this.dreamTimer.setValue(tag.getInteger("dreamTimer"));
         this.pressedSkillKey = tag.getBoolean("pressedSkillKey");
@@ -456,7 +423,7 @@ public class SkillCapability implements ISkillCapability {
             this.gatheringCooldown.put(item,new MutableInt(gatheringTag.getInteger("cooldown")));
     }
 
-    private @Nullable Tuple<Potion,Integer> readPotionTuple(NBTBase base) {
+    private @Nullable Entry<Potion,Integer> readPotionEntry(NBTBase base) {
         if(!(base instanceof NBTTagCompound)) return null;
         NBTTagCompound tag = (NBTTagCompound)base;
         String potionString = tag.getString("potionReg");
@@ -464,7 +431,7 @@ public class SkillCapability implements ISkillCapability {
         ResourceLocation potionRes = new ResourceLocation(potionString);
         if(!ForgeRegistries.POTIONS.containsKey(potionRes)) return null;
         Potion potion = ForgeRegistries.POTIONS.getValue(potionRes);
-        return Objects.nonNull(potion) ? new Tuple<>(potion,tag.getInteger("amplifier")) : null;
+        return Objects.nonNull(potion) ? new SimpleImmutableEntry<>(potion,tag.getInteger("amplifier")) : null;
     }
 
     private @Nullable Item readItem(NBTBase tag) {

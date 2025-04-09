@@ -1,51 +1,38 @@
 package mods.thecomputerizer.dimhoppertweaks.network;
 
 import io.netty.buffer.ByteBuf;
-import mods.thecomputerizer.theimpossiblelibrary.network.MessageImpl;
-import mods.thecomputerizer.theimpossiblelibrary.util.NetworkUtil;
+import mods.thecomputerizer.theimpossiblelibrary.api.network.NetworkHelper;
+import mods.thecomputerizer.theimpossiblelibrary.api.network.message.MessageAPI;
 import net.minecraft.item.Item;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Tuple;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.*;
+import java.util.AbstractMap.SimpleImmutableEntry;
+import java.util.Map.Entry;
 
-public class PacketSyncCapabilityData extends MessageImpl {
+import static net.minecraftforge.fml.common.registry.ForgeRegistries.ITEMS;
+import static net.minecraftforge.fml.common.registry.ForgeRegistries.POTIONS;
 
-    private float miningSpeed;
-    private boolean skillKey;
-    private boolean resourcesKey;
-    private Set<Item> autoFeedItems;
-    private List<Tuple<Potion,Integer>> autoPotionItems;
-    public PacketSyncCapabilityData() {}
+public class PacketSyncCapabilityData extends MessageAPI<MessageContext> {
+
+    private final float miningSpeed;
+    private final boolean skillKey;
+    private final boolean resourcesKey;
+    private final Set<Item> autoFeedItems;
+    private final List<Entry<Potion,Integer>> autoPotionItems;
 
     public PacketSyncCapabilityData(float miningSpeed, boolean skillKey, boolean resourcesKey, Set<Item> autoFeedItems,
-                                    List<Tuple<Potion,Integer>> autoPotionItems) {
+                                    List<Entry<Potion,Integer>> autoPotionItems) {
         this.miningSpeed = miningSpeed;
         this.skillKey = skillKey;
         this.resourcesKey = resourcesKey;
         this.autoFeedItems = autoFeedItems;
         this.autoPotionItems = autoPotionItems;
     }
-
-    @Override
-    public IMessage handle(MessageContext ctx) {
-        ClientPacketHandlers.handleCapData(this.miningSpeed,this.skillKey,this.resourcesKey,this.autoFeedItems,
-                this.autoPotionItems);
-        return null;
-    }
-
-    @Override
-    public Side getSide() {
-        return Side.CLIENT;
-    }
-
-    @Override
-    public void fromBytes(ByteBuf buf) {
+    
+    public PacketSyncCapabilityData(ByteBuf buf) {
         this.miningSpeed = buf.readFloat();
         this.skillKey = buf.readBoolean();
         this.resourcesKey = buf.readBoolean();
@@ -53,34 +40,39 @@ public class PacketSyncCapabilityData extends MessageImpl {
         this.autoPotionItems = readPotions(buf);
     }
 
+    @Override public MessageAPI<MessageContext> handle(MessageContext ctx) {
+        ClientPacketHandlers.handleCapData(this.miningSpeed,this.skillKey,this.resourcesKey,this.autoFeedItems,
+                this.autoPotionItems);
+        return null;
+    }
+
     public Set<Item> readItems(ByteBuf buf) {
         Set<Item> items = new HashSet<>();
         int size = buf.readInt();
         while(size>0) {
-            ResourceLocation itemRes = NetworkUtil.readResourceLocation(buf);
-            if(ForgeRegistries.ITEMS.containsKey(itemRes)) items.add(ForgeRegistries.ITEMS.getValue(itemRes));
+            ResourceLocation itemRes = new ResourceLocation(NetworkHelper.readString(buf));
+            if(ITEMS.containsKey(itemRes)) items.add(ITEMS.getValue(itemRes));
             size--;
         }
         return items;
     }
 
-    public List<Tuple<Potion,Integer>> readPotions(ByteBuf buf) {
-        List<Tuple<Potion,Integer>> potions = new ArrayList<>();
+    public List<Entry<Potion,Integer>> readPotions(ByteBuf buf) {
+        List<Entry<Potion,Integer>> potions = new ArrayList<>();
         int size = buf.readInt();
         while(size>0) {
-            ResourceLocation potionRes = NetworkUtil.readResourceLocation(buf);
-            if(ForgeRegistries.POTIONS.containsKey(potionRes)) {
-                Potion potion = ForgeRegistries.POTIONS.getValue(potionRes);
+            ResourceLocation potionRes = new ResourceLocation(NetworkHelper.readString(buf));
+            if(POTIONS.containsKey(potionRes)) {
+                Potion potion = POTIONS.getValue(potionRes);
                 int amplifier = buf.readInt();
-                if(Objects.nonNull(potion)) potions.add(new Tuple<>(potion,amplifier));
+                if(Objects.nonNull(potion)) potions.add(new SimpleImmutableEntry<>(potion,amplifier));
             }
             size--;
         }
         return potions;
     }
 
-    @Override
-    public void toBytes(ByteBuf buf) {
+    @Override public void encode(ByteBuf buf) {
         buf.writeFloat(this.miningSpeed);
         buf.writeBoolean(this.skillKey);
         buf.writeBoolean(this.resourcesKey);
@@ -95,20 +87,20 @@ public class PacketSyncCapabilityData extends MessageImpl {
         buf.writeInt(size);
         for(Item item : itemSet) {
             ResourceLocation itemReg = item.getRegistryName();
-            if(Objects.nonNull(itemReg)) NetworkUtil.writeResourceLocation(buf,itemReg);
+            if(Objects.nonNull(itemReg)) NetworkHelper.writeString(buf,itemReg.toString());
         }
     }
 
-    private void writePotions(ByteBuf buf, List<Tuple<Potion,Integer>> potions) {
+    private void writePotions(ByteBuf buf, List<Entry<Potion,Integer>> potions) {
         int size = potions.size();
-        for(Tuple<Potion,Integer> potionTuple : potions)
-            if(Objects.isNull(potionTuple.getFirst().getRegistryName())) size--;
+        for(Entry<Potion,Integer> potionTuple : potions)
+            if(Objects.isNull(potionTuple.getKey().getRegistryName())) size--;
         buf.writeInt(size);
-        for(Tuple<Potion,Integer> potionTuple : potions) {
-            ResourceLocation potionRes = potionTuple.getFirst().getRegistryName();
+        for(Entry<Potion,Integer> potionTuple : potions) {
+            ResourceLocation potionRes = potionTuple.getKey().getRegistryName();
             if(Objects.nonNull(potionRes)) {
-                NetworkUtil.writeResourceLocation(buf,potionRes);
-                buf.writeInt(potionTuple.getSecond());
+                NetworkHelper.writeString(buf,potionRes.toString());
+                buf.writeInt(potionTuple.getValue());
             }
         }
     }

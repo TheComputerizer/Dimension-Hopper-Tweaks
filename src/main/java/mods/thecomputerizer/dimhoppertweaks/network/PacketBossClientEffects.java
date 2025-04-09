@@ -1,43 +1,31 @@
 package mods.thecomputerizer.dimhoppertweaks.network;
 
 import io.netty.buffer.ByteBuf;
-import mods.thecomputerizer.theimpossiblelibrary.network.MessageImpl;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import mods.thecomputerizer.theimpossiblelibrary.api.network.message.MessageAPI;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.Side;
 
-public class PacketBossClientEffects extends MessageImpl {
+public class PacketBossClientEffects extends MessageAPI<MessageContext> {
 
-    private boolean setLimboSky;
-    private float screenShake;
-
-    public PacketBossClientEffects() {}
+    private final boolean setLimboSky;
+    private final float screenShake;
 
     public PacketBossClientEffects(boolean limboify, float screenShake) {
         this.setLimboSky = limboify;
         this.screenShake = screenShake;
     }
-
-    @Override
-    public IMessage handle(MessageContext ctx) {
-        ClientPacketHandlers.handleBossClientEffects();
-        return null;
-    }
-
-    @Override
-    public Side getSide() {
-        return Side.CLIENT;
-    }
-
-    @Override
-    public void fromBytes(ByteBuf buf) {
+    
+    public PacketBossClientEffects(ByteBuf buf) {
         this.setLimboSky = buf.readBoolean();
         this.screenShake = buf.readFloat();
     }
-
-    @Override
-    public void toBytes(ByteBuf buf) {
+    
+    @Override public void encode(ByteBuf buf) {
         buf.writeBoolean(this.setLimboSky);
         buf.writeFloat(this.screenShake);
+    }
+
+    @Override public MessageAPI<MessageContext> handle(MessageContext ctx) {
+        ClientPacketHandlers.handleBossClientEffects();
+        return null;
     }
 }

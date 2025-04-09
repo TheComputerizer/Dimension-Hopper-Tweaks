@@ -1,27 +1,24 @@
 package mods.thecomputerizer.dimhoppertweaks.registry.entities.boss;
 
 import mods.thecomputerizer.dimhoppertweaks.client.DHTClient;
+import mods.thecomputerizer.dimhoppertweaks.network.DHTNetwork;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketRenderBossAttack;
-import mods.thecomputerizer.dimhoppertweaks.registry.SoundRegistry;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.HomingProjectile;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.phase.*;
 import mods.thecomputerizer.dimhoppertweaks.registry.items.RealitySlasher;
 import mods.thecomputerizer.dimhoppertweaks.util.DamageSourceFinalBoss;
-import mods.thecomputerizer.theimpossiblelibrary.network.NetworkHandler;
+import mods.thecomputerizer.theimpossiblelibrary.api.network.message.MessageAPI;
 import morph.avaritia.handler.AvaritiaEventHandler;
 import morph.avaritia.item.tools.ItemSwordInfinity;
 import morph.avaritia.util.DamageSourceInfinitySword;
 import net.darkhax.gamestages.GameStageHelper;
-import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
@@ -39,6 +36,7 @@ import net.minecraft.world.BossInfoServer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.silentchaos512.scalinghealth.config.Config;
+import net.silentchaos512.scalinghealth.config.Config.Player.Health;
 import org.apache.commons.lang3.mutable.MutableInt;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -51,6 +49,21 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+
+import static java.lang.Float.MAX_VALUE;
+import static mods.thecomputerizer.dimhoppertweaks.registry.SoundRegistry.BELL;
+import static mods.thecomputerizer.dimhoppertweaks.registry.SoundRegistry.BOSS_HURT;
+import static net.minecraft.advancements.CriteriaTriggers.PLAYER_HURT_ENTITY;
+import static net.minecraft.entity.SharedMonsterAttributes.ARMOR;
+import static net.minecraft.entity.SharedMonsterAttributes.FOLLOW_RANGE;
+import static net.minecraft.entity.SharedMonsterAttributes.MAX_HEALTH;
+import static net.minecraft.entity.SharedMonsterAttributes.MOVEMENT_SPEED;
+import static net.minecraft.init.MobEffects.GLOWING;
+import static net.minecraft.init.SoundEvents.ENTITY_ENDEREYE_DEATH;
+import static net.minecraft.util.SoundCategory.HOSTILE;
+import static net.minecraft.util.math.Vec3d.ZERO;
+import static net.minecraft.util.text.TextFormatting.DARK_RED;
+import static software.bernie.geckolib3.core.PlayState.CONTINUE;
 
 @SuppressWarnings("deprecation")
 public class EntityFinalBoss extends EntityLiving implements IAnimatable {
@@ -86,19 +99,18 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
         this.damageCooldown = new HashMap<>();
         this.aoeAttacks = new ArrayList<>();
         this.animationController = new AnimationController<>(this,"boss_controller",0,this::predicate);
-        this.curLook = Vec3d.ZERO;
+        this.curLook = ZERO;
         Config.Player.Health.allowModify = false;
     }
 
     public void addAOECounter(List<Vec3d> vecList, int time, int range, int phase) {
         if(!vecList.isEmpty()) {
             this.aoeAttacks.add(new DelayedAOE(vecList,time,range,phase));
-            NetworkHandler.sendToTracking(new PacketRenderBossAttack(vecList,time,range,this.getEntityId(),phase),this);
+            sendToTracking(new PacketRenderBossAttack(vecList,time,range,this.getEntityId(),phase));
         }
     }
 
-    @Override
-    public void addTrackingPlayer(@Nonnull EntityPlayerMP player) {
+    @Override public void addTrackingPlayer(@Nonnull EntityPlayerMP player) {
         super.addTrackingPlayer(player);
         this.bossInfo.addPlayer(player);
         if(this.players.isEmpty()) setPhase(0);
@@ -110,20 +122,18 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
         boolean hit = false;
         for(EntityPlayer player : this.players)
             if(isEntityCloseEnough(player,posVec,range) && subtractPlayerHealth(player,4d)) hit = true;
-        if(!hit && sound) playSound(posVec,SoundEvents.ENTITY_ENDEREYE_DEATH);
+        if(!hit && sound) playSound(posVec,ENTITY_ENDEREYE_DEATH);
     }
 
-    @Override
-    protected void applyEntityAttributes() {
+    @Override protected void applyEntityAttributes() {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(250d);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.6d);
-        this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(256d);
-        this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(1d);
+        this.getEntityAttribute(MAX_HEALTH).setBaseValue(250d);
+        this.getEntityAttribute(MOVEMENT_SPEED).setBaseValue(0.6d);
+        this.getEntityAttribute(FOLLOW_RANGE).setBaseValue(256d);
+        this.getEntityAttribute(ARMOR).setBaseValue(1d);
     }
 
-    @Override
-    public boolean attackEntityFrom(@Nonnull DamageSource source, float amount) {
+    @Override public boolean attackEntityFrom(@Nonnull DamageSource source, float amount) {
         if(!isInvulnerable()) {
             if(source.getTrueSource() instanceof EntityPlayer) {
                 EntityPlayer player = (EntityPlayer)source.getTrueSource();
@@ -138,8 +148,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
         return false;
     }
 
-    @Override
-    protected boolean canDespawn() {
+    @Override protected boolean canDespawn() {
         return false;
     }
 
@@ -168,23 +177,21 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
             this.onDeath(source);
         }
         else this.playHurtSound(source);
-        if(player instanceof EntityPlayerMP) CriteriaTriggers.PLAYER_HURT_ENTITY.trigger((EntityPlayerMP)player,
+        if(player instanceof EntityPlayerMP) PLAYER_HURT_ENTITY.trigger((EntityPlayerMP)player,
                 this,source,amount,amount,false);
         this.setAnimationState("damaged");
     }
 
-    @Override
-    protected void despawnEntity() {}
+    @Override protected void despawnEntity() {}
 
     private void dialogueMessage(int index) {
-        Style style = new Style().setColor(TextFormatting.DARK_RED).setBold(true);
+        Style style = new Style().setColor(DARK_RED).setBold(true);
         for(EntityPlayer player : getTrackingPlayers())
             player.sendMessage(combineText(getDisplayName(),styleText(": ",style),
                     styleTranslation("entity.boss.dialogue_"+index,style)));
     }
 
-    @Override
-    protected void entityInit() {
+    @Override protected void entityInit() {
         super.entityInit();
         this.dataManager.register(ANIMATION_STATE,"spawn");
         this.dataManager.register(PHASE_STATE,0);
@@ -202,7 +209,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
             setPhase(getPhase()+1);
             for(HomingProjectile projectile : this.projectiles) projectile.setDead();
             this.updateShield(isShieldUp);
-            this.world.playSound(null,this.posX,this.posY,this.posZ,SoundRegistry.BELL,SoundCategory.HOSTILE,1f,1f);
+            this.world.playSound(null,this.posX,this.posY,this.posZ,BELL,HOSTILE,1f,1f);
         }
     }
 
@@ -210,13 +217,11 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
         return this.dataManager.get(ANIMATION_STATE);
     }
 
-    @Override
-    public float getEyeHeight() {
+    @Override public float getEyeHeight() {
         return 1.875f;
     }
 
-    @Override
-    public AnimationFactory getFactory() {
+    @Override public AnimationFactory getFactory() {
         return this.factory;
     }
 
@@ -224,14 +229,12 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
         return getHealth()/getMaxHealth();
     }
 
-    @Override
-    public int getHorizontalFaceSpeed() {
+    @Override public int getHorizontalFaceSpeed() {
         return 30;
     }
 
-    @Override
-    protected @Nullable SoundEvent getHurtSound(@Nonnull DamageSource source) {
-        return SoundRegistry.BOSS_HURT;
+    @Override protected @Nullable SoundEvent getHurtSound(@Nonnull DamageSource source) {
+        return BOSS_HURT;
     }
 
     private String getObfuscatedNameProgress() {
@@ -250,9 +253,8 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
         return MathHelper.clamp(cur/max,0f,1f);
     }
 
-    @Override
-    public @Nonnull SoundCategory getSoundCategory() {
-        return SoundCategory.HOSTILE;
+    @Override public @Nonnull SoundCategory getSoundCategory() {
+        return HOSTILE;
     }
 
     public List<EntityPlayer> getTrackingPlayers() {
@@ -260,16 +262,14 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
     }
 
     public double getTrackingRange() {
-        return this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).getAttributeValue();
+        return this.getEntityAttribute(FOLLOW_RANGE).getAttributeValue();
     }
 
-    @Override
-    public int getVerticalFaceSpeed() {
+    @Override public int getVerticalFaceSpeed() {
         return 120;
     }
 
-    @Override
-    public boolean hasNoGravity() {
+    @Override public boolean hasNoGravity() {
         return true;
     }
 
@@ -285,8 +285,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
         this.dataManager.set(PROJECTILE_CHARGE_STATE,this.dataManager.get(PROJECTILE_CHARGE_STATE)+1);
     }
 
-    @Override
-    protected void initEntityAI() {
+    @Override protected void initEntityAI() {
         this.tasks.addTask(0,new BossIntro(this));
         this.tasks.addTask(1,new PhaseOne(this));
         this.tasks.addTask(2,new PhaseTwo(this));
@@ -314,8 +313,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
         return getPhase()<=0 || hasShield();
     }
 
-    @Override
-    public boolean isNonBoss() {
+    @Override public boolean isNonBoss() {
         return false;
     }
 
@@ -333,20 +331,17 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
                 (float)this.getHorizontalFaceSpeed(),(float)this.getVerticalFaceSpeed());
     }
 
-    @Override
-    public void onAddedToWorld() {
+    @Override public void onAddedToWorld() {
         super.onAddedToWorld();
-        Config.Player.Health.allowModify = this.dead;
+        Health.allowModify = this.dead;
         DHTClient.FOG_DENSITY_OVERRIDE = 0f;
     }
 
-    @Override
-    public void onKillCommand() {
-        this.damageBoss(new DamageSourceInfinitySword(null),Float.MAX_VALUE,null);
+    @Override public void onKillCommand() {
+        this.damageBoss(new DamageSourceInfinitySword(null),MAX_VALUE,null);
     }
 
-    @Override
-    public void onLivingUpdate() {
+    @Override public void onLivingUpdate() {
         super.onLivingUpdate();
         for(MutableInt timer : this.damageCooldown.values())
             if(timer.getValue()>0) timer.decrement();
@@ -354,7 +349,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
         if(this.world.isRemote) {
             if(isChargingProjectile()) incrementProjectileProgress();
         } else {
-            if(this.curLook!=Vec3d.ZERO) lookAt();
+            if(this.curLook!=ZERO) lookAt();
             else if(Objects.nonNull(this.trackedEntity)) lookAtEntity();
             this.aoeAttacks.removeIf(attack -> attack.tick(this));
         }
@@ -382,11 +377,10 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
         else event.getController().setAnimation(new AnimationBuilder()
                 .playOnce(animation)
                 .loop("idle"));
-        return PlayState.CONTINUE;
+        return CONTINUE;
     }
 
-    @Override
-    public void readEntityFromNBT(@Nonnull NBTTagCompound tag) {
+    @Override public void readEntityFromNBT(@Nonnull NBTTagCompound tag) {
         super.readEntityFromNBT(tag);
         setPhase(tag.getInteger("bossPhase"));
         setShield(tag.getBoolean("hasShield"));
@@ -398,16 +392,14 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
         double x = tag.getDouble("vecX");
         double y = tag.getDouble("vecY");
         double z = tag.getDouble("vecZ");
-        return x==0d && y==0d && z==0d ? Vec3d.ZERO : new Vec3d(x,y,z);
+        return x==0d && y==0d && z==0d ? ZERO : new Vec3d(x,y,z);
     }
 
-    @Override
-    public void registerControllers(AnimationData animationData) {
+    @Override public void registerControllers(AnimationData animationData) {
         animationData.addAnimationController(this.animationController);
     }
 
-    @Override
-    public void removeTrackingPlayer(@Nonnull EntityPlayerMP player) {
+    @Override public void removeTrackingPlayer(@Nonnull EntityPlayerMP player) {
         super.removeTrackingPlayer(player);
         this.bossInfo.removePlayer(player);
         this.players.remove(player);
@@ -415,6 +407,10 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
             this.setHealth(this.getMaxHealth());
             setPhase(0);
         }
+    }
+    
+    public void sendToTracking(MessageAPI<?> msg) {
+        DHTNetwork.sendToClient(msg,getTrackingPlayers());
     }
 
     public void setAnimationState(String animation) {
@@ -434,8 +430,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
         this.bossInfo.setName(this.getDisplayName());
     }
 
-    @Override
-    public void setDead() {
+    @Override public void setDead() {
         super.setDead();
         DHTClient.FOG_DENSITY_OVERRIDE = -1f;
         this.onAddedToWorld();
@@ -444,8 +439,8 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
     public void setMaxPlayerHealth(EntityPlayer player) {
         double health = GameStageHelper.hasStage(player,"hardcore") ? 1d : 100d;
         if(player.getMaxHealth()>health) {
-            player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).removeAllModifiers();
-            player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(health);
+            player.getEntityAttribute(MAX_HEALTH).removeAllModifiers();
+            player.getEntityAttribute(MAX_HEALTH).setBaseValue(health);
         }
     }
 
@@ -471,7 +466,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
         projectile.setPosition(spawnPos.x,spawnPos.y,spawnPos.z);
         this.world.spawnEntity(projectile);
         this.projectiles.add(projectile);
-        if(target!=Vec3d.ZERO) projectile.setUpdate(this,target,speed);
+        if(target!=ZERO) projectile.setUpdate(this, target, speed);
     }
 
     @SuppressWarnings("SameParameterValue")
@@ -490,11 +485,11 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
                 return true;
             }
             if(!this.damageCooldown.containsKey(player) || this.damageCooldown.get(player).getValue()<=0) {
-                double newHealth = player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).getBaseValue()-amount;
+                double newHealth = player.getEntityAttribute(MAX_HEALTH).getBaseValue()-amount;
                 if(newHealth>0) {
-                    player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(newHealth);
+                    player.getEntityAttribute(MAX_HEALTH).setBaseValue(newHealth);
                     this.damageCooldown.put(player,new MutableInt(5));
-                    playSound(player.getPositionVector(),SoundRegistry.BOSS_HURT);
+                    playSound(player.getPositionVector(), BOSS_HURT);
                     return true;
                 } else {
                     this.setDropItemsWhenDead(false);
@@ -553,7 +548,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
 
     public void updateShield(boolean hasShield) {
         setShield(hasShield);
-        this.curLook = Vec3d.ZERO;
+        this.curLook = ZERO;
         if(!hasShield) this.setAnimationState("damaged");
         setProjectileCharge(0);
     }
@@ -562,8 +557,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
         this.trackedEntity = toTrack;
     }
 
-    @Override
-    public void writeEntityToNBT(@Nonnull NBTTagCompound tag) {
+    @Override public void writeEntityToNBT(@Nonnull NBTTagCompound tag) {
         super.writeEntityToNBT(tag);
         tag.setInteger("bossPhase",getPhase());
         tag.setBoolean("hasShield",hasShield());
@@ -586,17 +580,15 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
             this.boss = boss;
         }
 
-        @Override
-        public boolean shouldExecute() {
+        @Override public boolean shouldExecute() {
             return this.boss.isPhase(0);
         }
-        @Override
-        public boolean shouldContinueExecuting() {
+        
+        @Override public boolean shouldContinueExecuting() {
             return this.boss.isPhase(0);
         }
 
-        @Override
-        public void updateTask() {
+        @Override public void updateTask() {
             if(this.boss.ticksExisted<329) {
                 if(this.boss.ticksExisted==25) this.boss.setAnimationState("sword");
                 if(this.boss.ticksExisted>189) {
@@ -612,7 +604,7 @@ public class EntityFinalBoss extends EntityLiving implements IAnimatable {
                 this.boss.setVelocity(0d,0d,0d);
                 this.boss.setTrackingHealth();
                 this.boss.finishPhase(0,true);
-                this.boss.addPotionEffect(new PotionEffect(MobEffects.GLOWING,Integer.MAX_VALUE,5,false,false));
+                this.boss.addPotionEffect(new PotionEffect(GLOWING,Integer.MAX_VALUE,5,false,false));
             }
         }
     }

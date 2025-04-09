@@ -4,6 +4,7 @@ import mcp.MethodsReturnNonnullByDefault;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
+import mods.thecomputerizer.dimhoppertweaks.network.DHTNetwork;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketOpenGui;
 import mods.thecomputerizer.dimhoppertweaks.util.TextUtil;
 import net.minecraft.client.util.ITooltipFlag;
@@ -14,16 +15,19 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
+
+import static mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper.SKILLS;
+import static mods.thecomputerizer.dimhoppertweaks.util.TextUtil.*;
+import static net.minecraft.util.EnumActionResult.SUCCESS;
+import static net.minecraftforge.fml.relauncher.Side.CLIENT;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -59,8 +63,8 @@ public class SkillToken extends EpicItem {
             String skill = tag.getString("skillToDrain");
             int amount = tag.getInteger("drainLevels");
             if(player.isSneaking()) {
-                new PacketOpenGui(SkillWrapper.SKILLS,skill,amount).addPlayers(player).send();
-                return new ActionResult<>(EnumActionResult.SUCCESS,stack);
+                DHTNetwork.sendToClient(new PacketOpenGui(SKILLS,skill,amount),player);
+                return new ActionResult<>(SUCCESS,stack);
             } else if(player.experienceLevel>=amount) {
                 ISkillCapability cap = SkillWrapper.getSkillCapability(player);
                 if(Objects.nonNull(cap)) {
@@ -73,7 +77,7 @@ public class SkillToken extends EpicItem {
                     }
                     SkillWrapper.updateTokens(player);
                 }
-                return new ActionResult<>(EnumActionResult.SUCCESS,stack);
+                return new ActionResult<>(SUCCESS, stack);
             } else return super.onItemRightClick(world,player,hand);
         } else return super.onItemRightClick(world,p,hand);
     }
@@ -91,10 +95,9 @@ public class SkillToken extends EpicItem {
     private void checkAndUpdate(EntityPlayerMP player, ItemStack stack) {
         if(!getTag(stack).hasKey("skillToDrain")) SkillWrapper.updateTokens(player);
     }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
+    
+    @SideOnly(CLIENT)
+    @Override public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
         NBTTagCompound tag = getTag(stack);
         boolean hasDrainKey = tag.hasKey("skillToDrain");
         String skillToDrain = hasDrainKey ? tag.getString("skillToDrain") : "mining";
@@ -108,7 +111,7 @@ public class SkillToken extends EpicItem {
                         formattedSkillData.put(skillLine.getFirst(),skillLine.getSecond());
                 }
             }
-            for(String skill : SkillWrapper.SKILLS) {
+            for(String skill : SKILLS) {
                 String line = formattedSkillData.get(skill);
                 if(Objects.nonNull(line)) tooltip.add(line);
             }
@@ -125,15 +128,15 @@ public class SkillToken extends EpicItem {
         name = translateSkill(name);
         int curLevel = tag.getInteger("level");
         boolean isMaxed = curLevel==1024;
-        String skillColor = isDraining ? (isMaxed ? TextUtil.ITALICS+TextUtil.BOLD : TextUtil.DARK_RED) :
-                (isMaxed ? TextUtil.BOLD : TextUtil.DARK_GRAY);
+        String skillColor = isDraining ? (isMaxed ? ITALICS+BOLD : DARK_RED) :
+                (isMaxed ? BOLD : DARK_GRAY);
         if(isMaxed) return new Tuple<>(tag.getString("name"),
                 TextUtil.getTranslated("item.dimhoppertweaks.skill_token.skill_maxed",skillColor,name));
         else {
             int xp = tag.getInteger("xp");
             int levelXP = tag.getInteger("levelXP");
             int prestige = tag.getInteger("prestige");
-            String pointColor = isDraining ? TextUtil.RED : TextUtil.WHITE;
+            String pointColor = isDraining ? RED : WHITE;
             return new Tuple<>(tag.getString("name"),TextUtil.getTranslated(
                     "item.dimhoppertweaks.skill_token.skill_normal",skillColor,name,curLevel,curLevel+1,
                     pointColor,xp,levelXP,prestige,32*(prestige+1)));
@@ -141,7 +144,7 @@ public class SkillToken extends EpicItem {
     }
 
     private void addNotSyncedLines(List<String> tooltipLines) {
-        for(String skill : SkillWrapper.SKILLS)
+        for(String skill : SKILLS)
             tooltipLines.add(TextUtil.getTranslated("item.dimhoppertweaks.skill_token.not_synced",
                     translateSkill(skill)));
     }

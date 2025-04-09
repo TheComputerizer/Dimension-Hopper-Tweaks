@@ -1,42 +1,28 @@
 package mods.thecomputerizer.dimhoppertweaks.network;
 
 import io.netty.buffer.ByteBuf;
-import mods.thecomputerizer.theimpossiblelibrary.network.MessageImpl;
-import mods.thecomputerizer.theimpossiblelibrary.util.NetworkUtil;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import mods.thecomputerizer.theimpossiblelibrary.api.network.NetworkHelper;
+import mods.thecomputerizer.theimpossiblelibrary.api.network.message.MessageAPI;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.Side;
 
-import static net.minecraftforge.fml.relauncher.Side.CLIENT;
+public class PacketQueryGenericClient extends MessageAPI<MessageContext> {
 
-public class PacketQueryGenericClient extends MessageImpl {
-
-    private String type;
-
-    public PacketQueryGenericClient() {}
+    private final String type;
 
     public PacketQueryGenericClient(String type) {
         this.type = type;
     }
+    
+    public PacketQueryGenericClient(ByteBuf buf) {
+        this.type = NetworkHelper.readString(buf);
+    }
 
-    @Override
-    public IMessage handle(MessageContext ctx) {
+    @Override public void encode(ByteBuf buf) {
+        NetworkHelper.writeString(buf,this.type);
+    }
+    
+    @Override public MessageAPI<MessageContext> handle(MessageContext ctx) {
         ClientPacketHandlers.handleGenericClientQuery(this.type);
         return null;
-    }
-
-    @Override
-    public Side getSide() {
-        return CLIENT;
-    }
-
-    @Override
-    public void fromBytes(ByteBuf buf) {
-        this.type = NetworkUtil.readString(buf);
-    }
-
-    @Override
-    public void toBytes(ByteBuf buf) {
-        NetworkUtil.writeString(buf,this.type);
     }
 }

@@ -11,12 +11,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.potion.Potion;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Tuple;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 
@@ -32,9 +32,7 @@ import static net.tslat.aoa3.client.event.KeyBinder.statusSkillGuiMessage;
 public class ClientPacketHandlers {
 
     @SideOnly(CLIENT)
-    public static void handleBossClientEffects() {
-
-    }
+    public static void handleBossClientEffects() {}
 
     @SideOnly(CLIENT)
     public static void handleRenderBossAttack(int start, int bossID, List<Vec3d> vecList, int size, int phase) {
@@ -61,7 +59,7 @@ public class ClientPacketHandlers {
     @SideOnly(CLIENT)
     public static void handleCapData(
             float miningSpeed, boolean skillKey, boolean resourcesKey, Set<Item> autoFeedItems,
-            List<Tuple<Potion,Integer>> autoPotionItems) {
+            List<Entry<Potion,Integer>> autoPotionItems) {
         MINING_SPEED = miningSpeed;
         statusSkillGuiMessage = !skillKey;
         statusResourceGuiMessage = !resourcesKey;

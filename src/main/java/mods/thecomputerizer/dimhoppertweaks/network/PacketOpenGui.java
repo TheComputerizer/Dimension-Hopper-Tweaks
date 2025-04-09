@@ -2,58 +2,48 @@ package mods.thecomputerizer.dimhoppertweaks.network;
 
 import io.netty.buffer.ByteBuf;
 import mods.thecomputerizer.dimhoppertweaks.client.gui.TokenExchangeGui;
-import mods.thecomputerizer.theimpossiblelibrary.network.MessageImpl;
-import mods.thecomputerizer.theimpossiblelibrary.util.NetworkUtil;
+import mods.thecomputerizer.theimpossiblelibrary.api.network.NetworkHelper;
+import mods.thecomputerizer.theimpossiblelibrary.api.network.message.MessageAPI;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-public class PacketOpenGui extends MessageImpl {
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static net.minecraftforge.fml.relauncher.Side.CLIENT;
 
-    private List<String> skills;
-    private String currentSkill;
-    private int currentLevel;
+public class PacketOpenGui extends MessageAPI<MessageContext> {
 
-    public PacketOpenGui() {}
+    private final List<String> skills;
+    private final String currentSkill;
+    private final int currentLevel;
 
     public PacketOpenGui(List<String> skills, String skill, int level) {
         this.skills = skills;
         this.currentSkill = skill;
         this.currentLevel = level;
     }
+    
+    public PacketOpenGui(ByteBuf buf) {
+        this.skills = NetworkHelper.readList(buf,() -> NetworkHelper.readString(buf));
+        this.currentSkill = (String) buf.readCharSequence(buf.readInt(),UTF_8);
+        this.currentLevel = buf.readInt();
+    }
+    
+    @Override public void encode(ByteBuf buf) {
+        NetworkHelper.writeList(buf,this.skills,s -> NetworkHelper.writeString(buf,s));
+        NetworkHelper.writeString(buf,this.currentSkill);
+        buf.writeInt(this.currentLevel);
+    }
 
-    @Override
-    public IMessage handle(MessageContext ctx) {
+    @Override public MessageAPI<MessageContext> handle(MessageContext ctx) {
         openGui(this.skills,this.currentSkill,this.currentLevel);
         return null;
     }
 
-    @SideOnly(Side.CLIENT)
+    @SideOnly(CLIENT)
     private void openGui(List<String> skills, String skill, int level) {
         Minecraft.getMinecraft().displayGuiScreen(new TokenExchangeGui(skills,skill,level));
-    }
-
-    @Override
-    public Side getSide() {
-        return Side.CLIENT;
-    }
-
-    @Override
-    public void fromBytes(ByteBuf buf) {
-        this.skills = NetworkUtil.readGenericList(buf,NetworkUtil::readString);
-        this.currentSkill = (String) buf.readCharSequence(buf.readInt(), StandardCharsets.UTF_8);
-        this.currentLevel = buf.readInt();
-    }
-
-    @Override
-    public void toBytes(ByteBuf buf) {
-        NetworkUtil.writeGenericList(buf,this.skills,NetworkUtil::writeString);
-        NetworkUtil.writeString(buf,this.currentSkill);
-        buf.writeInt(this.currentLevel);
     }
 }

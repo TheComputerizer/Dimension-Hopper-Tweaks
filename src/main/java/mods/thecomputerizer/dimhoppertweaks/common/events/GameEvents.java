@@ -10,6 +10,7 @@ import mods.thecomputerizer.dimhoppertweaks.common.capability.player.ISkillCapab
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillCapabilityProvider;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.mixin.mod_access.ItemBioticSensorAccess;
+import mods.thecomputerizer.dimhoppertweaks.network.DHTNetwork;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketQueryGenericClient;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
 import mods.thecomputerizer.dimhoppertweaks.util.WorldUtil;
@@ -39,16 +40,16 @@ import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.MODID;
 import static net.minecraft.init.Blocks.BEDROCK;
 import static net.minecraftforge.fml.common.eventhandler.EventPriority.LOWEST;
 
-@EventBusSubscriber(modid = MODID)
+@EventBusSubscriber(modid=MODID)
 public class GameEvents {
 
-    @SubscribeEvent(priority = LOWEST)
+    @SubscribeEvent(priority=LOWEST)
     public static void attachEntityCapabilities(AttachCapabilitiesEvent<Entity> event) {
         if(event.getObject() instanceof EntityPlayerMP && !(event.getObject() instanceof FakePlayer))
             event.addCapability(SKILL_CAPABILITY,new SkillCapabilityProvider());
     }
 
-    @SubscribeEvent(priority = LOWEST)
+    @SubscribeEvent(priority=LOWEST)
     public static void attachChunkCapabilities(AttachCapabilitiesEvent<Chunk> event) {
        event.addCapability(CHUNK_CAPABILITY,new ExtraChunkDataProvider());
     }
@@ -70,7 +71,7 @@ public class GameEvents {
         }
     }
     
-    @SubscribeEvent(priority = LOWEST)
+    @SubscribeEvent(priority=LOWEST)
     public static void onChangedDimensions(PlayerChangedDimensionEvent event) {
         if(event.isCanceled()) return;
         PlayerData data = PlayerDataHandler.get(event.player);
@@ -92,7 +93,7 @@ public class GameEvents {
         }
     }
 
-    @SubscribeEvent(priority = LOWEST)
+    @SubscribeEvent(priority=LOWEST)
     public static void pickUpItem(ItemPickupEvent event) {
         if(event.isCanceled()) return;
         if(event.player instanceof EntityPlayerMP) {
@@ -111,7 +112,7 @@ public class GameEvents {
         }
     }
     
-    @SubscribeEvent(priority = LOWEST)
+    @SubscribeEvent(priority=LOWEST)
     public static void playerJoin(PlayerLoggedInEvent event) {
         if(event.isCanceled()) return;
         if(event.player instanceof EntityPlayerMP) {
@@ -123,7 +124,7 @@ public class GameEvents {
             World world = player.getEntityWorld();
             WorldUtil.iterateChunks(world,player.chunkCoordX,player.chunkCoordZ,1,
                                     chunk -> WorldUtil.setFastChunk(world,chunk.x,chunk.z,player));
-            new PacketQueryGenericClient("fix").addPlayers(player).send();
+            DHTNetwork.sendToClient(new PacketQueryGenericClient("fix"),player);
             if(player.dimension!=44 && player.dimension!=45) {
                 ISkillCapability cap = SkillWrapper.getSkillCapability(player);
                 if(Objects.nonNull(cap)) cap.resetDreamTimer(player);
@@ -131,13 +132,13 @@ public class GameEvents {
         }
     }
     
-    @SubscribeEvent(priority = LOWEST)
+    @SubscribeEvent(priority=LOWEST)
     public static void playerLeave(PlayerLoggedOutEvent event) {
         if(event.player.world.isRemote) ItemBioticSensorAccess.getTriggeredBioticsRemote().clear();
         else ItemBioticSensorAccess.getTriggeredBioticsNonRemote().clear();
     }
     
-    @SubscribeEvent(priority = LOWEST)
+    @SubscribeEvent(priority=LOWEST)
     public static void playerRespawn(PlayerRespawnEvent event) {
         if(event.isCanceled()) return;
         if(event.player instanceof EntityPlayerMP) SkillWrapper.forceTwilightRespawn(event.player);

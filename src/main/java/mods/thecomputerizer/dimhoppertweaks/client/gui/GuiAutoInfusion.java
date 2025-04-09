@@ -19,6 +19,7 @@ import mcjty.rftools.craftinggrid.CraftingRecipe;
 import mcjty.rftools.craftinggrid.CraftingRecipe.CraftMode;
 import mods.thecomputerizer.dimhoppertweaks.common.containers.InventoryAutoInfusion;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
+import mods.thecomputerizer.dimhoppertweaks.network.DHTNetwork;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketAutoInfusion;
 import mods.thecomputerizer.dimhoppertweaks.registry.tiles.AutoInfusionTableEntity;
 import net.minecraft.client.renderer.GlStateManager;
@@ -210,7 +211,7 @@ public class GuiAutoInfusion extends GenericGuiContainer<AutoInfusionTableEntity
     }
     
     private void sendChangeToServer(int index, InventoryCrafting inv, ItemStack result, boolean keepOne, CraftMode mode) {
-        new PacketAutoInfusion(this.tileEntity.getPos(),index,inv,result,keepOne,mode).send();
+        DHTNetwork.sendToServer(new PacketAutoInfusion(this.tileEntity.getPos(),index,inv,result,keepOne,mode));
     }
     
     private void testRecipe() {

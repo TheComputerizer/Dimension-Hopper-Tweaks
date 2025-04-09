@@ -1,42 +1,28 @@
 package mods.thecomputerizer.dimhoppertweaks.network;
 
 import io.netty.buffer.ByteBuf;
-import mods.thecomputerizer.theimpossiblelibrary.network.MessageImpl;
+import mods.thecomputerizer.theimpossiblelibrary.api.network.message.MessageAPI;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.Side;
 
-import static net.minecraftforge.fml.relauncher.Side.CLIENT;
+public class PacketGrayScaleTimer extends MessageAPI<MessageContext> {
 
-public class PacketGrayScaleTimer extends MessageImpl {
-
-    private float grayScale;
-
-    public PacketGrayScaleTimer() {}
+    private final float grayScale;
 
     public PacketGrayScaleTimer(float scale) {
         this.grayScale = MathHelper.clamp(1f-scale,0,1f);
     }
-
-    @Override
-    public IMessage handle(MessageContext ctx) {
-        ClientPacketHandlers.handleGrayScaleOverride(this.grayScale);
-        return null;
-    }
-
-    @Override
-    public Side getSide() {
-        return CLIENT;
-    }
-
-    @Override
-    public void fromBytes(ByteBuf buf) {
+    
+    public PacketGrayScaleTimer(ByteBuf buf) {
         this.grayScale = buf.readFloat();
     }
-
-    @Override
-    public void toBytes(ByteBuf buf) {
+    
+    @Override public void encode(ByteBuf buf) {
         buf.writeFloat(this.grayScale);
+    }
+
+    @Override public MessageAPI<MessageContext> handle(MessageContext ctx) {
+        ClientPacketHandlers.handleGrayScaleOverride(this.grayScale);
+        return null;
     }
 }

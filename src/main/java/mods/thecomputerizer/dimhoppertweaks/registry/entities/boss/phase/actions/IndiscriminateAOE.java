@@ -2,7 +2,6 @@ package mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.phase.action
 
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.boss.EntityFinalBoss;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketBossClientEffects;
-import mods.thecomputerizer.theimpossiblelibrary.network.NetworkHandler;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
@@ -21,7 +20,7 @@ public final class IndiscriminateAOE extends Action {
 
     public IndiscriminateAOE(int activeTicks, boolean singleton, int activePhase, int windupDelay, double spawnRadius,
                              int aoeTime, int aoeRange, int spawnsPerTick) {
-        super(activeTicks, singleton, activePhase, "ALL");
+        super(activeTicks,singleton,activePhase,"ALL");
         this.windupDelay = windupDelay;
         this.spawnRadius = spawnRadius;
         this.aoeTime = aoeTime;
@@ -29,20 +28,18 @@ public final class IndiscriminateAOE extends Action {
         this.spawnsPerTick = spawnsPerTick;
     }
 
-    @Override
-    public void startAction(EntityFinalBoss boss) {
+    @Override public void startAction(EntityFinalBoss boss) {
         boss.setAnimationState("energyrelease");
     }
 
-    @Override
-    public void continueAction(EntityFinalBoss boss, int activeProgress) {
+    @Override public void continueAction(EntityFinalBoss boss, int activeProgress) {
         if(activeProgress>=this.windupDelay) {
             List<Vec3d> vecList = new ArrayList<>();
             for(int i=0;i<spawnsPerTick;i++)
                 vecList.add(i,getRandomPos(boss.getPositionVector(),boss.world.rand,activeProgress));
             boss.addAOECounter(vecList,this.aoeTime,this.aoeRange,this.activePhase);
             if(!this.skySwapped) {
-                NetworkHandler.sendToTracking(new PacketBossClientEffects(true,0f),boss);
+                boss.sendToTracking(new PacketBossClientEffects(true,0f));
                 this.skySwapped = true;
             }
             if(!this.shieldDropped) {
@@ -52,8 +49,7 @@ public final class IndiscriminateAOE extends Action {
         }
     }
 
-    @Override
-    public void finishAction(EntityFinalBoss boss) {
+    @Override public void finishAction(EntityFinalBoss boss) {
         this.shieldDropped = false;
         boss.updateShield(true);
     }

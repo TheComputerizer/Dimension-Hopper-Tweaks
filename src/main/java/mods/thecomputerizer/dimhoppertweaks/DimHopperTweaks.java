@@ -10,7 +10,7 @@ import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillCapabi
 import mods.thecomputerizer.dimhoppertweaks.integration.dropt.DroptRules;
 import mods.thecomputerizer.dimhoppertweaks.network.*;
 import mods.thecomputerizer.dimhoppertweaks.registry.RegistryHandler;
-import mods.thecomputerizer.theimpossiblelibrary.network.NetworkHandler;
+import mods.thecomputerizer.theimpossiblelibrary.api.core.CoreAPI;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -20,16 +20,12 @@ import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.*;
 import static net.minecraftforge.common.capabilities.CapabilityManager.INSTANCE;
 
 @SuppressWarnings("unused")
-@Mod(modid = MODID, name = NAME, version = VERSION, dependencies = DEPENDENCIES)
+@Mod(modid=MODID,name=NAME,version=VERSION,dependencies=DEPENDENCIES)
 public class DimHopperTweaks {
 
     public DimHopperTweaks() {
-        NetworkHandler.queueServerPacketRegistries(PacketAutoInfusion.class,PacketSendKeyPressed.class,
-                PacketSyncGuiData.class);
-        NetworkHandler.queueClientPacketRegistries(PacketBossClientEffects.class,PacketGrayScaleTimer.class,
-                PacketOpenGui.class,PacketQueryGenericClient.class,PacketRenderBossAttack.class,
-                PacketSyncCapabilityData.class,PacketSyncExtraChunkData.class,PacketSyncPlayerHealth.class,
-                PacketTileEntityClassQuery.class);
+        DHTNetwork.initCommon();
+        if(CoreAPI.isClient()) DHTNetwork.initClient();
     }
 
     @EventHandler

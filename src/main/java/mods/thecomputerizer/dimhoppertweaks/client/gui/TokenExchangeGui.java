@@ -1,6 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.client.gui;
 
 import lombok.Setter;
+import mods.thecomputerizer.dimhoppertweaks.network.DHTNetwork;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketSyncGuiData;
 import mods.thecomputerizer.dimhoppertweaks.util.TextUtil;
 import net.minecraft.client.Minecraft;
@@ -22,6 +23,7 @@ import static org.lwjgl.opengl.GL11.GL_QUADS;
 
 @SuppressWarnings("NullableProblems")
 public class TokenExchangeGui extends GuiScreen {
+    
     private final List<String> skills;
     private final List<CircularScrollableElement> scrollables;
     @Setter private String currentSkill;
@@ -34,8 +36,7 @@ public class TokenExchangeGui extends GuiScreen {
         this.scrollables = Collections.synchronizedList(new ArrayList<>());
     }
 
-    @Override
-    public void setWorldAndResolution(Minecraft mc, int width, int height) {
+    @Override public void setWorldAndResolution(Minecraft mc, int width, int height) {
         super.setWorldAndResolution(mc, width, height);
         synchronized (this.scrollables) {
             this.scrollables.clear();
@@ -54,8 +55,7 @@ public class TokenExchangeGui extends GuiScreen {
         return this.skills.stream().map(this::getSkillTranslation).collect(Collectors.toList());
     }
 
-    @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+    @Override public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         if(Objects.isNull(this.mc)) this.mc = Minecraft.getMinecraft();
         if(Objects.isNull(this.fontRenderer)) this.fontRenderer = this.mc.fontRenderer;
         try {
@@ -75,17 +75,15 @@ public class TokenExchangeGui extends GuiScreen {
         }
     }
 
-    @Override
-    public void handleMouseInput() throws IOException {
+    @Override public void handleMouseInput() throws IOException {
         super.handleMouseInput();
         synchronized(this.scrollables) {
             for(CircularScrollableElement circle : this.scrollables) circle.handleScroll();
         }
     }
 
-    @Override
-    public void onGuiClosed() {
-        new PacketSyncGuiData(this.currentSkill,this.conversionRate).send();
+    @Override public void onGuiClosed() {
+        DHTNetwork.sendToServer(new PacketSyncGuiData(this.currentSkill,this.conversionRate));
     }
 
     private void renderSmallCircleOnCursor(Minecraft ignored, int mouseX, int mouseY) {
@@ -119,8 +117,7 @@ public class TokenExchangeGui extends GuiScreen {
         GlStateManager.popMatrix();
     }
 
-    @Override
-    public boolean doesGuiPauseGame() {
+    @Override public boolean doesGuiPauseGame() {
         return false;
     }
 }

@@ -18,6 +18,7 @@ import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrappe
 import mods.thecomputerizer.dimhoppertweaks.common.events.TickEvents;
 import mods.thecomputerizer.dimhoppertweaks.config.DHTConfigHelper;
 import mods.thecomputerizer.dimhoppertweaks.mixin.api.IInventoryCrafting;
+import mods.thecomputerizer.dimhoppertweaks.network.DHTNetwork;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketSendKeyPressed;
 import net.darkhax.gamestages.GameStageHelper;
 import net.darkhax.gamestages.data.IStageData;
@@ -530,7 +531,7 @@ public class DelayedModAccess {
 
     @SideOnly(CLIENT)
     public static void sendKeyPress(int type) {
-        new PacketSendKeyPressed(type).send();
+        DHTNetwork.sendToServer(new PacketSendKeyPressed(type));
     }
     
     public static IBlockState water() {

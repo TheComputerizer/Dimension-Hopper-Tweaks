@@ -2,6 +2,7 @@ package mods.thecomputerizer.dimhoppertweaks.common.commands;
 
 import mcp.MethodsReturnNonnullByDefault;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
+import mods.thecomputerizer.dimhoppertweaks.network.DHTNetwork;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketQueryGenericClient;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketTileEntityClassQuery;
 import mods.thecomputerizer.dimhoppertweaks.util.WorldUtil;
@@ -134,7 +135,7 @@ public class DHDebugCommands extends DHTCommand {
             }
         }
         if(Objects.nonNull(player)) {
-            new PacketTileEntityClassQuery().addPlayers(player).send();
+            DHTNetwork.sendToClient(new PacketTileEntityClassQuery(),player);
             sendMessage(sender,false,"tileclass");
         }
     }
@@ -199,7 +200,7 @@ public class DHDebugCommands extends DHTCommand {
             return;
         }
         if(sender instanceof EntityPlayerMP)
-            new PacketQueryGenericClient(type).addPlayers((EntityPlayerMP) sender).send();
+            DHTNetwork.sendToClient(new PacketQueryGenericClient(type),(EntityPlayerMP)sender);
     }
 
     private void executeFill(MinecraftServer server, ICommandSender sender, @Nullable String rangeStr,
