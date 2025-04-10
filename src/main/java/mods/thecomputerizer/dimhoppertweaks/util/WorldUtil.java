@@ -12,12 +12,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
@@ -26,10 +26,15 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
+import static net.minecraft.util.EnumFacing.EAST;
+import static net.minecraft.util.EnumFacing.NORTH;
+import static net.minecraft.util.EnumFacing.UP;
+import static net.minecraftforge.fml.relauncher.Side.CLIENT;
+
 public class WorldUtil {
 
     private static @Nullable TileEntity addCoordsAndCheck(World world, BlockPos.MutableBlockPos pos, EnumFacing side,
-                                                          Collection<Class<?>> types) {
+            Collection<Class<?>> types) {
         pos.move(side);
         TileEntity tile = checkValidTile(world,pos,types);
         if(Objects.nonNull(tile)) return tile;
@@ -51,14 +56,14 @@ public class WorldUtil {
 
     public static @Nullable TileEntity getTileOrAdjacent(World world, BlockPos centerPos, boolean checkCenter,
                                                          Collection<Class<?>> types) {
-        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(centerPos);
+        MutableBlockPos pos = new MutableBlockPos(centerPos);
         TileEntity tile = checkValidTile(world,pos,types);
         if(Objects.nonNull(tile) && checkCenter) return tile;
-        tile = addCoordsAndCheck(world,pos,EnumFacing.EAST,types);
+        tile = addCoordsAndCheck(world,pos,EAST,types);
         if(Objects.nonNull(tile)) return tile;
-        tile = addCoordsAndCheck(world,pos,EnumFacing.NORTH,types);
+        tile = addCoordsAndCheck(world,pos,NORTH,types);
         if(Objects.nonNull(tile)) return tile;
-        return addCoordsAndCheck(world,pos,EnumFacing.UP,types);
+        return addCoordsAndCheck(world,pos,UP,types);
     }
 
     public static boolean isChunkFast(World world, int chunkX, int chunkZ) {
@@ -136,7 +141,7 @@ public class WorldUtil {
         return chunk.x==player.chunkCoordX && chunk.z==player.chunkCoordZ;
     }
 
-    @SideOnly(Side.CLIENT)
+    @SideOnly(CLIENT)
     public static void spawnBlightParticle(World world, double x, double y, double z, double width, double height) {
         double speedX = (world.rand.nextDouble()*2d)-1d;
         double speedY = (world.rand.nextDouble()*2d)-1d;

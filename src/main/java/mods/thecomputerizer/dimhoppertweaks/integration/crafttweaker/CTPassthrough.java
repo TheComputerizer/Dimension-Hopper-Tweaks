@@ -9,7 +9,7 @@ import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import mods.thecomputerizer.dimhoppertweaks.integration.jei.JeiActionSupplier;
 import mods.thecomputerizer.dimhoppertweaks.util.ItemUtil;
-import mods.thecomputerizer.theimpossiblelibrary.util.TextUtil;
+import mods.thecomputerizer.theimpossiblelibrary.api.text.TextHelper;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.Enchantment;
@@ -88,7 +88,7 @@ public class CTPassthrough {
     @ZenMethod
     public static String getAdventuringBackpackItems() {
         if(!isBackpackCached) createBackpackItems();
-        String ret = TextUtil.listToString(ADVENTURE_BACKPACK_NAMES,", ");
+        String ret = TextHelper.fromIterable(ADVENTURE_BACKPACK_NAMES,", ");
         return Objects.nonNull(ret) ? ret : "?";
     }
 

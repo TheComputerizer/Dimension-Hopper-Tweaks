@@ -2,25 +2,30 @@ package mods.thecomputerizer.dimhoppertweaks.registry;
 
 import mods.thecomputerizer.dimhoppertweaks.client.particle.ParticleAscii;
 import mods.thecomputerizer.dimhoppertweaks.client.particle.ParticleBlightFire;
-import mods.thecomputerizer.dimhoppertweaks.client.render.BetterBlightFireRenderer;
-import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
-import mods.thecomputerizer.theimpossiblelibrary.util.TextUtil;
+import mods.thecomputerizer.theimpossiblelibrary.api.text.TextHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.client.event.TextureStitchEvent.Pre;
 import net.minecraftforge.common.util.EnumHelper;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Objects;
 
+import static mods.thecomputerizer.dimhoppertweaks.client.render.BetterBlightFireRenderer.TEXTURE;
+import static mods.thecomputerizer.dimhoppertweaks.client.render.BetterBlightFireRenderer.TEXTURE_GRAY;
+import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.LOGGER;
+import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.MODID;
+import static mods.thecomputerizer.theimpossiblelibrary.api.text.TextHelper.TextCasing.CAMEL;
+import static net.minecraft.util.EnumParticleTypes.BY_NAME;
+import static net.minecraft.util.EnumParticleTypes.PARTICLES;
 import static net.minecraftforge.fml.relauncher.Side.CLIENT;
 
-@Mod.EventBusSubscriber(modid = DHTRef.MODID)
+@EventBusSubscriber(modid=MODID)
 public final class ParticleRegistry {
 
     public static final ResourceLocation PARTICLE_TEXTURES = new ResourceLocation("textures/particle/particles.png");
@@ -33,25 +38,24 @@ public final class ParticleRegistry {
     private static TextureAtlasSprite GRAY_BLIGHT_FIRE_ATLAS = null;
 
     private static EnumParticleTypes registerParticle(String name, boolean ignoreRange) {
-        String camelName = TextUtil.makeCaseTypeFromSnake(name,TextUtil.TextCasing.CAMEL);
+        String camelName = TextHelper.makeCaseTypeFromSnake(name,CAMEL);
         int id = EnumParticleTypes.values().length;
-        DHTRef.LOGGER.info("Registrering particle with name {}",camelName);
+        LOGGER.info("Registrering particle with name {}",camelName);
         EnumParticleTypes ret = EnumHelper.addEnum(EnumParticleTypes.class,name,PARTICLE_INIT_CLASSES,camelName,id,ignoreRange);
         if(Objects.nonNull(ret)) {
-            EnumParticleTypes.PARTICLES.put(ret.getParticleID(), ret);
-            EnumParticleTypes.BY_NAME.put(ret.getParticleName(), ret);
-        } else DHTRef.LOGGER.error("Failed to register particle {}!",camelName);
+            PARTICLES.put(ret.getParticleID(),ret);
+            BY_NAME.put(ret.getParticleName(),ret);
+        } else LOGGER.error("Failed to register particle {}!",camelName);
         return ret;
     }
 
-    @SubscribeEvent
-    @SideOnly(CLIENT)
-    public static void stitchEvent(TextureStitchEvent.Pre ev) {
+    @SubscribeEvent @SideOnly(CLIENT)
+    public static void stitchEvent(Pre ev) {
         String texPath = Minecraft.getMinecraft().fontRenderer.locationFontTexture.getPath();
         texPath = texPath.substring(0,texPath.lastIndexOf(".")).replace("textures/","");
         FONT_ATLAS = ev.getMap().registerSprite(new ResourceLocation(texPath));
-        BLIGHT_FIRE_ATLAS = ev.getMap().registerSprite(BetterBlightFireRenderer.TEXTURE);
-        GRAY_BLIGHT_FIRE_ATLAS = ev.getMap().registerSprite(BetterBlightFireRenderer.TEXTURE_GRAY);
+        BLIGHT_FIRE_ATLAS = ev.getMap().registerSprite(TEXTURE);
+        GRAY_BLIGHT_FIRE_ATLAS = ev.getMap().registerSprite(TEXTURE_GRAY);
     }
 
     @SideOnly(CLIENT)

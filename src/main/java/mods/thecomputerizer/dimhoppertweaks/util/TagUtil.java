@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class TagUtil {
+    
     public static boolean tagsMatch(@Nullable NBTTagCompound tag, @Nullable NBTTagCompound toMatch, boolean nullMatchesAny) {
         if(Objects.isNull(toMatch)) return nullMatchesAny || Objects.isNull(tag);
         if(Objects.isNull(tag)) return false;

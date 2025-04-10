@@ -1,15 +1,12 @@
 package mods.thecomputerizer.dimhoppertweaks.registry.items;
 
-import gcewing.sg.SGCraft;
 import gcewing.sg.interfaces.ISGBlock;
 import gcewing.sg.tileentity.SGBaseTE;
-import gcewing.sg.util.SGAddressing;
-import mods.thecomputerizer.dimhoppertweaks.registry.StructureRegistry;
-import mods.thecomputerizer.theimpossiblelibrary.util.object.ItemUtil;
+import gcewing.sg.util.SGAddressing.AddressingError;
+import mods.thecomputerizer.dimhoppertweaks.util.ItemUtil;
 import net.darkhax.gamestages.GameStageHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
@@ -26,6 +23,13 @@ import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import static gcewing.sg.SGCraft.sgChevronUpgrade;
+import static mods.thecomputerizer.dimhoppertweaks.registry.StructureRegistry.STARGATE;
+import static net.minecraft.init.Items.PAPER;
+import static net.minecraft.util.EnumActionResult.FAIL;
+import static net.minecraft.util.EnumActionResult.PASS;
+import static net.minecraft.util.EnumActionResult.SUCCESS;
 
 public class StargateAddresser extends EpicItem {
 
@@ -71,14 +75,13 @@ public class StargateAddresser extends EpicItem {
         this.dimGateStages.put(-19,"stargatePluto");
     }
 
-    @Override
-    @Nonnull
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
+    @Override public @Nonnull ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player,
+            @Nonnull EnumHand hand) {
         player.getCooldownTracker().setCooldown(this, 200);
-        ItemStack stack = new ItemStack(Items.PAPER);
-        EnumActionResult result = EnumActionResult.PASS;
+        ItemStack stack = new ItemStack(PAPER);
+        EnumActionResult result = PASS;
         if(!world.isRemote) {
-            ItemStack chev = new ItemStack(SGCraft.sgChevronUpgrade);
+            ItemStack chev = new ItemStack(sgChevronUpgrade);
             ITextComponent text = new TextComponentString("Gate could not be located");
             int dimFrom = world.provider.getDimension();
             if(canPlayerUse(player,player.getHeldItem(hand),dimFrom)) {
@@ -86,7 +89,7 @@ public class StargateAddresser extends EpicItem {
                 DimensionManager.initDimension(dimTo);
                 World genhere = DimensionManager.getWorld(dimTo);
                 BlockPos pos = player.getPosition();
-                StructureRegistry.STARGATE.build(genhere,pos);
+                STARGATE.build(genhere,pos);
                 Block block = genhere.getBlockState(pos).getBlock();
                 if(block instanceof ISGBlock) {
                     SGBaseTE gateBase = ((ISGBlock)block).getBaseTE(genhere,pos);
@@ -97,9 +100,9 @@ public class StargateAddresser extends EpicItem {
                             address = gateBase.getHomeAddress();
                             text = new TextComponentTranslation("item.dimhoppertweaks.stargate_addresser.success",address);
                             stack.setStackDisplayName(String.format("Stargate Address: §5%s",address));
-                            result = EnumActionResult.SUCCESS;
-                        } catch (SGAddressing.AddressingError e) {
-                            result = EnumActionResult.FAIL;
+                            result = SUCCESS;
+                        } catch(AddressingError e) {
+                            result = FAIL;
                         }
                     }
                 }

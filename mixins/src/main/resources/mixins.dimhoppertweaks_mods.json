@@ -126,8 +126,6 @@
     "moreplanets.MixinBlockCheeseSlime",
     "moreplanets.MixinBlockInfectedPurloniteSlime",
     "multipart.MixinRedstoneTorchPart",
-    "musictriggers.MixinServerEvents",
-    "musictriggers.MixinServerTriggerStatus",
     "naturesaura.MixinDrainSpotEffects",
     "naturesaura.MixinTileEntityAutoCrafter",
     "naturesaura.MixinTileEntityEndFlower",

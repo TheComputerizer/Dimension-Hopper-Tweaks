@@ -1,7 +1,8 @@
 package mods.thecomputerizer.dimhoppertweaks.client.particle;
 
 import mods.thecomputerizer.dimhoppertweaks.registry.ParticleRegistry;
-import mods.thecomputerizer.theimpossiblelibrary.util.client.FontUtil;
+import mods.thecomputerizer.dimhoppertweaks.util.FontUtil;
+import mods.thecomputerizer.theimpossiblelibrary.api.shapes.vectors.Vector4;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.Particle;
@@ -12,18 +13,16 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import javax.vecmath.Point4f;
 
 import static net.minecraftforge.fml.relauncher.Side.CLIENT;
 
-@ParametersAreNonnullByDefault
-@SideOnly(CLIENT)
+@SideOnly(CLIENT) @ParametersAreNonnullByDefault
 public class ParticleAscii extends Particle {
 
     private static final String POTENTIAL_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private final double rangeFactor;
     private char curChar;
-    private Point4f charUV;
+    private Vector4 charUV;
 
     public ParticleAscii(World world, double x, double y, double z, double velocityX, double velocityY,
                          double velocityZ, float maxAge, double rangeFactor, float scale) {
@@ -69,17 +68,16 @@ public class ParticleAscii extends Particle {
             this.motionZ*=0.699999988079071;
         }
         this.curChar = POTENTIAL_CHARS.charAt(this.rand.nextInt(POTENTIAL_CHARS.length()));
-        this.charUV = FontUtil.getCharUV(this.curChar,Minecraft.getMinecraft().fontRenderer);
+        this.charUV = FontUtil.getCharUV(this.curChar, Minecraft.getMinecraft().fontRenderer);
     }
 
-    @Override
-    public void renderParticle(BufferBuilder buffer, Entity entity, float partialTicks, float rotationX, float rotationZ,
-                               float rotationYZ, float rotationXY, float rotationXZ) {
+    @Override public void renderParticle(BufferBuilder buffer, Entity entity, float partialTicks, float rotationX,
+            float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
         FontUtil.bufferCharTex(this.curChar,Minecraft.getMinecraft().fontRenderer);
-        double minU = particleTexture.getMinU()+this.charUV.x;
-        double maxU = particleTexture.getMinU()+this.charUV.y;
-        double minV = particleTexture.getMinV()+this.charUV.z;
-        double maxV = particleTexture.getMinV()+this.charUV.w;
+        double minU = particleTexture.getMinU()+this.charUV.x().doubleValue();
+        double maxU = particleTexture.getMinU()+this.charUV.y().doubleValue();
+        double minV = particleTexture.getMinV()+this.charUV.z().doubleValue();
+        double maxV = particleTexture.getMinV()+this.charUV.w().doubleValue();
         double x = this.prevPosX+(this.posX-this.prevPosX)*partialTicks-interpPosX;
         double y = this.prevPosY+(this.posY-this.prevPosY)*partialTicks-interpPosY;
         double z = this.prevPosZ+(this.posZ-this.prevPosZ)*partialTicks-interpPosZ;
@@ -107,9 +105,8 @@ public class ParticleAscii extends Particle {
 
     public static class Factory implements IParticleFactory {
 
-        @Override
-        public @Nullable ParticleAscii createParticle(int id, World world, double posX, double posY, double posZ,
-                                       double velocityX, double velocityY, double velocityZ, int... args) {
+        @Override public @Nullable ParticleAscii createParticle(int id, World world, double posX, double posY,
+                double posZ, double velocityX, double velocityY, double velocityZ, int... args) {
             return new ParticleAscii(Minecraft.getMinecraft().world,posX,posY,posZ,velocityX,velocityY,velocityZ,
                     args.length>=1 ? (float)args[0] : 100f,args.length>=2 ? (double)args[1] : 32d,
                     args.length>=3 ? ((float)args[2])/100f : 0.5f);
