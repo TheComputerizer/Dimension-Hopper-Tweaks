@@ -86,13 +86,11 @@ public class AutoInfusionTableEntity extends GenericEnergyReceiverTileEntity
         for(int i=0;i<this.recipes.length;i++) this.recipes[i] = new AutoInfusionRecipe();
     }
     
-    @Override
-    public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
+    @Override public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
         return FACTORY.isOutputSlot(index);
     }
     
-    @Override
-    public boolean canInsertItem(int index, ItemStack stack, EnumFacing direction) {
+    @Override public boolean canInsertItem(int index, ItemStack stack, EnumFacing direction) {
         if(!isItemValidForSlot(index, stack)) return false;
         return FACTORY.isInputSlot(index);
     }
@@ -160,15 +158,13 @@ public class AutoInfusionTableEntity extends GenericEnergyReceiverTileEntity
         }
     }
     
-    @Override
-    public ItemStack decrStackSize(int index, int count) {
+    @Override public ItemStack decrStackSize(int index, int count) {
         this.noRecipesWork = false;
         if(index==41) this.filterCache = null;
         return this.helper.decrStackSize(index,count);
     }
     
-    @Override
-    public boolean execute(EntityPlayerMP player, String command, TypedMap params) {
+    @Override public boolean execute(EntityPlayerMP player, String command, TypedMap params) {
         boolean rc = super.execute(player,command,params);
         if(rc) return true;
         switch(command) {
@@ -199,8 +195,7 @@ public class AutoInfusionTableEntity extends GenericEnergyReceiverTileEntity
             this.filterCache = StorageFilterItem.getCache(this.helper.getStackInSlot(41));
     }
     
-    @Override
-    public InventoryHelper getInventoryHelper() {
+    @Override public InventoryHelper getInventoryHelper() {
         return this.helper;
     }
     
@@ -208,8 +203,7 @@ public class AutoInfusionTableEntity extends GenericEnergyReceiverTileEntity
         return this.recipes[index];
     }
     
-    @Override
-    public int[] getSlotsForFace(EnumFacing side) {
+    @Override public int[] getSlotsForFace(EnumFacing side) {
         return FACTORY.getAccessibleSlots();
     }
     
@@ -222,8 +216,8 @@ public class AutoInfusionTableEntity extends GenericEnergyReceiverTileEntity
         return capability==ITEM_HANDLER_CAPABILITY || super.hasCapability(capability,facing);
     }
     
-    @SuppressWarnings("unchecked") @Override @Nullable
-    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+    @SuppressWarnings("unchecked")
+    @Override public <T> @Nullable T getCapability(Capability<T> capability, EnumFacing facing) {
         if(capability==ITEM_HANDLER_CAPABILITY) {
             if(Objects.isNull(this.invHandlerNull)) this.invHandlerNull = new NullSidedInvWrapper(this);
             return (T)this.invHandlerNull;
@@ -235,8 +229,7 @@ public class AutoInfusionTableEntity extends GenericEnergyReceiverTileEntity
         return false;
     }
     
-    @Override
-    public boolean isItemValidForSlot(int index, ItemStack stack) {
+    @Override public boolean isItemValidForSlot(int index, ItemStack stack) {
         if(index>=0 && index<=10) return false;
         else {
             if(index>=11 && index<37) {
@@ -261,13 +254,11 @@ public class AutoInfusionTableEntity extends GenericEnergyReceiverTileEntity
         return false;
     }
     
-    @Override
-    protected boolean needsCustomInvWrapper() {
+    @Override protected boolean needsCustomInvWrapper() {
         return true;
     }
     
-    @Override
-    protected boolean needsRedstoneMode() {
+    @Override protected boolean needsRedstoneMode() {
         return true;
     }
     
@@ -300,8 +291,7 @@ public class AutoInfusionTableEntity extends GenericEnergyReceiverTileEntity
         }
     }
     
-    @Override
-    public void readRestorableFromNBT(NBTTagCompound tag) {
+    @Override public void readRestorableFromNBT(NBTTagCompound tag) {
         super.readRestorableFromNBT(tag);
         readBufferFromNBT(tag,this.helper);
         readGhostBufferFromNBT(tag);
@@ -324,8 +314,7 @@ public class AutoInfusionTableEntity extends GenericEnergyReceiverTileEntity
         this.markDirtyClient();
     }
     
-    @Override
-    public ItemStack removeStackFromSlot(int index) {
+    @Override public ItemStack removeStackFromSlot(int index) {
         this.noRecipesWork = false;
         if(index==41) this.filterCache = null;
         return this.helper.removeStackFromSlot(index);
@@ -339,8 +328,7 @@ public class AutoInfusionTableEntity extends GenericEnergyReceiverTileEntity
         for(int i=0;i<size;i++) setInventorySlotContents(i,inv.getStackInSlot(i));
     }
     
-    @Override
-    public void setInventorySlotContents(int index, ItemStack stack) {
+    @Override public void setInventorySlotContents(int index, ItemStack stack) {
         this.noRecipesWork = false;
         if(index==41) this.filterCache = null;
         this.helper.setInventorySlotContents(getInventoryStackLimit(),index,stack);
@@ -350,15 +338,13 @@ public class AutoInfusionTableEntity extends GenericEnergyReceiverTileEntity
         return canPlayerAccess(player);
     }
     
-    @Override
-    public void setGridContents(List<ItemStack> stacks) {
+    @Override public void setGridContents(List<ItemStack> stacks) {
         setInventorySlotContents(10,stacks.get(0));
         for(int i=1;i<stacks.size();i++)
             setInventorySlotContents(i-1,stacks.get(i));
     }
     
-    @Override
-    public boolean setOwner(EntityPlayer player) {
+    @Override public boolean setOwner(EntityPlayer player) {
         PlayerDataManager manager = PlayerUtil.getAdventPlayer(player);
         this.infusionCap = player.capabilities.isCreativeMode ? 999 : manager.stats().getLevel(INFUSION);
         return super.setOwner(player);
@@ -400,8 +386,7 @@ public class AutoInfusionTableEntity extends GenericEnergyReceiverTileEntity
         undo.clear();
     }
     
-    @Override
-    public void update() {
+    @Override public void update() {
         if(!getWorld().isRemote) checkStateServer();
     }
     
@@ -425,8 +410,7 @@ public class AutoInfusionTableEntity extends GenericEnergyReceiverTileEntity
         tag.setTag("Recipes", recipes);
     }
     
-    @Override
-    public void writeRestorableToNBT(NBTTagCompound tagCompound) {
+    @Override public void writeRestorableToNBT(NBTTagCompound tagCompound) {
         super.writeRestorableToNBT(tagCompound);
         writeBufferToNBT(tagCompound,this.helper);
         writeGhostBufferToNBT(tagCompound);

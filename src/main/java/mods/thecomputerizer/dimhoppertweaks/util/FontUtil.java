@@ -6,6 +6,9 @@ import net.minecraft.client.gui.FontRenderer;
 
 import static mods.thecomputerizer.theimpossiblelibrary.api.client.font.FontHelper.ASCII_CHARS;
 
+/**
+ * Temporary class until something equivalent is implemented in TIL
+ */
 public class FontUtil {
     
     private static void bufferAsciiTex(FontRenderer font) {

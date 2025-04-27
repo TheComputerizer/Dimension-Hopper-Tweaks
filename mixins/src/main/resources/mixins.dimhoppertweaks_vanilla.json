@@ -37,6 +37,7 @@
   "client": [
     "MixinItemRenderer",
     "MixinLayerHeldBlock",
+    "MixinMusicTicker",
     "MixinParticle",
     "MixinRenderManager"
   ]

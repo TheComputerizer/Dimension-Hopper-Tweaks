@@ -36,6 +36,7 @@ public abstract class MixinEntityPlayer extends EntityLivingBase {
         super(world);
     }
     
+    @SuppressWarnings("DataFlowIssue")
     @Unique private EntityPlayer dimhoppertweaks$cast() {
         return (EntityPlayer)(Object)this;
     }
@@ -75,11 +76,10 @@ public abstract class MixinEntityPlayer extends EntityLivingBase {
      */
     @Overwrite
     public void addScore(int score) {
-        this.dataManager.set(PLAYER_SCORE,MathHelper.clamp(this.getScore()+score,0,MAX_VALUE));
+        this.dataManager.set(PLAYER_SCORE,MathHelper.clamp(getScore()+score,0,MAX_VALUE));
     }
     
-    @Override
-    public void setInWeb() {
+    @Override public void setInWeb() {
         if(!SkillWrapper.isUnstoppable(dimhoppertweaks$cast())) super.setInWeb();
     }
 
