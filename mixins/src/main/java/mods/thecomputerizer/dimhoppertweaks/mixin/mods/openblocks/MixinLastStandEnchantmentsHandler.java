@@ -31,6 +31,9 @@ public abstract class MixinLastStandEnchantmentsHandler {
 
     @Unique private final Map<EntityPlayer,MutableInt> dimhoppertweaks$playerTicker = Collections.synchronizedMap(new HashMap<>());
 
+    private static final float BASE_XP_COST = 200f;
+    private static final float XP_SCALING_FACTOR = 1.2f;
+
     /**
      * @author The_Computerizer
      * @reason Nerf last stand
@@ -55,10 +58,10 @@ public abstract class MixinLastStandEnchantmentsHandler {
                             env.setGlobalSymbol("hp",(double)playerHealth);
                             env.setGlobalSymbol("dmg",(double)e.getAmount());
                         },() -> {
-                            float xp = 1f-healthAvailable;
-                            xp*=200f;
-                            xp/=(float)enchantmentLevels;
-                            xp = Math.max(1f,xp);
+                            float damage = 1f - healthAvailable;
+                            float baseCost = BASE_XP_COST / enchantmentLevels;
+                            float xp = baseCost * (float) Math.pow(XP_SCALING_FACTOR, damage);
+                            xp = Math.max(1f, xp);
                             return (double)xp;
                         }).floatValue();
                         if((float)xpAvailable>=xpRequired) {
