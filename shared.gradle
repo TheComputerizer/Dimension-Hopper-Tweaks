@@ -1,12 +1,14 @@
-plugins.apply('idea')
-plugins.apply('java')
-plugins.apply('java-base')
-plugins.apply('java-library')
+import static org.gradle.api.file.DuplicatesStrategy.EXCLUDE
+
+plugins.apply 'idea'
+plugins.apply 'java'
+plugins.apply 'java-base'
+plugins.apply 'java-library'
 
 group = mod_package
-version = "${mod_version}+${minecraft_version}"
+version = "$mod_version+$minecraft_version"
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+java.toolchain.languageVersion = JavaLanguageVersion.of 8
 
 idea {
     module {
@@ -20,14 +22,13 @@ repositories {
 }
 
 dependencies {
-    annotationProcessor("org.projectlombok:lombok:${lombok_version}")
-
-    compileOnly("org.projectlombok:lombok:${lombok_version}")
+    annotationProcessor "org.projectlombok:lombok:$lombok_version"
+    compileOnly "org.projectlombok:lombok:$lombok_version"
 }
 
 jar {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    setArchiveBaseName(mod_id)
+    duplicatesStrategy = EXCLUDE
+    setArchiveBaseName "$mod_id"
 }
 
 tasks.withType(JavaCompile).configureEach {

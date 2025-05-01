@@ -12,10 +12,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 @Mixin(value = ItemDrill.class, remap = false)
-@ParametersAreNonnullByDefault
 public abstract class MixinItemDrill extends ItemUpgradeableTool {
     
     @Shadow public abstract ItemStack getHead(ItemStack drill);

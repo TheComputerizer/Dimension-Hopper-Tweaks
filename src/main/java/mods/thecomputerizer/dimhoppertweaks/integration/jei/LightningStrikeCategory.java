@@ -1,6 +1,5 @@
 package mods.thecomputerizer.dimhoppertweaks.integration.jei;
 
-import mcp.MethodsReturnNonnullByDefault;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IDrawableStatic;
@@ -13,12 +12,9 @@ import mods.thecomputerizer.dimhoppertweaks.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Objects;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class LightningStrikeCategory implements IRecipeCategory<LightningStrikeWrapper>, ITooltipCallback<ItemStack> {
 
     private final IDrawableStatic background;

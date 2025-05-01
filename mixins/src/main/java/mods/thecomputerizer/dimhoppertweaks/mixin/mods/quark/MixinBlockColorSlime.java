@@ -11,10 +11,8 @@ import vazkii.arl.block.BlockMetaVariants;
 import vazkii.quark.automation.block.BlockColorSlime;
 import vazkii.quark.automation.block.BlockColorSlime.Variants;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 
 @Mixin(value = BlockColorSlime.class, remap = false)
-@ParametersAreNonnullByDefault
 public abstract class MixinBlockColorSlime extends BlockMetaVariants<Variants> {
     
     public MixinBlockColorSlime(String name, Material material, Class<Variants> variants) {

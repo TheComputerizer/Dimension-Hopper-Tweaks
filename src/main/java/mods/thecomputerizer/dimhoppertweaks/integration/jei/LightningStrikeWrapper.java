@@ -16,13 +16,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DimensionType;
 import org.dave.compactmachines3.misc.RenderTickCounter;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @SuppressWarnings("deprecation")
-@ParametersAreNonnullByDefault
 public class LightningStrikeWrapper implements IRecipeWrapper {
 
     private static final BlockPos MIN = new BlockPos(-1,0,-1);

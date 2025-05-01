@@ -7,7 +7,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.nbt.NBTTagCompound;
@@ -31,8 +30,6 @@ public abstract class MixinEntityLivingBase extends Entity implements IEntityLiv
 
     @Shadow @Final private static DataParameter<Float> HEALTH;
     @Unique private boolean dimhoppertweaks$isBlighted;
-    @Shadow public abstract float getHealth();
-    @Shadow public abstract IAttributeInstance getEntityAttribute(IAttribute attribute);
 
     public MixinEntityLivingBase(World world) {
         super(world);
@@ -125,12 +122,13 @@ public abstract class MixinEntityLivingBase extends Entity implements IEntityLiv
      */
     @Overwrite
     public final float getMaxHealth() {
-        IAttributeInstance attribute = this.getEntityAttribute(MAX_HEALTH);
+        EntityLivingBase based = dimhoppertweaks$cast();
+        IAttributeInstance attribute = based.getEntityAttribute(MAX_HEALTH);
         if(attribute instanceof ModifiableAttributeInstance) {
             ModifiableAttributeInstanceAccess access = (ModifiableAttributeInstanceAccess)attribute;
             double cached  = access.getCachedValue();
             double newVal = attribute.getAttributeValue();
-            if(newVal!=cached) this.dataManager.set(HEALTH,MathHelper.clamp(getHealth(),0f,(float)newVal));
+            if(newVal!=cached) this.dataManager.set(HEALTH,MathHelper.clamp(based.getHealth(),0f,(float)newVal));
             return (float)newVal;
         }
         return (float)attribute.getAttributeValue();

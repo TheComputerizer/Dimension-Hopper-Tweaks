@@ -1,6 +1,5 @@
 package mods.thecomputerizer.dimhoppertweaks.common.commands;
 
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -9,14 +8,12 @@ import net.minecraft.world.DimensionType;
 import net.minecraft.world.biome.Biome;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.MODID;
 import static net.minecraftforge.fml.common.registry.ForgeRegistries.BIOMES;
 
-@ParametersAreNonnullByDefault @MethodsReturnNonnullByDefault
 public abstract class DHTCommand extends CommandBase {
 
     private static final List<String> DIMENSION_TAB_NAMES = Arrays.stream(DimensionType.values())

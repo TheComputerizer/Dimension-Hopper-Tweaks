@@ -1,6 +1,5 @@
 package mods.thecomputerizer.dimhoppertweaks.common.commands;
 
-import mcp.MethodsReturnNonnullByDefault;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
 import net.minecraft.command.CommandException;
@@ -15,13 +14,10 @@ import org.dimdev.ddutils.TeleportUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class RandomTP extends DHTCommand {
 
     public RandomTP() {

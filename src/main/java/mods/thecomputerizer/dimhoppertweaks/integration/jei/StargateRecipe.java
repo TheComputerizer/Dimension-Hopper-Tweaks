@@ -1,14 +1,13 @@
 package mods.thecomputerizer.dimhoppertweaks.integration.jei;
 
 import lombok.Getter;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.item.ItemStack;
 
 import java.util.List;
 
 import static mods.thecomputerizer.dimhoppertweaks.registry.ItemRegistry.STARGATE_ADDRESSER;
 
-@Getter @MethodsReturnNonnullByDefault
+@Getter
 public class StargateRecipe {
     
     private final int dimension;

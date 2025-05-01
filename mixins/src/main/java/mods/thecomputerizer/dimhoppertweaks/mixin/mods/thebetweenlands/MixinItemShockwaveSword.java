@@ -6,9 +6,7 @@ import org.spongepowered.asm.mixin.Overwrite;
 import thebetweenlands.common.item.tools.ItemBLSword;
 import thebetweenlands.common.item.tools.ItemShockwaveSword;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 
-@ParametersAreNonnullByDefault
 @Mixin(value = ItemShockwaveSword.class, remap = false)
 public abstract class MixinItemShockwaveSword extends ItemBLSword {
 

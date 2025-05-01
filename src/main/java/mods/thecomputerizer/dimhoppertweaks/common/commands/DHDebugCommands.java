@@ -1,6 +1,5 @@
 package mods.thecomputerizer.dimhoppertweaks.common.commands;
 
-import mcp.MethodsReturnNonnullByDefault;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.network.DHTNetwork;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketQueryGenericClient;
@@ -32,7 +31,6 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -43,15 +41,13 @@ import static net.minecraft.init.Blocks.AIR;
 import static net.minecraftforge.fml.common.registry.ForgeRegistries.BLOCKS;
 
 @SuppressWarnings("unused")
-@ParametersAreNonnullByDefault @MethodsReturnNonnullByDefault
 public class DHDebugCommands extends DHTCommand {
 
     public DHDebugCommands() {
         super("dhd");
     }
 
-    @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+    @Override public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         int option = 0;
         try {
             option = Integer.parseInt(args[0]);

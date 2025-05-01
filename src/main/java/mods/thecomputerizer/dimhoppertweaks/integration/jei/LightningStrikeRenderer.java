@@ -9,12 +9,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@ParametersAreNonnullByDefault
 public class LightningStrikeRenderer extends ProxyWorldRender {
 
     private static final Map<LightningStrikeRecipe,LightningStrikeRenderer> RENDERS = new HashMap<>();

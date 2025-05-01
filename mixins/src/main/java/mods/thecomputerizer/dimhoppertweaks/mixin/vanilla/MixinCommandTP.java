@@ -8,10 +8,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Objects;
 
-@ParametersAreNonnullByDefault
 @Mixin(CommandTP.class)
 public abstract class MixinCommandTP extends CommandBase {
 

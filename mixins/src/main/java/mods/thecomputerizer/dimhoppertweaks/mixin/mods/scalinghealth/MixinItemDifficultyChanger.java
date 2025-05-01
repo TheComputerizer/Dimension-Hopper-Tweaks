@@ -1,6 +1,5 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.mods.scalinghealth;
 
-import mcp.MethodsReturnNonnullByDefault;
 import mods.thecomputerizer.dimhoppertweaks.mixin.DelayedModAccess;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -16,7 +15,6 @@ import org.dimdev.dimdoors.DimDoors;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Objects;
 
 import static net.minecraft.util.EnumActionResult.PASS;
@@ -33,7 +31,6 @@ import static net.silentchaos512.scalinghealth.lib.EnumModParticles.CURSED_HEART
 import static net.silentchaos512.scalinghealth.lib.EnumModParticles.ENCHANTED_HEART;
 
 @Mixin(value = ItemDifficultyChanger.class, remap = false)
-@ParametersAreNonnullByDefault @MethodsReturnNonnullByDefault
 public class MixinItemDifficultyChanger extends Item {
     
     /**

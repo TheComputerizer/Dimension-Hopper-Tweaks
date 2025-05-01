@@ -15,7 +15,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -25,7 +24,6 @@ import static net.minecraft.util.text.TextFormatting.DARK_GRAY;
 import static net.minecraft.util.text.TextFormatting.ITALIC;
 import static net.silentchaos512.gems.SilentGems.i18n;
 
-@ParametersAreNonnullByDefault
 @Mixin(value = ItemEnchantmentToken.class, remap = false)
 public abstract class MixinItemEnchantmentToken extends Item {
 

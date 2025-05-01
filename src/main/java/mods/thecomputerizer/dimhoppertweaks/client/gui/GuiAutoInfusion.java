@@ -33,7 +33,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Objects;
 
 import static mcjty.lib.base.StyleConfig.colorTextInListNormal;
@@ -47,7 +46,6 @@ import static mcjty.rftools.setup.GuiProxy.GUI_MANUAL_MAIN;
 import static net.minecraft.client.renderer.OpenGlHelper.lightmapTexUnit;
 import static net.minecraft.item.ItemStack.EMPTY;
 
-@ParametersAreNonnullByDefault
 public class GuiAutoInfusion extends GenericGuiContainer<AutoInfusionTableEntity> {
     
     private EnergyBar energyBar;

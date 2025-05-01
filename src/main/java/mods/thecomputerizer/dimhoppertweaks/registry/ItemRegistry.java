@@ -6,7 +6,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -17,7 +16,6 @@ import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.MODID;
 import static mods.thecomputerizer.dimhoppertweaks.registry.RegistryHandler.DIM_HOPPER_TAB;
 
 @SuppressWarnings({"unused","SameParameterValue"})
-@ParametersAreNonnullByDefault
 public final class ItemRegistry {
 
     private static final List<Item> ALL_ITEMS = new ArrayList<>();

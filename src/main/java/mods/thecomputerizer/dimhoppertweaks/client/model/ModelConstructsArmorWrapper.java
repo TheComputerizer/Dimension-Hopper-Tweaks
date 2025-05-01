@@ -19,14 +19,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 import java.util.function.Supplier;
 
 import static net.minecraft.inventory.EntityEquipmentSlot.FEET;
 import static net.minecraft.inventory.EntityEquipmentSlot.LEGS;
 
-@ParametersAreNonnullByDefault
 public class ModelConstructsArmorWrapper extends ModelBiped {
 
     private static final Map<EntityEquipmentSlot,Map<ModelConstructsArmor,ModelConstructsArmorWrapper>> INSTANCE_MAP = new EnumMap<>(EntityEquipmentSlot.class);

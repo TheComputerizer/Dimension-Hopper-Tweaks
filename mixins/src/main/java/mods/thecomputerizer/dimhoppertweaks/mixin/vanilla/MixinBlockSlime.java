@@ -12,10 +12,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 
 @Mixin(BlockSlime.class)
-@ParametersAreNonnullByDefault
 public abstract class MixinBlockSlime extends Block {
     
     public MixinBlockSlime(Material material) {

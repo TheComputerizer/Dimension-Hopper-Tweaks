@@ -4,12 +4,10 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-@ParametersAreNonnullByDefault
 public class CommonCapability {
 
     public static <P extends ICapabilityProvider,I,C extends Capability<I>> void executeIfPresent(

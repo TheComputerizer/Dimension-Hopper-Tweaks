@@ -12,11 +12,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 import static net.minecraftforge.fml.relauncher.Side.CLIENT;
 
-@SideOnly(CLIENT) @ParametersAreNonnullByDefault
+@SideOnly(CLIENT)
 public class ParticleAscii extends Particle {
 
     private static final String POTENTIAL_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";

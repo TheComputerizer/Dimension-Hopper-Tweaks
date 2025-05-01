@@ -26,11 +26,6 @@ import static net.minecraft.entity.SharedMonsterAttributes.MAX_HEALTH;
 public abstract class MixinEntityPlayer extends EntityLivingBase {
 
     @Shadow @Final private static DataParameter<Integer> PLAYER_SCORE;
-    @Shadow public int experienceTotal;
-    @Shadow public float experience;
-    @Shadow public abstract int getScore();
-    @Shadow public abstract int xpBarCap();
-    @Shadow public abstract void addExperienceLevel(int levels);
 
     public MixinEntityPlayer(World world) {
         super(world);
@@ -47,25 +42,26 @@ public abstract class MixinEntityPlayer extends EntityLivingBase {
      */
     @Overwrite
     public void addExperience(int amount) {
-        int max = MAX_VALUE-this.experienceTotal;
+        EntityPlayer player = dimhoppertweaks$cast();
+        int max = MAX_VALUE-player.experienceTotal;
         if(amount>max) amount = max;
-        int min = -this.experienceTotal;
+        int min = -player.experienceTotal;
         if(amount<min) amount = min;
         if(amount==0) return;
         this.addScore(amount);
-        this.experience+=(float)amount/(float)this.xpBarCap();
-        this.experienceTotal+=amount;
+        player.experience+=(float)amount/(float)player.xpBarCap();
+        player.experienceTotal+=amount;
         if(amount>0) {
-            while(this.experience>=1f) {
-                this.experience = (this.experience-1f)*(float)this.xpBarCap();
-                this.addExperienceLevel(1);
-                this.experience/=(float)this.xpBarCap();
+            while(player.experience>=1f) {
+                player.experience = (player.experience-1f)*(float)player.xpBarCap();
+                player.addExperienceLevel(1);
+                player.experience/=(float)player.xpBarCap();
             }
         } else {
-            while(this.experience<0f) {
-                this.experience = (this.experience+1f)*(float)this.xpBarCap();
-                this.addExperienceLevel(-1);
-                this.experience/=(float)this.xpBarCap();
+            while(player.experience<0f) {
+                player.experience = (player.experience+1f)*(float)player.xpBarCap();
+                player.addExperienceLevel(-1);
+                player.experience/=(float)player.xpBarCap();
             }
         }
     }
@@ -76,7 +72,8 @@ public abstract class MixinEntityPlayer extends EntityLivingBase {
      */
     @Overwrite
     public void addScore(int score) {
-        this.dataManager.set(PLAYER_SCORE,MathHelper.clamp(getScore()+score,0,MAX_VALUE));
+        EntityPlayer player = dimhoppertweaks$cast();
+        this.dataManager.set(PLAYER_SCORE,MathHelper.clamp(player.getScore()+score,0,MAX_VALUE));
     }
     
     @Override public void setInWeb() {

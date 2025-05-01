@@ -10,10 +10,8 @@ import slimeknights.tconstruct.library.tools.ToolCore;
 import slimeknights.tconstruct.library.utils.ToolHelper;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 @Mixin(value = ToolCore.class, remap = false)
-@ParametersAreNonnullByDefault
 public abstract class MixinToolCore extends TinkersItem {
     
     @Override

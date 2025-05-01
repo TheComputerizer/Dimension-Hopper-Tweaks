@@ -14,7 +14,6 @@ import vazkii.botania.common.item.relic.ItemDice;
 import vazkii.botania.common.item.relic.ItemRelic;
 
 import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,7 +23,7 @@ import static net.minecraft.util.EnumActionResult.SUCCESS;
 import static net.minecraft.util.SoundCategory.PLAYERS;
 import static net.minecraft.util.text.TextFormatting.DARK_GREEN;
 
-@SuppressWarnings("SpellCheckingInspection") @ParametersAreNonnullByDefault
+@SuppressWarnings("SpellCheckingInspection")
 @Mixin(value = ItemDice.class, remap = false)
 public abstract class MixinItemDice extends ItemRelic {
 

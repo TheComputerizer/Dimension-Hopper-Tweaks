@@ -19,7 +19,6 @@ import org.spongepowered.asm.mixin.Unique;
 import twilightforest.item.ItemTFPeacockFan;
 
 import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Objects;
 import java.util.Random;
 
@@ -28,7 +27,6 @@ import static net.minecraft.init.SoundEvents.ENTITY_PLAYER_BREATH;
 import static net.minecraft.util.EnumActionResult.SUCCESS;
 import static net.minecraft.util.EnumParticleTypes.CLOUD;
 
-@ParametersAreNonnullByDefault
 @Mixin(value = ItemTFPeacockFan.class, remap = false)
 public abstract class MixinItemTFPeacockFan extends Item {
 

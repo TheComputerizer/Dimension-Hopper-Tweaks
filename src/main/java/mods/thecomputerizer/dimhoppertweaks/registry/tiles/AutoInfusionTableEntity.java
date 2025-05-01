@@ -14,7 +14,6 @@ import mcjty.rftools.craftinggrid.CraftingRecipe;
 import mcjty.rftools.craftinggrid.CraftingRecipe.CraftMode;
 import mcjty.rftools.items.storage.StorageFilterCache;
 import mcjty.rftools.items.storage.StorageFilterItem;
-import mcp.MethodsReturnNonnullByDefault;
 import mods.thecomputerizer.dimhoppertweaks.common.containers.InventoryAutoInfusion;
 import mods.thecomputerizer.dimhoppertweaks.recipes.AutoInfusionRecipe;
 import net.minecraft.entity.player.EntityPlayer;
@@ -34,7 +33,6 @@ import net.tslat.aoa3.utils.player.PlayerDataManager;
 import net.tslat.aoa3.utils.player.PlayerUtil;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -57,7 +55,6 @@ import static net.minecraft.item.ItemStack.EMPTY;
 import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 import static net.tslat.aoa3.library.Enums.Skills.INFUSION;
 
-@SuppressWarnings("NullableProblems") @ParametersAreNonnullByDefault @MethodsReturnNonnullByDefault
 public class AutoInfusionTableEntity extends GenericEnergyReceiverTileEntity
         implements ITickable, DefaultSidedInventory, JEIRecipeAcceptor {
     
@@ -119,7 +116,6 @@ public class AutoInfusionTableEntity extends GenericEnergyReceiverTileEntity
         return craftedAtLeastOneThing;
     }
     
-    @SuppressWarnings("ConstantValue")
     private boolean craftOneItemNew(CraftingRecipe craftingRecipe) {
         IRecipe recipe = craftingRecipe.getCachedRecipe(this.getWorld());
         if(Objects.isNull(recipe)) return false;

@@ -7,10 +7,8 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 @SuppressWarnings("ConstantConditions")
-@ParametersAreNonnullByDefault
 public class SkillCapabilityProvider implements ICapabilitySerializable<NBTBase> {
 
 

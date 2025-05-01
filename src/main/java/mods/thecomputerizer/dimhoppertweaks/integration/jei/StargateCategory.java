@@ -1,6 +1,5 @@
 package mods.thecomputerizer.dimhoppertweaks.integration.jei;
 
-import mcp.MethodsReturnNonnullByDefault;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IDrawableStatic;
@@ -13,11 +12,8 @@ import mods.thecomputerizer.dimhoppertweaks.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
-@MethodsReturnNonnullByDefault
-@ParametersAreNonnullByDefault
 public class StargateCategory implements IRecipeCategory<StargatePreviewWrapper>, ITooltipCallback<ItemStack> {
 
     private final IDrawableStatic background;

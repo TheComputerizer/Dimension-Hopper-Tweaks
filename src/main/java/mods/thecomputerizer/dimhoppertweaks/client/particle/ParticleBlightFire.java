@@ -13,7 +13,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.silentchaos512.lib.event.ClientTicks;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import javax.vecmath.Point4f;
 import java.util.Objects;
 
@@ -22,7 +21,6 @@ import static mods.thecomputerizer.dimhoppertweaks.client.render.BetterBlightFir
 import static net.minecraftforge.fml.relauncher.Side.CLIENT;
 import static net.silentchaos512.scalinghealth.lib.module.ModuleAprilTricks.instance;
 
-@ParametersAreNonnullByDefault
 @SideOnly(CLIENT)
 public class ParticleBlightFire extends Particle {
 

@@ -9,10 +9,8 @@ import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 @Mixin(value = ItemDrill.class, remap = false)
-@ParametersAreNonnullByDefault
 public abstract class MixinItemDrill extends ItemEnergy {
     
     public MixinItemDrill(int maxPower, int transfer, String name) {

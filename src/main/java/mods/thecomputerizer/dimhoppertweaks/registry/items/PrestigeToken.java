@@ -1,6 +1,5 @@
 package mods.thecomputerizer.dimhoppertweaks.registry.items;
 
-import mcp.MethodsReturnNonnullByDefault;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,12 +11,9 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Objects;
 
 @SuppressWarnings("deprecation")
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class PrestigeToken extends EpicItem {
 
     @Override

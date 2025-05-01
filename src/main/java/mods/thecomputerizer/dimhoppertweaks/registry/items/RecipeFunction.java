@@ -19,7 +19,6 @@ import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -32,7 +31,6 @@ import static net.minecraftforge.fml.common.registry.ForgeRegistries.ENCHANTMENT
 import static net.minecraftforge.fml.relauncher.Side.CLIENT;
 
 @SuppressWarnings("DataFlowIssue")
-@ParametersAreNonnullByDefault
 public class RecipeFunction extends EpicItem {
 
     @SideOnly(CLIENT)

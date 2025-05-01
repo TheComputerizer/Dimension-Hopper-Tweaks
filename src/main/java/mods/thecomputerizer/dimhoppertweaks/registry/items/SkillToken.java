@@ -1,6 +1,5 @@
 package mods.thecomputerizer.dimhoppertweaks.registry.items;
 
-import mcp.MethodsReturnNonnullByDefault;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
@@ -21,7 +20,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 
 import static mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper.SKILLS;
@@ -29,8 +27,6 @@ import static mods.thecomputerizer.dimhoppertweaks.util.TextUtil.*;
 import static net.minecraft.util.EnumActionResult.SUCCESS;
 import static net.minecraftforge.fml.relauncher.Side.CLIENT;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class SkillToken extends EpicItem {
 
     public void updateSkills(ItemStack stack, Set<Map.Entry<String,SkillWrapper>> skillSet, String selectedSkill, int drainLevels) {

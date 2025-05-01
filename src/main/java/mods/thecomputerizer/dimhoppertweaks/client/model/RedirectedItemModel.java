@@ -1,7 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.client.model;
 
 import com.google.common.collect.ImmutableMap;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelBlock;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -11,12 +10,10 @@ import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.animation.IClip;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Function;
 
-@MethodsReturnNonnullByDefault @ParametersAreNonnullByDefault
 public class RedirectedItemModel implements IModel {
     
     @Override

@@ -12,7 +12,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DimensionType;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 
 import static net.minecraft.client.renderer.GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA;
 import static net.minecraft.client.renderer.GlStateManager.SourceFactor.SRC_ALPHA;
@@ -22,7 +21,6 @@ import static net.minecraft.client.renderer.texture.TextureMap.LOCATION_BLOCKS_T
 import static org.dave.compactmachines3.misc.RenderTickCounter.renderTicks;
 
 @SuppressWarnings("deprecation")
-@ParametersAreNonnullByDefault
 public class StargatePreviewWrapper implements IRecipeWrapper {
 
     private static final BlockPos MIN = new BlockPos(-3,0,-3);
@@ -33,14 +31,12 @@ public class StargatePreviewWrapper implements IRecipeWrapper {
         this.recipe = recipe;
     }
 
-    @Override
-    public void getIngredients(IIngredients ingr) {
+    @Override public void getIngredients(IIngredients ingr) {
         ingr.setInputs(ItemStack.class,this.recipe.getInputs());
         ingr.setOutput(ItemStack.class,this.recipe.getOutput());
     }
     
-    @Override
-    public void drawInfo(Minecraft mc, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
+    @Override public void drawInfo(Minecraft mc, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
         AncientStargateRenderer renderer = AncientStargateRenderer.fromRecipe(this.recipe);
         GlStateManager.pushMatrix();
         GlStateManager.translate(0f, 0f, 216.5f);

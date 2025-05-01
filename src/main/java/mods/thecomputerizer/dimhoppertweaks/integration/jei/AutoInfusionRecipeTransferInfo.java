@@ -1,15 +1,12 @@
 package mods.thecomputerizer.dimhoppertweaks.integration.jei;
 
-import mcp.MethodsReturnNonnullByDefault;
 import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
 import mods.thecomputerizer.dimhoppertweaks.common.containers.AutoInfusionContainer;
 import net.minecraft.inventory.Slot;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 
-@ParametersAreNonnullByDefault @MethodsReturnNonnullByDefault
 public class AutoInfusionRecipeTransferInfo implements IRecipeTransferInfo<AutoInfusionContainer> {
     
     @Override public Class<AutoInfusionContainer> getContainerClass() {

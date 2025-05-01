@@ -9,7 +9,6 @@ import net.minecraft.world.gen.feature.WorldGenerator;
 import net.minecraftforge.registries.GameData;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Objects;
 import java.util.Random;
 
@@ -17,7 +16,6 @@ import java.util.Random;
  * Does not extend IForgeRegistryEntry$Impl since this already extends WorldGenerator
  */
 @SuppressWarnings({"unchecked", "UnstableApiUsage", "unused"})
-@ParametersAreNonnullByDefault
 public abstract class AbstractStructure extends WorldGenerator implements IForgeRegistryEntry<AbstractStructure>  {
 
     private final TypeToken<AbstractStructure> token = new TypeToken<AbstractStructure>(getClass()){};

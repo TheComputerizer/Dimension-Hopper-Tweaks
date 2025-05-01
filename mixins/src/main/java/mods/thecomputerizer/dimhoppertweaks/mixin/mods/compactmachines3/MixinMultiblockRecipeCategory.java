@@ -15,9 +15,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 
-@ParametersAreNonnullByDefault
 @Mixin(value = MultiblockRecipeCategory.class,remap = false)
 public abstract class MixinMultiblockRecipeCategory<W extends IRecipeWrapper> implements IRecipeCategory<W>, ITooltipCallback<ItemStack> {
 

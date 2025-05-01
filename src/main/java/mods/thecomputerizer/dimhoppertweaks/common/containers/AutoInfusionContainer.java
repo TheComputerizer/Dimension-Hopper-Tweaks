@@ -12,11 +12,9 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 
 import static mcjty.lib.container.SlotType.SLOT_INPUT;
 
-@ParametersAreNonnullByDefault
 public class AutoInfusionContainer extends GenericContainer {
     
     public static final ContainerFactory FACTORY = new ContainerFactory(DHTRef.res("gui/auto_infusion.gui"));

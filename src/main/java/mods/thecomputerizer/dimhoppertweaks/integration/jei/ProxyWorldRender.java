@@ -1,7 +1,6 @@
 package mods.thecomputerizer.dimhoppertweaks.integration.jei;
 
 import gcewing.sg.block.SGBlock;
-import mcp.MethodsReturnNonnullByDefault;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -25,7 +24,6 @@ import net.minecraftforge.client.ForgeHooksClient;
 import org.dave.compactmachines3.world.ProxyWorld;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 
 import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.LOGGER;
@@ -38,8 +36,6 @@ import static net.minecraft.util.BlockRenderLayer.*;
 import static net.minecraft.world.WorldType.FLAT;
 import static net.minecraftforge.fml.common.registry.ForgeRegistries.ITEMS;
 
-@MethodsReturnNonnullByDefault
-@ParametersAreNonnullByDefault
 @SuppressWarnings("deprecation")
 public abstract class ProxyWorldRender {
 

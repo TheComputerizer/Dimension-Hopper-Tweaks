@@ -11,12 +11,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 
 import static net.minecraft.init.Items.GOLD_INGOT;
 import static net.minecraft.init.Items.IRON_INGOT;
 
-@ParametersAreNonnullByDefault
 @Mixin(value = ItemTreasureChest.class, remap = false)
 public abstract class MixinItemTreasureChest {
 

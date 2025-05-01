@@ -2,14 +2,12 @@ package mods.thecomputerizer.dimhoppertweaks.integration.jei;
 
 import gcewing.sg.block.SGBaseBlock;
 import gcewing.sg.tileentity.SGBaseTE;
-import mcp.MethodsReturnNonnullByDefault;
 import mods.thecomputerizer.dimhoppertweaks.mixin.api.ISGBaseTE;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 
 import java.util.List;
 
@@ -21,7 +19,6 @@ import static net.minecraft.util.EnumFacing.NORTH;
 import static net.minecraft.util.math.BlockPos.ORIGIN;
 
 @SuppressWarnings("unchecked")
-@MethodsReturnNonnullByDefault @ParametersAreNonnullByDefault
 public class AncientStargateRenderer extends ProxyWorldRender {
     
     public static AncientStargateRenderer fromRecipe(StargateRecipe recipe) {

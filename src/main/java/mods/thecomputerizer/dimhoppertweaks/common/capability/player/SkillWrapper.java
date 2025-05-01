@@ -34,7 +34,6 @@ import net.silentchaos512.scalinghealth.utils.SHPlayerDataHandler;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -46,7 +45,6 @@ import static mods.thecomputerizer.dimhoppertweaks.registry.ItemRegistry.SKILL_T
 import static mods.thecomputerizer.dimhoppertweaks.registry.TraitRegistry.*;
 
 @SuppressWarnings("ConstantValue")
-@ParametersAreNonnullByDefault
 public class SkillWrapper {
 
     public static final ResourceLocation SKILL_CAPABILITY = DHTRef.res("skills");

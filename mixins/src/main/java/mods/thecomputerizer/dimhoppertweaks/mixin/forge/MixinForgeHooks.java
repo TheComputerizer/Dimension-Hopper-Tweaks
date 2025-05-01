@@ -30,7 +30,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import stevekung.mods.moreplanets.planets.nibiru.items.ItemInfectedSugarCane;
 import stevekung.mods.moreplanets.utils.blocks.BlockFarmlandMP;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Objects;
 
@@ -39,7 +38,6 @@ import static net.minecraft.util.EnumActionResult.FAIL;
 import static net.minecraft.util.EnumActionResult.SUCCESS;
 
 @SuppressWarnings({"deprecation", "DataFlowIssue"})
-@ParametersAreNonnullByDefault
 @Mixin(value = ForgeHooks.class, remap = false)
 public abstract class MixinForgeHooks {
 

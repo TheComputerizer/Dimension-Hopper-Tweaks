@@ -11,12 +11,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Objects;
 
 import static net.minecraft.item.ItemStack.EMPTY;
 
-@ParametersAreNonnullByDefault
 public class AutoInfusionRecipe extends CraftingRecipe {
     
     private IRecipe recipe;

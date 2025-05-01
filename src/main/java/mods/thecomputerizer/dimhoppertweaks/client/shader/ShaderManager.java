@@ -11,7 +11,6 @@ import net.minecraftforge.client.resource.ISelectiveResourceReloadListener;
 import org.apache.commons.io.IOUtils;
 import org.lwjgl.BufferUtils;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.ByteBuffer;
@@ -23,7 +22,6 @@ import java.util.function.Predicate;
 
 import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.LOGGER;
 
-@ParametersAreNonnullByDefault
 public class ShaderManager implements ISelectiveResourceReloadListener {
 
     private static ShaderManager INSTANCE;

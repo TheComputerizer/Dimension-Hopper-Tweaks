@@ -15,14 +15,12 @@ import mods.thecomputerizer.dimhoppertweaks.mixin.api.IModRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-@ParametersAreNonnullByDefault
 @JEIPlugin
 public class JeiActionSupplier implements IModPlugin {
 

@@ -2,7 +2,6 @@ package mods.thecomputerizer.dimhoppertweaks.integration.jei;
 
 import mcjty.lib.varia.ItemStackList;
 import mcjty.rftools.compat.jei.PacketSendRecipe;
-import mcp.MethodsReturnNonnullByDefault;
 import mezz.jei.api.gui.IGuiIngredient;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
@@ -15,14 +14,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import static mcjty.rftools.network.RFToolsMessages.INSTANCE;
 
-@ParametersAreNonnullByDefault @MethodsReturnNonnullByDefault
 public class AutoInfusionRecipeTransferHandle implements IRecipeTransferHandler<AutoInfusionContainer> {
     
     public static void register(IRecipeTransferRegistry registry, String id) {

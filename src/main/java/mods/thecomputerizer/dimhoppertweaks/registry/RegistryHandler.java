@@ -28,7 +28,6 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.tslat.aoa3.item.misc.Realmstone;
-
 import javax.annotation.Nonnull;
 
 import static biomesoplenty.api.item.BOPItems.blue_dye;
@@ -100,7 +99,6 @@ public final class RegistryHandler {
         LOGGER.info("Registered {} lightning strike recipe(s)",LightningStrikeRecipe.getRecipes().size());
     }
     
-    @SuppressWarnings("DataFlowIssue")
     private static void addFunnySolarPanelRecipe(int solarTier, String crystalName) {
         ResourceLocation solarRes = new ResourceLocation("solarflux","solar_panel_"+solarTier);
         ResourceLocation crystalRes = new ResourceLocation("environmentaltech",crystalName+"_tiles");

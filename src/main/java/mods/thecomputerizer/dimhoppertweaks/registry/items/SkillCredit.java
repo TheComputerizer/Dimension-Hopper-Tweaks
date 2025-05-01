@@ -1,6 +1,5 @@
 package mods.thecomputerizer.dimhoppertweaks.registry.items;
 
-import mcp.MethodsReturnNonnullByDefault;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.util.ItemUtil;
@@ -19,7 +18,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,7 +26,6 @@ import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.MODID;
 import static mods.thecomputerizer.theimpossiblelibrary.api.text.TextHelper.TextCasing.PASCAL;
 import static net.minecraft.util.EnumActionResult.SUCCESS;
 
-@MethodsReturnNonnullByDefault @ParametersAreNonnullByDefault
 public class SkillCredit extends EpicItem {
 
     @Override public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer p, EnumHand hand) {
