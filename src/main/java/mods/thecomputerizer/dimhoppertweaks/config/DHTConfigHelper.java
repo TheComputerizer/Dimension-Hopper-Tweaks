@@ -103,10 +103,6 @@ public class DHTConfigHelper {
         return SKILLS.auraGains;
     }
 
-    public static int getLastStandCooldown(int level) {
-        return Math.max(2,6-MODS.lastStandCooldown);
-    }
-    
     public static double getLightningEfficiency(int meta) {
         switch(meta) {
             case 0: return MODS.lightningEfficiencyIron;
