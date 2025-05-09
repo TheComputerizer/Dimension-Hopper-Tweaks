@@ -25,6 +25,8 @@
     "MixinItemStack",
     "MixinItemSword",
     "MixinNetHandlerPlayServer",
+    "MixinShapedRecipes",
+    "MixinShapelessRecipes",
     "MixinSize",
     "MixinSPacketEntityEffect",
     "MixinStatisticManager",

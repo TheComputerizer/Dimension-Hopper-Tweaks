@@ -9,6 +9,7 @@ import mods.thecomputerizer.dimhoppertweaks.common.capability.chunk.ExtraChunkDa
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillCapabilityProvider;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
+import mods.thecomputerizer.dimhoppertweaks.mixin.DelayedModAccess;
 import mods.thecomputerizer.dimhoppertweaks.mixin.mod_access.ItemBioticSensorAccess;
 import mods.thecomputerizer.dimhoppertweaks.network.DHTNetwork;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketQueryGenericClient;
@@ -115,6 +116,7 @@ public class GameEvents {
     @SubscribeEvent(priority=LOWEST)
     public static void playerJoin(PlayerLoggedInEvent event) {
         if(event.isCanceled()) return;
+        DelayedModAccess.onWorldJoined();
         if(event.player instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP)event.player;
             checkDimStage(player,false,false,"bridgeone",7,20,684);

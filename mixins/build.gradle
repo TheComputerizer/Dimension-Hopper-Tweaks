@@ -25,7 +25,7 @@ minecraft {
     accessTransformer = rootProject.file "src/main/resources/META-INF/$mod_accesstransformer"
     runs {
         def args = [ '-Dmixin.debug.export=true', '-Dmixin.hotSwap=true', '-Dmixin.checks.interfaces=true' ]
-        all {
+        configureEach {
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'trace'
             jvmArgs args
@@ -183,6 +183,7 @@ dependencies {
     implementation fg.deobf("curse.maven:sgcraft-289115:$sgcraft_version")
     implementation fg.deobf("curse.maven:silentgems-220311:$sgems_version")
     implementation fg.deobf("curse.maven:silentlib-242998:$slib_version")
+    implementation fg.deobf("curse.maven:spaceambient-363559:$spaceambient_version")
     implementation fg.deobf("curse.maven:ss-904946:$ss_version")
     implementation fg.deobf("curse.maven:tcon-74072:$tconstruct_version")
     implementation fg.deobf("curse.maven:tconarmor-287683:$conarm_version")

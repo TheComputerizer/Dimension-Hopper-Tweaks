@@ -18,22 +18,26 @@ import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrappe
 import mods.thecomputerizer.dimhoppertweaks.common.events.TickEvents;
 import mods.thecomputerizer.dimhoppertweaks.config.DHTConfigHelper;
 import mods.thecomputerizer.dimhoppertweaks.mixin.api.IInventoryCrafting;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.ITileEntity;
 import mods.thecomputerizer.dimhoppertweaks.network.DHTNetwork;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketSendKeyPressed;
 import net.darkhax.gamestages.GameStageHelper;
 import net.darkhax.gamestages.data.IStageData;
 import net.darkhax.huntingdim.item.ItemBiomeChanger;
+import net.darkhax.itemstages.ItemStages;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemEnchantedBook;
 import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
@@ -111,6 +115,7 @@ public class DelayedModAccess {
     public static final AtomicInteger YEET_COUNT = new AtomicInteger(0);
     private static boolean FOUND_BREAKER_CLASSES = false;
     private static boolean FOUND_PLACER_CLASSES = false;
+    public static final Map<Ingredient,Set<String>> INGREDIENT_STAGES = new HashMap<>();
 
     public static void callInaccessibleMethod(Class<?> clazz, String methodName) {
         try {
@@ -121,6 +126,16 @@ public class DelayedModAccess {
             LOGGER.error("Failed to invoke inaccessible method `{}` from class `{}`",methodName,
                     clazz.getName(),ex);
         }
+    }
+    
+    /**
+     * Check stages of input items to ensure they can be used in crafting
+     */
+    public static boolean canCraft(InventoryCrafting inventory) {
+        Collection<String> stages = getCraftingStages(inventory);
+        for(ItemStack stack : inventory.eventHandler.inventoryItemStacks)
+            if(!hasStageForItem(stages,stack)) return false;
+        return true;
     }
     
     public static boolean canTravelToDimension(Entity entity, int dimension) {
@@ -293,6 +308,14 @@ public class DelayedModAccess {
         }
         return Collections.unmodifiableSet(BLOCK_BREAKER_CLASSES);
     }
+    
+    public static ItemStack getCraftingResult(InventoryCrafting inventory, ItemStack result) {
+        return result!=EMPTY && canCraft(inventory) ? result : EMPTY;
+    }
+    
+    public static Collection<String> getCraftingStages(InventoryCrafting inventory) {
+        return ((IInventoryCrafting)inventory).dimhoppertweaks$getStages();
+    }
 
     public static Block getCrateBlock() {
         return blockGiantChest;
@@ -362,6 +385,11 @@ public class DelayedModAccess {
     public static String getStageForDimension(int dimension) {
         return DIMENSION_MAP.get(dimension);
     }
+    
+    public static Collection<String> getTileStages(World world, BlockPos pos) {
+        TileEntity tile = world.getTileEntity(pos);
+        return Objects.nonNull(tile) ? ((ITileEntity)tile).dimhoppertweaks$getStages() : Collections.emptyList();
+    }
 
     private static NBTTagCompound getTinkerToolTag(Item item, int meta, List<PartMaterialType> components) {
         return replaceYeetedTag(item,meta,tag -> {
@@ -393,6 +421,42 @@ public class DelayedModAccess {
         if(!(entity instanceof EntityPlayer)) return true;
         String stage = getStageForDimension(dimension);
         return StringUtils.isEmpty(stage) || hasGameStage(entity,stage);
+    }
+    
+    /**
+     * This is unfortunately a pretty slow check, but hopefully the cache will offset that a bit
+     */
+    public static boolean hasStageForIngredient(Collection<String> stages, Ingredient ingredient) {
+        if(INGREDIENT_STAGES.containsKey(ingredient)) return hasStageForIngredientCache(stages,ingredient);
+        Set<String> anyStages = new HashSet<>();
+        LOGGER.info("Caching stages for ingredient {}",ingredient);
+        for(ItemStack stack : ingredient.getMatchingStacks()) {
+            String stage = ItemStages.getStage(stack);
+            LOGGER.info("Matching stack {} has stage {}",stack,stage);
+            if(Objects.nonNull(stage)) anyStages.add(stage);
+        }
+        anyStages = anyStages.isEmpty() ? Collections.emptySet() : Collections.unmodifiableSet(anyStages);
+        INGREDIENT_STAGES.put(ingredient,anyStages);
+        LOGGER.info("Cached stages for ingredient {} as {}",ingredient,anyStages);
+        return hasStageForIngredientCache(stages,ingredient);
+    }
+    
+    /**
+     * Assumes the cache as already been checked & calculated if necessary
+     */
+    private static boolean hasStageForIngredientCache(Collection<String> stages, Ingredient ingredient) {
+        Set<String> anyStages = INGREDIENT_STAGES.get(ingredient);
+        if(anyStages.isEmpty()) return true;
+        for(String stage : anyStages)
+            if(stages.contains(stage)) return true;
+        return false;
+    }
+    
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public static boolean hasStageForItem(Collection<String> stages, ItemStack stack) {
+        if(stack==EMPTY) return true;
+        String stage = ItemStages.getStage(stack);
+        return Objects.isNull(stage) || stages.contains(stage);
     }
 
     public static double incrementDifficultyWithStageFactor(EntityPlayer player, double original) {
@@ -442,6 +506,10 @@ public class DelayedModAccess {
     public static ITeleporter makeGaiaTeleporter(int dim) {
         WorldServer world = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(dim);
         return new TeleporterGaia(world,getGDPortalBlock(),getGDKeystoneBlock().getDefaultState());
+    }
+    
+    public static void onWorldJoined() {
+        INGREDIENT_STAGES.clear();
     }
 
     public static void replaceAfterStructureGeneration(Chunk chunk) {

@@ -116,6 +116,7 @@
     "lockyzextradimensionsmod.Mixinmcreator_cloudOre",
     "lockyzextradimensionsmod.Mixinmcreator_flintOre",
     "lockyzextradimensionsmod.Mixinmcreator_interDimensionalOre",
+    "mekanism.MixinMinerUtils",
     "mekanism.MixinNeighborListener",
     "mekanism.MixinSize",
     "mekanism.MixinTileComponentSecurity",

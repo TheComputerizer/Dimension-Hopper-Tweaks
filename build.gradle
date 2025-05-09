@@ -13,7 +13,7 @@ minecraft {
     accessTransformer = file "src/main/resources/META-INF/$mod_accesstransformer"
     runs {
         def args = [ '-Dmixin.debug.export=true', '-Dmixin.hotSwap=true', '-Dmixin.checks.interfaces=true' ]
-        all {
+        configureEach {
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'trace'
             jvmArgs args

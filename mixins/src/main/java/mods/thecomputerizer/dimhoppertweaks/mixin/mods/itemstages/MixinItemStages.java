@@ -13,7 +13,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -66,8 +66,8 @@ public abstract class MixinItemStages {
      */
     @SubscribeEvent
     @Overwrite
-    public void onPlayerDig(PlayerEvent.BreakSpeed event) {
-        if (!allowInteractRestricted && !event.getEntityPlayer().isCreative()) {
+    public void onPlayerDig(BreakSpeed event) {
+        if(!allowInteractRestricted && !event.getEntityPlayer().isCreative()) {
             EntityPlayer player = event.getEntityPlayer();
             ItemStack heldItem = player.getHeldItemMainhand();
             String stage = getStage(heldItem);
