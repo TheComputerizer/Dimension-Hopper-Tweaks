@@ -22,6 +22,8 @@ import mods.thecomputerizer.dimhoppertweaks.mixin.api.ITileEntity;
 import mods.thecomputerizer.dimhoppertweaks.network.DHTNetwork;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketSendKeyPressed;
 import net.darkhax.gamestages.GameStageHelper;
+import net.darkhax.gamestages.data.FakePlayerData;
+import net.darkhax.gamestages.data.GameStageSaveHandler;
 import net.darkhax.gamestages.data.IStageData;
 import net.darkhax.huntingdim.item.ItemBiomeChanger;
 import net.darkhax.itemstages.ItemStages;
@@ -48,6 +50,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -463,6 +466,22 @@ public class DelayedModAccess {
         return original*getDifficultyMultiplier(player);
     }
     
+    public static void inheritTileStages(FakePlayer player) {
+        inheritTileStages(player,player.getEntityWorld(),player.getPosition());
+    }
+    
+    public static void inheritTileStages(FakePlayer player, World world) {
+        inheritTileStages(player,world,player.getPosition());
+    }
+    
+    public static void inheritTileStages(FakePlayer player, World world, BlockPos pos) {
+        TileEntity tile = world.getTileEntity(pos);
+        if(Objects.nonNull(tile)) {
+            Collection<String> stages = ((ITileEntity)tile).dimhoppertweaks$getStages();
+            if(!stages.isEmpty()) setGameStages(player,stages);
+        }
+    }
+    
     public static boolean isBedrockMaterial(ToolMaterial material) {
         return material==toolMaterial;
     }
@@ -590,11 +609,21 @@ public class DelayedModAccess {
     }
 
     public static void setGameStages(EntityPlayer player, Collection<String> stages) {
-        for(String stage : stages) setGameStage(player,stage);
+        if(player instanceof FakePlayer) setGameStages((FakePlayer)player,stages);
+        else for(String stage : stages) setGameStage(player,stage);
+    }
+    
+    private static void setGameStages(FakePlayer player, Collection<String> stages) {
+        String name = player.getName();
+        if(GameStageSaveHandler.hasFakePlayer(name)) {
+            IStageData data = GameStageSaveHandler.getFakeData(name);
+            for(String stage : stages) data.addStage(stage);
+        } else GameStageSaveHandler.addFakePlayer(new FakePlayerData(name,new HashSet<>(stages)));
     }
 
     public static void setGameStage(EntityPlayer player, String stage) {
-        if(Objects.nonNull(player)) GameStageHelper.addStage(player,stage);
+        if(player instanceof FakePlayer) setGameStages((FakePlayer)player,Collections.singletonList(stage));
+        else if(Objects.nonNull(player)) GameStageHelper.addStage(player,stage);
     }
 
     @SideOnly(CLIENT)
