@@ -17,6 +17,7 @@ import mods.thecomputerizer.dimhoppertweaks.common.capability.chunk.ExtraChunkDa
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.common.events.TickEvents;
 import mods.thecomputerizer.dimhoppertweaks.config.DHTConfigHelper;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.IContainer;
 import mods.thecomputerizer.dimhoppertweaks.mixin.api.IInventoryCrafting;
 import mods.thecomputerizer.dimhoppertweaks.mixin.api.ITileEntity;
 import mods.thecomputerizer.dimhoppertweaks.network.DHTNetwork;
@@ -33,7 +34,10 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemEnchantedBook;
@@ -131,14 +135,27 @@ public class DelayedModAccess {
         }
     }
     
+    public static boolean canCraft(Container container) {
+        return canCraft(container,false);
+    }
+    
     /**
      * Check stages of input items to ensure they can be used in crafting
      */
-    public static boolean canCraft(InventoryCrafting inventory) {
-        Collection<String> stages = getCraftingStages(inventory);
-        for(ItemStack stack : inventory.eventHandler.inventoryItemStacks)
-            if(!hasStageForItem(stages,stack)) return false;
+    public static boolean canCraft(Container container, boolean debug) {
+        Collection<String> stages = getCraftingStages(container);
+        if(debug) LOGGER.info("Checking container stages {}",stages);
+        for(Slot slot : container.inventorySlots)
+            if(slot instanceof SlotCrafting && !hasStageForItem(stages,slot.getStack(),debug)) return false;
         return true;
+    }
+    
+    public static boolean canCraft(InventoryCrafting inventory) {
+        return canCraft(inventory.eventHandler);
+    }
+    
+    public static boolean canCraft(InventoryCrafting inventory, boolean debug) {
+        return canCraft(inventory.eventHandler,debug);
     }
     
     public static boolean canTravelToDimension(Entity entity, int dimension) {
@@ -313,11 +330,23 @@ public class DelayedModAccess {
     }
     
     public static ItemStack getCraftingResult(InventoryCrafting inventory, ItemStack result) {
-        return result!=EMPTY && canCraft(inventory) ? result : EMPTY;
+        return getCraftingResult(inventory,result,false);
+    }
+    
+    public static ItemStack getCraftingResult(InventoryCrafting inventory, ItemStack result, boolean debug) {
+        ItemStack ret = result!=EMPTY && canCraft(inventory,debug) ? result : EMPTY;
+        if(debug) LOGGER.info("Returning = {} | Original = {}",ret,result);
+        return ret;
+    }
+    
+    public static Collection<String> getCraftingStages(Container container) {
+        return Objects.nonNull(container) ? ((IContainer)container).dimhoppertweaks$getStages() :
+                Collections.emptyList();
     }
     
     public static Collection<String> getCraftingStages(InventoryCrafting inventory) {
-        return ((IInventoryCrafting)inventory).dimhoppertweaks$getStages();
+        return Objects.nonNull(inventory) ? ((IInventoryCrafting)inventory).dimhoppertweaks$getStages() :
+                Collections.emptyList();
     }
 
     public static Block getCrateBlock() {
@@ -455,15 +484,66 @@ public class DelayedModAccess {
         return false;
     }
     
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean hasStageForItem(Collection<String> stages, ItemStack stack) {
+        return hasStageForItem(stages,stack,false);
+    }
+    
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public static boolean hasStageForItem(Collection<String> stages, ItemStack stack, boolean debug) {
         if(stack==EMPTY) return true;
         String stage = ItemStages.getStage(stack);
-        return Objects.isNull(stage) || stages.contains(stage);
+        if(debug) LOGGER.info("ItemStack {} has stage {}",stack,stage);
+        boolean ret = Objects.isNull(stage) || stages.contains(stage);
+        if(debug) LOGGER.info("Returning {}",ret);
+        return ret;
     }
 
     public static double incrementDifficultyWithStageFactor(EntityPlayer player, double original) {
         return original*getDifficultyMultiplier(player);
+    }
+    
+    public static void inheritContainerStages(EntityPlayer player) {
+        inheritContainerStages(player,player.openContainer);
+    }
+    
+    public static void inheritContainerStages(EntityPlayer player, Container container) {
+        inheritContainerStages(player,container,true);
+    }
+    
+    public static void inheritContainerStages(EntityPlayer player, Container container, boolean clear) {
+        if(Objects.isNull(container)) return;
+        Collection<String> stages = getGameStages(player);
+        if(!stages.isEmpty()) ((IContainer)container).dimhoppertweaks$setStages(stages,clear);
+    }
+    
+    public static void inheritInventoryStages(EntityPlayer player, InventoryCrafting inventory) {
+        inheritInventoryStages(player,inventory,true);
+    }
+    
+    public static void inheritInventoryStages(EntityPlayer player, InventoryCrafting inventory, boolean clear) {
+        if(Objects.isNull(inventory)) return;
+        Collection<String> stages = getGameStages(player);
+        if(!stages.isEmpty()) ((IInventoryCrafting)inventory).dimhoppertweaks$setStages(stages,clear);
+    }
+    
+    public static void inheritInventoryStages(World world, BlockPos pos, InventoryCrafting inventory) {
+        inheritInventoryStages(world,pos,inventory,true);
+    }
+    
+    public static void inheritInventoryStages(World world, BlockPos pos, InventoryCrafting inventory, boolean clear) {
+        if(Objects.nonNull(world) && Objects.nonNull(pos))
+            inheritInventoryStages(world.getTileEntity(pos),inventory,true);
+    }
+    
+    public static void inheritInventoryStages(@Nullable TileEntity tile, InventoryCrafting inventory) {
+        inheritInventoryStages(tile,inventory,true);
+    }
+    
+    public static void inheritInventoryStages(@Nullable TileEntity tile, InventoryCrafting inventory, boolean clear) {
+        if(Objects.nonNull(tile) && Objects.nonNull(inventory)) {
+            Collection<String> stages = ((ITileEntity)tile).dimhoppertweaks$getStages();
+            if(!stages.isEmpty()) ((IInventoryCrafting)inventory).dimhoppertweaks$setStages(stages,clear);
+        }
     }
     
     public static void inheritTileStages(FakePlayer player) {

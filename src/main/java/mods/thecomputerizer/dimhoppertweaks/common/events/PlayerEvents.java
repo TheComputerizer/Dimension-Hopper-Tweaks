@@ -8,17 +8,20 @@ import gcewing.sg.block.SGBlock;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
+import mods.thecomputerizer.dimhoppertweaks.mixin.DelayedModAccess;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
 import mods.thecomputerizer.dimhoppertweaks.util.WorldUtil;
 import net.darkhax.gamestages.GameStageHelper;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemPotion;
 import net.minecraftforge.event.entity.living.LootingLevelEvent;
 import net.minecraftforge.event.entity.player.AdvancementEvent;
+import net.minecraftforge.event.entity.player.PlayerContainerEvent.Open;
 import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
 import net.minecraftforge.event.entity.player.PlayerEvent.Clone;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -34,6 +37,7 @@ import thebetweenlands.common.item.herblore.ItemElixir;
 import java.util.Objects;
 
 import static mods.thecomputerizer.dimhoppertweaks.client.render.ClientEffects.MINING_SPEED;
+import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.LOGGER;
 import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.MODID;
 import static mods.thecomputerizer.dimhoppertweaks.registry.TraitRegistry.NATURES_AURA;
 import static net.minecraftforge.fml.common.eventhandler.EventPriority.LOWEST;
@@ -55,6 +59,23 @@ public class PlayerEvents {
                 }
             } else speedFactor = MINING_SPEED;
             event.setNewSpeed(event.getNewSpeed()*speedFactor);
+        }
+    }
+    
+    @SubscribeEvent(priority = LOWEST)
+    public static void onContainerOpened(Open event) {
+        if(!event.isCanceled()) {
+            LOGGER.info("Container opened");
+            EntityPlayer player = event.getEntityPlayer();
+            Container container = event.getContainer();
+            if(Objects.nonNull(container) && Objects.nonNull(player)) {
+                LOGGER.info("Valid container opened {} for player {}",container.getClass(),player.getName());
+                LOGGER.info("(PRE) Player stages {} | Container stages {}",
+                            DelayedModAccess.getGameStages(player),DelayedModAccess.getCraftingStages(container));
+                DelayedModAccess.inheritContainerStages(player,container);
+                LOGGER.info("(POST) Player stages {} | Container stages {}",
+                            DelayedModAccess.getGameStages(player),DelayedModAccess.getCraftingStages(container));
+            }
         }
     }
 

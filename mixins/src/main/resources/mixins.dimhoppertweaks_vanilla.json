@@ -12,6 +12,7 @@
     "MixinChunkProviderServer",
     "MixinCombatRules",
     "MixinCommandTP",
+    "MixinContainer",
     "MixinEnchantmentHelper",
     "MixinEntity",
     "MixinEntityItem",
@@ -39,6 +40,7 @@
   "client": [
     "MixinItemRenderer",
     "MixinLayerHeldBlock",
+    "MixinNetHandlerPlayClient",
     "MixinParticle",
     "MixinRenderManager"
   ]

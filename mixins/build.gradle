@@ -159,6 +159,7 @@ dependencies {
     implementation fg.deobf("curse.maven:lightningcraft-237422:$lightningcraft_version")
     implementation fg.deobf("curse.maven:mantle-74924:$mantle_version")
     implementation fg.deobf("curse.maven:mbd-604054:$mbd_version")
+    implementation fg.deobf("curse.maven:mcjtylib-233105:$mcjl_version")
     implementation fg.deobf("curse.maven:mekanism-399904:$mce_version")
     implementation fg.deobf("curse.maven:mekanismtools-813407:$mcetools_version")
     implementation fg.deobf("curse.maven:mobends-231347:$mobends_version")

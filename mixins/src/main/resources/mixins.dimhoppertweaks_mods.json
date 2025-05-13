@@ -157,6 +157,7 @@
     "randomthings.MixinRandomThingsPlugin",
     "recipestages.MixinRecipeStage",
     "reskillable.MixinLevelLockHandler",
+    "rftools.MixinCrafterBaseTE",
     "scalinghealth.MixinBlightHandler",
     "scalinghealth.MixinDifficultyHandler",
     "scalinghealth.MixinEntityBlightFire",

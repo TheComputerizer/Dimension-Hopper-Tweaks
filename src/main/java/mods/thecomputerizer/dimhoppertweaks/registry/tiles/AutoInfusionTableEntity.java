@@ -15,6 +15,7 @@ import mcjty.rftools.craftinggrid.CraftingRecipe.CraftMode;
 import mcjty.rftools.items.storage.StorageFilterCache;
 import mcjty.rftools.items.storage.StorageFilterItem;
 import mods.thecomputerizer.dimhoppertweaks.common.containers.InventoryAutoInfusion;
+import mods.thecomputerizer.dimhoppertweaks.mixin.DelayedModAccess;
 import mods.thecomputerizer.dimhoppertweaks.recipes.AutoInfusionRecipe;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -32,6 +33,7 @@ import net.tslat.aoa3.common.containers.ContainerInfusionTable.InventoryInfusion
 import net.tslat.aoa3.utils.player.PlayerDataManager;
 import net.tslat.aoa3.utils.player.PlayerUtil;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -55,6 +57,7 @@ import static net.minecraft.item.ItemStack.EMPTY;
 import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 import static net.tslat.aoa3.library.Enums.Skills.INFUSION;
 
+@SuppressWarnings("NullableProblems")
 public class AutoInfusionTableEntity extends GenericEnergyReceiverTileEntity
         implements ITickable, DefaultSidedInventory, JEIRecipeAcceptor {
     
@@ -75,7 +78,7 @@ public class AutoInfusionTableEntity extends GenericEnergyReceiverTileEntity
         this.noRecipesWork = false;
         this.speedMode = 0;
         this.infusionInventory = new InventoryAutoInfusion(new Container() {
-            public boolean canInteractWith(EntityPlayer player) {
+            public boolean canInteractWith(@Nonnull EntityPlayer player) {
                 return false;
             }
         });
@@ -97,6 +100,7 @@ public class AutoInfusionTableEntity extends GenericEnergyReceiverTileEntity
             int rf = (int)((float)rfPerOperation.get()*(2f-this.getInfusedFactor())/2f);
             int steps = this.speedMode==1 ? speedOperations.get() : 1;
             if(rf>0) steps = (int)Math.min(steps,this.getStoredPower()/(long)rf);
+            if(steps>0) DelayedModAccess.inheritInventoryStages(this,this.infusionInventory);
             int i;
             for(i=0;i<steps;i++) {
                 if(!craftOneCycle()) {
@@ -116,6 +120,7 @@ public class AutoInfusionTableEntity extends GenericEnergyReceiverTileEntity
         return craftedAtLeastOneThing;
     }
     
+    @SuppressWarnings("ConstantValue")
     private boolean craftOneItemNew(CraftingRecipe craftingRecipe) {
         IRecipe recipe = craftingRecipe.getCachedRecipe(this.getWorld());
         if(Objects.isNull(recipe)) return false;
@@ -154,7 +159,7 @@ public class AutoInfusionTableEntity extends GenericEnergyReceiverTileEntity
         }
     }
     
-    @Override public ItemStack decrStackSize(int index, int count) {
+    @Override public @Nonnull ItemStack decrStackSize(int index, int count) {
         this.noRecipesWork = false;
         if(index==41) this.filterCache = null;
         return this.helper.decrStackSize(index,count);
@@ -199,7 +204,7 @@ public class AutoInfusionTableEntity extends GenericEnergyReceiverTileEntity
         return this.recipes[index];
     }
     
-    @Override public int[] getSlotsForFace(EnumFacing side) {
+    @Override public @Nonnull int[] getSlotsForFace(EnumFacing side) {
         return FACTORY.getAccessibleSlots();
     }
     
@@ -310,7 +315,7 @@ public class AutoInfusionTableEntity extends GenericEnergyReceiverTileEntity
         this.markDirtyClient();
     }
     
-    @Override public ItemStack removeStackFromSlot(int index) {
+    @Override public @Nonnull ItemStack removeStackFromSlot(int index) {
         this.noRecipesWork = false;
         if(index==41) this.filterCache = null;
         return this.helper.removeStackFromSlot(index);
@@ -330,7 +335,7 @@ public class AutoInfusionTableEntity extends GenericEnergyReceiverTileEntity
         this.helper.setInventorySlotContents(getInventoryStackLimit(),index,stack);
     }
     
-    @Override public boolean isUsableByPlayer(EntityPlayer player) {
+    @Override public boolean isUsableByPlayer(@Nonnull EntityPlayer player) {
         return canPlayerAccess(player);
     }
     
