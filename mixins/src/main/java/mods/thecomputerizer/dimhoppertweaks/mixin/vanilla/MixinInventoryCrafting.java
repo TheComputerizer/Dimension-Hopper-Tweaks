@@ -22,13 +22,16 @@ public abstract class MixinInventoryCrafting implements IInventoryCrafting {
 
     @Override
     public void dimhoppertweaks$setStages(Collection<String> stages, boolean clear) {
-        if(clear) this.dimhoppertweaks$stages.clear();
-        this.dimhoppertweaks$stages.addAll(stages);
         if(Objects.nonNull(this.eventHandler)) ((IContainer)this.eventHandler).dimhoppertweaks$setStages(stages,clear);
+        else {
+            if(clear) this.dimhoppertweaks$stages.clear();
+            this.dimhoppertweaks$stages.addAll(stages);
+        }
     }
 
     @Override
     public Collection<String> dimhoppertweaks$getStages() {
-        return this.dimhoppertweaks$stages;
+        return Objects.nonNull(this.eventHandler) ? ((IContainer)this.eventHandler).dimhoppertweaks$getStages() :
+                this.dimhoppertweaks$stages;
     }
 }

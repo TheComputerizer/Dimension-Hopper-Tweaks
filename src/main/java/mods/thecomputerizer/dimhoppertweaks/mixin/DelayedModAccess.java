@@ -36,13 +36,12 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.inventory.Slot;
-import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemEnchantedBook;
 import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -135,27 +134,33 @@ public class DelayedModAccess {
         }
     }
     
-    public static boolean canCraft(Container container) {
-        return canCraft(container,false);
+    public static boolean canCraft(IRecipe recipe, Container container) {
+        return canCraft(recipe,container,false);
     }
     
     /**
      * Check stages of input items to ensure they can be used in crafting
      */
-    public static boolean canCraft(Container container, boolean debug) {
+    public static boolean canCraft(IRecipe recipe, Container container, boolean debug) {
         Collection<String> stages = getCraftingStages(container);
         if(debug) LOGGER.info("Checking container stages {}",stages);
-        for(Slot slot : container.inventorySlots)
-            if(slot instanceof SlotCrafting && !hasStageForItem(stages,slot.getStack(),debug)) return false;
+        for(ItemStack stack : container.getInventory())
+            if(!hasStageForItem(stages,stack,debug)) return false;
         return true;
     }
     
-    public static boolean canCraft(InventoryCrafting inventory) {
-        return canCraft(inventory.eventHandler);
+    public static boolean canCraft(IRecipe recipe, InventoryCrafting inventory) {
+        return canCraft(recipe,inventory,false);
     }
     
-    public static boolean canCraft(InventoryCrafting inventory, boolean debug) {
-        return canCraft(inventory.eventHandler,debug);
+    public static boolean canCraft(IRecipe recipe, InventoryCrafting inventory, boolean debug) {
+        Collection<String> stages = getCraftingStages(inventory);
+        if(debug) LOGGER.info("Checking inventory stages {}",stages);
+        for(int i=0;i<inventory.getSizeInventory();i++) {
+            if(debug) LOGGER.info("Checking slot {}",i);
+            if(!hasStageForItem(stages,inventory.getStackInSlot(i),debug)) return false;
+        }
+        return true;
     }
     
     public static boolean canTravelToDimension(Entity entity, int dimension) {
@@ -329,12 +334,12 @@ public class DelayedModAccess {
         return Collections.unmodifiableSet(BLOCK_BREAKER_CLASSES);
     }
     
-    public static ItemStack getCraftingResult(InventoryCrafting inventory, ItemStack result) {
-        return getCraftingResult(inventory,result,false);
+    public static ItemStack getCraftingResult(IRecipe recipe, InventoryCrafting inventory, ItemStack result) {
+        return getCraftingResult(recipe,inventory,result,false);
     }
     
-    public static ItemStack getCraftingResult(InventoryCrafting inventory, ItemStack result, boolean debug) {
-        ItemStack ret = result!=EMPTY && canCraft(inventory,debug) ? result : EMPTY;
+    public static ItemStack getCraftingResult(IRecipe recipe, InventoryCrafting inventory, ItemStack result, boolean debug) {
+        ItemStack ret = result!=EMPTY && canCraft(recipe,inventory,debug) ? result : EMPTY;
         if(debug) LOGGER.info("Returning = {} | Original = {}",ret,result);
         return ret;
     }
@@ -513,6 +518,8 @@ public class DelayedModAccess {
     public static void inheritContainerStages(EntityPlayer player, Container container, boolean clear) {
         if(Objects.isNull(container)) return;
         Collection<String> stages = getGameStages(player);
+        LOGGER.info("Inheriting stages from player on the {} side: {}",
+                    player.world.isRemote ? "client" : "server",stages);
         if(!stages.isEmpty()) ((IContainer)container).dimhoppertweaks$setStages(stages,clear);
     }
     

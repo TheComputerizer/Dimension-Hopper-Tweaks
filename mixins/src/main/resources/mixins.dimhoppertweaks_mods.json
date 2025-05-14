@@ -167,6 +167,7 @@
     "silentlib.MixinGuideBookUtils",
     "silentlib.MixinItemDisplay",
     "stevekung.MixinMorePlanetsJEIPlugin",
+    "tconstruct.MixinContainerCraftingStation",
     "tconstruct.MixinToolCore",
     "thebetweenlands.MixinBlockMud",
     "thebetweenlands.MixinItemShockwaveSword",

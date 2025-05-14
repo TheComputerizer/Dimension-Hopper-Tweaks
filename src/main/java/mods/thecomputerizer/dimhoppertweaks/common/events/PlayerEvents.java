@@ -37,7 +37,6 @@ import thebetweenlands.common.item.herblore.ItemElixir;
 import java.util.Objects;
 
 import static mods.thecomputerizer.dimhoppertweaks.client.render.ClientEffects.MINING_SPEED;
-import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.LOGGER;
 import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.MODID;
 import static mods.thecomputerizer.dimhoppertweaks.registry.TraitRegistry.NATURES_AURA;
 import static net.minecraftforge.fml.common.eventhandler.EventPriority.LOWEST;
@@ -65,17 +64,10 @@ public class PlayerEvents {
     @SubscribeEvent(priority = LOWEST)
     public static void onContainerOpened(Open event) {
         if(!event.isCanceled()) {
-            LOGGER.info("Container opened");
             EntityPlayer player = event.getEntityPlayer();
             Container container = event.getContainer();
-            if(Objects.nonNull(container) && Objects.nonNull(player)) {
-                LOGGER.info("Valid container opened {} for player {}",container.getClass(),player.getName());
-                LOGGER.info("(PRE) Player stages {} | Container stages {}",
-                            DelayedModAccess.getGameStages(player),DelayedModAccess.getCraftingStages(container));
+            if(Objects.nonNull(container) && Objects.nonNull(player))
                 DelayedModAccess.inheritContainerStages(player,container);
-                LOGGER.info("(POST) Player stages {} | Container stages {}",
-                            DelayedModAccess.getGameStages(player),DelayedModAccess.getCraftingStages(container));
-            }
         }
     }
 
