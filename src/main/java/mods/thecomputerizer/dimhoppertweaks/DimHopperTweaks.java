@@ -33,6 +33,7 @@ public class DimHopperTweaks {
         LOGGER.info("Starting pre-init");
         INSTANCE.register(ISkillCapability.class,new SkillCapabilityStorage(),SkillCapability::new);
         INSTANCE.register(IExtraChunkData.class,new ExtraChunkDataStorage(),ExtraChunkData::new);
+        RegistryHandler.registerGases();
         if(CLIENT) {
             OBJLoader.INSTANCE.addDomain(MODID);
             DHTClient.registerRenderers();

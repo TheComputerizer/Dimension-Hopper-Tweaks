@@ -111,6 +111,9 @@ entity.boss_name_13.name=§5§lThe OverSeer
 entity.boss.dialogue_1=I told you not to trust that book.
 entity.boss.dialogue_2=Now you must die.
 
+gas.anti_rad_solution=Stabilized Anti-Rad
+gas.raw_anti_rad_solution=Anti-Rad Solution
+
 gui.dimhoppertweaks.skill_drain=Xp Drain Selection - Scroll on the circles to change them!
 gui.dimhoppertweaks.level=The number of levels XP conversion will drain
 gui.dimhoppertweaks.current_skill=The skill that XP will drain into

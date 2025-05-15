@@ -153,6 +153,10 @@ public final class RegistryHandler {
     public static void registerEntities(RegistryEvent.Register<EntityEntry> event) {
         register(event,EntityRegistry.getEntityEntries());
     }
+    
+    public static void registerGases() {
+        GasRegistry.register();
+    }
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
