@@ -4,21 +4,33 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import lombok.Getter;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.InvincibleEntityItem;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.EntityEntry;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Supplier;
 
 import static java.lang.Integer.MAX_VALUE;
 import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.LOGGER;
+import static net.minecraft.entity.EntityList.ENTITY_EGGS;
 import static net.minecraft.init.Items.AIR;
+import static net.minecraft.init.Items.SPAWN_EGG;
+import static net.minecraft.item.ItemStack.EMPTY;
+import static net.minecraftforge.fml.common.registry.ForgeRegistries.ENTITIES;
 
 public class LightningStrikeRecipe {
 
@@ -29,12 +41,12 @@ public class LightningStrikeRecipe {
         if(RECIPES.isEmpty() || !(entity instanceof EntityItem)) return ;
         World world = bolt.getEntityWorld();
         Vec3d strikePos = bolt.getPositionVector();
-        List<EntityItem> entities = null;
+        List<Entity> entities = null;
         for(LightningStrikeRecipe recipe : RECIPES) {
             EntityItem eItem = (EntityItem)entity;
             if(recipe.checkCatalyst(eItem,strikePos)) {
                 if(Objects.isNull(entities)) {
-                    entities = world.getEntitiesWithinAABB(EntityItem.class,new AxisAlignedBB(
+                    entities = world.getEntitiesWithinAABB(Entity.class,new AxisAlignedBB(
                             strikePos.subtract(maxRange,maxRange,maxRange),strikePos.add(maxRange,maxRange,maxRange)));
                     entities.removeIf(item -> item==entity);
                 }
@@ -50,13 +62,16 @@ public class LightningStrikeRecipe {
     @Getter private final int dimension;
     @Getter private final double range;
     private final ItemRef catalyst;
+    private final EntityRef entity;
     private final List<ItemRef> inputs;
     private final List<ItemRef> outputs;
 
-    private LightningStrikeRecipe(int dimension, double range, ItemRef catalyst, List<ItemRef> inputs, List<ItemRef> outputs) {
+    private LightningStrikeRecipe(int dimension, double range, ItemRef catalyst, EntityRef entity,
+            List<ItemRef> inputs, List<ItemRef> outputs) {
         this.dimension = dimension;
         this.range = range;
         this.catalyst = catalyst;
+        this.entity = entity;
         this.inputs = inputs;
         this.outputs = outputs;
         if(isValid()) {
@@ -69,8 +84,50 @@ public class LightningStrikeRecipe {
         return strikePos.distanceTo(item.getPositionVector())<=this.range && this.catalyst.matches(item.getItem());
     }
     
+    public boolean checkEntity(Entity entity, Vec3d strikePos) {
+        return Objects.isNull(this.entity) ||
+               (strikePos.distanceTo(entity.getPositionVector())<=this.range && this.entity.checkMatch(entity));
+    }
+    
     public ItemStack getCatalystStack() {
         return this.catalyst.toStack();
+    }
+    
+    public @Nullable Entity getEntity(World world, double x, double y, double z) {
+        ResourceLocation id = getEntityID();
+        EntityEntry entry = Objects.nonNull(id) && ENTITIES.containsKey(id) ? ENTITIES.getValue(id) : null;
+        if(Objects.isNull(entry)) return null;
+        LOGGER.info("Got EntityEntry for lightning strike recipe from {}",id);
+        Entity entity = entry.newInstance(world);
+        if(Objects.isNull(entity)) {
+            LOGGER.error("Entity for lightning strike recipe ({}) initialized as null??",id);
+            return null;
+        }
+        if(x!=0d || y!=0d || z!=0d) {
+            entity.setLocationAndAngles(x,y,z,MathHelper.wrapDegrees(world.rand.nextFloat()*360f),0f);
+            if(entity instanceof EntityLivingBase) {
+                EntityLivingBase based = (EntityLivingBase)entity;
+                based.rotationYawHead = entity.rotationYaw;
+                based.renderYawOffset = entity.rotationYaw;
+                if(based instanceof EntityLiving)
+                    ((EntityLiving)based).onInitialSpawn(world.getDifficultyForLocation(based.getPosition()),null);
+            }
+        }
+        return entity;
+    }
+    
+    public @Nullable ResourceLocation getEntityID() {
+        return Objects.nonNull(this.entity) ? this.entity.id : null;
+    }
+    
+    public @Nonnull ItemStack getEntitySpawnEgg() {
+        ResourceLocation id = getEntityID();
+        if(Objects.nonNull(id) && ENTITY_EGGS.containsKey(id)) {
+            ItemStack stack = new ItemStack(SPAWN_EGG);
+            ItemMonsterPlacer.applyEntityIdToItemStack(stack,id);
+            return stack;
+        }
+        return EMPTY;
     }
 
     public List<ItemStack> getInputStacks() {
@@ -85,11 +142,11 @@ public class LightningStrikeRecipe {
         return stacks;
     }
 
-    private boolean inputMatches(ItemRef input, Vec3d strikePos, Collection<EntityItem> entities) {
-        for(EntityItem entity : entities) {
-            if(strikePos.distanceTo(entity.getPositionVector())<=this.range && input.matches(entity.getItem())) {
+    private boolean inputMatches(ItemRef input, Vec3d strikePos, Collection<Entity> entities) {
+        for(Entity entity : entities) {
+            if(entity instanceof EntityItem && strikePos.distanceTo(entity.getPositionVector())<=this.range &&
+               input.matches(((EntityItem)entity).getItem()))
                 return true;
-            }
         }
         return false;
     }
@@ -119,6 +176,10 @@ public class LightningStrikeRecipe {
                 return false;
             }
         }
+        if(Objects.nonNull(this.entity) && this.entity.invalid()) {
+            LOGGER.error("Failed to validate entity for lightning strike recipe! Recipe will be ignored.");
+            return false;
+        }
         return true;
     }
 
@@ -128,13 +189,45 @@ public class LightningStrikeRecipe {
                 output.spawn(world,strikePos);
     }
 
-    public void verifyInputs(World world, Vec3d strikePos, List<EntityItem> entities) {
+    public void verifyInputs(World world, Vec3d strikePos, List<Entity> entities) {
         if(this.dimension!=MAX_VALUE && this.dimension!=world.provider.getDimension()) return;
         for(ItemRef input : this.inputs)
             if(!inputMatches(input,strikePos,entities)) return;
-        spawnOutputs(world,strikePos);
+        boolean matchedEntity = Objects.isNull(this.entity);
+        for(Entity entity : entities) {
+            matchedEntity = matchedEntity || checkEntity(entity,strikePos);
+            if(matchedEntity) break;
+        }
+        if(matchedEntity) spawnOutputs(world,strikePos);
     }
 
+    private static class EntityRef {
+        
+        private final ResourceLocation id;
+        
+        private EntityRef(ResourceLocation id) {
+            this.id = id;
+        }
+        
+        boolean checkMatch(Entity entity) {
+            if(Objects.nonNull(entity)) {
+                ResourceLocation entityID = EntityList.getKey(entity);
+                if(Objects.nonNull(entityID) && entityID.equals(this.id)) {
+                    entity.setDead();
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        private boolean invalid() {
+            if(Objects.isNull(this.id)) {
+                LOGGER.error("ID in entity reference cannot be null!");
+                return true;
+            }
+            return false;
+        }
+    }
 
     private static class ItemRef {
 
@@ -200,6 +293,7 @@ public class LightningStrikeRecipe {
         private final Map<Integer,Supplier<?>> catalystSuppliers;
         private final List<Map<Integer,Supplier<?>>> inputSuppliers;
         private final List<Map<Integer,Supplier<?>>> outputSuppliers;
+        private Supplier<ResourceLocation> entityIDSupplier;
         private int dimension;
         private double range;
 
@@ -217,6 +311,11 @@ public class LightningStrikeRecipe {
 
         public Builder addInput(Supplier<Item> item, Supplier<Integer> meta, Supplier<Integer> count) {
             this.inputSuppliers.add(addItem(item,meta,count));
+            return this;
+        }
+        
+        public Builder addEntity(Supplier<ResourceLocation> id) {
+            this.entityIDSupplier = id;
             return this;
         }
 
@@ -272,7 +371,9 @@ public class LightningStrikeRecipe {
         }
 
         public void build() {
-            new LightningStrikeRecipe(this.dimension,this.range,buildItemRef(this.catalystSuppliers),
+            EntityRef entity = Objects.nonNull(this.entityIDSupplier) ?
+                    new EntityRef(this.entityIDSupplier.get()) : null;
+            new LightningStrikeRecipe(this.dimension,this.range,buildItemRef(this.catalystSuppliers),entity,
                     buildItemRefs(this.inputSuppliers),buildItemRefs(this.outputSuppliers));
         }
 

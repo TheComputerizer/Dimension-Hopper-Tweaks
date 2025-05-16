@@ -7,18 +7,23 @@ import mods.thecomputerizer.dimhoppertweaks.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DimensionType;
 import org.dave.compactmachines3.misc.RenderTickCounter;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import static net.minecraft.client.renderer.GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA;
+import static net.minecraft.client.renderer.GlStateManager.SourceFactor.SRC_ALPHA;
+import static net.minecraft.client.renderer.OpenGlHelper.defaultTexUnit;
+import static net.minecraft.client.renderer.OpenGlHelper.lightmapTexUnit;
+import static net.minecraft.client.renderer.texture.TextureMap.LOCATION_BLOCKS_TEXTURE;
 
 @SuppressWarnings("deprecation")
 public class LightningStrikeWrapper implements IRecipeWrapper {
@@ -32,17 +37,16 @@ public class LightningStrikeWrapper implements IRecipeWrapper {
         this.recipe = recipe;
     }
 
-    @Override
-    public void getIngredients(IIngredients ingr) {
+    @Override public void getIngredients(IIngredients ingr) {
         List<ItemStack> stacks = new ArrayList<>();
         stacks.add(this.recipe.getCatalystStack());
+        stacks.add(this.recipe.getEntitySpawnEgg());
         stacks.addAll(this.recipe.getInputStacks());
         ingr.setInputs(ItemStack.class,stacks);
         ingr.setOutput(ItemStack.class,this.recipe.getOutputStacks());
     }
 
-    @Override
-    public void drawInfo(Minecraft mc, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
+    @Override public void drawInfo(@Nonnull Minecraft mc, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
         LightningStrikeRenderer renderer = LightningStrikeRenderer.getForRecipe(this.recipe);
         if(Objects.isNull(renderer)) return;
         GlStateManager.pushMatrix();
@@ -55,14 +59,14 @@ public class LightningStrikeWrapper implements IRecipeWrapper {
         GlStateManager.popMatrix();
         float angle = (float) RenderTickCounter.renderTicks*25f/128f;
         TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
-        textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-        textureManager.getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);
-        GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-        GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
+        textureManager.bindTexture(LOCATION_BLOCKS_TEXTURE);
+        textureManager.getTexture(LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);
+        GlStateManager.setActiveTexture(lightmapTexUnit);
+        GlStateManager.setActiveTexture(defaultTexUnit);
         GlStateManager.enableAlpha();
-        GlStateManager.alphaFunc(516, 0.1f);
+        GlStateManager.alphaFunc(516,0.1f);
         GlStateManager.enableBlend();
-        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA,GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        GlStateManager.blendFunc(SRC_ALPHA,ONE_MINUS_SRC_ALPHA);
         GlStateManager.color(1f,1f,1f,1f);
         GlStateManager.disableFog();
         GlStateManager.disableLighting();
@@ -73,10 +77,10 @@ public class LightningStrikeWrapper implements IRecipeWrapper {
         if(Minecraft.isAmbientOcclusionEnabled()) GlStateManager.shadeModel(7425);
         else GlStateManager.shadeModel(7424);
         GlStateManager.pushMatrix();
-        GlStateManager.translate((float)(recipeWidth/2), (float)(recipeHeight / 2), 100f);
-        GlStateManager.rotate(-25f, 1f, 0f, 0f);
-        GlStateManager.rotate(angle, 0f, 1f, 0f);
-        GlStateManager.scale(16f, -16f, 16f);
+        GlStateManager.translate(((float)(recipeWidth/2))*1.1f,(float)(recipeHeight/2),100f);
+        GlStateManager.rotate(-25f,1f,0f,0f);
+        GlStateManager.rotate(angle,0f,1f,0f);
+        GlStateManager.scale(16f,-16f,16f);
         int diffX = MAX.getX()-MIN.getX();
         int diffY = MAX.getY()-MIN.getY();
         int diffZ = MAX.getZ()-MIN.getZ();
@@ -85,8 +89,8 @@ public class LightningStrikeWrapper implements IRecipeWrapper {
         GlStateManager.enableCull();
         GlStateManager.scale(scale,scale,scale);
         renderer.render(0f);
-        textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-        textureManager.getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).restoreLastBlurMipmap();
+        textureManager.bindTexture(LOCATION_BLOCKS_TEXTURE);
+        textureManager.getTexture(LOCATION_BLOCKS_TEXTURE).restoreLastBlurMipmap();
         GlStateManager.popMatrix();
     }
 

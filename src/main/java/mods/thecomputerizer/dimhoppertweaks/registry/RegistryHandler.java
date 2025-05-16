@@ -95,10 +95,12 @@ public final class RegistryHandler {
         addTerminalRecipe(10,"moreplates:insanium_plate","zollerngalaxy:perddiamondblock");
         addTerminalRecipe(11,"extendedcrafting:material",19,"mysticalagradditions:dragon_egg_essence");
         addTerminalRecipe(12,"moreplates:infinity_plate","projectex:final_star_shard");
+        addCowRecipe();
         
         LOGGER.info("Registered {} lightning strike recipe(s)",LightningStrikeRecipe.getRecipes().size());
     }
     
+    @SuppressWarnings("DataFlowIssue")
     private static void addFunnySolarPanelRecipe(int solarTier, String crystalName) {
         ResourceLocation solarRes = new ResourceLocation("solarflux","solar_panel_"+solarTier);
         ResourceLocation crystalRes = new ResourceLocation("environmentaltech",crystalName+"_tiles");
@@ -113,12 +115,20 @@ public final class RegistryHandler {
                 .setRange(5d).setDimension(dimension).build();
     }
     
+    private static void addCowRecipe() {
+        new Builder().setCatalyst(() -> ItemUtil.getStack("cookingforblockheads:milk_jar"))
+                .addEntity(() -> new ResourceLocation("minecraft","cow"))
+                .addInput(() -> ItemUtil.getStack("portalgun:item_miniature_black_hole"))
+                .addOutput(() -> ItemUtil.getStack("cookingforblockheads:cow_jar"))
+                .setRange(7d).build();
+    }
+    
     private static void addIronTerminalRecipe() {
         ResourceLocation terminalRes = new ResourceLocation("lightningcraft","air_terminal");
         new Builder().setCatalyst(() -> ItemUtil.getStack("calculator:conductormast"))
                 .addInput(() -> ItemUtil.getItem("moreplates:conductive_iron_plate"),() -> 0,() -> 5)
                 .addInput(() -> ItemUtil.getItem("extendedcrafting:material"),() -> 3,() -> 1)
-                .addOutput(() -> ItemUtil.getStack(terminalRes,0))
+                .addOutput(() -> ItemUtil.getStack(terminalRes))
                 .setRange(5d).setDimension(0).build();
     }
     

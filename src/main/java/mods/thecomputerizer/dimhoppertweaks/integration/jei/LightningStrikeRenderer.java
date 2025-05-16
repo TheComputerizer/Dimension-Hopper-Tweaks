@@ -4,7 +4,6 @@ import mods.thecomputerizer.dimhoppertweaks.recipes.LightningStrikeRecipe;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -12,6 +11,8 @@ import net.minecraft.util.math.BlockPos;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static net.minecraft.init.Blocks.GRASS;
 
 public class LightningStrikeRenderer extends ProxyWorldRender {
 
@@ -35,7 +36,7 @@ public class LightningStrikeRenderer extends ProxyWorldRender {
     public LightningStrikeRenderer(LightningStrikeRecipe recipe) {
         super();
         this.recipe = recipe;
-        this.groundState = Blocks.GRASS.getDefaultState();
+        this.groundState = GRASS.getDefaultState();
         setUpPosMaps();
     }
 
@@ -46,6 +47,7 @@ public class LightningStrikeRenderer extends ProxyWorldRender {
 
     private void addEntities() {
         addRenderableEntity(new EntityLightningBolt(this.proxyWorld,0d,1d,0d,true));
+        addRenderableEntity(this.recipe.getEntity(this.proxyWorld,0d,1d,0d));
         addEntityItem(0d,0d,this.recipe.getCatalystStack());
         int inputIndex = 0;
         List<ItemStack> stacks = this.recipe.getInputStacks();
@@ -65,17 +67,10 @@ public class LightningStrikeRenderer extends ProxyWorldRender {
 
     private void addPlatformPositions() {
         for(int x=-1; x<=1; x++)
-            for(int z=-1; z<=1; z++)
-                addStatePos(new BlockPos(x,0,z),this.groundState);
+            for(int z=-1; z<=1; z++) addStatePos(new BlockPos(x,0,z),this.groundState);
     }
 
-    @Override
-    protected void updateTileExtra(TileEntity tile) {
+    @Override protected void updateTileExtra(TileEntity tile) {}
 
-    }
-
-    @Override
-    protected void setUpState(IBlockState state, BlockPos pos) {
-
-    }
+    @Override protected void setUpState(IBlockState state, BlockPos pos) {}
 }

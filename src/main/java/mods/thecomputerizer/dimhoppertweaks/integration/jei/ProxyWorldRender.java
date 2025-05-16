@@ -23,6 +23,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraftforge.client.ForgeHooksClient;
 import org.dave.compactmachines3.world.ProxyWorld;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
@@ -52,12 +53,19 @@ public abstract class ProxyWorldRender {
         this.blockAccess = getBlockAccess(this.proxyWorld);
         this.proxyWorld.setFakeWorld(this.blockAccess);
     }
-
+    
+    protected void addRenderableEntity(@Nullable Entity entity) {
+        if(Objects.nonNull(entity)) this.renderableEntities.add(entity);
+        else LOGGER.error("Tried to add null entity to ProxyWorldRender!");
+    }
+    
+    protected void addStatePos(BlockPos pos, IBlockState state) {
+        this.relativePosMap.put(pos,state);
+    }
 
     protected IBlockAccess getBlockAccess(final ProxyWorld proxyWorld) {
         return new IBlockAccess() {
-            @Nullable
-            public TileEntity getTileEntity(BlockPos pos) {
+            public @Nullable TileEntity getTileEntity(@Nonnull BlockPos pos) {
                 IBlockState state = this.getBlockState(pos);
                 if (!state.getBlock().hasTileEntity(state)) return null;
                 else {
@@ -67,33 +75,26 @@ public abstract class ProxyWorldRender {
                     return tile;
                 }
             }
-
-            public int getCombinedLight(BlockPos pos, int lightValue) {
+            public int getCombinedLight(@Nonnull BlockPos pos, int lightValue) {
                 return 255;
             }
-
-            public IBlockState getBlockState(BlockPos pos) {
+            public @Nonnull IBlockState getBlockState(@Nonnull BlockPos pos) {
                 return ProxyWorldRender.this.relativePosMap.getOrDefault(pos,AIR.getDefaultState());
             }
-
-            public boolean isAirBlock(BlockPos pos) {
+            public boolean isAirBlock(@Nonnull BlockPos pos) {
                 IBlockState blockState = this.getBlockState(pos);
                 return blockState.getBlock().isAir(blockState, this, pos);
             }
-
-            public Biome getBiome(BlockPos pos) {
+            public @Nonnull Biome getBiome(@Nonnull BlockPos pos) {
                 return PLAINS;
             }
-
-            public int getStrongPower(BlockPos pos, EnumFacing direction) {
+            public int getStrongPower(@Nonnull BlockPos pos, @Nonnull EnumFacing direction) {
                 return 0;
             }
-
-            public WorldType getWorldType() {
+            public @Nonnull WorldType getWorldType() {
                 return FLAT;
             }
-
-            public boolean isSideSolid(BlockPos pos, EnumFacing side, boolean _default) {
+            public boolean isSideSolid(@Nonnull BlockPos pos, @Nonnull EnumFacing side, boolean _default) {
                 return this.getBlockState(pos).isSideSolid(this,pos,side);
             }
         };
@@ -111,13 +112,29 @@ public abstract class ProxyWorldRender {
     protected IBlockState getState(@Nullable Item item, int meta) {
         return Objects.nonNull(item) ? Block.getBlockFromItem(item).getStateFromMeta(meta) : AIR.getDefaultState();
     }
-
-    protected void addRenderableEntity(Entity entity) {
-        this.renderableEntities.add(entity);
-    }
-
-    protected void addStatePos(BlockPos pos, IBlockState state) {
-        this.relativePosMap.put(pos,state);
+    
+    private void initializeDisplayList() {
+        BlockPos pos = new BlockPos(0,1,0);
+        setUpState(this.relativePosMap.get(pos),pos);
+        this.glListId = GLAllocation.generateDisplayLists(1);
+        GlStateManager.glNewList(this.glListId,4864);
+        GlStateManager.pushAttrib();
+        GlStateManager.pushMatrix();
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = tessellator.getBuffer();
+        BlockRendererDispatcher dispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
+        buffer.begin(7,BLOCK);
+        GlStateManager.disableAlpha();
+        this.renderLayer(dispatcher,buffer,SOLID);
+        GlStateManager.enableAlpha();
+        this.renderLayer(dispatcher,buffer,CUTOUT_MIPPED);
+        this.renderLayer(dispatcher,buffer,CUTOUT);
+        GlStateManager.shadeModel(7424);
+        this.renderLayer(dispatcher,buffer,TRANSLUCENT);
+        tessellator.draw();
+        GlStateManager.popMatrix();
+        GlStateManager.popAttrib();
+        GlStateManager.glEndList();
     }
 
     public void render(float partialTick) {
@@ -150,35 +167,7 @@ public abstract class ProxyWorldRender {
         }
         ForgeHooksClient.setRenderLayer(null);
     }
-
-    protected abstract void updateTileExtra(TileEntity tile);
-
-    private void initializeDisplayList() {
-        BlockPos pos = new BlockPos(0,1,0);
-        setUpState(this.relativePosMap.get(pos),pos);
-        this.glListId = GLAllocation.generateDisplayLists(1);
-        GlStateManager.glNewList(this.glListId,4864);
-        GlStateManager.pushAttrib();
-        GlStateManager.pushMatrix();
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-        BlockRendererDispatcher dispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
-        buffer.begin(7,BLOCK);
-        GlStateManager.disableAlpha();
-        this.renderLayer(dispatcher,buffer,SOLID);
-        GlStateManager.enableAlpha();
-        this.renderLayer(dispatcher,buffer,CUTOUT_MIPPED);
-        this.renderLayer(dispatcher,buffer,CUTOUT);
-        GlStateManager.shadeModel(7424);
-        this.renderLayer(dispatcher,buffer,TRANSLUCENT);
-        tessellator.draw();
-        GlStateManager.popMatrix();
-        GlStateManager.popAttrib();
-        GlStateManager.glEndList();
-    }
-
-    protected abstract void setUpState(IBlockState state, BlockPos pos);
-
+    
     private void renderLayer(BlockRendererDispatcher dispatcher, BufferBuilder buffer, BlockRenderLayer layer) {
         for(BlockPos relativePos : this.relativePosMap.keySet()) {
             IBlockState state = this.proxyWorld.getBlockState(relativePos);
@@ -194,4 +183,7 @@ public abstract class ProxyWorldRender {
             }
         }
     }
+    
+    protected abstract void setUpState(IBlockState state, BlockPos pos);
+    protected abstract void updateTileExtra(TileEntity tile);
 }

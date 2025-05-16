@@ -60,6 +60,8 @@
     "chambers.MixinTileEntityEnchantChamber",
     "compactmachines3.MixinMultiblockRecipeCategory",
     "compactmachines3.MixinMultiblockRecipeWrapper",
+    "compactmachines3.MixinProxyWorld",
+    "cookingforblockheads.MixinJEIAddon",
     "crafttweaker.MixinAddItemAction",
     "crafttweaker.MixinJEIMod",
     "dimdoors.MixinBaseGateway",

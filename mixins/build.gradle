@@ -139,6 +139,7 @@ dependencies {
     implementation fg.deobf("curse.maven:cavern-285628:$cavern_version")
     implementation fg.deobf("curse.maven:chambers-404264:$chambers_version")
     implementation fg.deobf("curse.maven:compactmachines-224218:$cm3_version")
+    implementation fg.deobf("curse.maven:cooking-231484:$cooking_version")
     implementation fg.deobf("curse.maven:dimdoors-284876:$dimdoors_version")
     implementation fg.deobf("curse.maven:erebus-220698:$erebus_version")
     implementation fg.deobf("curse.maven:extendedcrafting-398267:$excrafting_version")
