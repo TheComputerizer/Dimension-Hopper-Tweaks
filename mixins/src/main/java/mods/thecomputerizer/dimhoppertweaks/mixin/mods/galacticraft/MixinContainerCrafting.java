@@ -16,7 +16,7 @@ public abstract class MixinContainerCrafting {
     
     @Shadow public PersistantInventoryCrafting craftMatrix;
     
-    @Shadow public abstract void onCraftMatrixChanged(IInventory inventoryIn);
+    @Shadow(remap=true) public abstract void onCraftMatrixChanged(IInventory inventoryIn);
     
     @Redirect(at=@At(value="INVOKE",target="Lmicdoodle8/mods/galacticraft/core/inventory/ContainerCrafting;"+
             "onCraftMatrixChanged(Lnet/minecraft/inventory/IInventory;)V",remap=true),method="<init>")

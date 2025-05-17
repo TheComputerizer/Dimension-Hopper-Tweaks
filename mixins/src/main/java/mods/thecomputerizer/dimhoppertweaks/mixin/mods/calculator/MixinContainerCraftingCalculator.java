@@ -16,11 +16,11 @@ import javax.annotation.Nonnull;
 @Mixin(value = ContainerCraftingCalculator.class, remap = false)
 public abstract class MixinContainerCraftingCalculator extends ContainerSonar {
     
-    @Shadow public EntityPlayer player;
+    @Shadow(remap=true) public EntityPlayer player;
     
     @Shadow public InventoryStoredCrafting craftMatrix;
     
-    @Shadow public abstract void onCraftMatrixChanged(@Nonnull IInventory inv);
+    @Shadow(remap=true) public abstract void onCraftMatrixChanged(@Nonnull IInventory inv);
     
     @SuppressWarnings("RedundantCast")
     @Redirect(at=@At(value="INVOKE",target="Lsonar/calculator/mod/common/containers/ContainerCraftingCalculator;" +
