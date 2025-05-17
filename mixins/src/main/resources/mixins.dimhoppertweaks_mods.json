@@ -75,7 +75,6 @@
     "dimdoors.MixinTileEntityFloatingRift",
     "enderio.MixinInventoryPanelContainer",
     "erebus.MixinBlockQuickSand",
-    "extendedcrafting.MixinAbstractExtendedTable",
     "extendedcrafting.MixinAbstractTableContainer",
     "extendedcrafting.MixinTileAutomationInterface",
     "extraplanets.MixinExtraPlanetsJEI",

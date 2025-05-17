@@ -19,7 +19,7 @@ public abstract class MixinContainerCrafting {
     @Shadow public abstract void onCraftMatrixChanged(IInventory inventoryIn);
     
     @Redirect(at=@At(value="INVOKE",target="Lmicdoodle8/mods/galacticraft/core/inventory/ContainerCrafting;"+
-                                           "onCraftMatrixChanged(Lnet/minecraft/inventory/IInventory;)V"),method="<init>")
+            "onCraftMatrixChanged(Lnet/minecraft/inventory/IInventory;)V",remap=true),method="<init>")
     private void dimhoppertweaks$inheritStages(ContainerCrafting instance, IInventory inventory,
             @Local(argsOnly=true) InventoryPlayer player) {
         DelayedModAccess.inheritInventoryStages(player.player,this.craftMatrix);

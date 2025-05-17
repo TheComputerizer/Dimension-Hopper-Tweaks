@@ -12,7 +12,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-@SuppressWarnings({"DataFlowIssue","SpellCheckingInspection"})
 @Mixin(value = TileAutomationInterface.class, remap = false)
 public abstract class MixinTileAutomationInterface {
 
@@ -21,9 +20,10 @@ public abstract class MixinTileAutomationInterface {
         return (TileEntity)(Object)this;
     }
 
-    @Redirect(at = @At(value = "NEW", target = "(Lnet/minecraft/inventory/Container;"+
+    @SuppressWarnings("DataFlowIssue")
+    @Redirect(at=@At(value="NEW",target="(Lnet/minecraft/inventory/Container;"+
             "Lcom/blakebr0/extendedcrafting/lib/IExtendedTable;)"+
-            "Lcom/blakebr0/extendedcrafting/crafting/table/TableCrafting;"), method = "saveRecipe")
+            "Lcom/blakebr0/extendedcrafting/crafting/table/TableCrafting;",remap=true),method="saveRecipe")
     private TableCrafting dimhoppertweaks$inheritTileStages(Container container, IExtendedTable tile) {
         TableCrafting table = new TableCrafting(container,tile);
         ((IInventoryCrafting)table).dimhoppertweaks$setStages(((ITileEntity)dimhoppertweaks$cast()).dimhoppertweaks$getStages());

@@ -24,7 +24,7 @@ public abstract class MixinContainerCraftingCalculator extends ContainerSonar {
     
     @SuppressWarnings("RedundantCast")
     @Redirect(at=@At(value="INVOKE",target="Lsonar/calculator/mod/common/containers/ContainerCraftingCalculator;" +
-            "onCraftMatrixChanged(Lnet/minecraft/inventory/IInventory;)V"),method="<init>")
+            "onCraftMatrixChanged(Lnet/minecraft/inventory/IInventory;)V",remap=true),method="<init>")
     private void dimhoppertweaks$inheritStages(ContainerCraftingCalculator instance, IInventory inv) {
         DelayedModAccess.inheritInventoryStages(this.player,this.craftMatrix);
         onCraftMatrixChanged((IInventory)null);

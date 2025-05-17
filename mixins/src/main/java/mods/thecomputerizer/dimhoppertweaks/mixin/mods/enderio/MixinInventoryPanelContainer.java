@@ -25,7 +25,7 @@ public abstract class MixinInventoryPanelContainer extends AbstractMachineContai
     }
     
     @Redirect(at=@At(value="NEW",target="(Lnet/minecraft/inventory/IInventory;Lnet/minecraft/inventory/Container;II)"+
-            "Lcrazypants/enderio/invpanel/invpanel/InventoryCraftingWrapper;"),method="addMachineSlots")
+            "Lcrazypants/enderio/invpanel/invpanel/InventoryCraftingWrapper;",remap=true),method="addMachineSlots")
     private InventoryCraftingWrapper dimhoppertweaks$inheritStages(IInventory backing, Container eventHandler,
             int width, int height, @Local(argsOnly=true) InventoryPlayer player) {
         InventoryCraftingWrapper wrapper = new InventoryCraftingWrapper(backing,eventHandler,width,height);
