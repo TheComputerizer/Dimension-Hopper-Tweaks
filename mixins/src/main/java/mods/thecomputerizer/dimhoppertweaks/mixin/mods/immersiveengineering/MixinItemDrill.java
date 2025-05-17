@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @Mixin(value = ItemDrill.class, remap = false)
@@ -22,10 +23,11 @@ public abstract class MixinItemDrill extends ItemUpgradeableTool {
         super(name,stackSize,upgradeType,subNames);
     }
     
-    @Override
-    public int getHarvestLevel(ItemStack stack, String tool, @Nullable EntityPlayer player, @Nullable IBlockState state) {
+    @Override public int getHarvestLevel(@Nonnull ItemStack stack, @Nonnull String tool, @Nullable EntityPlayer player,
+            @Nullable IBlockState state) {
         ItemStack head = getHead(stack);
-        int level = !head.isEmpty() ? ((IDrillHead)head.getItem()).getMiningLevel(head)+ItemNBTHelper.getInt(stack,"harvestLevel") : 0;
+        int level = !head.isEmpty() ?
+                ((IDrillHead)head.getItem()).getMiningLevel(head)+ItemNBTHelper.getInt(stack,"harvestLevel") : 0;
         if(SkillWrapper.hasMiningLevelUprade(player)) level++;
         return level;
     }

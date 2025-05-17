@@ -2,6 +2,7 @@ package mods.thecomputerizer.dimhoppertweaks.mixin;
 
 import androsa.gaiadimension.world.TeleporterGaia;
 import appeng.items.parts.ItemFacade;
+import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import c4.conarm.client.gui.PreviewPlayer;
 import c4.conarm.lib.tinkering.TinkersArmor;
 import codersafterdark.reskillable.api.data.PlayerData;
@@ -547,9 +548,17 @@ public class DelayedModAccess {
     }
     
     public static void inheritInventoryStages(@Nullable TileEntity tile, InventoryCrafting inventory, boolean clear) {
+        if(tile instanceof TileEntityMultiblockPart<?>) tile = ((TileEntityMultiblockPart<?>)tile).master();
         if(Objects.nonNull(tile) && Objects.nonNull(inventory)) {
             Collection<String> stages = ((ITileEntity)tile).dimhoppertweaks$getStages();
             if(!stages.isEmpty()) ((IInventoryCrafting)inventory).dimhoppertweaks$setStages(stages,clear);
+        }
+    }
+    
+    public static void inheritPlayerStages(EntityPlayer player, TileEntity tile) {
+        if(Objects.nonNull(player) && Objects.nonNull(tile)) {
+            Collection<String> stages = getGameStages(player);
+            if(!stages.isEmpty()) ((ITileEntity)tile).dimhoppertweaks$setStages(stages);
         }
     }
     

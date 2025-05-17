@@ -108,8 +108,8 @@ dependencies {
     //cf dependencies
     compileOnly "curse.maven:musictriggers-518410:$mt_version"
     compileOnly "curse.maven:til-661115:$til_version"
-    implementation "curse.maven:ae2uel-570458:$ae2_version"
     implementation fg.deobf("curse.maven:aa-228404:$aa_version")
+    implementation fg.deobf("curse.maven:ae2uel-570458:$ae2_version")
     implementation fg.deobf("curse.maven:acrobatics-321792:$acrobatics_version")
     implementation fg.deobf("curse.maven:aether2-917199:$aether_version")
     implementation fg.deobf("curse.maven:aoa-311054:$aoa_version")

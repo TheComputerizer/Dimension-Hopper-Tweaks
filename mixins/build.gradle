@@ -116,8 +116,8 @@ dependencies {
 
     //cf dependencies
     compileOnly "curse.maven:musictriggers-518410:$mt_version"
-    implementation "curse.maven:ae2uel-570458:$ae2_version"
     implementation fg.deobf("curse.maven:aa-228404:$aa_version")
+    implementation fg.deobf("curse.maven:ae2uel-570458:$ae2_version")
     implementation fg.deobf("curse.maven:aether2-917199:$aether_version")
     implementation fg.deobf("curse.maven:aoa-311054:$aoa_version")
     implementation fg.deobf("curse.maven:apotheosis-313970:$apotheosis_version")
@@ -136,11 +136,14 @@ dependencies {
     implementation fg.deobf("curse.maven:bq-629629:$bq_version")
     implementation fg.deobf("curse.maven:brandon-231382:$brandoncore_version")
     implementation fg.deobf("curse.maven:bubbles-995393:$bubbles_version")
+    implementation fg.deobf("curse.maven:calculator-225104:$calculator_version")
     implementation fg.deobf("curse.maven:cavern-285628:$cavern_version")
     implementation fg.deobf("curse.maven:chambers-404264:$chambers_version")
     implementation fg.deobf("curse.maven:compactmachines-224218:$cm3_version")
     implementation fg.deobf("curse.maven:cooking-231484:$cooking_version")
     implementation fg.deobf("curse.maven:dimdoors-284876:$dimdoors_version")
+    implementation fg.deobf("curse.maven:endercore-231868:$endercore_version")
+    implementation fg.deobf("curse.maven:enderio-64578:$eio_version")
     implementation fg.deobf("curse.maven:erebus-220698:$erebus_version")
     implementation fg.deobf("curse.maven:extendedcrafting-398267:$excrafting_version")
     implementation fg.deobf("curse.maven:extraplanets-241291:$extraplanets_version")
@@ -185,6 +188,7 @@ dependencies {
     implementation fg.deobf("curse.maven:sgcraft-289115:$sgcraft_version")
     implementation fg.deobf("curse.maven:silentgems-220311:$sgems_version")
     implementation fg.deobf("curse.maven:silentlib-242998:$slib_version")
+    implementation fg.deobf("curse.maven:sonar-239418:$sonar_version")
     implementation fg.deobf("curse.maven:spaceambient-363559:$spaceambient_version")
     implementation fg.deobf("curse.maven:ss-904946:$ss_version")
     implementation fg.deobf("curse.maven:tcon-74072:$tconstruct_version")
