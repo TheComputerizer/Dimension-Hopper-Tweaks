@@ -25,16 +25,16 @@ public abstract class MixinContainerTravelersBackpack {
 
     @Inject(at = @At("HEAD"), method = "addCraftResult")
     private void dimhoppertweaks$syncCraft(EntityPlayer player, CallbackInfo ci) {
-        ((IInventoryCrafting)this.craftMatrix).dimhoppertweaks$setStages(DelayedModAccess.getGameStages(player));
+        ((IInventoryCrafting)this.craftMatrix).dimhoppertweaks$setStages(DelayedModAccess.getPlayerStages(player));
     }
     @Inject(at = @At("HEAD"), method = "onCraftMatrixChanged", remap = true)
     private void dimhoppertweaks$syncStages(IInventory inventoryIn, CallbackInfo ci) {
-        ((IInventoryCrafting)this.craftMatrix).dimhoppertweaks$setStages(DelayedModAccess.getGameStages(this.playerInv.player));
+        ((IInventoryCrafting)this.craftMatrix).dimhoppertweaks$setStages(DelayedModAccess.getPlayerStages(this.playerInv.player));
     }
 
     @Inject(at = @At("HEAD"), method = "slotClick", remap = true)
     private void dimhoppertweaks$clickStages(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player,
                                              CallbackInfoReturnable<ItemStack> cir) {
-        ((IInventoryCrafting)this.craftMatrix).dimhoppertweaks$setStages(DelayedModAccess.getGameStages(this.playerInv.player));
+        ((IInventoryCrafting)this.craftMatrix).dimhoppertweaks$setStages(DelayedModAccess.getPlayerStages(this.playerInv.player));
     }
 }

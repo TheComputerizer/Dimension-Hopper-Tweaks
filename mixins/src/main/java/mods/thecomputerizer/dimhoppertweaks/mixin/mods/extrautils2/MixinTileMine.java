@@ -27,7 +27,7 @@ public abstract class MixinTileMine extends TileAdvInteractor {
             "Ljava/lang/String;)Lcom/rwtema/extrautils2/fakeplayer/XUFakePlayer;"), method = "operate")
     private XUFakePlayer dimhoppertweaks$assignGameStages(WorldServer world, GameProfile owner, String type) {
         XUFakePlayer player = new XUFakePlayer(world,owner,type);
-        DelayedModAccess.setGameStages(player,DelayedModAccess.getTileStages(world,this.pos));
+        DelayedModAccess.setEntityStages(player, DelayedModAccess.getTileStages(world, this.pos));
         return player;
     }
 }

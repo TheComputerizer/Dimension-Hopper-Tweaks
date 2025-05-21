@@ -1,9 +1,10 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.mods.appliedenergistics2;
 
-import appeng.container.implementations.ContainerMEPortableTerminal;
-import appeng.container.implementations.ContainerWirelessCraftingTerminal;
+import appeng.api.storage.ITerminalHost;
+import appeng.container.implementations.ContainerCraftingTerm;
+import appeng.container.implementations.ContainerMEMonitorable;
 import appeng.helpers.IContainerCraftingPacket;
-import appeng.helpers.WirelessTerminalGuiObject;
+import appeng.util.inv.IAEAppEngInventory;
 import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import mods.thecomputerizer.dimhoppertweaks.mixin.DelayedModAccess;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,20 +15,20 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-@Mixin(value = ContainerWirelessCraftingTerminal.class, remap = false)
-public abstract class MixinContainerWirelessCraftingTerminal extends ContainerMEPortableTerminal
-        implements IContainerCraftingPacket {
+@Mixin(value = ContainerCraftingTerm.class, remap = false)
+public abstract class MixinContainerCraftingTerm extends ContainerMEMonitorable implements IAEAppEngInventory,
+        IContainerCraftingPacket {
     
-    public MixinContainerWirelessCraftingTerminal(InventoryPlayer ip, WirelessTerminalGuiObject object) {
-        super(ip,object,false);
+    public MixinContainerCraftingTerm(InventoryPlayer player, ITerminalHost host) {
+        super(player,host);
     }
     
     @Redirect(at=@At(value="NEW",target="(Lnet/minecraft/inventory/Container;II)"+
-            "Lnet/minecraft/inventory/InventoryCrafting;",remap=true),method="onCraftMatrixChanged")
+            "Lnet/minecraft/inventory/InventoryCrafting;"),method="onCraftMatrixChanged",remap=true)
     private InventoryCrafting dimhoppertweaks$inheritStages(Container container, int width, int height) {
         InventoryCrafting inventory = new InventoryCrafting(container,width,height);
         EntityPlayer player = getInventoryPlayer().player;
-        DHTRef.LOGGER.info("Wireless terminal player: {}",player.getName());
+        DHTRef.LOGGER.info("Terminal player: {}", player.getName());
         DelayedModAccess.inheritInventoryStages(player,inventory);
         return inventory;
     }

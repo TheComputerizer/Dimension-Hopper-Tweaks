@@ -18,6 +18,6 @@ public abstract class MixinRecipeStage extends Impl<IRecipe> implements IRecipe 
     
     @Inject(at = @At("RETURN"), method = "isGoodForCrafting", cancellable = true)
     private void dimhoppertweaks$isGoodForCrafting(InventoryCrafting inv, CallbackInfoReturnable<Boolean> cir) {
-        cir.setReturnValue(cir.getReturnValueZ() || DelayedModAccess.getCraftingStages(inv).contains(this.tier));
+        cir.setReturnValue(cir.getReturnValueZ() || DelayedModAccess.getInventoryStages(inv).contains(this.tier));
     }
 }

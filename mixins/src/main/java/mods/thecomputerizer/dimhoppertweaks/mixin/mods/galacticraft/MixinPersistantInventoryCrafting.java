@@ -27,7 +27,7 @@ public abstract class MixinPersistantInventoryCrafting extends InventoryCrafting
     public void openInventory(EntityPlayer player) {
         if(Objects.nonNull(player)) {
             IInventoryCrafting inventory = (IInventoryCrafting)this;
-            inventory.dimhoppertweaks$setStages(DelayedModAccess.getGameStages(player),true);
+            inventory.dimhoppertweaks$setStages(DelayedModAccess.getPlayerStages(player), true);
         }
     }
 }

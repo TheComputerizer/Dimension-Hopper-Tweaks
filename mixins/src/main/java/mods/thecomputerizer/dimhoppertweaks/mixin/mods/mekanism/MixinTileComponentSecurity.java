@@ -24,7 +24,7 @@ public abstract class MixinTileComponentSecurity {
         if(this.tileEntity instanceof ITileEntity && Objects.nonNull(uuid)) {
             EntityPlayer player = this.tileEntity.getWorld().getPlayerEntityByUUID(uuid);
             if(Objects.nonNull(player))
-                ((ITileEntity) this.tileEntity).dimhoppertweaks$setStages(DelayedModAccess.getGameStages(player));
+                ((ITileEntity) this.tileEntity).dimhoppertweaks$setStages(DelayedModAccess.getPlayerStages(player));
         }
     }
 }

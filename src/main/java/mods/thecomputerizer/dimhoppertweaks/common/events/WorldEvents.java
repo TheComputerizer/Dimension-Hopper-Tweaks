@@ -3,7 +3,6 @@ package mods.thecomputerizer.dimhoppertweaks.common.events;
 import codersafterdark.reskillable.api.data.PlayerData;
 import codersafterdark.reskillable.api.data.PlayerDataHandler;
 import gcewing.sg.block.SGBlock;
-import mcjty.rftools.blocks.crafter.CrafterBaseTE;
 import mekanism.common.security.ISecurityTile;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
@@ -38,7 +37,6 @@ import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.MODID;
 import static mods.thecomputerizer.dimhoppertweaks.registry.TraitRegistry.BLOCK_FOR_BLOCK;
 import static net.minecraft.init.Blocks.COAL_ORE;
 import static net.minecraftforge.fml.common.eventhandler.EventPriority.LOWEST;
-import static org.burningwave.core.assembler.StaticComponentContainer.Fields;
 
 @EventBusSubscriber(modid = MODID)
 public class WorldEvents {
@@ -95,14 +93,8 @@ public class WorldEvents {
         }
         if(Objects.nonNull(player)) {
             TileEntity tile = event.getWorld().getTileEntity(event.getPos());
-            if(Objects.nonNull(tile) && !(tile instanceof ISecurityTile)) {
-                Collection<String> stages = getPotentialFakePlayerStages(player,event.getPos());
-                if(Objects.nonNull(stages) && !stages.isEmpty()) {
-                    ((ITileEntity)tile).dimhoppertweaks$setStages();
-                    if(tile instanceof CrafterBaseTE)
-                        DelayedModAccess.inheritInventoryStages(tile,Fields.get(tile,"workInventory"));
-                }
-            }
+            if(!(tile instanceof ISecurityTile))
+                DelayedModAccess.setTileStages(tile,getPotentialFakePlayerStages(player,event.getPos()));
         }
     }
 
@@ -138,6 +130,6 @@ public class WorldEvents {
             tile = WorldUtil.getTileOrAdjacent(world,pos,false,placerClasses);
             if(Objects.nonNull(tile)) return ((ITileEntity)tile).dimhoppertweaks$getStages();
         }
-        return DelayedModAccess.getGameStages(player);
+        return DelayedModAccess.getPlayerStages(player);
     }
 }

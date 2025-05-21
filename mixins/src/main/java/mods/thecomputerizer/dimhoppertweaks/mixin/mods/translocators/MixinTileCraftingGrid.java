@@ -33,7 +33,7 @@ public abstract class MixinTileCraftingGrid extends TileEntity {
     @Overwrite
     public void craft(EntityPlayer player) {
         InventoryCrafting craftMatrix = this.getCraftMatrix();
-        ((IInventoryCrafting)craftMatrix).dimhoppertweaks$setStages(DelayedModAccess.getGameStages(player));
+        ((IInventoryCrafting)craftMatrix).dimhoppertweaks$setStages(DelayedModAccess.getPlayerStages(player));
         for(int i=0;i<4;i++) {
             IRecipe recipe = CraftingManager.findMatchingRecipe(craftMatrix,this.world);
             if(Objects.nonNull(recipe)) {

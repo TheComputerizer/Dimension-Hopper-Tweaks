@@ -18,7 +18,7 @@ public abstract class MixinFakePlayer implements IFakePlayer {
 
     @Override
     public void dimhoppertweaks$setStages(Collection<String> stages) {
-        DelayedModAccess.setGameStages(dimhoppertweaks$cast(),stages);
+        DelayedModAccess.setEntityStages(dimhoppertweaks$cast(), stages);
     }
 
     @Override
