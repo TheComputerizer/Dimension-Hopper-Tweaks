@@ -93,6 +93,7 @@ import static net.minecraft.init.Blocks.WATER;
 import static net.minecraft.item.ItemStack.EMPTY;
 import static net.minecraftforge.fml.common.registry.ForgeRegistries.ITEMS;
 import static net.minecraftforge.fml.relauncher.Side.CLIENT;
+import static org.burningwave.core.assembler.StaticComponentContainer.Fields;
 import static slimeknights.tconstruct.library.materials.Material.UNKNOWN;
 
 @SuppressWarnings({"unused", "SameParameterValue"})
@@ -547,6 +548,10 @@ public class DelayedModAccess {
             if(stages.contains(stage)) return true;
         return false;
     }
+
+    public static boolean hasStageForItem(EntityPlayer player, ItemStack stack) {
+        return hasStageForItem(getPlayerStages(player),stack);
+    }
     
     public static boolean hasStageForItem(Collection<String> stages, ItemStack stack) {
         return hasStageForItem(stages,stack,false);
@@ -771,6 +776,7 @@ public class DelayedModAccess {
     public static void setCrafterStages(@Nonnull CrafterBaseTE crafter, @Nullable Collection<String> stages) {
         if(Objects.nonNull(stages) && !stages.isEmpty()) {
             ((ITileEntity)crafter).dimhoppertweaks$setStages(stages);
+            DelayedModAccess.setInventoryStages(Fields.getDirect(crafter,"workInventory"),stages);
             for(int i=0;i<crafter.getSupportedRecipes();i++)
                 DelayedModAccess.inheritInventoryStages(crafter,crafter.getRecipe(i).getInventory());
         }

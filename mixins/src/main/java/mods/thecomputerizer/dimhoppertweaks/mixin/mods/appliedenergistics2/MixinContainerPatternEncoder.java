@@ -7,13 +7,14 @@ import appeng.container.implementations.ContainerPatternEncoder;
 import appeng.container.slot.IOptionalSlotHost;
 import appeng.helpers.IContainerCraftingPacket;
 import appeng.util.inv.IAEAppEngInventory;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import mods.thecomputerizer.dimhoppertweaks.mixin.DelayedModAccess;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryCrafting;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(value = ContainerPatternEncoder.class, remap = false)
 public abstract class MixinContainerPatternEncoder extends ContainerMEMonitorable implements IAEAppEngInventory,
@@ -24,10 +25,20 @@ public abstract class MixinContainerPatternEncoder extends ContainerMEMonitorabl
         super(ip,monitorable,object,bindInventory);
     }
     
-    @Redirect(at=@At(value="NEW",target="(Lnet/minecraft/inventory/Container;II)"+
+    @WrapOperation(at=@At(value="NEW",target="(Lnet/minecraft/inventory/Container;II)"+
             "Lnet/minecraft/inventory/InventoryCrafting;",remap=true),method="getAndUpdateOutput")
-    private InventoryCrafting dimhoppertweaks$inheritStages(Container eventHandler, int width, int height) {
-        InventoryCrafting inventory = new InventoryCrafting(eventHandler,width,height);
+    private InventoryCrafting dimhoppertweaks$inheritStages1(Container container, int width, int height,
+            Operation<InventoryCrafting> operation) {
+        InventoryCrafting inventory = operation.call(container,width,height);
+        DelayedModAccess.inheritInventoryStages(getInventoryPlayer().player,inventory);
+        return inventory;
+    }
+
+    @WrapOperation(at=@At(value="NEW",target="(Lnet/minecraft/inventory/Container;II)"+
+            "Lnet/minecraft/inventory/InventoryCrafting;",remap=true),method="craftOrGetItem")
+    private InventoryCrafting dimhoppertweaks$inheritStages2(Container container, int width, int height,
+            Operation<InventoryCrafting> operation) {
+        InventoryCrafting inventory = operation.call(container,width,height);
         DelayedModAccess.inheritInventoryStages(getInventoryPlayer().player,inventory);
         return inventory;
     }

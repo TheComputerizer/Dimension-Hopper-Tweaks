@@ -33,7 +33,7 @@ import static net.minecraftforge.fml.relauncher.Side.CLIENT;
 
 public class WorldUtil {
 
-    private static @Nullable TileEntity addCoordsAndCheck(World world, BlockPos.MutableBlockPos pos, EnumFacing side,
+    private static @Nullable TileEntity addCoordsAndCheck(World world, MutableBlockPos pos, EnumFacing side,
             Collection<Class<?>> types) {
         pos.move(side);
         TileEntity tile = checkValidTile(world,pos,types);
@@ -90,7 +90,8 @@ public class WorldUtil {
         };
     }
 
-    public static int replaceBlocks(World world, Collection<Block> replaced, IBlockState replaceWith, BlockPos min, BlockPos max) {
+    public static int replaceBlocks(World world, Collection<Block> replaced, IBlockState replaceWith,
+            BlockPos min, BlockPos max) {
         int replacementCount = 0;
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
         for(int x=min.getX(); x<=max.getX(); x++) {

@@ -23,7 +23,7 @@ public abstract class MixinContainerWirelessCraftingTerminal extends ContainerME
     }
     
     @Redirect(at=@At(value="NEW",target="(Lnet/minecraft/inventory/Container;II)"+
-            "Lnet/minecraft/inventory/InventoryCrafting;",remap=true),method="onCraftMatrixChanged")
+            "Lnet/minecraft/inventory/InventoryCrafting;"),method="onCraftMatrixChanged",remap=true)
     private InventoryCrafting dimhoppertweaks$inheritStages(Container container, int width, int height) {
         InventoryCrafting inventory = new InventoryCrafting(container,width,height);
         EntityPlayer player = getInventoryPlayer().player;
