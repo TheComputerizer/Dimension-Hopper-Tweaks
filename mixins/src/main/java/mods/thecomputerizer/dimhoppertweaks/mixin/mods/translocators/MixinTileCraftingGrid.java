@@ -5,8 +5,10 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import mods.thecomputerizer.dimhoppertweaks.mixin.DelayedModAccess;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -25,8 +27,12 @@ public abstract class MixinTileCraftingGrid extends TileEntity {
             "Lnet/minecraft/inventory/InventoryCrafting;",remap=true),method="getCraftMatrix")
     private InventoryCrafting dimhoppertweaks$setTileStages(Container container, int width, int height,
             Operation<InventoryCrafting> operation) {
-        InventoryCrafting inventory = operation.call(container,width,height);
-        DelayedModAccess.inheritInventoryStages(this,inventory);
-        return inventory;
+        return DelayedModAccess.inheritInventoryStagesAndReturn(this,operation.call(container,width,height));
+    }
+
+    @Inject(at=@At("HEAD"),method="doCraft",cancellable=true)
+    private void dimhoppertweaks$handleEmptyResult(ItemStack result, InventoryCrafting matrix,
+            EntityPlayer player, CallbackInfo ci) {
+        if(result.isEmpty()) ci.cancel();
     }
 }

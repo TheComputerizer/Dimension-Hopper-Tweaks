@@ -1,6 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin;
 
 import androsa.gaiadimension.world.TeleporterGaia;
+import appeng.api.AEApi;
 import appeng.items.parts.ItemFacade;
 import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import c4.conarm.client.gui.PreviewPlayer;
@@ -37,6 +38,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
@@ -46,6 +48,7 @@ import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
@@ -127,6 +130,14 @@ public class DelayedModAccess {
     private static boolean FOUND_BREAKER_CLASSES = false;
     private static boolean FOUND_PLACER_CLASSES = false;
     public static final Map<Ingredient,Set<String>> INGREDIENT_STAGES = new HashMap<>();
+
+    public static void appendStageData(NBTTagCompound tag, String type, Collection<String> stages) {
+        if(Objects.nonNull(tag) && Objects.nonNull(stages) && !stages.isEmpty()) {
+            NBTTagList stageList = new NBTTagList();
+            for(String stage : stages) stageList.appendTag(new NBTTagString(stage));
+            tag.setTag("GameStage"+(Objects.nonNull(type) ? type : "")+"Data",stageList);
+        }
+    }
 
     public static void callInaccessibleMethod(Class<?> clazz, String methodName) {
         try {
@@ -606,6 +617,33 @@ public class DelayedModAccess {
     public static void inheritInventoryStages(@Nullable TileEntity tile, InventoryCrafting inventory, boolean clear) {
         setInventoryStages(inventory,getTileStages(tile),clear);
     }
+
+    public static <I extends InventoryCrafting> I inheritInventoryStagesAndReturn(EntityPlayer player, I inventory) {
+        return inheritInventoryStagesAndReturn(getPlayerStages(player),inventory);
+    }
+
+    public static <I extends InventoryCrafting> I inheritInventoryStagesAndReturn(InventoryCrafting source, I inventory) {
+        return inheritInventoryStagesAndReturn(getInventoryStages(source),inventory);
+    }
+
+    public static <I extends InventoryCrafting> I inheritInventoryStagesAndReturn(InventoryPlayer player,
+            I inventory) {
+        return inheritInventoryStagesAndReturn(getPlayerStages(player.player),inventory);
+    }
+
+    public static <I extends InventoryCrafting> I inheritInventoryStagesAndReturn(ItemStack stack, I inventory) {
+        return inheritInventoryStagesAndReturn(retrieveStageData(stack.getTagCompound(),"ItemStack"),inventory);
+    }
+
+    public static <I extends InventoryCrafting> I inheritInventoryStagesAndReturn(TileEntity tile, I inventory) {
+        return inheritInventoryStagesAndReturn(getTileStages(tile),inventory);
+    }
+
+    public static <I extends InventoryCrafting> I inheritInventoryStagesAndReturn(Collection<String> stages,
+            I inventory) {
+        setInventoryStages(inventory,stages);
+        return inventory;
+    }
     
     public static void inheritPlayerStages(EntityPlayer player, TileEntity tile) {
         setTileStages(tile,getPlayerStages(player));
@@ -636,10 +674,6 @@ public class DelayedModAccess {
         GameStageSaveHandler.addFakePlayer(data);
         return data;
     }
-    
-    public static boolean isBedrockMaterial(ToolMaterial material) {
-        return material==toolMaterial;
-    }
 
     public static @Nullable Object instantiateInaccessibleClass(
             String className, Function<Class<?>,Constructor<?>> constructorFinder, Object ... args) {
@@ -655,6 +689,14 @@ public class DelayedModAccess {
             }
         } else LOGGER.error("The constructor for class {} seems to be null",className);
         return null;
+    }
+
+    public static boolean isBedrockMaterial(ToolMaterial material) {
+        return material==toolMaterial;
+    }
+
+    public static boolean isEncodedPattern(ItemStack stack) {
+        return AEApi.instance().definitions().items().encodedPattern().isSameAs(stack);
     }
 
     public static boolean isFakeEntity(Entity entity) {
@@ -761,6 +803,21 @@ public class DelayedModAccess {
             textureTag.setShort("Damage",(short)0);
             tag.setTag("textureBlock",textureTag);
         };
+    }
+
+    public static Collection<String> retrieveStageData(NBTTagCompound tag, String type) {
+        if(Objects.isNull(tag)) return Collections.emptyList();
+        String listName = "GameStage"+(Objects.nonNull(type) ? type : "")+"Data";
+        if(!tag.hasKey(listName)) return Collections.emptyList();
+        try {
+            Collection<String> stages = new HashSet<>();
+            for(NBTBase based : tag.getTagList(listName,8))
+                if(based instanceof NBTTagString) stages.add(((NBTTagString)based).getString());
+            return stages;
+        } catch(Exception ex) {
+            LOGGER.error("Failed to retrieve stage data from {}!",listName,ex);
+            return Collections.emptyList();
+        }
     }
     
     public static void setContainerStages(@Nullable Container container, @Nullable Collection<String> stages) {

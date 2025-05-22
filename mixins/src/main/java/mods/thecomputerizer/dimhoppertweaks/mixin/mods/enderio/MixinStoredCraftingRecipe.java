@@ -18,8 +18,6 @@ public abstract class MixinStoredCraftingRecipe {
             "Lnet/minecraft/inventory/InventoryCrafting;",remap=true),method="findCraftingResult")
     private InventoryCrafting dimhoppertweaks$inheritStages(Container container, int width, int height,
             Operation<InventoryCrafting> operation, @Local(argsOnly=true)TileInventoryPanel tile) {
-        InventoryCrafting inventory = operation.call(container,width,height);
-        DelayedModAccess.inheritInventoryStages(tile,inventory);
-        return inventory;
+        return DelayedModAccess.inheritInventoryStagesAndReturn(tile,operation.call(container,width,height));
     }
 }

@@ -9,13 +9,15 @@ import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockMetal;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import de.ellpeck.naturesaura.api.multiblock.IMultiblock;
 import mods.thecomputerizer.dimhoppertweaks.mixin.DelayedModAccess;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(value = TileEntityMultiblockMetal.class, remap = false)
 public abstract class MixinTileEntityMultiblockMetal<T extends TileEntityMultiblockMetal<T,R>, R extends IMultiblockRecipe>
@@ -31,13 +33,12 @@ public abstract class MixinTileEntityMultiblockMetal<T extends TileEntityMultibl
     /**
      * Make sure the master tile inherits stages from the player assembling the multi
      */
-    @Redirect(at=@At(value="INVOKE",
-            target="Lblusunrize/immersiveengineering/common/blocks/metal/TileEntityMultiblockMetal;master()"+
-                   "Lblusunrize/immersiveengineering/common/blocks/TileEntityMultiblockPart;"),method="hammerUseSide")
-    private TileEntityMultiblockPart<T> dimhoppertweaks$setMasterStages(
-            TileEntityMultiblockMetal<T,R> instance, @Local(argsOnly=true)EntityPlayer player) {
-        TileEntityMultiblockMetal<T,R> master = instance.master();
+    @WrapOperation(at=@At(value="INVOKE",
+            target="Lblusunrize/immersiveengineering/common/blocks/metal/TileEntityMultiblockMetal;"+
+                    "updateMasterBlock(Lnet/minecraft/block/state/IBlockState;Z)V"),method="hammerUseSide")
+    private void dimhoppertweaks$setMasterStages(TileEntityMultiblockMetal<?,?> master, IBlockState state,
+            boolean blockUpdate,Operation<Void> operation, @Local(argsOnly=true)EntityPlayer player) {
         DelayedModAccess.inheritPlayerStages(player,master);
-        return master;
+        operation.call(master,state,blockUpdate);
     }
 }

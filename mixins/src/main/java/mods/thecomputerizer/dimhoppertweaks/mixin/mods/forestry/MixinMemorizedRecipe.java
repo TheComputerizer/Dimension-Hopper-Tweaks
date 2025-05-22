@@ -26,10 +26,4 @@ public abstract class MixinMemorizedRecipe implements INbtWritable, INbtReadable
         Collection<String> stages = DelayedModAccess.getInventoryStages(matrix);
         if(!stages.isEmpty()) DelayedModAccess.setInventoryStages(this.craftMatrix,stages);
     }
-
-    @Inject(at=@At("HEAD"),method="setCraftMatrix")
-    private void dimhoppertweaks$inheritStages(InventoryCraftingForestry matrix, CallbackInfo ci) {
-        Collection<String> stages = DelayedModAccess.getInventoryStages(this.craftMatrix);
-        if(!stages.isEmpty()) DelayedModAccess.setInventoryStages(matrix,stages);
-    }
 }
