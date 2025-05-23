@@ -1,7 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.mods.itemstages;
 
 import mods.thecomputerizer.dimhoppertweaks.mixin.DelayedModAccess;
-import mods.thecomputerizer.dimhoppertweaks.mixin.api.ITileEntity;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.IGameStageExtension;
 import mods.thecomputerizer.dimhoppertweaks.util.WorldUtil;
 import net.darkhax.itemstages.ItemStages;
 import net.minecraft.block.state.IBlockState;
@@ -46,10 +46,10 @@ public abstract class MixinItemStages {
     @Unique
     private boolean dimhoppertweaks$verifyHooks(World world, @Nullable EntityPlayer player, BlockPos pos, String stage) {
         TileEntity tile = WorldUtil.getTileOrAdjacent(world,pos,true, DelayedModAccess.getPlacerTileClasses());
-        if(Objects.nonNull(tile)) return !((ITileEntity)tile).dimhoppertweaks$hasStage(stage);
+        if(Objects.nonNull(tile)) return !((IGameStageExtension)tile).dimhoppertweaks$hasStage(stage);
         else if(Objects.nonNull(player) && !player.getPosition().equals(pos)) {
             tile = WorldUtil.getTileOrAdjacent(world,player.getPosition(),true,DelayedModAccess.getPlacerTileClasses());
-            if(Objects.nonNull(tile)) return !((ITileEntity)tile).dimhoppertweaks$hasStage(stage);
+            if(Objects.nonNull(tile)) return !((IGameStageExtension)tile).dimhoppertweaks$hasStage(stage);
         }
         return Objects.nonNull(player) && !DelayedModAccess.hasGameStage(player,stage);
     }

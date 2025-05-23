@@ -7,7 +7,7 @@ import mekanism.common.security.ISecurityTile;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.ISkillCapability;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.mixin.DelayedModAccess;
-import mods.thecomputerizer.dimhoppertweaks.mixin.api.ITileEntity;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.IGameStageExtension;
 import mods.thecomputerizer.dimhoppertweaks.registry.traits.ExtendedEventsTrait;
 import mods.thecomputerizer.dimhoppertweaks.util.WorldUtil;
 import net.minecraft.block.Block;
@@ -126,9 +126,9 @@ public class WorldEvents {
             Set<Class<?>> placerClasses = DelayedModAccess.getPlacerTileClasses();
             World world = player.getEntityWorld();
             TileEntity tile = WorldUtil.checkValidTile(world,player.getPosition(),placerClasses);
-            if(Objects.nonNull(tile)) return ((ITileEntity)tile).dimhoppertweaks$getStages();
+            if(Objects.nonNull(tile)) return ((IGameStageExtension)tile).dimhoppertweaks$getStages();
             tile = WorldUtil.getTileOrAdjacent(world,pos,false,placerClasses);
-            if(Objects.nonNull(tile)) return ((ITileEntity)tile).dimhoppertweaks$getStages();
+            if(Objects.nonNull(tile)) return ((IGameStageExtension)tile).dimhoppertweaks$getStages();
         }
         return DelayedModAccess.getPlayerStages(player);
     }

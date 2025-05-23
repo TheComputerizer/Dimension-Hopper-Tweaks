@@ -76,6 +76,7 @@
     "dimdoors.MixinTeleportUtils",
     "dimdoors.MixinTileEntityEntranceRift",
     "dimdoors.MixinTileEntityFloatingRift",
+    "enderio.MixinBlockItemInventoryPanel",
     "enderio.MixinInventoryPanelContainer",
     "enderio.MixinSlotCraftingWrapper",
     "enderio.MixinStoredCraftingRecipe",
@@ -86,6 +87,7 @@
     "extrautils2.MixinItemUnstableIngots",
     "extrautils2.MixinTileMine",
     "forestry.MixinContainerWorktable",
+    "forestry.MixinInventoryCraftingForestry",
     "forestry.MixinItemStackUtil",
     "forestry.MixinMemorizedRecipe",
     "forestry.MixinRecipeUtil",
@@ -99,8 +101,10 @@
     "geckolib3.MixinAnimationFileLoader",
     "geckolib3.MixinGeckoLibCache",
     "goodnightsleep.MixinGoodDreamBiomeDecorator",
+    "immersiveengineering.MixinContainerAssembler",
     "immersiveengineering.MixinCrafterPatternInventory",
     "immersiveengineering.MixinItemDrill",
+    "immersiveengineering.MixinTileEntityAssembler",
     "immersiveengineering.MixinTileEntityMultiblockMetal",
     "industrialforegoing.MixinJEICustomPlugin",
     "industrialforegoing.MixinPageRecipe",
@@ -227,6 +231,7 @@
     "reskillable.MixinGuiSkillInfo",
     "reskillable.MixinGuiSkills",
     "reskillable.MixinUnlockableToast",
+    "rftools.MixinGuiCrafter",
     "silentgems.MixinItemEnchantmentToken"
   ]
 }

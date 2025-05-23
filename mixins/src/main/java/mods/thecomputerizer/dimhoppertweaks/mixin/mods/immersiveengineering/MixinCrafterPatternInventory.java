@@ -22,8 +22,17 @@ public abstract class MixinCrafterPatternInventory {
             "Lblusunrize/immersiveengineering/common/util/Utils$InventoryCraftingFalse;createFilledCraftingInventory("+
                     "IILnet/minecraft/util/NonNullList;)Lnet/minecraft/inventory/InventoryCrafting;"),
             method="recalculateOutput")
-    private InventoryCrafting dimhoppertweaks$inheritStages(int j, int w, NonNullList<ItemStack> h,
-            Operation<InventoryCrafting> original) {
-        return DelayedModAccess.inheritInventoryStagesAndReturn(this.tile,original.call(j,j,h));
+    private InventoryCrafting dimhoppertweaks$inheritStages1(int j, int w, NonNullList<ItemStack> h,
+            Operation<InventoryCrafting> operation) {
+        return DelayedModAccess.inheritInventoryStagesAndReturn(this.tile,operation.call(j,j,h));
+    }
+
+    @WrapOperation(at=@At(value="INVOKE",target=
+            "Lblusunrize/immersiveengineering/common/util/Utils$InventoryCraftingFalse;createFilledCraftingInventory("+
+                    "IILnet/minecraft/util/NonNullList;)Lnet/minecraft/inventory/InventoryCrafting;"),
+            method="getTotalPossibleOutputs")
+    private InventoryCrafting dimhoppertweaks$inheritStages2(int j, int w, NonNullList<ItemStack> h,
+            Operation<InventoryCrafting> operation) {
+        return DelayedModAccess.inheritInventoryStagesAndReturn(this.tile,operation.call(j,j,h));
     }
 }

@@ -1,7 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.vanilla;
 
 import mods.thecomputerizer.dimhoppertweaks.mixin.DelayedModAccess;
-import mods.thecomputerizer.dimhoppertweaks.mixin.api.ITileEntity;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.IGameStageExtension;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,7 +17,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @Mixin(TileEntity.class)
-public abstract class MixinTileEntity implements ITileEntity {
+public abstract class MixinTileEntity implements IGameStageExtension {
 
     @Unique private final Set<String> dimhoppertweaks$stages = new HashSet<>();
 
@@ -26,29 +26,26 @@ public abstract class MixinTileEntity implements ITileEntity {
         return (TileEntity)(Object)this;
     }
 
-    @Override
-    public void dimhoppertweaks$setStages(String ... stages) {
+    @Override public void dimhoppertweaks$setStages(boolean clear, String ... stages) {
+        if(clear) this.dimhoppertweaks$stages.clear();
         for(String stage : stages) this.dimhoppertweaks$addStage(stage);
     }
 
-    @Override
-    public void dimhoppertweaks$setStages(Collection<String> stages) {
+    @Override public void dimhoppertweaks$setStages(Collection<String> stages, boolean clear) {
+        if(clear) this.dimhoppertweaks$stages.clear();
         for(String stage : stages) this.dimhoppertweaks$addStage(stage);
     }
 
-    @Override
-    public Collection<String> dimhoppertweaks$getStages() {
+    @Override public Collection<String> dimhoppertweaks$getStages() {
         return this.dimhoppertweaks$stages;
     }
 
-    @Override
-    public void dimhoppertweaks$addStage(String stage) {
+    @Override public void dimhoppertweaks$addStage(String stage) {
         if(Objects.nonNull(stage) && !stage.isEmpty()) this.dimhoppertweaks$stages.add(stage);
         DelayedModAccess.checkForAutoCrafter(dimhoppertweaks$cast(),this.dimhoppertweaks$stages);
     }
 
-    @Override
-    public boolean dimhoppertweaks$hasStage(String stage) {
+    @Override public boolean dimhoppertweaks$hasStage(String stage) {
         return this.dimhoppertweaks$stages.contains(stage);
     }
 

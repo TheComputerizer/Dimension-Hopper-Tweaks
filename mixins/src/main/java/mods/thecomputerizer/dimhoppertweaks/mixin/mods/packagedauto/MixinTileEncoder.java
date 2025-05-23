@@ -1,7 +1,7 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.mods.packagedauto;
 
 import mods.thecomputerizer.dimhoppertweaks.mixin.api.IRecipeInfoTiered;
-import mods.thecomputerizer.dimhoppertweaks.mixin.api.ITileEntity;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.IGameStageExtension;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import org.spongepowered.asm.mixin.Final;
@@ -28,7 +28,7 @@ public abstract class MixinTileEncoder {
         for(InventoryEncoderPattern pattern : this.patternInventories)
             if(pattern.recipeInfo instanceof thelm.packagedexcrafting.recipe.IRecipeInfoTiered)
                 ((IRecipeInfoTiered)pattern.recipeInfo).dimhoppertweaks$setStages(
-                        ((ITileEntity)dimhoppertweaks$cast()).dimhoppertweaks$getStages());
+                        ((IGameStageExtension)dimhoppertweaks$cast()).dimhoppertweaks$getStages());
     }
 
     @Inject(at = @At("RETURN"), method = "readSyncNBT")

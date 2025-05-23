@@ -20,11 +20,10 @@ import mods.thecomputerizer.dimhoppertweaks.common.capability.chunk.ExtraChunkDa
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.common.events.TickEvents;
 import mods.thecomputerizer.dimhoppertweaks.config.DHTConfigHelper;
-import mods.thecomputerizer.dimhoppertweaks.mixin.api.IContainer;
-import mods.thecomputerizer.dimhoppertweaks.mixin.api.IInventoryCrafting;
-import mods.thecomputerizer.dimhoppertweaks.mixin.api.ITileEntity;
+import mods.thecomputerizer.dimhoppertweaks.mixin.api.IGameStageExtension;
 import mods.thecomputerizer.dimhoppertweaks.network.DHTNetwork;
 import mods.thecomputerizer.dimhoppertweaks.network.PacketSendKeyPressed;
+import mods.thecomputerizer.theimpossiblelibrary.api.network.NetworkHelper;
 import mods.thecomputerizer.theimpossiblelibrary.api.text.TextHelper;
 import net.darkhax.gamestages.GameStageHelper;
 import net.darkhax.gamestages.data.FakePlayerData;
@@ -52,6 +51,7 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.*;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -191,7 +191,7 @@ public class DelayedModAccess {
 
     public static void checkForAutoCrafter(TileEntity tile, Collection<String> stages) {
         if(tile instanceof TileEntityAutoCrafter)
-            ((IInventoryCrafting)((TileEntityAutoCrafter)tile).crafting).dimhoppertweaks$setStages(stages);
+            ((IGameStageExtension)((TileEntityAutoCrafter)tile).crafting).dimhoppertweaks$setStages(stages);
     }
 
     private static boolean checkTagRemovals(Item item, ResourceLocation res) {
@@ -351,8 +351,7 @@ public class DelayedModAccess {
     }
     
     public static Collection<String> getContainerStages(@Nullable Container container) {
-        return Objects.isNull(container) ? Collections.emptyList() :
-                ((IContainer)container).dimhoppertweaks$getStages();
+        return getStages((IGameStageExtension)container);
     }
     
     public static ItemStack getCraftingResult(IRecipe recipe, InventoryCrafting inventory, ItemStack result) {
@@ -404,8 +403,7 @@ public class DelayedModAccess {
     }
     
     public static Collection<String> getInventoryStages(@Nullable InventoryCrafting inventory) {
-        return Objects.isNull(inventory) ? Collections.emptyList() :
-                ((IInventoryCrafting)inventory).dimhoppertweaks$getStages();
+        return getStages((IGameStageExtension)inventory);
     }
     
     public static double getMaxDifficulty(EntityPlayer player) {
@@ -463,10 +461,15 @@ public class DelayedModAccess {
     public static String getStageForDimension(int dimension) {
         return DIMENSION_MAP.get(dimension);
     }
+
+    public static Collection<String> getStages(IGameStageExtension ext) {
+        Collection<String> stages = Objects.nonNull(ext) ? ext.dimhoppertweaks$getStages() : null;
+        return Objects.nonNull(stages) ? stages : Collections.emptyList();
+    }
     
     public static Collection<String> getTileStages(@Nullable TileEntity tile) {
-        if(tile instanceof TileEntityMultiblockPart<?>) tile = ((TileEntityMultiblockPart<?>)tile).master();
-        return Objects.isNull(tile) ? Collections.emptyList() : ((ITileEntity)tile).dimhoppertweaks$getStages();
+        return getStages((IGameStageExtension)(tile instanceof TileEntityMultiblockPart<?> ?
+                ((TileEntityMultiblockPart<?>)tile).master() : tile));
     }
     
     public static Collection<String> getTileStages(World world, BlockPos pos) {
@@ -618,6 +621,10 @@ public class DelayedModAccess {
         setInventoryStages(inventory,getTileStages(tile),clear);
     }
 
+    public static <I extends InventoryCrafting> I inheritInventoryStagesAndReturn(Container container, I inventory) {
+        return inheritInventoryStagesAndReturn(getContainerStages(container),inventory);
+    }
+
     public static <I extends InventoryCrafting> I inheritInventoryStagesAndReturn(EntityPlayer player, I inventory) {
         return inheritInventoryStagesAndReturn(getPlayerStages(player),inventory);
     }
@@ -648,6 +655,15 @@ public class DelayedModAccess {
     public static void inheritPlayerStages(EntityPlayer player, TileEntity tile) {
         setTileStages(tile,getPlayerStages(player));
     }
+
+    public static void inheritStages(Object source, Object target) {
+        if(source instanceof IGameStageExtension && target instanceof IGameStageExtension)
+            inheritStages((IGameStageExtension)source,(IGameStageExtension)target);
+    }
+
+    public static void inheritStages(IGameStageExtension source, IGameStageExtension target) {
+        setStages(target,getStages(source));
+    }
     
     public static void inheritTileStages(@Nullable FakePlayer player) {
         if(Objects.nonNull(player)) setFakePlayerStages(player, getTileStages(player.getEntityWorld(), player.getPosition()));
@@ -660,7 +676,7 @@ public class DelayedModAccess {
     public static void inheritTileStages(FakePlayer player, World world, BlockPos pos) {
         TileEntity tile = world.getTileEntity(pos);
         if(Objects.nonNull(tile)) {
-            Collection<String> stages = ((ITileEntity)tile).dimhoppertweaks$getStages();
+            Collection<String> stages = ((IGameStageExtension)tile).dimhoppertweaks$getStages();
             if(!stages.isEmpty()) setFakePlayerStages(player, stages);
         }
     }
@@ -726,6 +742,10 @@ public class DelayedModAccess {
     
     public static void onWorldJoined() {
         INGREDIENT_STAGES.clear();
+    }
+
+    public static Collection<String> readStageData(PacketBuffer buffer) {
+        return NetworkHelper.readCollection(buffer,() -> NetworkHelper.readString(buffer));
     }
 
     public static void replaceAfterStructureGeneration(Chunk chunk) {
@@ -821,18 +841,17 @@ public class DelayedModAccess {
     }
     
     public static void setContainerStages(@Nullable Container container, @Nullable Collection<String> stages) {
-        setContainerStages(container,stages,true);
+        setStages((IGameStageExtension)container,stages);
     }
     
     public static void setContainerStages(@Nullable Container container, @Nullable Collection<String> stages,
             boolean clear) {
-        if(Objects.nonNull(container) && Objects.nonNull(stages) && !stages.isEmpty())
-            ((IContainer)container).dimhoppertweaks$setStages(stages,clear);
+        setStages((IGameStageExtension)container,stages,clear);
     }
     
     public static void setCrafterStages(@Nonnull CrafterBaseTE crafter, @Nullable Collection<String> stages) {
         if(Objects.nonNull(stages) && !stages.isEmpty()) {
-            ((ITileEntity)crafter).dimhoppertweaks$setStages(stages);
+            ((IGameStageExtension)crafter).dimhoppertweaks$setStages(stages);
             DelayedModAccess.setInventoryStages(Fields.getDirect(crafter,"workInventory"),stages);
             for(int i=0;i<crafter.getSupportedRecipes();i++)
                 DelayedModAccess.inheritInventoryStages(crafter,crafter.getRecipe(i).getInventory());
@@ -843,7 +862,11 @@ public class DelayedModAccess {
         if(player instanceof FakePlayer) setFakePlayerStages((FakePlayer)player, stages);
         else if(Objects.nonNull(stages)) for(String stage : stages) setEntityStage(player, stage);
     }
-    
+
+    public static void setEntityStage(Entity entity, String stage) {
+        if(entity instanceof EntityPlayer) setPlayerStage((EntityPlayer)entity,stage);
+    }
+
     private static void setFakePlayerStages(@Nullable FakePlayer faker, Collection<String> stages) {
         Collection<String> fakerStages = getOrInitFakePlayerStages(faker);
         try {
@@ -853,33 +876,36 @@ public class DelayedModAccess {
             LOGGER.error("Failed to set fake player stages for {} to {}",faker,stages,ex);
         }
     }
-
-    public static void setEntityStage(Entity entity, String stage) {
-        if(entity instanceof EntityPlayer) setPlayerStage((EntityPlayer)entity,stage);
+    
+    public static void setInventoryStages(@Nullable InventoryCrafting inventory, @Nullable Collection<String> stages) {
+        setStages((IGameStageExtension)inventory,stages);
     }
     
+    public static void setInventoryStages(@Nullable InventoryCrafting inventory, @Nullable Collection<String> stages,
+            boolean clear) {
+        setStages((IGameStageExtension)inventory,stages,clear);
+    }
+
     public static void setPlayerStage(EntityPlayer player, String stage) {
         if(Objects.isNull(player)) return;
         if(player instanceof FakePlayer) setFakePlayerStages((FakePlayer)player,Collections.singletonList(stage));
         else GameStageHelper.addStage(player,stage);
     }
-    
-    public static void setInventoryStages(@Nullable InventoryCrafting inventory, @Nullable Collection<String> stages) {
-        setInventoryStages(inventory,stages,true);
+
+    public static void setStages(@Nullable IGameStageExtension ext, @Nullable Collection<String> stages) {
+        if(Objects.nonNull(ext) && Objects.nonNull(stages) && !stages.isEmpty()) ext.dimhoppertweaks$setStages(stages);
     }
-    
-    public static void setInventoryStages(@Nullable InventoryCrafting inventory, @Nullable Collection<String> stages,
-            boolean clear) {
-        if(Objects.nonNull(inventory) && Objects.nonNull(stages) && !stages.isEmpty())
-            ((IInventoryCrafting)inventory).dimhoppertweaks$setStages(stages,clear);
+
+    public static void setStages(@Nullable IGameStageExtension ext, @Nullable Collection<String> stages, boolean clear) {
+        if(Objects.nonNull(ext) && Objects.nonNull(stages) && !stages.isEmpty())
+            ext.dimhoppertweaks$setStages(stages,clear);
     }
     
     public static void setTileStages(@Nullable TileEntity tile, @Nullable Collection<String> stages) {
         if(tile instanceof CrafterBaseTE) setCrafterStages((CrafterBaseTE)tile,stages);
         else {
             if(tile instanceof TileEntityMultiblockPart<?>) tile = ((TileEntityMultiblockPart<?>)tile).master();
-            if(Objects.nonNull(tile) && Objects.nonNull(stages) && !stages.isEmpty())
-                ((ITileEntity)tile).dimhoppertweaks$setStages(stages);
+            setStages((IGameStageExtension)tile,stages);
         }
     }
 
@@ -890,5 +916,10 @@ public class DelayedModAccess {
     
     public static IBlockState water() {
         return WATER.getDefaultState();
+    }
+
+    public static void writeStageData(PacketBuffer buffer, @Nullable Collection<String> stages) {
+        NetworkHelper.writeCollection(buffer,Objects.nonNull(stages) ? stages : Collections.emptyList(),
+                stage -> NetworkHelper.writeString(buffer,stage));
     }
 }

@@ -1,40 +1,28 @@
 package mods.thecomputerizer.dimhoppertweaks.mixin.mods.travelersbackpack;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
 import com.tiviacz.travelersbackpack.gui.container.ContainerTravelersBackpack;
+import com.tiviacz.travelersbackpack.gui.inventory.IInventoryTravelersBackpack;
 import com.tiviacz.travelersbackpack.gui.inventory.InventoryCraftingImproved;
 import mods.thecomputerizer.dimhoppertweaks.mixin.DelayedModAccess;
-import mods.thecomputerizer.dimhoppertweaks.mixin.api.IInventoryCrafting;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
+import net.minecraft.inventory.Container;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = ContainerTravelersBackpack.class, remap = false)
-public abstract class MixinContainerTravelersBackpack {
+public abstract class MixinContainerTravelersBackpack extends Container {
 
-    @Shadow public InventoryPlayer playerInv;
-
-    @Shadow public InventoryCraftingImproved craftMatrix;
-
-    @Inject(at = @At("HEAD"), method = "addCraftResult")
-    private void dimhoppertweaks$syncCraft(EntityPlayer player, CallbackInfo ci) {
-        ((IInventoryCrafting)this.craftMatrix).dimhoppertweaks$setStages(DelayedModAccess.getPlayerStages(player));
-    }
-    @Inject(at = @At("HEAD"), method = "onCraftMatrixChanged", remap = true)
-    private void dimhoppertweaks$syncStages(IInventory inventoryIn, CallbackInfo ci) {
-        ((IInventoryCrafting)this.craftMatrix).dimhoppertweaks$setStages(DelayedModAccess.getPlayerStages(this.playerInv.player));
-    }
-
-    @Inject(at = @At("HEAD"), method = "slotClick", remap = true)
-    private void dimhoppertweaks$clickStages(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player,
-                                             CallbackInfoReturnable<ItemStack> cir) {
-        ((IInventoryCrafting)this.craftMatrix).dimhoppertweaks$setStages(DelayedModAccess.getPlayerStages(this.playerInv.player));
+    @WrapOperation(at=@At(value="NEW",target=
+            "(Lcom/tiviacz/travelersbackpack/gui/inventory/IInventoryTravelersBackpack;"+
+                    "Lnet/minecraft/inventory/Container;II)"+
+                    "Lcom/tiviacz/travelersbackpack/gui/inventory/InventoryCraftingImproved;",remap=true),
+            method="<init>")
+    private InventoryCraftingImproved dimhoppertweaks$inheritStages(IInventoryTravelersBackpack inventory,
+            Container container, int width, int height, Operation<InventoryCraftingImproved> operation,
+            @Local(argsOnly=true)InventoryPlayer player) {
+        return DelayedModAccess.inheritInventoryStagesAndReturn(player,operation.call(inventory,container,width,height));
     }
 }
