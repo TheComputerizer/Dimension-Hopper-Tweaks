@@ -3,6 +3,7 @@ package mods.thecomputerizer.dimhoppertweaks.recipes;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import lombok.Getter;
 import mods.thecomputerizer.dimhoppertweaks.registry.entities.InvincibleEntityItem;
+import mods.thecomputerizer.dimhoppertweaks.util.WorldUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
@@ -13,7 +14,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -45,11 +45,8 @@ public class LightningStrikeRecipe {
         for(LightningStrikeRecipe recipe : RECIPES) {
             EntityItem eItem = (EntityItem)entity;
             if(recipe.checkCatalyst(eItem,strikePos)) {
-                if(Objects.isNull(entities)) {
-                    entities = world.getEntitiesWithinAABB(Entity.class,new AxisAlignedBB(
-                            strikePos.subtract(maxRange,maxRange,maxRange),strikePos.add(maxRange,maxRange,maxRange)));
-                    entities.removeIf(item -> item==entity);
-                }
+                if(Objects.isNull(entities))
+                    entities = WorldUtil.getEntitiesInRange(world,strikePos,maxRange,e -> e!=entity);
                 recipe.verifyInputs(world,strikePos,entities);
             }
         }

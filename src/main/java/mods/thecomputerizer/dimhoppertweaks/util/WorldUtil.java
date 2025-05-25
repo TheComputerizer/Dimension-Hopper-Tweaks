@@ -1,18 +1,20 @@
 package mods.thecomputerizer.dimhoppertweaks.util;
 
+import com.google.common.base.Predicate;
 import mods.thecomputerizer.dimhoppertweaks.client.particle.ParticleBlightFire;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.chunk.ExtraChunkData;
 import mods.thecomputerizer.dimhoppertweaks.common.capability.player.SkillWrapper;
 import mods.thecomputerizer.dimhoppertweaks.config.DHTConfigHelper;
-import mods.thecomputerizer.dimhoppertweaks.core.DHTRef;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
@@ -22,10 +24,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
+import static mods.thecomputerizer.dimhoppertweaks.core.DHTRef.LOGGER;
 import static net.minecraft.util.EnumFacing.EAST;
 import static net.minecraft.util.EnumFacing.NORTH;
 import static net.minecraft.util.EnumFacing.UP;
@@ -55,7 +59,7 @@ public class WorldUtil {
     }
 
     public static @Nullable TileEntity getTileOrAdjacent(World world, BlockPos centerPos, boolean checkCenter,
-                                                         Collection<Class<?>> types) {
+            Collection<Class<?>> types) {
         MutableBlockPos pos = new MutableBlockPos(centerPos);
         TileEntity tile = checkValidTile(world,pos,types);
         if(Objects.nonNull(tile) && checkCenter) return tile;
@@ -66,10 +70,40 @@ public class WorldUtil {
         return addCoordsAndCheck(world,pos,UP,types);
     }
 
+    public static AxisAlignedBB getBoxFromRange(Vec3d pos, double range) {
+        Vec3d min = pos.subtract(range,range,range);
+        Vec3d max = pos.add(range,range,range);
+        return new AxisAlignedBB(min.x,min.y,min.z,max.x,max.y,max.z);
+    }
+
+    public static List<Entity> getEntitiesInRange(World world, Vec3d pos, double range,
+                                                  Predicate<Entity> filter) {
+        return world.getEntitiesWithinAABB(Entity.class,getBoxFromRange(pos,range),filter);
+    }
+
+    public static boolean hasFastPlayerInOrAdjacent(World world, int chunkX, int chunkZ, @Nullable EntityPlayer setter) {
+        if(world.playerEntities.size()==1 && Objects.nonNull(setter)) return false;
+        AtomicBoolean ret = new AtomicBoolean();
+        iterateChunks(world,chunkX,chunkZ,1,chunk -> {
+            for(EntityPlayer player : world.playerEntities) {
+                if(player!=setter && isPlayerInChunk(chunk,player) && SkillWrapper.makesChunksFast(player)) {
+                    ret.set(true);
+                    return;
+                }
+            }
+        });
+        return ret.get();
+    }
+
+
     public static boolean isChunkFast(World world, int chunkX, int chunkZ) {
         if(world.isChunkGeneratedAt(chunkX,chunkZ)) return ExtraChunkData.isChunkFast(world.getChunk(chunkX,chunkZ));
-        else DHTRef.LOGGER.error("Tried to query fast status of ungenerated chunk at ({},{})!",chunkX,chunkZ);
+        else LOGGER.error("Tried to query fast status of ungenerated chunk at ({},{})!",chunkX,chunkZ);
         return false;
+    }
+
+    public static boolean isPlayerInChunk(Chunk chunk, EntityPlayer player) {
+        return chunk.x==player.chunkCoordX && chunk.z==player.chunkCoordZ;
     }
 
     public static void iterateChunks(World world, int chunkX, int chunkZ, int range, Consumer<Chunk> settings) {
@@ -93,13 +127,13 @@ public class WorldUtil {
     public static int replaceBlocks(World world, Collection<Block> replaced, IBlockState replaceWith,
             BlockPos min, BlockPos max) {
         int replacementCount = 0;
-        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
-        for(int x=min.getX(); x<=max.getX(); x++) {
-            for(int y=min.getY(); y<=max.getY(); y++) {
-                for(int z=min.getZ(); z<=max.getZ(); z++) {
+        MutableBlockPos pos = new MutableBlockPos();
+        for(int x=min.getX();x<=max.getX();x++) {
+            for(int y=min.getY();y<=max.getY();y++) {
+                for(int z=min.getZ();z<=max.getZ();z++) {
                     pos.setPos(x,y,z);
-                    if(replaced.contains(world.getBlockState(pos).getBlock()))
-                        if(world.setBlockState(pos,replaceWith)) replacementCount++;
+                    if(replaced.contains(world.getBlockState(pos).getBlock()) && (world.setBlockState(pos,replaceWith)))
+                        replacementCount++;
                 }
             }
         }
@@ -122,24 +156,6 @@ public class WorldUtil {
 
     public static void setFastChunk(World world, int chunkX, int chunkZ, @Nullable EntityPlayer player) {
         setFastChunk(world,chunkX,chunkZ,Objects.nonNull(player) && SkillWrapper.makesChunksFast(player));
-    }
-
-    public static boolean hasFastPlayerInOrAdjacent(World world, int chunkX, int chunkZ, @Nullable EntityPlayer setter) {
-        if(world.playerEntities.size()==1 && Objects.nonNull(setter)) return false;
-        AtomicBoolean ret = new AtomicBoolean();
-        iterateChunks(world,chunkX,chunkZ,1,chunk -> {
-            for(EntityPlayer player : world.playerEntities) {
-                if(player!=setter && isPlayerInChunk(chunk,player) && SkillWrapper.makesChunksFast(player)) {
-                    ret.set(true);
-                    return;
-                }
-            }
-        });
-        return ret.get();
-    }
-
-    public static boolean isPlayerInChunk(Chunk chunk, EntityPlayer player) {
-        return chunk.x==player.chunkCoordX && chunk.z==player.chunkCoordZ;
     }
 
     @SideOnly(CLIENT)
