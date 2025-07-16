@@ -1,35 +1,22 @@
 pluginManagement {
     repositories {
         gradlePluginPortal()
-        maven {
-            name = 'MinecraftForge'
-            url = uri 'https://maven.minecraftforge.net/'
-            content {
-                [ 'net.minecraftforge', 'net.minecraftforge.gradle' ].forEach{ grp ->
-                    includeGroup grp
+        [ 'forge', 'fancy', 'sponge' ].forEach {maven_id ->
+            maven {
+                name = "${settings.ext."${maven_id}_name"}"
+                url = uri "${settings.ext."${maven_id}_uri"}"
+                content {
+                    "${settings.ext."${maven_id}_groups"}".split(';').each {grp ->
+                        includeGroup grp
+                    }
                 }
-            }
-        }
-        maven {
-            name = 'Garden of Fancy'
-            url = uri 'https://maven.gofancy.wtf/releases'
-            content {
-                includeGroup 'wtf.gofancy.fancygradle'
-            }
-        }
-        maven {
-            name = 'SpongePowered'
-            url = uri 'https://repo.spongepowered.org/repository/maven-public/'
-            content {
-                includeGroup 'org.spongepowered'
             }
         }
     }
     resolutionStrategy {
         eachPlugin {
-            if(requested.id.toString()=='org.spongepowered.mixin') {
-                useModule "org.spongepowered:mixingradle:${requested.version}"
-            }
+            if(requested.id.toString()==mixingradle_id)
+                useModule "$mixingradle_module:${requested.version}"
         }
     }
 }
@@ -38,9 +25,15 @@ plugins {
     id 'org.gradle.toolchains.foojay-resolver-convention' version '+'
 }
 
-rootProject.name = 'Dimension_Hopper_Tweaks'
+rootProject.name = project_name
 
-[ ':mixins' ].forEach {
-    include it
-    findProject(it)?.name = it.substring(1)
+include ':mixins'
+findProject(':mixins')?.name = 'mixins'
+
+dependencyResolutionManagement {
+    versionCatalogs {
+        create("$deps_id") {
+            from(files(deps_path))
+        }
+    }
 }

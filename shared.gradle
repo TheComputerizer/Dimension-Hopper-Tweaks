@@ -6,7 +6,7 @@ plugins.apply 'java-base'
 plugins.apply 'java-library'
 
 group = mod_package
-version = "$mod_version+$minecraft_version"
+version = "${libs.versions.self}+${libs.versions.minecraft}"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of 8
 
@@ -22,8 +22,8 @@ repositories {
 }
 
 dependencies {
-    annotationProcessor "org.projectlombok:lombok:$lombok_version"
-    compileOnly "org.projectlombok:lombok:$lombok_version"
+    annotationProcessor libs.lombok
+    compileOnly libs.lombok
 }
 
 jar {

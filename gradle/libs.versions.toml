@@ -1,0 +1,27 @@
+[bundles]
+    mixin-annotations = [ 'asm-all', 'google-gson', 'google-guava' ]
+
+[libraries]
+    asm-all = { group = 'org.ow2.asm', name = 'asm-debug-all', version.ref = 'asm' }
+    forge = { group = 'net.minecraftforge', name = 'forge', version.ref = 'forge-minecraft' }
+    google-gson = { group = 'com.google.code.gson', name = 'gson', version.ref = 'google-gson' }
+    google-guava = { group = 'com.google.guava', name = 'guava', version.ref = 'google-guava' }
+    lombok = { group = 'org.projectlombok', name = 'lombok', version.ref = 'lombok' }
+
+[plugins]
+    gradle-forge = { id = 'wtf.gofancy.fancygradle', version.ref = 'fancygradle' }
+    gradle-fancy = { id = 'net.minecraftforge.gradle', version.ref = 'forge-gradle' }
+    gradle-mixin = { id = 'org.spongepowered.mixin', version.ref = 'mixin-gradle' }
+
+[versions]
+    asm = '5.2'                             # ASM
+    fancygradle = '+'                       # FancyGradle
+    forge-gradle = '6.+'                    # ForgeGradle
+    forge-mappings = '39-1.12'              # SRG Mappings Version
+    forge-minecraft = '1.12.2-14.23.5.2860' # Forge Minecraft Dependency
+    google-gson = '2.8.9'                   # GSON
+    google-guava = '32.1.3-jre'             # Guava
+    lombok = '1.+'                          # Lombok
+    minecraft = '1.12.2'                    # Minecraft
+    mixin-gradle = '+'                      # MixinGradle
+    self = '3.0.1'                          # Dimension Hopper Tweaks

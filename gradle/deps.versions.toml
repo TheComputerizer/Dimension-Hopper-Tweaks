@@ -1,0 +1,49 @@
+[bundles]
+    annotations-main = [ ]
+    annotations-mixin = [ ]
+    annotations-shared = [ 'mixinbooter' ]
+    compile-main = [ 'impossiblelib' ]
+    compile-mixin = [ ]
+    compile-shared = [ 'crafttweaker-jei', 'musictriggers' ]
+    implementation-remap-main = [ 'acrobatics', 'fluidlogged-api' ]
+    implementation-remap-mixin = [ ]
+    implementation-remap-shared = [ 'additions', 'ae2uel', 'aether2', 'aoa3', 'backpack', 'buildcraft', 'infernalmobs',
+        'lockyz' ]
+    implementation-main = [ ]
+    implementation-mixin = [ ]
+    implementation-shared = [ ]
+    runtime-main = [ ]
+    runtime-mixin = [ ]
+    runtime-shared = [ ]
+
+[libraries]
+    acrobatics = { group = 'curse.maven', name = 'acrobatics-321792', version.ref = 'acrobatics' }
+    additions = { group = 'curse.maven', name = 'aa-228404', version.ref = 'additions' }
+    ae2uel = { group = 'curse.maven', name = 'ae2uel-570458', version.ref = 'ae2uel' }
+    aether2 = { group = 'curse.maven', name = 'aether2-917199', version.ref = 'aether2' }
+    aoa3 = { group = 'curse.maven', name = 'aoa-311054', version.ref = 'aoa3' }
+    backpack = { group = 'maven.modrinth', name = 'travelersbackpack', version.ref = 'backpack' }
+    buildcraft = { group = 'com.mod-buildcraft', name = 'buildcraft-api', version.ref = 'buildcraft' }
+    crafttweaker-jei = { group = 'CraftTweaker2', name = 'CraftTweaker2-MC1120-Mod-JEI', version.ref = 'crafttweaker' }
+    fluidlogged-api = { group = 'maven.modrinth', name = 'fluidlogged-api', version.ref = 'fluidlogged' }
+    impossiblelib = { group = 'curse.maven', name = 'til-661115', version.ref = 'til' }
+    infernalmobs = { group = 'curse.maven', name = 'infernalmobs-227875', version.ref = 'infernalmobs' }
+    lockyz = { group = 'maven.modrinth', name = 'ledm', version.ref = 'lockyz' }
+    mixinbooter = { group = 'zone.rong', name = 'mixinbooter', version.ref = 'mixinbooter' }
+    musictriggers = { group = 'curse.maven', name = 'musictriggers-518410', version.ref = 'mt' }
+
+[versions]
+    acrobatics = '5225456'              # Aqua Acrobatics
+    additions = '3117927'               # ActuallyAdditions
+    ae2uel = '6302098'                  # AE2 Unofficial Extended Life
+    aether2 = '4771846'                 # Aether II: Phosphor Not Included
+    aoa3 = '3054253'                    # Advent of Ascension
+    backpack = '1.12.2-1.0.35'          # Traveller's Backpack
+    buildcraft = '7.99.17'              # BuildCraft
+    crafttweaker = '1.12-4.1.20.703'    # CraftTweaker
+    fluidlogged = '3.0.6'               # Fluidlogged API
+    infernalmobs = '3431758'            # AtomicStryker's Infernal Mobs
+    lockyz = '2.4.0'                    # Lockyz Extra Dimensions Mod
+    mixinbooter = '10.6'                # MixinBooter
+    mt = '6430250'                      # Music Triggers
+    til = '6766014'                     # The Impossible Library

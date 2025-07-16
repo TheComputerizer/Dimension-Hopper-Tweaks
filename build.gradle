@@ -1,21 +1,22 @@
 import static org.gradle.api.file.DuplicatesStrategy.INCLUDE
 
 plugins {
-    id 'net.minecraftforge.gradle' version '+'
-    id 'wtf.gofancy.fancygradle' version '+'
-    id 'org.spongepowered.mixin' version '+'
+    alias libs.plugins.gradle.forge
+    alias libs.plugins.gradle.fancy
+    alias libs.plugins.gradle.mixin
 }
 
 apply from: rootProject.file('shared.gradle')
 
 minecraft {
-    mappings channel: 'stable', version: mappings_version
+    mappings channel: 'stable', version: libs.versions.forge.mappings.get()
     accessTransformer = file "src/main/resources/META-INF/$mod_accesstransformer"
     runs {
-        def args = [ '-Dmixin.debug.export=true', '-Dmixin.hotSwap=true', '-Dmixin.checks.interfaces=true' ]
+        def args = List.of("$custom_args".split(';'))
         configureEach {
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            property 'forge.logging.console.level', 'trace'
+            "$run_properties".split(';').each {p_entry ->
+                property p_entry.split('=')[0], p_entry.split('=')[1]
+            }
             jvmArgs args
         }
         client {
@@ -37,82 +38,66 @@ configurations {
 repositories {
     mavenCentral() {
         content {
-            [ 'com.google.code.gson', 'com.google.guava', 'org.ow2.asm' ].forEach {grp ->
+            central_groups.split(';').each {grp ->
                 includeGroup grp
             }
         }
     }
-    maven {
-        name = 'CurseForge'
-        url = uri 'https://curse.cleanroommc.com/'
-        content {
-            includeGroup 'curse.maven'
-        }
-    }
-    maven {
-        name = 'Cleanroom'
-        url = uri 'https://maven.cleanroommc.com'
-        content {
-            includeGroup 'zone.rong'
-        }
-    }
-    maven {
-        name = 'BlameJared'
-        url = uri 'https://maven.blamejared.com'
-        content {
-            includeGroup 'CraftTweaker2'
-        }
-    }
-    maven {
-        name = 'Modrinth'
-        url = uri 'https://api.modrinth.com/maven'
-        content {
-            includeGroup 'maven.modrinth'
-        }
-    }
-    maven {
-        name = 'BuildCraft'
-        url = uri 'https://mod-buildcraft.com/maven'
-        content {
-            includeGroup 'com.mod-buildcraft'
+    [ 'curse', 'cleanroom', 'blamejared', 'modrinth', 'buildcraft' ].forEach {maven_id ->
+        maven {
+            name = "${project."${maven_id}_name"}"
+            url = uri "${project."${maven_id}_uri"}"
+            content {
+                "${project."${maven_id}_groups"}".split(';').each {grp ->
+                    includeGroup grp
+                }
+            }
         }
     }
 }
 
 dependencies {
     //noinspection VulnerableLibrariesLocal
-    minecraft "net.minecraftforge:forge:$minecraft_version-$forge_version"
+    minecraft libs.forge
 
-    //mixin
-    annotationProcessor "com.google.code.gson:gson:$gson_version"
-    annotationProcessor "com.google.guava:guava:$guava_version"
-    annotationProcessor "org.ow2.asm:asm-debug-all:$asm_version"
-    annotationProcessor("zone.rong:mixinbooter:$mixinbooter_version") {
+    //annotation processors
+    annotationProcessor libs.bundles.mixin.annotations
+    annotationProcessor(deps.bundles.annotations.shared) {
         transitive = false
     }
-    implementation("zone.rong:mixinbooter:$mixinbooter_version") {
+    annotationProcessor(deps.bundles.annotations.main) {
         transitive = false
     }
 
-    //non cf dependencies
-    compileOnly("CraftTweaker2:CraftTweaker2-MC1120-Mod-JEI:1.12-$ct_version") {
-        [ 'com.google.code.gson', 'deobf.mezz.jei', 'org.ow2.asm' ].forEach {grp ->
+    //compile only
+    compileOnly(deps.bundles.compile.shared) {
+        ct_jei_filters.split(';').each {grp ->
             exclude group: grp
         }
     }
-    implementation fg.deobf("com.mod-buildcraft:buildcraft-api:$buildcraft_version")
-    implementation fg.deobf("maven.modrinth:fluidlogged-api:$fluidlogged_version")
-    implementation fg.deobf("maven.modrinth:ledm:$ledm_version")
-    implementation fg.deobf("maven.modrinth:travelersbackpack:$backpack_version")
+    compileOnly deps.bundles.compile.main
 
-    //cf dependencies
-    compileOnly "curse.maven:musictriggers-518410:$mt_version"
-    compileOnly "curse.maven:til-661115:$til_version"
-    implementation fg.deobf("curse.maven:aa-228404:$aa_version")
-    implementation fg.deobf("curse.maven:ae2uel-570458:$ae2_version")
-    implementation fg.deobf("curse.maven:acrobatics-321792:$acrobatics_version")
-    implementation fg.deobf("curse.maven:aether2-917199:$aether_version")
-    implementation fg.deobf("curse.maven:aoa-311054:$aoa_version")
+    //implementation (not remapped)
+    implementation(deps.bundles.implementation.shared) {
+        transitive = false
+    }
+    implementation(deps.bundles.implementation.main) {
+        transitive = false
+    }
+
+    //implementation (remapped)
+    deps.bundles.implementation.remap.shared.get().each {dep ->
+        implementation fg.deobf(dep)
+    }
+    deps.bundles.implementation.remap.main.get().each {dep ->
+        implementation fg.deobf(dep)
+    }
+
+    //runtime only
+    runtimeOnly deps.bundles.runtime.shared
+    runtimeOnly deps.bundles.runtime.main
+
+    //TODO Finish moving old dependency declarations to the version catalog
     implementation fg.deobf("curse.maven:apotheosis-313970:$apotheosis_version")
     implementation fg.deobf("curse.maven:aquaculture-60028:$aquaculture_version")
     implementation fg.deobf("curse.maven:arl-250363:$arl_version")
@@ -154,7 +139,6 @@ dependencies {
     implementation fg.deobf("curse.maven:ic2-242638:$ic2_version")
     implementation fg.deobf("curse.maven:ie-231951:$ie_version")
     implementation fg.deobf("curse.maven:iforgoing-266515:$if_version")
-    implementation fg.deobf("curse.maven:infernalmobs-227875:$aim_version")
     implementation fg.deobf("curse.maven:itemstages-280316:$itemstages_version")
     implementation fg.deobf("curse.maven:jei-557549:$hei_version")
     implementation fg.deobf("curse.maven:lib9-322344:$libnine_version")
@@ -219,12 +203,12 @@ dependencies {
 
 processResources {
     duplicatesStrategy = INCLUDE
-    inputs.properties 'modid': mod_id, 'name': mod_name, 'description': mod_description, 'version': version,
-            'mcversion': minecraft_version, 'url': mod_url, 'credits': mod_credits, 'logo': mod_logo
+    inputs.properties 'modid': mod_id, 'name': mod_name, 'description': mod_description, 'version': libs.versions.self,
+            'mcversion': libs.versions.minecraft, 'url': mod_url, 'credits': mod_credits, 'logo': mod_logo
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-        expand 'modid': mod_id, 'name': mod_name, 'description': mod_description, 'version': version,
-                'mcversion': minecraft_version, 'url': mod_url, 'credits': mod_credits, 'logo': mod_logo
+        expand 'modid': mod_id, 'name': mod_name, 'description': mod_description, 'version': libs.versions.self,
+                'mcversion': libs.versions.minecraft, 'url': mod_url, 'credits': mod_credits, 'logo': mod_logo
     }
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
