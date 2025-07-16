@@ -6,13 +6,13 @@
     compile-mixin = [ ]
     compile-shared = [ 'crafttweaker-jei', 'musictriggers' ]
     implementation-remap-main = [ 'acrobatics', 'fluidlogged-api' ]
-    implementation-remap-mixin = [ ]
+    implementation-remap-mixin = [ 'performancemonitor' ]
     implementation-remap-shared = [ 'additions', 'ae2uel', 'aether2', 'aoa3', 'backpack', 'buildcraft', 'infernalmobs',
         'lockyz' ]
     implementation-main = [ ]
     implementation-mixin = [ ]
-    implementation-shared = [ ]
-    runtime-main = [ ]
+    implementation-shared = [ 'mixinbooter' ]
+    runtime-main = [ 'performancemonitor' ]
     runtime-mixin = [ ]
     runtime-shared = [ ]
 
@@ -31,6 +31,7 @@
     lockyz = { group = 'maven.modrinth', name = 'ledm', version.ref = 'lockyz' }
     mixinbooter = { group = 'zone.rong', name = 'mixinbooter', version.ref = 'mixinbooter' }
     musictriggers = { group = 'curse.maven', name = 'musictriggers-518410', version.ref = 'mt' }
+    performancemonitor = { group = 'curse.maven', name = 'performance-1298243', version.ref = 'performancemonitor' }
 
 [versions]
     acrobatics = '5225456'              # Aqua Acrobatics
@@ -46,4 +47,5 @@
     lockyz = '2.4.0'                    # Lockyz Extra Dimensions Mod
     mixinbooter = '10.6'                # MixinBooter
     mt = '6430250'                      # Music Triggers
+    performancemonitor = '6722840'      # Performance Monitoring Enhancer
     til = '6766014'                     # The Impossible Library

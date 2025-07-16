@@ -173,6 +173,7 @@
     "packagedexcrafting.MixinRecipeInfoBasic",
     "packagedexcrafting.MixinRecipeInfoElite",
     "packagedexcrafting.MixinRecipeInfoUltimate",
+    "performancemonitoringenhanc.MixinHudManager",
     "projecte.MixinMatter",
     "psi.MixinModSpellPieces",
     "quark.MixinBlockColorSlime",

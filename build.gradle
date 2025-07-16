@@ -203,12 +203,13 @@ dependencies {
 
 processResources {
     duplicatesStrategy = INCLUDE
-    inputs.properties 'modid': mod_id, 'name': mod_name, 'description': mod_description, 'version': libs.versions.self,
-            'mcversion': libs.versions.minecraft, 'url': mod_url, 'credits': mod_credits, 'logo': mod_logo
+    inputs.properties 'modid': mod_id, 'name': mod_name, 'description': mod_description,
+            'version': libs.versions.self.get(), 'mcversion': libs.versions.minecraft.get(), 'url': mod_url,
+            'credits': mod_credits, 'logo': mod_logo
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-        expand 'modid': mod_id, 'name': mod_name, 'description': mod_description, 'version': libs.versions.self,
-                'mcversion': libs.versions.minecraft, 'url': mod_url, 'credits': mod_credits, 'logo': mod_logo
+        expand 'modid': mod_id, 'name': mod_name, 'description': mod_description, 'version': libs.versions.self.get(),
+                'mcversion': libs.versions.minecraft.get(), 'url': mod_url, 'credits': mod_credits, 'logo': mod_logo
     }
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'

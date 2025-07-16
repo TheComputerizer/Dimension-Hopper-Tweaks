@@ -24,10 +24,11 @@ minecraft {
     mappings channel: 'stable', version: libs.versions.forge.mappings.get()
     accessTransformer = rootProject.file "src/main/resources/META-INF/$mod_accesstransformer"
     runs {
-        def args = [ '-Dmixin.debug.export=true', '-Dmixin.hotSwap=true', '-Dmixin.checks.interfaces=true' ]
+        def args = List.of("$custom_args".split(';'))
         configureEach {
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            property 'forge.logging.console.level', 'trace'
+            "$run_properties".split(';').each {p_entry ->
+                property p_entry.split('=')[0], p_entry.split('=')[1]
+            }
             jvmArgs args
         }
         client {
@@ -64,6 +65,10 @@ repositories {
 dependencies {
     //noinspection VulnerableLibrariesLocal
     minecraft libs.forge
+
+    //main project
+    //noinspection DependencyNotationArgument
+    compileOnlyApi(project(':'))
 
     //annotation processors
     annotationProcessor libs.bundles.mixin.annotations
@@ -211,13 +216,13 @@ processTestResources {
 
 jar {
     from(mainProject.jar.archiveFile.collect {
-        zipTree(it)
+        zipTree it
     })
     manifest {
         attributes([
                 'DHT_DEPENDENCIES': mod_dependencies,
                 'DHT_NAME' : mod_name,
-                'DHT_VERSION' : libs.versions.self,
+                'DHT_VERSION' : libs.versions.self.get(),
                 'FMLAT': mod_accesstransformer,
                 'FMLCorePlugin': "${mod_package}.$mod_plugin",
                 'FMLCorePluginContainsFMLMod': true,

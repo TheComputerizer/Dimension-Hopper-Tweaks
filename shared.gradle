@@ -6,7 +6,7 @@ plugins.apply 'java-base'
 plugins.apply 'java-library'
 
 group = mod_package
-version = "${libs.versions.self}+${libs.versions.minecraft}"
+version = "${libs.versions.self.get()}+${libs.versions.minecraft.get()}"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of 8
 
